@@ -1,0 +1,92 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 986B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node:24.22.1-trixie-slim@sha256:43b9ba1142b8dcf33fa8f922ca1be85714adc444e0586c7cf7726daaeabc1bea
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 188B done
+#3 DONE 0.0s
+
+#4 [build 1/6] FROM docker.io/library/node:24.22.1-trixie-slim@sha256:43b9ba1142b8dcf33fa8f922ca1be85714adc444e0586c7cf7726daaeabc1bea
+#4 resolve docker.io/library/node:24.22.1-trixie-slim@sha256:43b9ba1142b8dcf33fa8f922ca1be85714adc444e0586c7cf7726daaeabc1bea 0.0s done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 70.97kB done
+#5 DONE 0.0s
+
+#6 [build 2/6] WORKDIR /app
+#6 CACHED
+
+#7 [build 3/6] COPY apps/web/package.json apps/web/package-lock.json ./
+#7 CACHED
+
+#8 [build 4/6] RUN npm ci --ignore-scripts
+#8 CACHED
+
+#9 [build 5/6] COPY apps/web .
+#9 DONE 0.4s
+
+#10 [build 6/6] RUN rm -f public/pof.html public/pof.js && npm run build
+#10 1.081
+#10 1.081 > haven-web@0.2.0 build
+#10 1.081 > node scripts/patch-next-announcer.mjs && next build && node scripts/build-offline-shell.mjs
+#10 1.081
+#10 1.134 Next 16.4.3 accessibility announcer uses external CSS; CSP remains strict.
+#10 2.462 ▲ Next.js 16.4.3 (Turbopack)
+#10 2.672 ✓ Running next.config.ts took 210ms
+#10 2.689 - Experiments (use with caution):
+#10 2.689   · cpus: 2
+#10 2.689
+#10 2.715   Creating an optimized production build ...
+#10 24.12 ✓ Compiled successfully in 21.4s
+#10 24.12   Running TypeScript ...
+#10 39.24   Finished TypeScript in 15.1s ...
+#10 39.24   Collecting page data using 2 workers ...
+#10 41.75   Generating static pages using 2 workers (0/3) ...
+#10 41.87 ✓ Generating static pages using 2 workers (3/3) in 114ms
+#10 43.12   Finalizing page optimization ...
+#10 43.95
+#10 43.95 Route (app)
+#10 43.95 ┌ ƒ /
+#10 43.95 └ ○ /_not-found
+#10 43.95
+#10 43.95
+#10 43.95 ƒ Proxy (Middleware)
+#10 43.95
+#10 43.95 ○  (Static)   prerendered as static content
+#10 43.95 ƒ  (Dynamic)  server-rendered on demand
+#10 43.95
+#10 44.04 Prepared 19 local offline shell assets
+#10 DONE 44.3s
+
+#6 [build 2/6] WORKDIR /app
+#6 CACHED
+
+#11 [runtime 3/6] COPY --from=build --chown=node:node /app/.next/standalone ./
+#11 DONE 0.4s
+
+#12 [runtime 4/6] COPY --from=build --chown=node:node /app/.next/static ./.next/static
+#12 DONE 0.1s
+
+#13 [runtime 5/6] COPY --from=build --chown=node:node /app/public ./public
+#13 DONE 0.1s
+
+#14 [runtime 6/6] RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/corepack /opt/yarn-* /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack /usr/local/bin/yarn /usr/local/bin/yarnpkg
+#14 DONE 2.8s
+
+#15 exporting to image
+#15 exporting layers
+#15 exporting layers 1.6s done
+#15 exporting manifest sha256:193b6480bc2fa5d344ed347bca9fef148949088bac017e31c572f5b794fd4597 0.0s done
+#15 exporting config sha256:76d8071c1cc9e499e2f7c6bd8ff6a628da5f5fbf752cf980550c6055a54b31f8 0.0s done
+#15 exporting attestation manifest sha256:dd3169d123c1530300322fed140de9e96718c8baf792dae74d9b0000fabd38e6 0.0s done
+#15 exporting manifest list sha256:4bb36c7bd02ce589af25d63cbe479c4a11b5cda41df53025439c9aae47f3e8c6 0.0s done
+#15 naming to docker.io/library/haven-web:0.2.0 done
+#15 unpacking to docker.io/library/haven-web:0.2.0
+#15 unpacking to docker.io/library/haven-web:0.2.0 1.4s done
+#15 DONE 3.0s

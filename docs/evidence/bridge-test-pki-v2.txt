@@ -1,0 +1,3 @@
+.local/bridge-test-tls/leaf.crt: OK
+.local/bridge-test-tls/leaf.crt: OK
+TEST ONLY private bridge leaves prepared. No CA signing key will be mounted in containers.

@@ -1,0 +1,188 @@
+[
+  {
+    "Command": "\"uvicorn haven.asgi:\u2026\"",
+    "CreatedAt": "2026-10-23 22:50:34 +0330 +0330",
+    "Engine": "",
+    "ExitCode": 0,
+    "Health": "healthy",
+    "ID": "ca7585abefa9",
+    "Image": "haven-api:0.1.0",
+    "Labels": "com.docker.compose.container-number=1,com.docker.compose.project=haven,com.docker.compose.project.config_files=/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/infrastructure/compose/compose.yml,/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/infrastructure/compose/local-staging.yml,com.docker.compose.project.environment_file=/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/.env,com.docker.compose.project.working_dir=/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/infrastructure/compose,com.docker.compose.service=api,com.docker.compose.version=5.6.0,com.docker.compose.config-hash=90a09445aa751f79db615d129479642447395d711c0938647dd60dc63c7e5cec,com.docker.compose.depends_on=migrate:service_completed_successfully:false,com.docker.compose.image=sha256:f7a648cb40fe5188f80d75c85e9d5cf002a8cc2e07154771a3eca05a1b188e71,com.docker.compose.oneoff=False,com.docker.compose.replace=api-1",
+    "LocalVolumes": "0",
+    "Mounts": "",
+    "Name": "haven-api-1",
+    "Names": "haven-api-1",
+    "Networks": "haven_private",
+    "Ports": "8100/tcp",
+    "Project": "haven",
+    "Publishers": [
+      {
+        "URL": "",
+        "TargetPort": 8100,
+        "PublishedPort": 0,
+        "Protocol": "tcp"
+      }
+    ],
+    "RunningFor": "7 minutes ago",
+    "Service": "api",
+    "Size": "0B",
+    "State": "running",
+    "Status": "Up 6 minutes (healthy)"
+  },
+  {
+    "Command": "\"docker-entrypoint.s\u2026\"",
+    "CreatedAt": "2026-10-23 22:26:46 +0330 +0330",
+    "Engine": "",
+    "ExitCode": 0,
+    "Health": "healthy",
+    "ID": "43fa923d4c56",
+    "Image": "postgres:16.14-bookworm@sha256:64154d0babcb1741988719e703419af0382b19953706149f9872fbd0f438efa8",
+    "Labels": "com.docker.compose.project.working_dir=/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/infrastructure/compose,com.docker.compose.version=5.6.0,com.docker.compose.container-number=1,com.docker.compose.depends_on=,com.docker.compose.image=sha256:714b08dd70c05160db032e4321033ac4e5b6328935b2d03ed419c3a898aa8219,com.docker.compose.oneoff=False,com.docker.compose.service=db,com.docker.compose.config-hash=b1d29a359d93703559f5ecc555035a874216847141266cd9e09f1ffb8c828edd,com.docker.compose.project=haven,com.docker.compose.project.config_files=/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/infrastructure/compose/compose.yml,/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/infrastructure/compose/local-staging.yml,com.docker.compose.project.environment_file=/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/.env",
+    "LocalVolumes": "1",
+    "Mounts": "haven_db",
+    "Name": "haven-db-1",
+    "Names": "haven-db-1",
+    "Networks": "haven_private",
+    "Ports": "5432/tcp",
+    "Project": "haven",
+    "Publishers": [
+      {
+        "URL": "",
+        "TargetPort": 5432,
+        "PublishedPort": 0,
+        "Protocol": "tcp"
+      }
+    ],
+    "RunningFor": "30 minutes ago",
+    "Service": "db",
+    "Size": "0B",
+    "State": "running",
+    "Status": "Up 30 minutes (healthy)"
+  },
+  {
+    "Command": "\"/docker-entrypoint.\u2026\"",
+    "CreatedAt": "2026-10-23 22:26:46 +0330 +0330",
+    "Engine": "",
+    "ExitCode": 0,
+    "Health": "",
+    "ID": "587baa830856",
+    "Image": "nginx:1.28.3-alpine@sha256:a8b39bd9cf0f83869a2162827a0caf6137ddf759d50a171451b335cecc87d236",
+    "Labels": "com.docker.compose.config-hash=78495eef5facb7b20f92dfbe45893dce2533c901e55ef4c0e850bb927e92bf1d,com.docker.compose.container-number=1,com.docker.compose.depends_on=api:service_started:false,web:service_started:false,com.docker.compose.project.config_files=/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/infrastructure/compose/compose.yml,/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/infrastructure/compose/local-staging.yml,com.docker.compose.service=ingress,com.docker.compose.version=5.6.0,maintainer=NGINX Docker Maintainers <docker-maint@nginx.com>,com.docker.compose.image=sha256:0dcc88822d45581e65ae329f8be769762bf628d3b2bb7d2a077d4aa5c98b30e3,com.docker.compose.oneoff=False,com.docker.compose.project=haven,com.docker.compose.project.environment_file=/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/.env,com.docker.compose.project.working_dir=/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/infrastructure/compose",
+    "LocalVolumes": "0",
+    "Mounts": "/home/reza-had\u2026,/home/reza-had\u2026",
+    "Name": "haven-ingress-1",
+    "Names": "haven-ingress-1",
+    "Networks": "haven_ingress,haven_private",
+    "Ports": "80/tcp, 127.0.0.1:8444->443/tcp",
+    "Project": "haven",
+    "Publishers": [
+      {
+        "URL": "",
+        "TargetPort": 80,
+        "PublishedPort": 0,
+        "Protocol": "tcp"
+      },
+      {
+        "URL": "127.0.0.1",
+        "TargetPort": 443,
+        "PublishedPort": 8444,
+        "Protocol": "tcp"
+      }
+    ],
+    "RunningFor": "30 minutes ago",
+    "Service": "ingress",
+    "Size": "0B",
+    "State": "running",
+    "Status": "Up 29 minutes"
+  },
+  {
+    "Command": "\"python manage.py pu\u2026\"",
+    "CreatedAt": "2026-10-23 22:50:34 +0330 +0330",
+    "Engine": "",
+    "ExitCode": 0,
+    "Health": "",
+    "ID": "f7b8943a619f",
+    "Image": "haven-api:0.1.0",
+    "Labels": "com.docker.compose.project.working_dir=/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/infrastructure/compose,com.docker.compose.service=outbox,com.docker.compose.version=5.6.0,com.docker.compose.config-hash=ef41e46b7fce1231d16e8fd3142299276bcf23338a9e18c7693033bcab8885c1,com.docker.compose.oneoff=False,com.docker.compose.project=haven,com.docker.compose.project.config_files=/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/infrastructure/compose/compose.yml,/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/infrastructure/compose/local-staging.yml,com.docker.compose.replace=outbox-1,com.docker.compose.container-number=1,com.docker.compose.depends_on=migrate:service_completed_successfully:false,com.docker.compose.image=sha256:f7a648cb40fe5188f80d75c85e9d5cf002a8cc2e07154771a3eca05a1b188e71,com.docker.compose.project.environment_file=/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/.env",
+    "LocalVolumes": "0",
+    "Mounts": "",
+    "Name": "haven-outbox-1",
+    "Names": "haven-outbox-1",
+    "Networks": "haven_private",
+    "Ports": "8100/tcp",
+    "Project": "haven",
+    "Publishers": [
+      {
+        "URL": "",
+        "TargetPort": 8100,
+        "PublishedPort": 0,
+        "Protocol": "tcp"
+      }
+    ],
+    "RunningFor": "7 minutes ago",
+    "Service": "outbox",
+    "Size": "0B",
+    "State": "running",
+    "Status": "Up 6 minutes"
+  },
+  {
+    "Command": "\"docker-entrypoint.s\u2026\"",
+    "CreatedAt": "2026-10-23 22:27:47 +0330 +0330",
+    "Engine": "",
+    "ExitCode": 0,
+    "Health": "healthy",
+    "ID": "85fb91286c9d",
+    "Image": "redis:7.4.6-alpine@sha256:3b73847e72874be07e6657b129a94761662b79bc0f679273757d4218573b2a98",
+    "Labels": "com.docker.compose.project.config_files=/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/infrastructure/compose/compose.yml,/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/infrastructure/compose/local-staging.yml,com.docker.compose.project.working_dir=/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/infrastructure/compose,com.docker.compose.replace=redis-1,com.docker.compose.depends_on=,com.docker.compose.oneoff=False,com.docker.compose.project=haven,com.docker.compose.project.environment_file=/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/.env,com.docker.compose.service=redis,com.docker.compose.version=5.6.0,com.docker.compose.config-hash=51f863da100ea546be895ad0ae36aff3167ef50110426ba7cb865e4fb88e15e8,com.docker.compose.container-number=1,com.docker.compose.image=sha256:4912adf5f3be2530b117c7d7729330e457da2f5cfb1d99d38743141735ca1e9d",
+    "LocalVolumes": "1",
+    "Mounts": "f5bfe30b044658\u2026",
+    "Name": "haven-redis-1",
+    "Names": "haven-redis-1",
+    "Networks": "haven_private",
+    "Ports": "6379/tcp",
+    "Project": "haven",
+    "Publishers": [
+      {
+        "URL": "",
+        "TargetPort": 6379,
+        "PublishedPort": 0,
+        "Protocol": "tcp"
+      }
+    ],
+    "RunningFor": "29 minutes ago",
+    "Service": "redis",
+    "Size": "0B",
+    "State": "running",
+    "Status": "Up 29 minutes (healthy)"
+  },
+  {
+    "Command": "\"docker-entrypoint.s\u2026\"",
+    "CreatedAt": "2026-10-23 22:50:33 +0330 +0330",
+    "Engine": "",
+    "ExitCode": 0,
+    "Health": "",
+    "ID": "8f2aea56d2fd",
+    "Image": "haven-web:0.1.0",
+    "Labels": "com.docker.compose.config-hash=772132a1462e8f1e7442ebee7304cf3ae3bf3370919083771c9cd8c1b997b217,com.docker.compose.depends_on=,com.docker.compose.project=haven,com.docker.compose.project.config_files=/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/infrastructure/compose/compose.yml,/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/infrastructure/compose/local-staging.yml,com.docker.compose.project.environment_file=/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/.env,com.docker.compose.project.working_dir=/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/infrastructure/compose,com.docker.compose.service=web,com.docker.compose.container-number=1,com.docker.compose.image=sha256:2247022506523e9bff07f9f7a05d5bb314ce977f7daa08e9608f49dd06eb636a,com.docker.compose.oneoff=False,com.docker.compose.replace=web-1,com.docker.compose.version=5.6.0",
+    "LocalVolumes": "0",
+    "Mounts": "",
+    "Name": "haven-web-1",
+    "Names": "haven-web-1",
+    "Networks": "haven_private",
+    "Ports": "3100/tcp",
+    "Project": "haven",
+    "Publishers": [
+      {
+        "URL": "",
+        "TargetPort": 3100,
+        "PublishedPort": 0,
+        "Protocol": "tcp"
+      }
+    ],
+    "RunningFor": "7 minutes ago",
+    "Service": "web",
+    "Size": "0B",
+    "State": "running",
+    "Status": "Up 6 minutes"
+  }
+]

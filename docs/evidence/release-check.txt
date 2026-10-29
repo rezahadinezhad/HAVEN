@@ -1,0 +1,4 @@
+python3 scripts/release-gate.py
+BLOCKED: integrated crypto, recovery/rekey, full acceptance, field TLS, independent review outstanding.
+See /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/SECURITY_STATUS.md
+make: *** [Makefile:38: release-check] Error 1

@@ -1,0 +1,6 @@
+{
+  "normalReplayRejected": true,
+  "restoredSnapshotDecryptsAgain": true,
+  "gate": "BLOCKED",
+  "reason": "OpenMLS cannot detect restoration of its entire earlier state. Application restore needs reviewed reset/checkpoint reconciliation; this is not a library defect."
+}

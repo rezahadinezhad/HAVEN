@@ -1,0 +1,18 @@
+> haven-web@0.1.0 test
+> playwright test
+
+
+Running 6 tests using 1 worker
+
+(node:675110) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:675110) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/crypto.spec.ts:2:5 › real OpenMLS WASM: two-way, persisted reload, reordering, add/remove, tamper and replay (1.3s)
+  ✓  2 tests/crypto.spec.ts:245:5 › vault rejects wrong secret and modified ciphertext (956ms)
+  ✓  3 tests/rollback-gate.spec.ts:5:5 › characterize snapshot rollback: integration must not silently trust restored ratchets (348ms)
+  ✓  4 tests/ui.spec.ts:7:5 › trusted TLS, login, invitation and operator account flows, bilingual mobile layout (1.7s)
+  ✓  5 tests/ui.spec.ts:86:5 › untrusted browser rejects the IP certificate (1.3s)
+  ✓  6 tests/ui.spec.ts:104:5 › expired IP leaf is rejected even with the correct trusted test root (386ms)
+
+  6 passed (7.1s)

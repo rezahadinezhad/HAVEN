@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title description">
+  <title id="title">HAVEN — Private conversations. Explicit trust.</title>
+  <desc id="description">A browser messenger exploring modern security engineering. Django, Next.js and Rust. Experimental, independent review pending.</desc>
+  <defs>
+    <linearGradient id="background" x2="1" y2="1"><stop stop-color="#f3f7ff"/><stop offset="1" stop-color="#e8effc"/></linearGradient>
+    <linearGradient id="blue" x2="1" y2="1"><stop stop-color="#438cff"/><stop offset="1" stop-color="#125be4"/></linearGradient>
+    <linearGradient id="surface" x2="1" y2="1"><stop stop-color="#fff" stop-opacity=".98"/><stop offset="1" stop-color="#fff" stop-opacity=".62"/></linearGradient>
+  </defs>
+  <rect width="1200" height="630" rx="28" fill="url(#background)"/>
+  <g fill="none" stroke="#1769f4" stroke-opacity=".09">
+    <circle cx="1010" cy="292" r="265"/><circle cx="1010" cy="292" r="205"/><circle cx="1010" cy="292" r="145"/>
+    <path d="M720 45v545M780 45v545M840 45v545M900 45v545M960 45v545M1020 45v545M1080 45v545M1140 45v545" opacity=".22"/>
+  </g>
+  <g transform="translate(66 58)">
+    <rect width="52" height="52" rx="17" fill="url(#blue)"/>
+    <path d="M14 17h24v17H25l-9 7v-7h-2z" fill="none" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"/>
+    <circle cx="21" cy="25.5" r="1.3" fill="#fff"/><circle cx="26" cy="25.5" r="1.3" fill="#fff"/><circle cx="31" cy="25.5" r="1.3" fill="#fff"/>
+  </g>
+  <g font-family="Arial, Helvetica, sans-serif" fill="#14233b">
+    <text x="135" y="92" font-size="25" font-weight="700" letter-spacing="4">HAVEN</text>
+    <text x="68" y="228" font-size="60" font-weight="700" letter-spacing="-2">Private conversations.</text>
+    <text x="68" y="302" font-size="60" font-weight="700" letter-spacing="-2">Explicit trust.</text>
+    <text x="71" y="360" font-size="21" fill="#53647d">A browser messenger exploring</text>
+    <text x="71" y="390" font-size="21" fill="#53647d">modern security engineering.</text>
+    <g font-size="13" font-weight="700" letter-spacing="1.3" fill="#2558a8">
+      <text x="72" y="482">MLS ENCRYPTION</text><circle cx="231" cy="477" r="2"/><text x="249" y="482">LOCAL KEYS</text><circle cx="366" cy="477" r="2"/><text x="384" y="482">DEVICE TRUST</text>
+    </g>
+    <text x="72" y="562" font-size="14" fill="#68768b">Django · Next.js · Rust / WebAssembly · PostgreSQL · Redis</text>
+  </g>
+  <g transform="translate(830 170)">
+    <rect x="-7" y="35" width="246" height="230" rx="38" fill="#1769f4" opacity=".07"/>
+    <rect x="5" y="5" width="246" height="230" rx="38" fill="url(#surface)" stroke="#fff" stroke-width="2"/>
+    <rect x="38" y="45" width="146" height="68" rx="22" fill="#e9f0ff"/>
+    <path d="M55 110v13l18-13" fill="#e9f0ff"/>
+    <rect x="97" y="132" width="122" height="62" rx="22" fill="url(#blue)"/>
+    <path d="M197 185v18l-21-14" fill="#1769f4"/>
+    <g fill="none" stroke="#1769f4" stroke-width="3" stroke-linecap="round"><path d="M59 67h89M59 82h65"/></g>
+    <g fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><path d="M119 154h73M119 169h48"/></g>
+    <g transform="translate(-32 187)">
+      <rect width="80" height="80" rx="25" fill="#fff" stroke="#dbe6fb"/>
+      <rect x="25" y="35" width="30" height="24" rx="7" fill="#e9f1ff" stroke="#1769f4" stroke-width="2"/>
+      <path d="M31 35v-8a9 9 0 0 1 18 0v8" fill="none" stroke="#1769f4" stroke-width="2.5"/>
+      <circle cx="40" cy="46" r="2.5" fill="#1769f4"/>
+    </g>
+  </g>
+  <g font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#68768b" letter-spacing="1">
+    <text x="838" y="550">EXPERIMENTAL IMPLEMENTATION</text><text x="838" y="571">INDEPENDENT REVIEW PENDING</text>
+  </g>
+</svg>

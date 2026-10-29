@@ -1,0 +1,3 @@
+Signature Verified Successfully
+- /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/.local/offline-bundle-qa2/MANIFEST.json differ: byte 12, line 1
+PASS: unsigned addition rejected before image load

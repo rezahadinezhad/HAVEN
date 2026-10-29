@@ -1,0 +1,14 @@
+{
+  "api": {
+    "image_id": "sha256:83b7ba850732c058331695b03473eee916b5b16d0e46868037fe44d1ac4b17c8",
+    "user": "10001:10001",
+    "runtime": "Python 3.12.15",
+    "no_baked_keys_env_or_package_manager": true
+  },
+  "web": {
+    "image_id": "sha256:b955a74e28265794ca1473494ccb1e433823b0596a03d32ded961bcf020a56d5",
+    "user": "node",
+    "runtime": "v24.22.1",
+    "no_baked_keys_env_or_package_manager": true
+  }
+}

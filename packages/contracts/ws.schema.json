@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HAVEN WS v1 synchronization hints",
+  "type": "object",
+  "required": [
+    "v",
+    "kind"
+  ],
+  "properties": {
+    "v": {
+      "const": 1
+    },
+    "kind": {
+      "enum": [
+        "hello",
+        "resume",
+        "sync.required",
+        "message.available",
+        "control.available",
+        "receipt.updated",
+        "ephemeral.typing",
+        "heartbeat",
+        "server.maintenance",
+        "error",
+        "ephemeral.presence"
+      ]
+    },
+    "conversation_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "server_seq": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "event_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "occurred_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "sync": {
+      "const": "http"
+    },
+    "crypto_ready": {
+      "type": "boolean"
+    },
+    "sender_device": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "expires_in": {
+      "enum": [
+        5,
+        50
+      ]
+    }
+  },
+  "additionalProperties": false,
+  "$comment": "Implemented: hello, resume, heartbeat, sync.required, ephemeral.typing and opt-in ephemeral.presence. All content is fetched through the authorized HTTP delta API. Other names are reserved, not emitted."
+}

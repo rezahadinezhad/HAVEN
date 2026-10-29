@@ -1,0 +1,29 @@
+ Container haven-outbox-1 Stopping
+ Container haven-privacy-1 Stopping
+ Container haven-api-1 Stopping
+ Container haven-api-1 Stopped
+ Container haven-privacy-1 Stopped
+ Container haven-outbox-1 Stopped
+ Container haven-migrate-run-3f1f581981f7 Creating
+ Container haven-migrate-run-3f1f581981f7 Created
+{'fsync': 'on', 'synchronous_commit': 'on', 'full_page_writes': 'on', 'data_checksums': 'on'}
+Operations to perform:
+  Apply all migrations: auth, contenttypes, core, sessions
+Running migrations:
+  Applying core.0010_credential_bound_sessions... OK
+ Container haven-api-1 Recreate
+ Container haven-outbox-1 Recreate
+ Container haven-privacy-1 Recreate
+ Container haven-web-1 Recreate
+ Container haven-outbox-1 Recreated
+ Container haven-api-1 Recreated
+ Container haven-web-1 Recreated
+ Container haven-privacy-1 Recreated
+ Container haven-api-1 Starting
+ Container haven-web-1 Starting
+ Container haven-privacy-1 Starting
+ Container haven-outbox-1 Starting
+ Container haven-api-1 Started
+ Container haven-web-1 Started
+ Container haven-privacy-1 Started
+ Container haven-outbox-1 Started

@@ -1,0 +1,19 @@
+# TEST ONLY host compatibility override. The current Docker engine rejects exec with
+# no-new-privileges:true (recorded in evidence). Never use this file for production.
+services:
+  ingress:
+    ports: !override ["127.0.0.1:8444:443"]
+  redis:
+    security_opt: !override []
+  prepare-db-roles:
+    security_opt: !reset []
+  migrate:
+    security_opt: !override []
+  api:
+    security_opt: !override []
+  outbox:
+    security_opt: !override []
+  privacy:
+    security_opt: !override []
+  web:
+    security_opt: !override []

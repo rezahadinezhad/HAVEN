@@ -1,0 +1,4 @@
+Operations to perform:
+  Apply all migrations: auth, contenttypes, core, sessions
+Running migrations:
+  Applying core.0010_credential_bound_sessions... OK

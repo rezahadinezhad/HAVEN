@@ -1,0 +1,33 @@
+
+> haven-web@0.2.0 test
+> playwright test
+
+
+Running 15 tests using 1 worker
+
+(node:3622884) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 tests/crypto.spec.ts:3:5 › real OpenMLS WASM: two-way, persisted reload, reordering, add/remove, tamper and replay (1.2s)
+  ✓   2 tests/crypto.spec.ts:246:5 › vault rejects wrong secret and modified ciphertext (996ms)
+  ✓   3 tests/crypto.spec.ts:276:5 › native Rust snapshot and MLS ciphertext interoperate with browser WASM (295ms)
+  ✓   4 tests/design.spec.ts:11:5 › redesigned real account: responsive navigation, setup, themes, RTL, reduced motion and local assets (3.5s)
+  ✓   5 tests/design.spec.ts:205:5 › CSP-safe accessible announcer and blocked arbitrary inline scripts/styles (549ms)
+  ✓   6 tests/integration.spec.ts:7:5 › browser MLS → Django/PostgreSQL: verified group, bidirectional delivery, durable retry, media, removal and reload (22.4s)
+  ✓   7 tests/privacy.spec.ts:21:5 › retired server ciphertext: persisted browser MLS state reloads and continues across rekey (6.0s)
+View-once: creating three accounts and a second approved recipient device
+View-once: device enrollment and fingerprint verification complete
+View-once: four-device MLS group synchronized
+View-once: synthetic photo/video fixtures generated
+Revoked URL reload blocked by engine: true (decoded-memory cache is outside the view-once guarantee)
+  ✓   8 tests/view-once.spec.ts:8:5 › view-once real UI: encrypted photo/video, account-wide consume, independent group recipients, no cache/export/reopen (28.8s)
+(node:3629829) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   9 tests/messenger-ui.spec.ts:8:5 › real UI: vault enrollment, fingerprint verification, MLS group, text, offline shell and queued send (39.7s)
+  ✓  10 tests/restart.spec.ts:71:5 › actual API SIGKILL after durable acceptance: browser reload retries the exact ciphertext once (6.6s)
+  ✓  11 tests/rollback-gate.spec.ts:5:5 › characterize snapshot rollback: integration must not silently trust restored ratchets (329ms)
+  ✓  12 tests/standby-origin.spec.ts:80:5 › prepared distinct IP origins: verified private TLS, fail-closed mismatch, fenced database promotion and continuing MLS messages (21.7s)
+  ✓  13 tests/ui.spec.ts:7:5 › trusted TLS, login, invitation and operator account flows, bilingual mobile layout (2.2s)
+  ✓  14 tests/ui.spec.ts:86:5 › untrusted browser rejects the IP certificate (1.2s)
+  ✓  15 tests/ui.spec.ts:104:5 › expired IP leaf is rejected even with the correct trusted test root (403ms)
+
+  15 passed (2.3m)

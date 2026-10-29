@@ -1,0 +1,38 @@
+
+Running 3 tests using 1 worker
+
+(node:670612) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 tests/chat-experience.spec.ts:11:5 › conversation UX: encrypted messages, keyboard/IME, drafts, replies, scrolling, media, mobile and RTL (491ms)
+(node:671050) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 tests/messenger-ui.spec.ts:8:5 › real UI: vault enrollment, fingerprint verification, MLS group, text, offline shell and queued send (36.6s)
+View-once: creating three accounts and a second approved recipient device
+View-once: device enrollment and fingerprint verification complete
+View-once: four-device MLS group synchronized
+View-once: synthetic photo/video fixtures generated
+Revoked URL reload blocked by engine: true (decoded-memory cache is outside the view-once guarantee)
+  ✓  3 tests/view-once.spec.ts:8:5 › view-once real UI: encrypted photo/video, account-wide consume, independent group recipients, no cache/export/reopen (28.4s)
+
+
+  1) tests/chat-experience.spec.ts:11:5 › conversation UX: encrypted messages, keyboard/IME, drafts, replies, scrolling, media, mobile and RTL
+
+    Error: page.goto: net::ERR_NETWORK_CHANGED at https://127.0.0.1:8445/__integration__/
+    Call log:
+      - navigating to "https://127.0.0.1:8445/__integration__/", waiting until "load"
+
+
+      45 |   try {
+      46 |     for (const page of [a, b]) {
+    > 47 |       await page.goto(`${origin}/__integration__/`);
+         |                  ^
+      48 |       await page.waitForFunction(() => !!(window as any).havenIntegration);
+      49 |     }
+      50 |     await loginBootstrap(a, credentials);
+        at /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/chat-experience.spec.ts:47:18
+
+    Error Context: test-results/chat-experience-conversati-44f8d-olling-media-mobile-and-RTL/error-context.md
+
+  1 failed
+    tests/chat-experience.spec.ts:11:5 › conversation UX: encrypted messages, keyboard/IME, drafts, replies, scrolling, media, mobile and RTL
+  2 passed (1.1m)

@@ -1,0 +1,22 @@
+
+> haven-web@0.1.0 test
+> playwright test
+
+
+Running 9 tests using 1 worker
+
+(node:1595397) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/crypto.spec.ts:3:5 › real OpenMLS WASM: two-way, persisted reload, reordering, add/remove, tamper and replay (1.3s)
+  ✓  2 tests/crypto.spec.ts:246:5 › vault rejects wrong secret and modified ciphertext (931ms)
+  ✓  3 tests/crypto.spec.ts:276:5 › native Rust snapshot and MLS ciphertext interoperate with browser WASM (273ms)
+  ✓  4 tests/integration.spec.ts:7:5 › browser MLS → Django/PostgreSQL: verified group, bidirectional delivery, durable retry, media, removal and reload (15.8s)
+(node:1598643) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  5 tests/messenger-ui.spec.ts:8:5 › real UI: vault enrollment, fingerprint verification, MLS group, text, offline shell and queued send (21.5s)
+  ✓  6 tests/rollback-gate.spec.ts:5:5 › characterize snapshot rollback: integration must not silently trust restored ratchets (330ms)
+  ✓  7 tests/ui.spec.ts:7:5 › trusted TLS, login, invitation and operator account flows, bilingual mobile layout (2.0s)
+  ✓  8 tests/ui.spec.ts:86:5 › untrusted browser rejects the IP certificate (866ms)
+  ✓  9 tests/ui.spec.ts:104:5 › expired IP leaf is rejected even with the correct trusted test root (423ms)
+
+  9 passed (45.3s)

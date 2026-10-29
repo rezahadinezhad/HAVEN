@@ -1,0 +1,9 @@
+Command: HAVEN_BROWSER=firefox npm test --prefix apps/web -- tests/crypto.spec.ts tests/integration.spec.ts tests/privacy.spec.ts tests/design.spec.ts tests/view-once.spec.ts (final JSON-cache build)
+{
+  "startTime": "2026-10-24T17:12:53.103Z",
+  "duration": 107654.649,
+  "expected": 8,
+  "skipped": 0,
+  "unexpected": 0,
+  "flaky": 0
+}

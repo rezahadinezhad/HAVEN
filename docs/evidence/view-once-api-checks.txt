@@ -1,0 +1,7 @@
+All checks passed!
+44 files already formatted
+Operations to perform:
+  Apply all migrations: auth, contenttypes, core, sessions
+Running migrations:
+  Applying core.0007_attachmenttombstone... OK
+No changes detected

@@ -1,0 +1,24 @@
+bash scripts/doctor.sh
+/usr/bin/python3
+/home/reza-hadinezhad/.nvm/versions/node/v24.18.0/bin/node
+/home/reza-hadinezhad/.nvm/versions/node/v24.18.0/bin/npm
+/home/reza-hadinezhad/.cargo/bin/cargo
+/home/reza-hadinezhad/.cargo/bin/rustup
+/usr/local/bin/docker
+/usr/bin/openssl
+/home/reza-hadinezhad/.local/bin/uv
+v24.18.0
+Python 3.14.4
+rustc 1.96.1 (31fca3adb 2026-06-26)
+29.8.0
+wasm32-unknown-unknown
+x86_64-unknown-linux-gnu
+               total        used        free      shared  buff/cache   available
+Mem:            14Gi       7.8Gi       678Mi       1.4Gi       7.8Gi       6.8Gi
+Swap:          4.0Gi       1.3Gi       2.7Gi
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda4       346G  114G  215G  35% /
+Capacity UNQUALIFIED. No thermal/physical-device/2-hour soak qualification has occurred.
+BLOCKED: integrated crypto, recovery/rekey, full acceptance, field TLS, independent review outstanding.
+See /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/SECURITY_STATUS.md
+make: *** [Makefile:6: doctor] Error 1

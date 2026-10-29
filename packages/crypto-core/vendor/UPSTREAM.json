@@ -1,0 +1,51 @@
+{
+  "repository": "https://github.com/openmls/openmls",
+  "revision": "28369d5b48608bef4ddf8371d91503b0f3852bb3",
+  "archive_sha256": "3b7b46a94b443ca542dc74efb522b49ad50115cbeb5ea368c109134c877e5885",
+  "files": {
+    "openmls_rust_crypto/Cargo.toml": {
+      "upstream_sha256": "a94e7dc550837b61cb24078561358a88f8f7906e57785728d0e52cb2e69e690b",
+      "local_sha256": "89528926ef7c20c04f5946917d28f4e058be465da2153216e7deb9a399f64a04"
+    },
+    "openmls_rust_crypto/LICENSE": {
+      "upstream_sha256": "43e5e3c4b5cca67f9ea912f7e1929702a848aa765d3b3e14f25d3838a5a5565d",
+      "local_sha256": "43e5e3c4b5cca67f9ea912f7e1929702a848aa765d3b3e14f25d3838a5a5565d"
+    },
+    "openmls_rust_crypto/README.md": {
+      "upstream_sha256": "40c8a2082df8683a14fcb7861f1be983a85ff99d73e866a5ce2bc7319720e92b",
+      "local_sha256": "40c8a2082df8683a14fcb7861f1be983a85ff99d73e866a5ce2bc7319720e92b"
+    },
+    "openmls_rust_crypto/src/ff1.rs": {
+      "upstream_sha256": "5aeb4851e0db8587235bb87cd84d60e2d58c626a3693391d8e09fe91b56c4969",
+      "local_sha256": "5aeb4851e0db8587235bb87cd84d60e2d58c626a3693391d8e09fe91b56c4969"
+    },
+    "openmls_rust_crypto/src/hmac.rs": {
+      "upstream_sha256": "526b66462cfdd486dfc636b25b1a0faad3ac2e6bc44eb849d99d19a8127d9f18",
+      "local_sha256": "526b66462cfdd486dfc636b25b1a0faad3ac2e6bc44eb849d99d19a8127d9f18"
+    },
+    "openmls_rust_crypto/src/lib.rs": {
+      "upstream_sha256": "d5f242de3d8f1baa177aeef097971513bdb6df959982d079a16680e14601fc62",
+      "local_sha256": "d5f242de3d8f1baa177aeef097971513bdb6df959982d079a16680e14601fc62"
+    },
+    "openmls_rust_crypto/src/provider.rs": {
+      "upstream_sha256": "ebe6d3059d84bb0850681269f01cacf72d2225942d78727fa5a762c1f5b1a6f7",
+      "local_sha256": "ebe6d3059d84bb0850681269f01cacf72d2225942d78727fa5a762c1f5b1a6f7"
+    },
+    "basic_credential/Cargo.toml": {
+      "upstream_sha256": "cdc438cee69efcc90c32979cc4486561735696da4894856433b88c18ba9c3998",
+      "local_sha256": "73aaa8a6b4288d4de5a05f18ea7cc59743b841381bce06aa234c47591dc90211"
+    },
+    "basic_credential/LICENSE": {
+      "upstream_sha256": "43e5e3c4b5cca67f9ea912f7e1929702a848aa765d3b3e14f25d3838a5a5565d",
+      "local_sha256": "43e5e3c4b5cca67f9ea912f7e1929702a848aa765d3b3e14f25d3838a5a5565d"
+    },
+    "basic_credential/README.md": {
+      "upstream_sha256": "965f3a6f43290d2461caef53c7c09f29002321930a0ead55cfc7fddc6b1525df",
+      "local_sha256": "965f3a6f43290d2461caef53c7c09f29002321930a0ead55cfc7fddc6b1525df"
+    },
+    "basic_credential/src/lib.rs": {
+      "upstream_sha256": "0eaf60d3603c0ccd79908b6a53fb42d0a2396094416761623dcef8cc8e306c2f",
+      "local_sha256": "7c1f77e25d96f8b2a5b9d9e2d9c24e1b3c553701805ab8d4789db858ea7f3334"
+    }
+  }
+}

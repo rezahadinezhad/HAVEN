@@ -1,0 +1,1 @@
+Basic staging configuration valid; trust-chain and target browser tests still required.

@@ -1,0 +1,1 @@
+PASS: real trusted-TLS WebSocket via proxy and Uvicorn; secure scheme forwarded, authenticated hello and heartbeat received.

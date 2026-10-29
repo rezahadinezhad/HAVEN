@@ -1,0 +1,2 @@
+Encrypted backup created: /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/.local/backups/haven-20261023T190409Z.sql.gpg
+Record BackupManifest metadata after verifying this artifact. Client vaults/keys are separate.

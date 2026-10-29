@@ -1,0 +1,1 @@
+PASS: real pinned Nginx, verified IP TLS, API/WS/web strip client address headers, preserve auth/CSRF/media capability, no request markers in logs

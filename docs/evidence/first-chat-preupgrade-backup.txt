@@ -1,0 +1,4 @@
+Operational evidence metadata recorded; no independent certification implied.
+Encrypted backup created: /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/.local/backups-first-chat-upgrade/haven-20261024T202041Z.sql.gpg
+Backup metadata recorded. Client vaults/keys are separate.
+Review old encrypted archives with scripts/prune-backups.py --directory "$HAVEN_BACKUP_DIR"; use --apply only after reviewing the plan and verifying recovery copies.

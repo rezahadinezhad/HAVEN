@@ -1,0 +1,17 @@
+
+> haven-web@0.2.0 test
+> playwright test crypto.spec.ts design.spec.ts integration.spec.ts
+
+
+Running 6 tests using 1 worker
+
+(node:2580880) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/crypto.spec.ts:3:5 › real OpenMLS WASM: two-way, persisted reload, reordering, add/remove, tamper and replay (3.8s)
+  ✓  2 tests/crypto.spec.ts:246:5 › vault rejects wrong secret and modified ciphertext (3.8s)
+  ✓  3 tests/crypto.spec.ts:276:5 › native Rust snapshot and MLS ciphertext interoperate with browser WASM (2.7s)
+  ✓  4 tests/design.spec.ts:11:5 › redesigned real account: responsive navigation, setup, themes, RTL, reduced motion and local assets (5.4s)
+  ✓  5 tests/design.spec.ts:184:5 › CSP-safe accessible announcer and blocked arbitrary inline scripts/styles (2.9s)
+  ✓  6 tests/integration.spec.ts:7:5 › browser MLS → Django/PostgreSQL: verified group, bidirectional delivery, durable retry, media, removal and reload (41.2s)
+
+  6 passed (1.0m)

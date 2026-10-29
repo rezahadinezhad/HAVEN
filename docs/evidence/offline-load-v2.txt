@@ -1,0 +1,10 @@
+Signature Verified Successfully
+Loaded image: haven-api:0.2.0
+Loaded image: haven-web:0.2.0
+Loaded image ID: sha256:a8b39bd9cf0f83869a2162827a0caf6137ddf759d50a171451b335cecc87d236
+Loaded image ID: sha256:43b9ba1142b8dcf33fa8f922ca1be85714adc444e0586c7cf7726daaeabc1bea
+Loaded image ID: sha256:64154d0babcb1741988719e703419af0382b19953706149f9872fbd0f438efa8
+Loaded image ID: sha256:a0f57064cbdcd6285fa45f51237ab0b35ea8ebaed06a1f5973e89e19dfb86704
+Loaded image ID: sha256:3b73847e72874be07e6657b129a94761662b79bc0f679273757d4218573b2a98
+Verified images loaded without package fetches. Configure protected .env and independently trusted IP TLS before starting.
+Production onboarding remains BLOCKED; run scripts/release-gate.py before any real deployment.

@@ -1,0 +1,128 @@
+Signature Verified Successfully
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.api-offline
+#1 transferring dockerfile: 927B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/python:3.12.15-slim-trixie@sha256:a0f57064cbdcd6285fa45f51237ab0b35ea8ebaed06a1f5973e89e19dfb86704
+#2 ...
+
+#3 [auth] library/python:pull token for registry-1.docker.io
+#3 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/python:3.12.15-slim-trixie@sha256:a0f57064cbdcd6285fa45f51237ab0b35ea8ebaed06a1f5973e89e19dfb86704
+#2 DONE 3.5s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 188B done
+#4 DONE 0.0s
+
+#5 [1/9] FROM docker.io/library/python:3.12.15-slim-trixie@sha256:a0f57064cbdcd6285fa45f51237ab0b35ea8ebaed06a1f5973e89e19dfb86704
+#5 resolve docker.io/library/python:3.12.15-slim-trixie@sha256:a0f57064cbdcd6285fa45f51237ab0b35ea8ebaed06a1f5973e89e19dfb86704 0.0s done
+#5 DONE 0.0s
+
+#6 [internal] load build context
+#6 transferring context: 29.30MB 0.2s done
+#6 DONE 0.2s
+
+#7 [8/9] RUN test "$(uname -m)" = x86_64
+#7 CACHED
+
+#8 [2/9] WORKDIR /app
+#8 CACHED
+
+#9 [7/9] COPY --chmod=0555 packages/crypto-core/bin/haven-public-verify-x86_64-linux /usr/local/bin/haven-public-verify
+#9 CACHED
+
+#10 [3/9] COPY apps/api/requirements.lock /app/requirements.lock
+#10 CACHED
+
+#11 [4/9] COPY offline-deps/wheels /wheels
+#11 CACHED
+
+#12 [6/9] COPY --chown=10001:10001 apps/api /app
+#12 CACHED
+
+#13 [5/9] RUN pip install --no-index --find-links=/wheels --require-hashes -r requirements.lock && rm -rf /wheels && useradd --uid 10001 --create-home haven
+#13 CACHED
+
+#14 [9/9] RUN python -m pip uninstall -y pip
+#14 CACHED
+
+#15 exporting to image
+#15 exporting layers done
+#15 exporting manifest sha256:9078335892a41621390f7ac6b88e679dd9b221d67d53f23a0a2f05e02989170b done
+#15 exporting config sha256:5ca9f2f15cbe0092bf72a555e814e48ff9ba7ce4467d11a3223a89c8f8e5c772 done
+#15 exporting attestation manifest sha256:de34050ef5d29529bb695b550101e91c97131c2b2925bbbf10bdf1699a2609ed 0.0s done
+#15 exporting manifest list sha256:f99b46a5f2230c433dbedf9c22d5786837a895067c88c6c56cbca60c8bdfc93f 0.0s done
+#15 naming to docker.io/library/haven-api:offline done
+#15 unpacking to docker.io/library/haven-api:offline 0.0s done
+#15 DONE 0.1s
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.web-offline
+#1 transferring dockerfile: 1.08kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node:24.22.1-trixie-slim@sha256:43b9ba1142b8dcf33fa8f922ca1be85714adc444e0586c7cf7726daaeabc1bea
+#2 ...
+
+#3 [auth] library/node:pull token for registry-1.docker.io
+#3 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node:24.22.1-trixie-slim@sha256:43b9ba1142b8dcf33fa8f922ca1be85714adc444e0586c7cf7726daaeabc1bea
+#2 DONE 2.6s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 188B done
+#4 DONE 0.0s
+
+#5 [build 1/7] FROM docker.io/library/node:24.22.1-trixie-slim@sha256:43b9ba1142b8dcf33fa8f922ca1be85714adc444e0586c7cf7726daaeabc1bea
+#5 resolve docker.io/library/node:24.22.1-trixie-slim@sha256:43b9ba1142b8dcf33fa8f922ca1be85714adc444e0586c7cf7726daaeabc1bea 0.0s done
+#5 DONE 0.0s
+
+#6 [internal] load build context
+#6 transferring context: 113.71MB 0.7s done
+#6 DONE 0.7s
+
+#7 [build 2/7] WORKDIR /app
+#7 CACHED
+
+#8 [build 3/7] COPY apps/web/package.json apps/web/package-lock.json ./
+#8 CACHED
+
+#9 [build 6/7] COPY apps/web .
+#9 CACHED
+
+#10 [stage-1 4/6] COPY --from=build --chown=node:node /app/.next/static ./.next/static
+#10 CACHED
+
+#11 [build 5/7] RUN npm ci --offline --ignore-scripts --cache=/npm-cache && rm -rf /npm-cache
+#11 CACHED
+
+#12 [stage-1 3/6] COPY --from=build --chown=node:node /app/.next/standalone ./
+#12 CACHED
+
+#13 [stage-1 5/6] COPY --from=build --chown=node:node /app/public ./public
+#13 CACHED
+
+#14 [build 4/7] COPY offline-deps/npm-cache /npm-cache
+#14 CACHED
+
+#15 [build 7/7] RUN rm -f public/pof.html public/pof.js && npm run build
+#15 CACHED
+
+#16 [stage-1 6/6] RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/corepack /opt/yarn-* /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack /usr/local/bin/yarn /usr/local/bin/yarnpkg
+#16 CACHED
+
+#17 exporting to image
+#17 exporting layers done
+#17 exporting manifest sha256:48a0f2328d43d073ac0157b1dab6be3424596d3c50b03356a17e792fe83e35d3 done
+#17 exporting config sha256:2607780bb9379b99bab1f8386da43ed717344826b40eeb7cd9d85ffb0216d35c done
+#17 exporting attestation manifest sha256:d5d9148adbe4a0dab0f5b75f69449152ab64aa9fd25b286321a8281c42501344 0.0s done
+#17 exporting manifest list sha256:630957add6dd8fe05f513314edbf7e6a9634fb9e9efcad8665b09f1d92c42d46 done
+#17 naming to docker.io/library/haven-web:offline done
+#17 unpacking to docker.io/library/haven-web:offline done
+#17 DONE 0.1s
+Offline application source rebuild completed using the bundled prebuilt Rust/WASM cryptographic artifacts.

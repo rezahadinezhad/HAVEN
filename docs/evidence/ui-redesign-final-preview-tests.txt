@@ -1,0 +1,13 @@
+
+> haven-web@0.2.0 test
+> playwright test design.spec.ts
+
+
+Running 2 tests using 1 worker
+
+(node:2616136) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/design.spec.ts:11:5 › redesigned real account: responsive navigation, setup, themes, RTL, reduced motion and local assets (2.9s)
+  ✓  2 tests/design.spec.ts:184:5 › CSP-safe accessible announcer and blocked arbitrary inline scripts/styles (543ms)
+
+  2 passed (4.2s)

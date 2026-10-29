@@ -1,0 +1,47 @@
+name: Repository security
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  publish-safety:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Check publishable paths and report privacy
+        run: python3 scripts/repository-safety.py
+      - name: Install verified secret scanner
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location --max-time 120 \
+            https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz \
+            --output "$RUNNER_TEMP/gitleaks.tar.gz"
+          printf '%s  %s\n' '551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb' "$RUNNER_TEMP/gitleaks.tar.gz" | sha256sum --check
+          tar -xzf "$RUNNER_TEMP/gitleaks.tar.gz" -C "$RUNNER_TEMP" gitleaks
+      - name: Scan history with redacted output
+        run: '"$RUNNER_TEMP/gitleaks" git --redact --no-banner'
+      - name: Audit JavaScript lockfile
+        run: npm audit --prefix apps/web --audit-level=moderate
+  rust-advisories:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Install pinned audit tool
+        run: cargo install cargo-audit --version 0.22.2 --locked
+      - name: Audit Rust lockfile without advisory suppression
+        run: cargo audit --file packages/crypto-core/Cargo.lock
+      - name: Verify pinned provider sources
+        run: python3 scripts/check-crypto-vendor.py
+      - name: Test native cryptography
+        run: cargo test --manifest-path packages/crypto-core/Cargo.toml --locked -j 2
+      - name: Check browser cryptography build
+        run: cargo check --manifest-path packages/crypto-core/Cargo.toml --target wasm32-unknown-unknown --lib --locked -j 2

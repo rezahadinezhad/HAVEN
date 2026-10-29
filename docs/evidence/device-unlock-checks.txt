@@ -1,0 +1,10 @@
+
+> haven-web@0.2.0 typecheck
+> tsc --noEmit
+
+Checking formatting...
+All matched files use Prettier code style!
+All checks passed!
+4 files already formatted
+EMERGENCY_MESSENGER_CODEX_MASTER_SPEC.md: OK
+CODEX_START_HAVEN.md: OK

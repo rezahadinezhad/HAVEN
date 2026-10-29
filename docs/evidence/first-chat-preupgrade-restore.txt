@@ -1,0 +1,15 @@
+/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/.local/backups-first-chat-upgrade/haven-20261024T202041Z.sql.gpg: OK
+gpg: encrypted with cv25519 key, ID EB7B7D8A55C5B910, created 2026-10-24
+      "HAVEN FIRST CHAT DISPOSABLE QA ONLY"
+ encrypted_envelopes 
+---------------------
+                   0
+(1 row)
+
+ migrations 
+------------
+         23
+(1 row)
+
+DO
+PASS: isolated schema/data restore. This does not qualify client epoch continuity or failover.

@@ -1,0 +1,16 @@
+
+> haven-web@0.2.0 test
+> playwright test view-once.spec.ts
+
+
+Running 1 test using 1 worker
+
+(node:3124530) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+View-once: creating three accounts and a second approved recipient device
+View-once: device enrollment and fingerprint verification complete
+View-once: four-device MLS group synchronized
+View-once: synthetic photo/video fixtures generated
+  ✓  1 tests/view-once.spec.ts:8:5 › view-once real UI: encrypted photo/video, account-wide consume, independent group recipients, no cache/export/reopen (29.1s)
+
+  1 passed (30.2s)

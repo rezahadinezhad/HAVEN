@@ -1,0 +1,69 @@
+ Container haven-redis-1 Running 
+ Container haven-db-1 Running 
+ Container haven-prepare-db-roles-1 Recreate 
+ Container haven-prepare-db-roles-1 Recreated 
+ Container haven-db-1 Waiting 
+ Container haven-redis-1 Waiting 
+ Container haven-db-1 Healthy 
+ Container haven-redis-1 Healthy 
+ Container haven-prepare-db-roles-1 Starting 
+ Container haven-prepare-db-roles-1 Started 
+ Container haven-prepare-db-roles-1 Waiting 
+ Container haven-prepare-db-roles-1 Exited 
+ Container haven-migrate-run-e72cbe1fbb23 Creating 
+ Container haven-migrate-run-e72cbe1fbb23 Created 
+{'fsync': 'on', 'synchronous_commit': 'on', 'full_page_writes': 'on', 'data_checksums': 'on'}
+Operations to perform:
+  Apply all migrations: auth, contenttypes, core, sessions
+Running migrations:
+  Applying core.0007_attachmenttombstone... OK
+ Container haven-api-1 Recreate 
+ Container haven-outbox-1 Recreate 
+ Container haven-web-1 Recreate 
+ Container haven-web-1 Recreated 
+ Container haven-api-1 Recreated 
+ Container haven-outbox-1 Recreated 
+ Container haven-outbox-1 Starting 
+ Container haven-api-1 Starting 
+ Container haven-web-1 Starting 
+ Container haven-outbox-1 Started 
+ Container haven-api-1 Started 
+ Container haven-web-1 Started 
+25 objects imported automatically (use -v 2 for details).
+
+{"core_attachmentview:SELECT": true, "core_attachmentview:INSERT": true, "core_attachmentview:UPDATE": true, "core_attachmentview:DELETE": true, "core_attachmenttombstone:SELECT": true, "core_attachmenttombstone:INSERT": true, "core_attachmenttombstone:UPDATE": true, "core_attachmenttombstone:DELETE": true, "claim_sequence_usage": true}
+{
+  "web_image": "sha256:cb75e886952318afe92a4aa4acec8f32c955bc2f6deb4bb9921da66cb349a0c6",
+  "checks": [
+    {
+      "origin": "https://127.0.0.1:8443",
+      "verified_tls": true,
+      "redesigned_sign_in": true,
+      "strict_csp": true,
+      "loaded_static_assets": 8,
+      "crypto_ready": false,
+      "offline_worker_matches_manifest": true
+    },
+    {
+      "origin": "https://127.0.0.1:8444",
+      "verified_tls": true,
+      "redesigned_sign_in": true,
+      "strict_csp": true,
+      "loaded_static_assets": 8,
+      "crypto_ready": false,
+      "offline_worker_matches_manifest": true
+    },
+    {
+      "origin": "https://127.0.0.1:8445",
+      "verified_tls": true,
+      "redesigned_sign_in": true,
+      "strict_csp": true,
+      "loaded_static_assets": 8,
+      "crypto_ready": true,
+      "offline_worker_matches_manifest": true
+    }
+  ]
+}
+{"origin": "https://127.0.0.1:8444", "verified_tls": true, "deployed_view_once_assets": true}
+{"origin": "https://127.0.0.1:8445", "verified_tls": true, "deployed_view_once_assets": true}
+api_image=sha256:ed18314c11409a8e311e3001ae9eb14f31809980da62dc2d8020985e0f8f6f76

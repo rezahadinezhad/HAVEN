@@ -1,0 +1,10 @@
+   Compiling openmls_basic_credential v0.6.0 (/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/packages/crypto-core/vendor/basic_credential)
+   Compiling haven-crypto-core v0.1.0 (/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/packages/crypto-core)
+    Finished `release` profile [optimized] target(s) in 9.94s
+info: component rust-std for target x86_64-unknown-linux-musl is up to date
+   Compiling openmls_basic_credential v0.6.0 (/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/packages/crypto-core/vendor/basic_credential)
+   Compiling haven-crypto-core v0.1.0 (/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/packages/crypto-core)
+warning: dropping unsupported crate type `cdylib` for target `x86_64-unknown-linux-musl`
+
+warning: `haven-crypto-core` (lib) generated 1 warning
+    Finished `release` profile [optimized] target(s) in 19.37s

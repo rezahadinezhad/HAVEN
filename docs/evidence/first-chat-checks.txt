@@ -1,0 +1,7 @@
+All checks passed!
+53 files already formatted
+No changes detected
+
+> haven-web@0.2.0 typecheck
+> tsc --noEmit
+

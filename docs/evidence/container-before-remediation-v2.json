@@ -1,0 +1,32 @@
+{
+  "api": {
+    "counts": {
+      "LOW": 108,
+      "HIGH": 61,
+      "MEDIUM": 116,
+      "CRITICAL": 2,
+      "UNKNOWN": 2
+    },
+    "with_fixed_version": {
+      "UNKNOWN": 1,
+      "MEDIUM": 5,
+      "LOW": 1
+    }
+  },
+  "web": {
+    "counts": {
+      "LOW": 87,
+      "HIGH": 77,
+      "MEDIUM": 114,
+      "UNKNOWN": 5,
+      "CRITICAL": 5
+    },
+    "with_fixed_version": {
+      "UNKNOWN": 4,
+      "HIGH": 20,
+      "MEDIUM": 27,
+      "CRITICAL": 4,
+      "LOW": 4
+    }
+  }
+}

@@ -1,0 +1,15 @@
+
+> haven-web@0.2.0 test
+> playwright test integration.spec.ts messenger-ui.spec.ts
+
+
+Running 2 tests using 1 worker
+
+(node:1887015) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/integration.spec.ts:7:5 › browser MLS → Django/PostgreSQL: verified group, bidirectional delivery, durable retry, media, removal and reload (22.3s)
+(node:1890021) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 tests/messenger-ui.spec.ts:8:5 › real UI: vault enrollment, fingerprint verification, MLS group, text, offline shell and queued send (44.4s)
+
+  2 passed (1.1m)

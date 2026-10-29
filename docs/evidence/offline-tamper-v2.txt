@@ -1,0 +1,4 @@
+{
+  "added_unsigned_artifact": "REJECTED_BEFORE_DOCKER",
+  "changed_signed_artifact": "REJECTED_BEFORE_DOCKER"
+}

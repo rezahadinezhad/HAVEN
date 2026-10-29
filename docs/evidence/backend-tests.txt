@@ -1,0 +1,4 @@
+1 file reformatted, 24 files left unchanged
+All checks passed!
+............                                                             [100%]
+12 passed in 8.34s

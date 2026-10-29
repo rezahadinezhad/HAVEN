@@ -1,0 +1,6 @@
+PASS runtime non-administrative role: haven_app
+PASS denied: CREATE TABLE public.haven_forbidden_probe
+PASS denied: INSERT INTO django_migrations
+PASS denied: SET ROLE haven_migrate
+{'fsync': 'on', 'synchronous_commit': 'on', 'full_page_writes': 'on', 'data_checksums': 'on'}
+PASS local metadata counters available; no performance qualification implied.

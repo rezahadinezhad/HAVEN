@@ -1,0 +1,23 @@
+
+> haven-web@0.2.0 test
+> playwright test integration.spec.ts
+
+
+Running 1 test using 1 worker
+
+(node:1877315) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 tests/integration.spec.ts:7:5 › browser MLS → Django/PostgreSQL: verified group, bidirectional delivery, durable retry, media, removal and reload (1.9s)
+
+
+  1) tests/integration.spec.ts:7:5 › browser MLS → Django/PostgreSQL: verified group, bidirectional delivery, durable retry, media, removal and reload 
+
+    Error: page.evaluate: Error: Crypto worker unavailable
+        at worker2.onerror (https://127.0.0.1:8445/__integration__/client.js:65130:20)
+        at worker2.onerror (https://127.0.0.1:8445/__integration__/client.js:65130:20)
+        at /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/integration.spec.ts:55:13
+
+    Error Context: test-results/integration-browser-MLS-→--f7a60-ry-media-removal-and-reload/error-context.md
+
+  1 failed
+    tests/integration.spec.ts:7:5 › browser MLS → Django/PostgreSQL: verified group, bidirectional delivery, durable retry, media, removal and reload 

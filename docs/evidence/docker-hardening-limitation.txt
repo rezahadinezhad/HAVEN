@@ -1,0 +1,6 @@
+2026-10-23 observed Docker engine 29.8.0:
+$ docker run --rm --network none --security-opt no-new-privileges:true --entrypoint /usr/local/bin/redis-server redis:7.4.6-alpine --version
+exec /usr/local/bin/redis-server: operation not permitted
+exit 1
+The same command with --cap-drop ALL alone succeeds; --user 999:1000 alone succeeds.
+Production compose preserves no-new-privileges:true. Local-staging compatibility override removes it only for isolated loopback testing. This is NOT a hardened production qualification.

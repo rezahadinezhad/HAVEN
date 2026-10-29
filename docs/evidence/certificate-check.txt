@@ -1,0 +1,62 @@
+/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/.local/tls/leaf.crt: OK
+Certificate will not expire
+Connecting to 127.0.0.1
+Can't use SSL_get_servername
+depth=1 CN=HAVEN TEST ONLY root
+verify return:1
+depth=0 CN=HAVEN DEVELOPMENT ONLY
+verify return:1
+CONNECTED(00000003)
+---
+Certificate chain
+ 0 s:CN=HAVEN DEVELOPMENT ONLY
+   i:CN=HAVEN TEST ONLY root
+   a:PKEY: RSA, 2048 (bit); sigalg: sha256WithRSAEncryption
+   v:NotBefore: Oct 23 18:33:30 2026 GMT; NotAfter: Oct 26 18:33:30 2026 GMT
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIID1jCCAj6gAwIBAgIUKrs2XnuM6Kd52iNA4MbF15xOzWQwDQYJKoZIhvcNAQEL
+BQAwHzEdMBsGA1UEAwwUSEFWRU4gVEVTVCBPTkxZIHJvb3QwHhcNMjYxMDIzMTgz
+MzMwWhcNMjYxMDI2MTgzMzMwWjAhMR8wHQYDVQQDDBZIQVZFTiBERVZFTE9QTUVO
+VCBPTkxZMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwEi672X3BqDx
+0XTW1N3lCU/l27Wu4C64dZCDkR/kgAclkicZifH7nGri8GLtUaT2jtWEo3fWh4tZ
+t3DWjv64WNQ7rkeCMm1i8dej6yHU4Yhi1vyymHjrObvdn0fFK18Z7kV0UgwLRiew
+WE5+wghBsE/CNETxFSBfEbj3SDT86QT7TC7QeFtU5Ul4FW8apHRjviz53tfimZ/Z
+vz0uBKMvg1DdfCc9CZItMv46/RJNdOL28Jo6ng2gZqQo9aShq8E6Gqpd++NcWiUX
+0MJM9Of138m6xX6Snt/jO7jLE2OJXb4nEjog8xuss/3IPZrCGWq7T6W9qkRNQK82
+roXgZGmCxQIDAQABo4GHMIGEMAwGA1UdEwEB/wQCMAAwDgYDVR0PAQH/BAQDAgWg
+MBMGA1UdJQQMMAoGCCsGAQUFBwMBMA8GA1UdEQQIMAaHBH8AAAEwHQYDVR0OBBYE
+FGeaxdbhSloF6wtZijfjclHoISk3MB8GA1UdIwQYMBaAFBQ/oSso2IDqKOp8sjjX
+NK42CfoIMA0GCSqGSIb3DQEBCwUAA4IBgQBifdCm/VHMVR1Kz3oN2/1C9RHL9uhk
+687Qpvx/hxCDFtZBv0IzeR36DJ5MkAP8amZuTscpmRS3y3AwdukvYcv+AkHaRSeZ
+xIetqn1qMkjf1iqbK/zSQ9jKuF5HCLsaip0ietbNsEGPoXPJgiVi5IpZSmTkGScW
+/MMH4szlwrYba18AWSbjXYYMn/maCjbDx4HhKCXm0vKOiBjhohdmxnttkqqn2rgy
+PZS6AjT8aijUmbPvqDI8wfVzuEQot/2yTpQYacpCM2vmhhlgp9Mt75EfhkBKdRyA
+MIXgWej55avTqrVMo2/4sratCTRn4zbrybzjkD6Ttn8R6BB/d93sz2eUASm7jaCA
+dJWTv0JHciTB+q+gAZZudVkdI3RoojkSQvz+jsczUTV1rsMES82MeKOEi/f0jFLf
+jg0Vb99+uIQkxABH20av70oxGB7krYwyFN8AhQfmBM+544qa5OqqlSuJeC4d0Lp7
+gMp7WZVXfaikabSENo/nMckRcH1st1+038w=
+-----END CERTIFICATE-----
+subject=CN=HAVEN DEVELOPMENT ONLY
+issuer=CN=HAVEN TEST ONLY root
+---
+No client certificate CA names sent
+Peer signing digest: SHA256
+Peer signature type: rsa_pss_rsae_sha256
+Negotiated TLS1.3 group: X25519MLKEM768
+---
+SSL handshake has read 2630 bytes and written 1613 bytes
+Verification: OK
+---
+New, TLSv1.3, Cipher is TLS_AES_256_GCM_SHA384
+Protocol: TLSv1.3
+Server public key is 2048 bit
+This TLS version forbids renegotiation.
+Compression: NONE
+Expansion: NONE
+No ALPN negotiated
+Early data was not sent
+Verify return code: 0 (ok)
+---
+DONE

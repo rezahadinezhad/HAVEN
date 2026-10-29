@@ -1,0 +1,15 @@
+# Use together with standby.yml. Public backup TLS/UI remain warm; all API/WS
+# writes go to the sole active primary through independently verified private TLS.
+services:
+  ingress:
+    volumes:
+      - ${HAVEN_STANDBY_PREPARATION_CONFIG:?rendered config required}:/etc/nginx/nginx.conf:ro
+      - ${HAVEN_PRIMARY_BRIDGE_ROOTS:?verified public CA bundle required}:/etc/haven/primary-roots.pem:ro
+    depends_on: !override {web: {condition: service_started}}
+  api: {profiles: [promoted]}
+  outbox: {profiles: [promoted]}
+  privacy: {profiles: [promoted]}
+  migrate: {profiles: [promoted]}
+  prepare-db-roles: {profiles: [promoted]}
+  redis: {profiles: [promoted]}
+  db: {profiles: [replication]}

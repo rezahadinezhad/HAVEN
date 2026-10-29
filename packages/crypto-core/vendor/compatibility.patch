@@ -1,0 +1,60 @@
+--- upstream/openmls_rust_crypto/Cargo.toml
++++ vendor/openmls_rust_crypto/Cargo.toml
+@@ -6 +6 @@
+-rust-version.workspace = true
++rust-version = "1.94.0"
+@@ -14,2 +14,2 @@
+-openmls_traits = { workspace = true }
+-openmls_memory_storage = { workspace = true }
++openmls_traits = { version = "=0.6.0" }
++openmls_memory_storage = { version = "=0.6.0" }
+@@ -35 +35 @@
+-tls_codec = { workspace = true }
++tls_codec = { version = "=0.5.0", features = ["derive", "serde", "mls"] }
+@@ -37 +37 @@
+-thiserror = { workspace = true }
++thiserror = { version = "2" }
+--- upstream/basic_credential/Cargo.toml
++++ vendor/basic_credential/Cargo.toml
+@@ -6 +6 @@
+-rust-version.workspace = true
++rust-version = "1.94.0"
+@@ -14,3 +14,3 @@
+-openmls_traits = { workspace = true }
+-tls_codec = { workspace = true }
+-serde = { workspace = true }
++openmls_traits = { version = "=0.6.0" }
++tls_codec = { version = "=0.5.0", features = ["derive", "serde", "mls"] }
++serde = { version = "1" }
+@@ -33,2 +32,0 @@
+-    "openmls_rust_crypto/draft-ietf-mls-pq-ciphersuites",
+-    "openmls_libcrux_crypto/draft-ietf-mls-pq-ciphersuites",
+@@ -36,5 +33,0 @@
+-
+-[dev-dependencies]
+-serde_json = "1.0.149"
+-openmls_rust_crypto = { workspace = true }
+-openmls_libcrux_crypto = { workspace = true }
+--- upstream/basic_credential/src/lib.rs
++++ vendor/basic_credential/src/lib.rs
+@@ -286,2 +286 @@
+-    #[openmls_traits::maybe_async]
+-    pub async fn store<T>(&self, store: &T) -> Result<(), T::Error>
++    pub fn store<T>(&self, store: &T) -> Result<(), T::Error>
+@@ -291 +290 @@
+-        store.write_signature_key_pair(&self.id(), self).await
++        store.write_signature_key_pair(&self.id(), self)
+@@ -295,2 +294 @@
+-    #[openmls_traits::maybe_async]
+-    pub async fn read(
++    pub fn read(
+@@ -305 +303 @@
+-            .await
++
+@@ -311,2 +309 @@
+-    #[openmls_traits::maybe_async]
+-    pub async fn delete<T: StorageProvider<CURRENT_VERSION>>(
++    pub fn delete<T: StorageProvider<CURRENT_VERSION>>(
+@@ -320 +317 @@
+-        store.delete_signature_key_pair(&id).await
++        store.delete_signature_key_pair(&id)

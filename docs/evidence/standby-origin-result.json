@@ -1,0 +1,17 @@
+{
+  "status": "PASS_LOCAL_PREPARED_ORIGIN_FAILOVER",
+  "distinct_ipv4_origins": true,
+  "independently_approved_devices": 4,
+  "prejoin_history_excluded": true,
+  "verified_private_tls_and_wss": true,
+  "wrong_private_tls_identity_fail_closed": true,
+  "primary_api_and_route_stopped": true,
+  "primary_database_fenced_before_promotion": true,
+  "messages_and_mls_update_after_promotion": true,
+  "limitations": [
+    "single physical host",
+    "container-stop fencing only",
+    "not a provider, domestic carrier or physical mobile test",
+    "no old ratchet state transferred between origins"
+  ]
+}

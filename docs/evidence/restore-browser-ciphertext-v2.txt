@@ -1,0 +1,16 @@
+/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/.local/backups-0.2.0-final/ciphertext-20261024T090027Z-a816243a.sql.gpg: OK
+gpg: encrypted with rsa2048 key, ID 93BD6065C7FAB0E9, created 2026-10-23
+      "HAVEN DISPOSABLE QA ONLY"
+ encrypted_envelopes 
+---------------------
+                 449
+(1 row)
+
+ migrations 
+------------
+         20
+(1 row)
+
+DO
+PASS: isolated schema/data restore. This does not qualify client epoch continuity or failover.
+PASS actual browser-test ciphertext backup/isolated restore; separate from the gated empty staging metadata check.

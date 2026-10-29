@@ -1,0 +1,29 @@
+
+> haven-web@0.2.0 build
+> next build && node scripts/build-offline-shell.mjs
+
+▲ Next.js 16.4.3 (Turbopack)
+✓ Running next.config.ts took 27ms
+- Experiments (use with caution):
+  · cpus: 2
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 1862ms
+  Running TypeScript ...
+  Finished TypeScript in 3.2s ...
+  Collecting page data using 2 workers ...
+  Generating static pages using 2 workers (0/3) ...
+✓ Generating static pages using 2 workers (3/3) in 123ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ƒ /
+└ ○ /_not-found
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+Prepared 18 local offline shell assets

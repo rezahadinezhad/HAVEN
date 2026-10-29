@@ -1,0 +1,47 @@
+
+Running 2 tests using 1 worker
+
+(node:4124777) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 tests/first-chat.spec.ts:12:5 › ordinary members: guided setup, private invitation, explicit mutual verification, chat and unlock (3.0m)
+(node:4133893) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 tests/first-chat.spec.ts:230:5 › friend links reject foreign origins, mismatched fingerprints, changed pins; responsive RTL guide (2.6s)
+
+
+  1) tests/first-chat.spec.ts:12:5 › ordinary members: guided setup, private invitation, explicit mutual verification, chat and unlock 
+
+    Test timeout of 180000ms exceeded.
+
+    Error: locator.inputValue: Test ended.
+    Call log:
+      - waiting for getByLabel('Link to share')
+
+
+      81 |       .getByRole("button", { name: "Invite a friend", exact: true })
+      82 |       .click();
+    > 83 |     const invite = await a.getByLabel("Link to share").inputValue();
+         |                                                        ^
+      84 |     expect(invite).toContain("#connect=");
+      85 |     expect(invite).toContain("&invite=");
+      86 |     await expect(
+        at /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/first-chat.spec.ts:83:56
+
+    Error Context: test-results/first-chat-ordinary-member-740e0-erification-chat-and-unlock/error-context.md
+
+  2) tests/first-chat.spec.ts:230:5 › friend links reject foreign origins, mismatched fingerprints, changed pins; responsive RTL guide 
+
+    Error: page.evaluate: ZodError
+        at Object.contactLink (https://127.0.0.1:8445/__integration__/client.js:66251:32)
+        at eval (eval at evaluate (:370:30), <anonymous>:20:18)
+        at async <anonymous>:396:30
+        at Object.contactLink (https://127.0.0.1:8445/__integration__/client.js:66251:32)
+        at eval (eval at evaluate (:370:30), <anonymous>:20:18)
+        at async <anonymous>:396:30
+        at /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/first-chat.spec.ts:291:29
+
+    Error Context: test-results/first-chat-friend-links-re-d0f2d-d-pins-responsive-RTL-guide/error-context.md
+
+  2 failed
+    tests/first-chat.spec.ts:12:5 › ordinary members: guided setup, private invitation, explicit mutual verification, chat and unlock 
+    tests/first-chat.spec.ts:230:5 › friend links reject foreign origins, mismatched fingerprints, changed pins; responsive RTL guide 

@@ -1,0 +1,27 @@
+# Optional primary overlay. Bind only a private, firewall-restricted tunnel IP.
+x-db-tls-client: &db_tls_client
+  PGSSLMODE: verify-full
+  PGSSLROOTCERT: /run/haven/db-roots.pem
+services:
+  db:
+    networks: [private, replication]
+    ports: ["${HAVEN_DB_TUNNEL_IP:?private tunnel IP required}:5432:5432"]
+    volumes: ["${HAVEN_DB_TLS_DIR:?required}:/etc/haven/db-tls:ro"]
+    command: ["postgres", "-c", "ssl=on", "-c", "ssl_cert_file=/etc/haven/db-tls/leaf.crt", "-c", "ssl_key_file=/etc/haven/db-tls/leaf.key", "-c", "wal_level=replica", "-c", "max_wal_senders=4", "-c", "max_replication_slots=4", "-c", "max_slot_wal_keep_size=1GB"]
+  api:
+    environment: *db_tls_client
+    volumes: ["${HAVEN_DB_TLS_DIR:?required}/roots.pem:/run/haven/db-roots.pem:ro"]
+  outbox:
+    environment: *db_tls_client
+    volumes: ["${HAVEN_DB_TLS_DIR:?required}/roots.pem:/run/haven/db-roots.pem:ro"]
+  migrate:
+    environment: *db_tls_client
+    volumes: ["${HAVEN_DB_TLS_DIR:?required}/roots.pem:/run/haven/db-roots.pem:ro"]
+  prepare-db-roles:
+    environment: *db_tls_client
+    volumes: ["${HAVEN_DB_TLS_DIR:?required}/roots.pem:/run/haven/db-roots.pem:ro"]
+
+# Only the database joins this route-capable network. The host firewall must limit
+# replication egress/ingress to the authenticated private tunnel peer on TCP 5432.
+networks:
+  replication: {driver: bridge}

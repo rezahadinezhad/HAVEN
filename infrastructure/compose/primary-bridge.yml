@@ -1,0 +1,15 @@
+# Primary-only private TLS bridge. Never bind its port to a public interface.
+services:
+  primary-bridge:
+    image: nginx:1.28.3-alpine@sha256:a8b39bd9cf0f83869a2162827a0caf6137ddf759d50a171451b335cecc87d236
+    ports: ["${HAVEN_PRIMARY_TUNNEL_IP:?private tunnel IP required}:9443:9443"]
+    volumes:
+      - ${HAVEN_PRIMARY_BRIDGE_CONFIG:?rendered config required}:/etc/nginx/nginx.conf:ro
+      - ${HAVEN_BRIDGE_TLS_DIR:?separate private TLS leaf directory required}:/etc/haven/bridge-tls:ro
+    networks: [private, bridge_route]
+    read_only: true
+    tmpfs: ["/var/cache/nginx:size=32m", "/var/run:size=1m", "/tmp:size=16m"]
+    depends_on: [api]
+    restart: unless-stopped
+networks:
+  bridge_route: {driver: bridge}

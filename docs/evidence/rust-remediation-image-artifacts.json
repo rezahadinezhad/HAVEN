@@ -1,0 +1,12 @@
+{
+  "haven-api:0.2.0": {
+    "image_id": "sha256:da93d710cb85254929e03bee6a9c195400e4c5356cd5ec6c330bb01cf5c3c055",
+    "artifact_sha256": "23eb1d130fff837f122724aedbfbfddd182c0988eed0c74a535ee86fe18fa92e",
+    "matches_rebuilt_source": true
+  },
+  "haven-web:0.2.0": {
+    "image_id": "sha256:8dc7c6d9ab3e0970290730fbce914ed32b47fe3c4d0e9d1ce735d98dab630a66",
+    "artifact_sha256": "d832bff2c78976226d0fe38cf596907d8c45345b88c2d898125482a01c4bd3b5",
+    "matches_rebuilt_source": true
+  }
+}

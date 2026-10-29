@@ -1,0 +1,45 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 276B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for mcr.microsoft.com/playwright@sha256:47b510dd9230bf0b9bfc9b20102241e577ea7a99334ab4c3ca19f19770e9b8ea
+#2 DONE 1.2s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [internal] load build context
+#4 transferring context: 1.56kB done
+#4 DONE 0.0s
+
+#5 [1/4] FROM mcr.microsoft.com/playwright@sha256:47b510dd9230bf0b9bfc9b20102241e577ea7a99334ab4c3ca19f19770e9b8ea
+#5 resolve mcr.microsoft.com/playwright@sha256:47b510dd9230bf0b9bfc9b20102241e577ea7a99334ab4c3ca19f19770e9b8ea 0.0s done
+#5 DONE 0.1s
+
+#6 [2/4] COPY haven-test-root.crt /usr/local/share/ca-certificates/haven-test-root.crt
+#6 DONE 0.1s
+
+#7 [3/4] RUN update-ca-certificates
+#7 1.212 Updating certificates in /etc/ssl/certs...
+#7 1.870 rehash: warning: skipping ca-certificates.crt,it does not contain exactly one certificate or CRL
+#7 1.878 1 added, 0 removed; done.
+#7 1.878 Running hooks in /etc/ca-certificates/update.d...
+#7 1.879 done.
+#7 DONE 1.9s
+
+#8 [4/4] WORKDIR /work
+#8 DONE 0.1s
+
+#9 exporting to image
+#9 exporting layers
+#9 exporting layers 0.2s done
+#9 exporting manifest sha256:e0165357df3230259b9e5eb9c0a3d9a63faeb4ba74194076242c4bbc96cacc9c 0.0s done
+#9 exporting config sha256:9a475efa2f30c91816577a6ef3d4c53fb26c7fd803623f1df282c6f2abf1d8da 0.0s done
+#9 exporting attestation manifest sha256:15c4ba22874d32b73279ba02e6424d1bf4c6b28b790343ec13b1cbd374006d81 0.0s done
+#9 exporting manifest list sha256:17a1d3f2b2dda3daec97ef49f0440370b6cb6bf5783ef93e7c5da7f7a42e936e 0.0s done
+#9 naming to docker.io/library/haven-browser-test:1.64.1 done
+#9 unpacking to docker.io/library/haven-browser-test:1.64.1 0.1s done
+#9 DONE 0.3s

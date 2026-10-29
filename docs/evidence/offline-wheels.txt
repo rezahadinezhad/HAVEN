@@ -1,0 +1,96 @@
+Downloading pip (1.7MiB)
+ Downloaded pip
+Installed 1 package in 6ms
+Ignoring tzdata: markers 'sys_platform == "win32"' don't match your environment
+Collecting anyio==4.15.1 (from -r apps/api/requirements.lock (line 3))
+  Downloading anyio-4.15.1-py3-none-any.whl (132 kB)
+Collecting argon2-cffi==25.1.0 (from -r apps/api/requirements.lock (line 7))
+  Downloading argon2_cffi-25.1.0-py3-none-any.whl (14 kB)
+Collecting argon2-cffi-bindings==26.1.0 (from -r apps/api/requirements.lock (line 11))
+  Downloading argon2_cffi_bindings-26.1.0-cp310-abi3-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl (26 kB)
+Collecting asgiref==3.13.0 (from -r apps/api/requirements.lock (line 36))
+  Downloading asgiref-3.13.0-py3-none-any.whl (27 kB)
+Collecting cffi==2.1.1 (from -r apps/api/requirements.lock (line 43))
+  Downloading cffi-2.1.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (221 kB)
+Collecting channels==4.3.2 (from -r apps/api/requirements.lock (line 98))
+  Downloading channels-4.3.2-py3-none-any.whl (31 kB)
+Collecting channels-redis==4.3.0 (from -r apps/api/requirements.lock (line 104))
+  Downloading channels_redis-4.3.0-py3-none-any.whl (20 kB)
+Collecting click==8.5.0 (from -r apps/api/requirements.lock (line 108))
+  Downloading click-8.5.0-py3-none-any.whl (125 kB)
+Collecting cryptography==50.0.2 (from -r apps/api/requirements.lock (line 112))
+  Downloading cryptography-50.0.2-cp311-abi3-manylinux_2_34_x86_64.whl (4.8 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.8/4.8 MB 1.0 MB/s  0:00:04
+Collecting django==5.2.18 (from -r apps/api/requirements.lock (line 167))
+  Downloading django-5.2.18-py3-none-any.whl (8.3 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.3/8.3 MB 987.5 kB/s  0:00:08
+Collecting djangorestframework==3.18.3 (from -r apps/api/requirements.lock (line 174))
+  Downloading djangorestframework-3.18.3-py3-none-any.whl (903 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 904.0/904.0 kB 1.3 MB/s  0:00:00
+Collecting h11==0.16.0 (from -r apps/api/requirements.lock (line 178))
+  Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+Collecting httptools==0.9.0 (from -r apps/api/requirements.lock (line 182))
+  Downloading httptools-0.9.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (552 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 552.8/552.8 kB 276.2 kB/s  0:00:01
+Collecting idna==3.20 (from -r apps/api/requirements.lock (line 237))
+  Downloading idna-3.20-py3-none-any.whl (69 kB)
+Collecting msgpack==1.2.3 (from -r apps/api/requirements.lock (line 241))
+  Downloading msgpack-1.2.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (472 kB)
+Collecting psycopg==3.3.6 (from -r apps/api/requirements.lock (line 290))
+  Downloading psycopg-3.3.6-py3-none-any.whl (215 kB)
+Collecting psycopg-binary==3.3.6 (from -r apps/api/requirements.lock (line 294))
+  Downloading psycopg_binary-3.3.6-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (5.2 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.2/5.2 MB 239.9 kB/s  0:00:21
+Collecting pycparser==3.12 (from -r apps/api/requirements.lock (line 329))
+  Downloading pycparser-3.12-py3-none-any.whl (62 kB)
+Collecting python-dotenv==1.2.4 (from -r apps/api/requirements.lock (line 333))
+  Downloading python_dotenv-1.2.4-py3-none-any.whl (23 kB)
+Collecting pyyaml==6.0.3 (from -r apps/api/requirements.lock (line 337))
+  Downloading pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (807 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 807.9/807.9 kB 951.6 kB/s  0:00:00
+Collecting redis==7.4.1 (from -r apps/api/requirements.lock (line 378))
+  Downloading redis-7.4.1-py3-none-any.whl (410 kB)
+Collecting rfc8785==0.1.4 (from -r apps/api/requirements.lock (line 384))
+  Downloading rfc8785-0.1.4-py3-none-any.whl (9.2 kB)
+Collecting sqlparse==0.6.0 (from -r apps/api/requirements.lock (line 388))
+  Downloading sqlparse-0.6.0-py3-none-any.whl (50 kB)
+Collecting typing-extensions==4.16.0 (from -r apps/api/requirements.lock (line 392))
+  Using cached typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+Collecting uvicorn==0.54.0 (from -r apps/api/requirements.lock (line 404))
+  Downloading uvicorn-0.54.0-py3-none-any.whl (87 kB)
+Collecting uvloop==0.23.0 (from -r apps/api/requirements.lock (line 408))
+  Downloading uvloop-0.23.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (4.5 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.5/4.5 MB 908.9 kB/s  0:00:05
+Collecting watchfiles==1.3.0 (from -r apps/api/requirements.lock (line 435))
+  Downloading watchfiles-1.3.0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (458 kB)
+Collecting websockets==17.3 (from -r apps/api/requirements.lock (line 466))
+  Downloading websockets-17.3-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (225 kB)
+Saved ./.local/offline-deps/wheels/anyio-4.15.1-py3-none-any.whl
+Saved ./.local/offline-deps/wheels/argon2_cffi-25.1.0-py3-none-any.whl
+Saved ./.local/offline-deps/wheels/argon2_cffi_bindings-26.1.0-cp310-abi3-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl
+Saved ./.local/offline-deps/wheels/asgiref-3.13.0-py3-none-any.whl
+Saved ./.local/offline-deps/wheels/cffi-2.1.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl
+Saved ./.local/offline-deps/wheels/channels-4.3.2-py3-none-any.whl
+Saved ./.local/offline-deps/wheels/channels_redis-4.3.0-py3-none-any.whl
+Saved ./.local/offline-deps/wheels/click-8.5.0-py3-none-any.whl
+Saved ./.local/offline-deps/wheels/cryptography-50.0.2-cp311-abi3-manylinux_2_34_x86_64.whl
+Saved ./.local/offline-deps/wheels/django-5.2.18-py3-none-any.whl
+Saved ./.local/offline-deps/wheels/djangorestframework-3.18.3-py3-none-any.whl
+Saved ./.local/offline-deps/wheels/h11-0.16.0-py3-none-any.whl
+Saved ./.local/offline-deps/wheels/httptools-0.9.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl
+Saved ./.local/offline-deps/wheels/idna-3.20-py3-none-any.whl
+Saved ./.local/offline-deps/wheels/msgpack-1.2.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl
+Saved ./.local/offline-deps/wheels/psycopg-3.3.6-py3-none-any.whl
+Saved ./.local/offline-deps/wheels/psycopg_binary-3.3.6-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl
+Saved ./.local/offline-deps/wheels/pycparser-3.12-py3-none-any.whl
+Saved ./.local/offline-deps/wheels/python_dotenv-1.2.4-py3-none-any.whl
+Saved ./.local/offline-deps/wheels/pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl
+Saved ./.local/offline-deps/wheels/redis-7.4.1-py3-none-any.whl
+Saved ./.local/offline-deps/wheels/rfc8785-0.1.4-py3-none-any.whl
+Saved ./.local/offline-deps/wheels/sqlparse-0.6.0-py3-none-any.whl
+Saved ./.local/offline-deps/wheels/typing_extensions-4.16.0-py3-none-any.whl
+Saved ./.local/offline-deps/wheels/uvicorn-0.54.0-py3-none-any.whl
+Saved ./.local/offline-deps/wheels/uvloop-0.23.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl
+Saved ./.local/offline-deps/wheels/watchfiles-1.3.0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+Saved ./.local/offline-deps/wheels/websockets-17.3-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl
+Successfully downloaded anyio argon2-cffi argon2-cffi-bindings asgiref cffi channels channels-redis click cryptography django djangorestframework h11 httptools idna msgpack psycopg psycopg-binary pycparser python-dotenv pyyaml redis rfc8785 sqlparse typing-extensions uvicorn uvloop watchfiles websockets

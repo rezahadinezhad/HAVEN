@@ -1,0 +1,6 @@
+ Container haven-web-1 Recreate 
+ Container haven-web-1 Recreated 
+ Container haven-web-1 Starting 
+ Container haven-web-1 Started 
+ Container haven-ingress-1 Restarting 
+ Container haven-ingress-1 Started 

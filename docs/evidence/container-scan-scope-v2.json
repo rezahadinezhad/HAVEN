@@ -1,0 +1,20 @@
+{
+  "api": {
+    "image_id": "sha256:a5cb8695bebc47b0073780f196fa148b4ce5e3ac9c3274badb535f29a797e0ce",
+    "os": {
+      "Family": "debian",
+      "Name": "13.7"
+    },
+    "created_at": "2026-10-24T08:54:10.573455559Z",
+    "artifact": "/images/api.tar"
+  },
+  "web": {
+    "image_id": "sha256:2db0f6bd6511d8acb02dbc5739cdfdced51c9ca2624a898367b1ac6f594a3f6e",
+    "os": {
+      "Family": "debian",
+      "Name": "13.7"
+    },
+    "created_at": "2026-10-24T08:54:14.525552447Z",
+    "artifact": "/images/web.tar"
+  }
+}

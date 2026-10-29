@@ -1,0 +1,15 @@
+2026-10-24T08:54:09Z	INFO	[vuln] Vulnerability scanning is enabled
+2026-10-24T08:54:09Z	INFO	[python] Licenses acquired from one or more METADATA files may be subject to additional terms. Use `--debug` flag to see all affected packages.
+2026-10-24T08:54:10Z	INFO	Detected OS	family="debian" version="13.7"
+2026-10-24T08:54:10Z	INFO	[debian] Detecting vulnerabilities...	os_version="13" pkg_num=87
+2026-10-24T08:54:10Z	INFO	Number of language-specific files	num=1
+2026-10-24T08:54:10Z	INFO	[python-pkg] Detecting vulnerabilities...
+2026-10-24T08:54:10Z	WARN	Using severities from other vendors for some vulnerabilities. Read https://trivy.dev/docs/v0.76/guide/scanner/vulnerability#severity-selection for details.
+2026-10-24T08:54:12Z	INFO	[vuln] Vulnerability scanning is enabled
+2026-10-24T08:54:14Z	INFO	Detected OS	family="debian" version="13.7"
+2026-10-24T08:54:14Z	INFO	[debian] Detecting vulnerabilities...	os_version="13" pkg_num=79
+2026-10-24T08:54:14Z	INFO	Number of language-specific files	num=1
+2026-10-24T08:54:14Z	INFO	[node-pkg] Detecting vulnerabilities...
+2026-10-24T08:54:14Z	WARN	Using severities from other vendors for some vulnerabilities. Read https://trivy.dev/docs/v0.76/guide/scanner/vulnerability#severity-selection for details.
+{"service": "api", "counts": {"LOW": 61, "HIGH": 44, "MEDIUM": 58, "UNKNOWN": 1}, "with_fixed_version": {}, "report_scope": "scanner database recorded in report; no independent security review"}
+{"service": "web", "counts": {"LOW": 60, "HIGH": 43, "MEDIUM": 58, "UNKNOWN": 1}, "with_fixed_version": {}, "report_scope": "scanner database recorded in report; no independent security review"}

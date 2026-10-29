@@ -1,0 +1,68 @@
+{
+  "scope": "Selected solid text pairs, not a complete accessibility audit",
+  "checks": [
+    {
+      "pair": "light body",
+      "foreground": "#182332",
+      "background": "#ffffff",
+      "ratio": 15.85,
+      "normal_text_aa": true
+    },
+    {
+      "pair": "light outgoing body",
+      "foreground": "#182332",
+      "background": "#e1edff",
+      "ratio": 13.4,
+      "normal_text_aa": true
+    },
+    {
+      "pair": "light metadata",
+      "foreground": "#596879",
+      "background": "#e1edff",
+      "ratio": 4.82,
+      "normal_text_aa": true
+    },
+    {
+      "pair": "light attachment action",
+      "foreground": "#145bd4",
+      "background": "#e1edff",
+      "ratio": 5.11,
+      "normal_text_aa": true
+    },
+    {
+      "pair": "light chat help",
+      "foreground": "#145bd4",
+      "background": "#eff3f9",
+      "ratio": 5.42,
+      "normal_text_aa": true
+    },
+    {
+      "pair": "light active filter",
+      "foreground": "#145bd4",
+      "background": "#e8f0ff",
+      "ratio": 5.27,
+      "normal_text_aa": true
+    },
+    {
+      "pair": "dark outgoing body",
+      "foreground": "#edf3ff",
+      "background": "#243f65",
+      "ratio": 9.56,
+      "normal_text_aa": true
+    },
+    {
+      "pair": "dark metadata",
+      "foreground": "#a4b5cc",
+      "background": "#243f65",
+      "ratio": 5.1,
+      "normal_text_aa": true
+    },
+    {
+      "pair": "dark action",
+      "foreground": "#83b1ff",
+      "background": "#243f65",
+      "ratio": 4.91,
+      "normal_text_aa": true
+    }
+  ]
+}

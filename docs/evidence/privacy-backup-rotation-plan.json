@@ -1,0 +1,1 @@
+{"mode": "dry_run", "archives": [], "minimum_kept": 3, "retention_days": 7, "notice": "Checksums do not prove decryptability or successful restore. Keep a separately protected verified recovery copy."}

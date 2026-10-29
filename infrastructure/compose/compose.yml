@@ -1,0 +1,150 @@
+name: haven
+x-private-logging: &private_logging
+  driver: local
+  options:
+    max-size: "5m"
+    max-file: "2"
+x-api: &api
+  image: ${HAVEN_API_IMAGE:-haven-api:0.2.0}
+  environment: &api_env
+    HAVEN_SECRET_KEY: ${HAVEN_SECRET_KEY:?required}
+    HAVEN_HOSTS: ${HAVEN_HOSTS:?required}
+    HAVEN_ORIGINS: ${HAVEN_ORIGINS:?required}
+    HAVEN_OPTIONAL_HOSTNAME: ${HAVEN_OPTIONAL_HOSTNAME:-}
+    HAVEN_NAME: ${HAVEN_NAME:-HAVEN}
+    HAVEN_MAINTENANCE: ${HAVEN_MAINTENANCE:-}
+    HAVEN_DB_RUNTIME_USER: ${HAVEN_DB_RUNTIME_USER:-haven_app}
+    POSTGRES_DB: ${POSTGRES_DB:-haven}
+    POSTGRES_USER: ${HAVEN_DB_RUNTIME_USER:-haven_app}
+    POSTGRES_PASSWORD: ${HAVEN_DB_RUNTIME_PASSWORD:?required}
+    POSTGRES_HOST: db
+    POSTGRES_PORT: "5432"
+    REDIS_URL: redis://redis:6379/0
+    HAVEN_TLS_CERT_PATH: /run/haven/tls/leaf.crt
+  networks: [private]
+  volumes: ["${HAVEN_TLS_DIR:?required}/leaf.crt:/run/haven/tls/leaf.crt:ro"]
+  read_only: true
+  tmpfs: ["/tmp:size=64m,mode=1777"]
+  cap_drop: [ALL]
+  security_opt: ["no-new-privileges:true"]
+  restart: unless-stopped
+  logging: *private_logging
+  ulimits:
+    core: {soft: 0, hard: 0}
+  depends_on:
+    db: {condition: service_healthy}
+    redis: {condition: service_healthy}
+services:
+  db:
+    image: postgres:16.14-bookworm@sha256:64154d0babcb1741988719e703419af0382b19953706149f9872fbd0f438efa8
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-haven}
+      POSTGRES_USER: ${POSTGRES_USER:-haven}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?required}
+      POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256 --data-checksums
+    # Keep SQL, bind parameters, network identities and query process titles out
+    # of logs/ps. Error summaries remain for operations; root can change these.
+    command: ["postgres", "-c", "log_statement=none", "-c", "log_min_error_statement=panic", "-c", "log_parameter_max_length=0", "-c", "log_parameter_max_length_on_error=0", "-c", "log_error_verbosity=terse", "-c", "log_connections=off", "-c", "log_disconnections=off", "-c", "log_hostname=off", "-c", "log_duration=off", "-c", "log_min_duration_statement=-1", "-c", "log_min_duration_sample=-1", "-c", "log_transaction_sample_rate=0", "-c", "update_process_title=off"]
+    logging: *private_logging
+    ulimits:
+      core: {soft: 0, hard: 0}
+    volumes: ["db:/var/lib/postgresql/data"]
+    networks: [private]
+    shm_size: 128mb
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
+  redis:
+    user: "999:1000"
+    image: redis:7.4.6-alpine@sha256:3b73847e72874be07e6657b129a94761662b79bc0f679273757d4218573b2a98
+    command: ["redis-server", "--save", "", "--appendonly", "no", "--maxmemory", "128mb", "--maxmemory-policy", "noeviction"]
+    networks: [private]
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+    logging: *private_logging
+    ulimits:
+      core: {soft: 0, hard: 0}
+  prepare-db-roles:
+    <<: *api
+    environment:
+      <<: *api_env
+      POSTGRES_USER: ${POSTGRES_USER:-haven}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?required}
+      HAVEN_DB_MIGRATION_USER: ${HAVEN_DB_MIGRATION_USER:-haven_migrate}
+      HAVEN_DB_MIGRATION_PASSWORD: ${HAVEN_DB_MIGRATION_PASSWORD:?required}
+      HAVEN_DB_RUNTIME_USER: ${HAVEN_DB_RUNTIME_USER:-haven_app}
+      HAVEN_DB_RUNTIME_PASSWORD: ${HAVEN_DB_RUNTIME_PASSWORD:?required}
+    command: ["python", "manage.py", "prepare_db_roles"]
+    restart: "no"
+  migrate:
+    <<: *api
+    environment:
+      <<: *api_env
+      POSTGRES_USER: ${HAVEN_DB_MIGRATION_USER:-haven_migrate}
+      POSTGRES_PASSWORD: ${HAVEN_DB_MIGRATION_PASSWORD:?required}
+    depends_on:
+      prepare-db-roles: {condition: service_completed_successfully}
+    command: ["python", "manage.py", "migrate_haven"]
+    restart: "no"
+  api:
+    <<: *api
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen(urllib.request.Request('http://127.0.0.1:8100/api/v1/health', headers={'Host': __import__('os').environ['HAVEN_HOSTS'].split(',')[0], 'X-Forwarded-Proto': 'https'}))"]
+      interval: 20s
+      timeout: 5s
+      retries: 3
+  outbox:
+    <<: *api
+    command: ["python", "manage.py", "publish_outbox"]
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+  privacy:
+    <<: *api
+    command: ["python", "manage.py", "maintain_privacy"]
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+  web:
+    environment:
+      HAVEN_NAME: ${HAVEN_NAME:-HAVEN}
+      HAVEN_OPTIONAL_HOSTNAME: ${HAVEN_OPTIONAL_HOSTNAME:-}
+    image: ${HAVEN_WEB_IMAGE:-haven-web:0.2.0}
+    networks: [private]
+    read_only: true
+    tmpfs: ["/tmp:size=64m,mode=1777"]
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    restart: unless-stopped
+    logging: *private_logging
+    ulimits:
+      core: {soft: 0, hard: 0}
+  ingress:
+    image: nginx:1.28.3-alpine@sha256:a8b39bd9cf0f83869a2162827a0caf6137ddf759d50a171451b335cecc87d236
+    ports: ["443:443"]
+    volumes:
+      - ../nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ${HAVEN_TLS_DIR:?required}:/etc/haven/tls:ro
+    networks: [private,ingress]
+    read_only: true
+    tmpfs: ["/var/cache/nginx:size=32m", "/var/run:size=1m", "/tmp:size=16m"]
+    depends_on: [api,web]
+    restart: unless-stopped
+    logging: *private_logging
+    ulimits:
+      core: {soft: 0, hard: 0}
+networks:
+  private: {internal: true}
+  ingress: {}
+volumes:
+  db:

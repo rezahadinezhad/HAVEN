@@ -1,0 +1,12 @@
+
+> haven-web@0.2.0 test
+> playwright test standby-origin.spec.ts
+
+
+Running 1 test using 1 worker
+
+(node:2289510) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/standby-origin.spec.ts:80:5 › prepared distinct IP origins: verified private TLS, fail-closed mismatch, fenced database promotion and continuing MLS messages (19.7s)
+
+  1 passed (20.6s)

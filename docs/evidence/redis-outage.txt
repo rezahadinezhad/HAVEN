@@ -1,0 +1,5 @@
+ Container haven-test-redis-1 Stopping 
+ Container haven-test-redis-1 Stopped 
+ Container haven-test-redis-1 Starting 
+ Container haven-test-redis-1 Started 
+PASS: PostgreSQL-backed existing-session HTTP delta sync survives actual test Redis stop (opaque fixture only)

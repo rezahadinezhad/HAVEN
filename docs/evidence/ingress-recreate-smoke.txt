@@ -1,0 +1,7 @@
+ Container haven-api-1 Recreate 
+ Container haven-api-1 Recreated 
+ Container haven-api-1 Starting 
+ Container haven-api-1 Started 
+ Container haven-api-1 Waiting 
+ Container haven-api-1 Healthy 
+{"status":"available","crypto_ready":false,"name":"HAVEN","maintenance":"Security qualification incomplete. Messaging disabled.","release_status":"BLOCKED"}

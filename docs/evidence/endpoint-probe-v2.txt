@@ -1,0 +1,1 @@
+PASS configured endpoint TLS/health probe. This is not independent identity, phone, carrier, failover or cryptographic qualification.

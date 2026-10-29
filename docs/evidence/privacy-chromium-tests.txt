@@ -1,0 +1,9 @@
+Command: npm test --prefix apps/web (final JSON-cache build)
+{
+  "startTime": "2026-10-24T17:09:47.864Z",
+  "duration": 137530.571,
+  "expected": 15,
+  "skipped": 0,
+  "unexpected": 0,
+  "flaky": 0
+}

@@ -1,0 +1,23 @@
+
+Running 4 tests using 1 worker
+
+(node:470261) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/4] tests/first-chat-approval.spec.ts:10:5 › guide preserves pending browser keys; administrator invitation controls and normal crypto gate remain effective
+[2/4] tests/messenger-ui.spec.ts:8:5 › real UI: vault enrollment, fingerprint verification, MLS group, text, offline shell and queued send
+[3/4] tests/session-hardening.spec.ts:6:5 › real vault: pagehide, suspended inactivity, offline access and confirmed remote logout
+[4/4] tests/view-once.spec.ts:8:5 › view-once real UI: encrypted photo/video, account-wide consume, independent group recipients, no cache/export/reopen
+tests/view-once.spec.ts:8:5 › view-once real UI: encrypted photo/video, account-wide consume, independent group recipients, no cache/export/reopen
+View-once: creating three accounts and a second approved recipient device
+
+View-once: device enrollment and fingerprint verification complete
+
+View-once: four-device MLS group synchronized
+
+View-once: synthetic photo/video fixtures generated
+
+Revoked URL reload blocked by engine: true (decoded-memory cache is outside the view-once guarantee)
+
+  4 passed (2.1m)

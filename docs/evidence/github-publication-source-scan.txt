@@ -1,0 +1,3 @@
+PASS: publishable file paths and evidence environment policy
+1:38AM INF scanned ~7092600 bytes (7.09 MB) in 761ms
+1:38AM INF no leaks found

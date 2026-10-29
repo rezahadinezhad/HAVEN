@@ -1,0 +1,1 @@
+Bundle built. Transfer on encrypted media. Validate public signing key through independent channel.

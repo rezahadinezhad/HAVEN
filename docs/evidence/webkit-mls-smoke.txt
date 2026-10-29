@@ -1,0 +1,40 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 276B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for mcr.microsoft.com/playwright@sha256:47b510dd9230bf0b9bfc9b20102241e577ea7a99334ab4c3ca19f19770e9b8ea
+#2 DONE 0.9s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [1/4] FROM mcr.microsoft.com/playwright@sha256:47b510dd9230bf0b9bfc9b20102241e577ea7a99334ab4c3ca19f19770e9b8ea
+#4 resolve mcr.microsoft.com/playwright@sha256:47b510dd9230bf0b9bfc9b20102241e577ea7a99334ab4c3ca19f19770e9b8ea 0.0s done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 1.56kB done
+#5 DONE 0.0s
+
+#6 [3/4] RUN update-ca-certificates
+#6 CACHED
+
+#7 [2/4] COPY haven-test-root.crt /usr/local/share/ca-certificates/haven-test-root.crt
+#7 CACHED
+
+#8 [4/4] WORKDIR /work
+#8 CACHED
+
+#9 exporting to image
+#9 exporting layers done
+#9 exporting manifest sha256:e0165357df3230259b9e5eb9c0a3d9a63faeb4ba74194076242c4bbc96cacc9c done
+#9 exporting config sha256:9a475efa2f30c91816577a6ef3d4c53fb26c7fd803623f1df282c6f2abf1d8da done
+#9 exporting attestation manifest sha256:5b669a25c2c65b950a8fe1d057a9e4c4d7df00990a85ad4d28455a87d89a27fa 0.0s done
+#9 exporting manifest list sha256:63847f0478cf1a83108f3deea2330a2dc83feca4799fcbb11dae0196a41c3466 0.0s done
+#9 naming to docker.io/library/haven-browser-test:1.64.1 done
+#9 unpacking to docker.io/library/haven-browser-test:1.64.1 0.0s done
+#9 DONE 0.1s
+PASS WebKit trusted IP TLS + real OpenMLS WASM (isolated Linux container; NOT physical iOS Safari).

@@ -1,0 +1,14 @@
+
+Running 2 tests using 1 worker
+
+(node:547084) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/chat-experience.spec.ts:11:5 › conversation UX: encrypted messages, keyboard/IME, drafts, replies, scrolling, media, mobile and RTL (45.5s)
+View-once: creating three accounts and a second approved recipient device
+View-once: device enrollment and fingerprint verification complete
+View-once: four-device MLS group synchronized
+View-once: synthetic photo/video fixtures generated
+Revoked URL reload blocked by engine: false (decoded-memory cache is outside the view-once guarantee)
+  ✓  2 tests/view-once.spec.ts:8:5 › view-once real UI: encrypted photo/video, account-wide consume, independent group recipients, no cache/export/reopen (34.1s)
+
+  2 passed (1.3m)

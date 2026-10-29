@@ -1,0 +1,22 @@
+{
+  "api": {
+    "running": true,
+    "health": "healthy"
+  },
+  "web": {
+    "running": true,
+    "health": "not_configured"
+  },
+  "db": {
+    "running": true,
+    "health": "healthy"
+  },
+  "redis": {
+    "running": true,
+    "health": "healthy"
+  },
+  "ingress": {
+    "running": true,
+    "health": "not_configured"
+  }
+}

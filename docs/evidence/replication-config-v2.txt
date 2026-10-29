@@ -1,0 +1,3 @@
+PASS rendered replication-primary.yml: database has private and replication networks; runtime services retain private-only routing.
+PASS rendered standby.yml: database has private and replication networks; runtime services retain private-only routing.
+Dry configuration only. Actual private routing, firewall, DB TLS and two-provider operation remain unqualified.

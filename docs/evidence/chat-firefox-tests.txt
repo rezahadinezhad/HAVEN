@@ -1,0 +1,27 @@
+
+Running 15 tests using 1 worker
+
+(node:191922) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 tests/chat-experience.spec.ts:11:5 › conversation UX: encrypted messages, keyboard/IME, drafts, replies, scrolling, media, mobile and RTL (47.8s)
+  ✓   2 tests/crypto.spec.ts:3:5 › real OpenMLS WASM: two-way, persisted reload, reordering, add/remove, tamper and replay (3.7s)
+  ✓   3 tests/crypto.spec.ts:246:5 › vault rejects wrong secret and modified ciphertext (3.8s)
+  ✓   4 tests/crypto.spec.ts:276:5 › native Rust snapshot and MLS ciphertext interoperate with browser WASM (2.7s)
+  ✓   5 tests/design.spec.ts:11:5 › redesigned real account: responsive navigation, setup, themes, RTL, reduced motion and local assets (5.4s)
+  ✓   6 tests/design.spec.ts:205:5 › CSP-safe accessible announcer and blocked arbitrary inline scripts/styles (2.7s)
+  ✓   7 tests/first-chat-approval.spec.ts:10:5 › guide preserves pending browser keys; administrator invitation controls and normal crypto gate remain effective (14.2s)
+  ✓   8 tests/first-chat-retry.spec.ts:10:5 › direct-chat setup recovers an accepted request after a lost response and reload; concurrent retries reuse one chat (7.6s)
+  ✓   9 tests/first-chat.spec.ts:12:5 › ordinary members: guided setup, private invitation, explicit mutual verification, chat and unlock (15.9s)
+  ✓  10 tests/first-chat.spec.ts:255:5 › friend links reject foreign origins, mismatched fingerprints, changed pins; responsive RTL guide (13.3s)
+  ✓  11 tests/integration.spec.ts:7:5 › browser MLS → Django/PostgreSQL: verified group, bidirectional delivery, durable retry, media, removal and reload (36.3s)
+  ✓  12 tests/passphrase.spec.ts:35:5 › generator uses exactly 32 CSPRNG bytes, lossless base64url and fails closed without secure randomness (2.8s)
+  ✓  13 tests/passphrase.spec.ts:126:5 › new vault: generate, reveal/copy, regenerate/manual reset, save confirmation and real reload/unlock without network disclosure (7.7s)
+  ✓  14 tests/passphrase.spec.ts:326:5 › generator failure and clipboard denial remain usable; cancellation discards unsaved state; RTL and source gate (5.2s)
+View-once: creating three accounts and a second approved recipient device
+View-once: device enrollment and fingerprint verification complete
+View-once: four-device MLS group synchronized
+View-once: synthetic photo/video fixtures generated
+Revoked URL reload blocked by engine: false (decoded-memory cache is outside the view-once guarantee)
+  ✓  15 tests/view-once.spec.ts:8:5 › view-once real UI: encrypted photo/video, account-wide consume, independent group recipients, no cache/export/reopen (34.7s)
+
+  15 passed (3.4m)

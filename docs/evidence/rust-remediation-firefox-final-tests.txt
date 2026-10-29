@@ -1,0 +1,26 @@
+
+Running 7 tests using 1 worker
+
+(node:301016) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/7] tests/crypto.spec.ts:3:5 › real OpenMLS WASM: two-way, persisted reload, reordering, add/remove, tamper and replay
+[2/7] tests/crypto.spec.ts:246:5 › vault rejects wrong secret and modified ciphertext
+[3/7] tests/crypto.spec.ts:276:5 › native Rust snapshot and MLS ciphertext interoperate with browser WASM
+[4/7] tests/integration.spec.ts:7:5 › browser MLS → Django/PostgreSQL: verified group, bidirectional delivery, durable retry, media, removal and reload
+[5/7] tests/provider-upgrade.spec.ts:28:5 › upstream provider backport exchanges MLS with previous browser build and opens previous snapshots
+[6/7] tests/provider-upgrade.spec.ts:119:5 › rebuilt native Rust provider snapshot interoperates with rebuilt WASM
+[7/7] tests/view-once.spec.ts:8:5 › view-once real UI: encrypted photo/video, account-wide consume, independent group recipients, no cache/export/reopen
+tests/view-once.spec.ts:8:5 › view-once real UI: encrypted photo/video, account-wide consume, independent group recipients, no cache/export/reopen
+View-once: creating three accounts and a second approved recipient device
+
+View-once: device enrollment and fingerprint verification complete
+
+View-once: four-device MLS group synchronized
+
+View-once: synthetic photo/video fixtures generated
+
+Revoked URL reload blocked by engine: false (decoded-memory cache is outside the view-once guarantee)
+
+  7 passed (1.5m)

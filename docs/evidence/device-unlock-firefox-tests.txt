@@ -1,0 +1,17 @@
+
+Running 8 tests using 1 worker
+
+(node:1100129) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/8] tests/device-unlock.spec.ts:72:5 › device verified PRF wraps the passphrase locally, survives reload, and can be removed
+[2/8] tests/device-unlock.spec.ts:121:5 › no PRF means no stored unlock record
+[3/8] tests/device-unlock.spec.ts:149:5 › user verification failure cannot enroll a device unlock
+[4/8] tests/device-unlock.spec.ts:179:5 › copied encrypted record cannot unlock another account
+[5/8] tests/device-unlock.spec.ts:227:5 › direct IP origin never offers WebAuthn unlock
+[6/8] tests/passphrase.spec.ts:35:5 › generator uses exactly 32 CSPRNG bytes, lossless base64url and fails closed without secure randomness
+[7/8] tests/passphrase.spec.ts:126:5 › new vault: generate, reveal/copy, regenerate/manual reset, save confirmation and real reload/unlock without network disclosure
+[8/8] tests/passphrase.spec.ts:355:5 › generator failure and clipboard denial remain usable; cancellation discards unsaved state; RTL and source gate
+  4 skipped
+  4 passed (19.8s)

@@ -1,0 +1,37 @@
+{
+  "light_text": {
+    "foreground": "#182332",
+    "background": "#ffffff",
+    "ratio": 15.85
+  },
+  "light_muted": {
+    "foreground": "#596879",
+    "background": "#f3f6fb",
+    "ratio": 5.27
+  },
+  "primary_text": {
+    "foreground": "#ffffff",
+    "background": "#1769f4",
+    "ratio": 4.81
+  },
+  "dark_text": {
+    "foreground": "#edf3ff",
+    "background": "#141f30",
+    "ratio": 14.87
+  },
+  "dark_muted": {
+    "foreground": "#a4b5cc",
+    "background": "#141f30",
+    "ratio": 7.93
+  },
+  "dark_primary": {
+    "foreground": "#102647",
+    "background": "#83b1ff",
+    "ratio": 6.98
+  },
+  "warning": {
+    "foreground": "#8a5309",
+    "background": "#fff5e5",
+    "ratio": 5.85
+  }
+}

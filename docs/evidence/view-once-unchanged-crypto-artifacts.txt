@@ -1,0 +1,3 @@
+apps/web/public/crypto/haven_crypto_bg.wasm: unchanged from pre-feature HEAD; SHA256 0b290372ca3f49eeb35b6c8bc96efe2cb714893b793b52345555b3e4aae1f76c
+packages/crypto-core/bin/haven-public-verify-x86_64-linux: unchanged from pre-feature HEAD; SHA256 217a26f0cc0b4b080c6da8407d09d351b12add72cff7172aba4a00a393db31ac
+No independent security verification is implied by matching artifact hashes.

@@ -1,0 +1,2 @@
+firefox: PASS trusted IP TLS + actual OpenMLS WASM: true
+webkit: BLOCKED: page.goto: Unacceptable TLS certificate

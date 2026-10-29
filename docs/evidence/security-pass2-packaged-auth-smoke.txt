@@ -1,0 +1,1 @@
+PASS: packaged runtime role creates credential-bound session; trusted-TLS login/me succeeds; direct password update invalidates bearer; disposable account removed.

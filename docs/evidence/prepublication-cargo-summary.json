@@ -1,0 +1,36 @@
+{
+  "database": {
+    "advisory-count": 1386,
+    "last-commit": "ee1a49a2769a24a596afc1c20cb33748d2769586",
+    "last-updated": "2026-10-29T15:05:38+01:00"
+  },
+  "vulnerabilities": [
+    {
+      "id": "RUSTSEC-2026-0387",
+      "package": "crypto-bigint",
+      "version": "0.5.5",
+      "patched": [
+        ">=0.7.6"
+      ]
+    },
+    {
+      "id": "RUSTSEC-2026-0330",
+      "package": "libcrux-kem",
+      "version": "0.0.9",
+      "patched": [
+        ">=0.0.10"
+      ]
+    },
+    {
+      "id": "RUSTSEC-2026-0331",
+      "package": "libcrux-kem",
+      "version": "0.0.9",
+      "patched": [
+        ">=0.0.10"
+      ]
+    }
+  ],
+  "informational_warnings": [
+    "unmaintained"
+  ]
+}

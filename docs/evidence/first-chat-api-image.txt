@@ -1,0 +1,69 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 907B 0.0s done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/python:3.12.15-slim-trixie@sha256:a0f57064cbdcd6285fa45f51237ab0b35ea8ebaed06a1f5973e89e19dfb86704
+#2 ...
+
+#3 [auth] library/python:pull token for registry-1.docker.io
+#3 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/python:3.12.15-slim-trixie@sha256:a0f57064cbdcd6285fa45f51237ab0b35ea8ebaed06a1f5973e89e19dfb86704
+#2 ...
+
+#4 [auth] library/python:pull token for registry-1.docker.io
+#4 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/python:3.12.15-slim-trixie@sha256:a0f57064cbdcd6285fa45f51237ab0b35ea8ebaed06a1f5973e89e19dfb86704
+#2 DONE 15.3s
+
+#5 [internal] load .dockerignore
+#5 transferring context: 188B done
+#5 DONE 0.0s
+
+#6 [1/8] FROM docker.io/library/python:3.12.15-slim-trixie@sha256:a0f57064cbdcd6285fa45f51237ab0b35ea8ebaed06a1f5973e89e19dfb86704
+#6 resolve docker.io/library/python:3.12.15-slim-trixie@sha256:a0f57064cbdcd6285fa45f51237ab0b35ea8ebaed06a1f5973e89e19dfb86704 0.0s done
+#6 DONE 0.0s
+
+#7 [internal] load build context
+#7 transferring context: 1.48MB 0.0s done
+#7 DONE 0.0s
+
+#8 [2/8] WORKDIR /app
+#8 CACHED
+
+#9 [3/8] COPY apps/api/requirements.lock /app/requirements.lock
+#9 CACHED
+
+#10 [4/8] RUN pip install --no-cache-dir --require-hashes -r requirements.lock && useradd --uid 10001 --create-home haven
+#10 CACHED
+
+#11 [5/8] COPY --chown=10001:10001 apps/api /app
+#11 DONE 0.1s
+
+#12 [6/8] COPY --chown=10001:10001 packages/crypto-core/bin/haven-public-verify-x86_64-linux /usr/local/bin/haven-public-verify
+#12 DONE 0.1s
+
+#13 [7/8] RUN test "$(uname -m)" = x86_64 && chmod 0555 /usr/local/bin/haven-public-verify
+#13 DONE 1.7s
+
+#14 [8/8] RUN python -m pip uninstall -y pip
+#14 1.853 Found existing installation: pip 25.0.1
+#14 1.910 Uninstalling pip-25.0.1:
+#14 2.108   Successfully uninstalled pip-25.0.1
+#14 2.119 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+#14 DONE 2.2s
+
+#15 exporting to image
+#15 exporting layers
+#15 exporting layers 0.2s done
+#15 exporting manifest sha256:4227964b2df4cd718bfb12be48fc99ff0c4430ca9b76ffac0165d39ccff3c1b0 done
+#15 exporting config sha256:0112fb5ae3f76f56c8387bd7e4e1dc74fe6f926aa640461407ad1e1829712522 done
+#15 exporting attestation manifest sha256:404093fbc7900b0bcb3a5a833a06bfdfc1d324367ad39d5d454c57fa30484fd4 0.0s done
+#15 exporting manifest list sha256:168c694c738b489b6e3757d3c6988a3e2f690c436d6afc9cd4c8f224a846fdb7 0.0s done
+#15 naming to docker.io/library/haven-api:0.2.0 done
+#15 unpacking to docker.io/library/haven-api:0.2.0
+#15 unpacking to docker.io/library/haven-api:0.2.0 0.2s done
+#15 DONE 0.5s

@@ -1,0 +1,7 @@
+{
+  "envelopes": 457,
+  "chunks": 50,
+  "known_test_plaintext_markers_absent": true,
+  "marker_count": 7,
+  "scope": "observed ciphertext columns only; not proof of exhaustive sensitive data/log coverage"
+}

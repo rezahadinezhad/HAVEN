@@ -1,0 +1,20 @@
+# Cold application services must remain stopped until a separately fenced promotion.
+# Start only `db` on the standby. Use the same pinned application release as the primary.
+services:
+  db:
+    networks: [private, replication]
+    entrypoint: ["bash", "/opt/haven/replica.sh"]
+    environment:
+      HAVEN_REPLICATION_PRIMARY_IP: ${HAVEN_REPLICATION_PRIMARY_IP:?private primary IP required}
+      HAVEN_REPLICATION_PORT: ${HAVEN_REPLICATION_PORT:-5432}
+      HAVEN_REPLICATION_SLOT: ${HAVEN_REPLICATION_SLOT:-haven_standby}
+      HAVEN_REPLICATION_PASSWORD_FILE: /run/secrets/replication-password
+    volumes:
+      - ../postgres/replica.sh:/opt/haven/replica.sh:ro
+      - ${HAVEN_DB_TLS_DIR:?required}:/etc/haven/db-tls:ro
+      - ${HAVEN_REPLICATION_PASSWORD_FILE:?required}:/run/secrets/replication-password:ro
+
+# Required for reaching a different host: the default private network is internal.
+# Constrain this network to the primary private tunnel IP/5432 in the host firewall.
+networks:
+  replication: {driver: bridge}

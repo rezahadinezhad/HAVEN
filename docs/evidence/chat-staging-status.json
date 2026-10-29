@@ -1,0 +1,32 @@
+{
+  "web_image": "sha256:30d42c46c73f5c24a94cebd00fc2a84445e142f24560b1ae0e828e31345fdeba",
+  "checks": [
+    {
+      "origin": "https://127.0.0.1:8443",
+      "verified_tls": true,
+      "redesigned_sign_in": true,
+      "strict_csp": true,
+      "loaded_static_assets": 8,
+      "crypto_ready": false,
+      "offline_worker_matches_manifest": true
+    },
+    {
+      "origin": "https://127.0.0.1:8444",
+      "verified_tls": true,
+      "redesigned_sign_in": true,
+      "strict_csp": true,
+      "loaded_static_assets": 8,
+      "crypto_ready": false,
+      "offline_worker_matches_manifest": true
+    },
+    {
+      "origin": "https://127.0.0.1:8445",
+      "verified_tls": true,
+      "redesigned_sign_in": true,
+      "strict_csp": true,
+      "loaded_static_assets": 8,
+      "crypto_ready": true,
+      "offline_worker_matches_manifest": true
+    }
+  ]
+}

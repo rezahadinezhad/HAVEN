@@ -1,0 +1,23 @@
+{
+  "status": "PASS_LOCAL_DATABASE_DRILL",
+  "postgres_image": "postgres:16.14-bookworm@sha256:64154d0babcb1741988719e703419af0382b19953706149f9872fbd0f438efa8",
+  "primary_fenced_before_promotion": true,
+  "replayed_checkpoint": "0/50BA588",
+  "before": {
+    "envelopes": 1058,
+    "ciphertext_and_order_sha256": "3053dd8f5e6db5a85dbb7b9e81c807a1ddd332afdd5edc04d0167e0532b7af37"
+  },
+  "after": {
+    "envelopes": 1058,
+    "ciphertext_and_order_sha256": "3053dd8f5e6db5a85dbb7b9e81c807a1ddd332afdd5edc04d0167e0532b7af37"
+  },
+  "measured_stop_promote_write_seconds": 1.11,
+  "controlled_rpo_rows": 0,
+  "production_rpo_rto": "UNQUALIFIED",
+  "limitations": [
+    "single physical host",
+    "container-stop fencing only",
+    "no provider/tunnel failure proof",
+    "no cross-origin browser state transfer claim"
+  ]
+}

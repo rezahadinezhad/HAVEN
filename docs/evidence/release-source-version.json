@@ -1,0 +1,30 @@
+{
+  "application_version": "0.2.0",
+  "mls_adapter_version": "0.1.0",
+  "delivery_profile": "haven-delivery-v2",
+  "source_commit": "fd0afbd5e01645ee4b624ef069d8e59d7c28ec4e",
+  "source_manifest_sha256": "1b959377d40095bcf816a2e8720efe5c58a23e32932e0e0d5ae4dad5d87c8192",
+  "release_status": "BLOCKED",
+  "independent_review": false,
+  "public_host_deployment": false,
+  "physical_device_qualification": false,
+  "qa_signing_key_only": true,
+  "qa_signing_public_key_file_sha256": "04016cacce0691bcface637a5947bea3d30c1b63d75aa5790d4bb435a11e7fb6",
+  "bundle": "/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/.local/offline-bundle-0.2.0-verified",
+  "bundle_manifest_sha256": "d8b94344c62337e92fb2cb7320bb2bf3d9f155e60c697d5914aa740a03f67b7e",
+  "bundle_source_sha256": "38078efa8255cfc8ffa6f64549aa4b6df2cfe338e61c27015e7e6246e56b7b29",
+  "bundle_images_sha256": "7530dbab57539fe29d9c83760b91efc8b025a82dd740abd4c4714a88ab7d3803",
+  "image_ids": {
+    "api": "sha256:83b7ba850732c058331695b03473eee916b5b16d0e46868037fe44d1ac4b17c8",
+    "web": "sha256:b955a74e28265794ca1473494ccb1e433823b0596a03d32ded961bcf020a56d5"
+  },
+  "source_archive_files_checked": 309,
+  "known_environment_passwords_private_keys_excluded": true,
+  "integrity_and_offline_source_build": "PASS_LOCAL_PREPARED_ENVIRONMENT",
+  "limitations": [
+    "QA signature is not owner approval or independently trusted release signing",
+    "source manifest excludes volatile docs/evidence",
+    "prebuilt Rust/WASM; full compiler-toolchain offline rebuild not bundled",
+    "fresh-host/provider/physical-phone/capacity and independent review gates remain"
+  ]
+}

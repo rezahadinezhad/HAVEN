@@ -1,0 +1,15 @@
+/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/.local/backups-privacy-upgrade/haven-20261024T170634Z.sql.gpg: OK
+gpg: encrypted with rsa2048 key, ID 93BD6065C7FAB0E9, created 2026-10-23
+      "HAVEN DISPOSABLE QA ONLY"
+ encrypted_envelopes
+---------------------
+                   0
+(1 row)
+
+ migrations
+------------
+         22
+(1 row)
+
+DO
+PASS: isolated schema/data restore. This does not qualify client epoch continuity or failover.

@@ -1,0 +1,13 @@
+.git
+.local
+.env
+**/.env.*
+!.env.example
+**/.venv
+**/__pycache__
+**/node_modules
+**/.next
+**/target
+**/test-results
+**/playwright-report
+**/*.key
