@@ -8,10 +8,10 @@
 
 HAVEN brings together standards-based group encryption, explicit device trust, encrypted local storage, and a familiar conversation interface. It explores what happens when security requirements shape the whole product—from the first invitation to session revocation, media delivery, and account recovery.
 
-The result is a functioning, self-hosted implementation built with **Django, Next.js, PostgreSQL, Redis, and Rust/WebAssembly**. It runs in the browser, supports English and Persian, and serves its application assets and cryptographic libraries locally.
+The result is a functioning, self-hosted implementation built with **Django, Next.js, PostgreSQL, Redis, and Rust/WebAssembly**. It runs in the browser, supports English and Persian, and serves its application assets and cryptographic libraries locally. A guided terminal installer turns the initial configuration, database bootstrap, and HTTPS checks into a single-command flow.
 
 [![Repository security](https://github.com/rezahadinezhad/HAVEN/actions/workflows/repository-security.yml/badge.svg)](https://github.com/rezahadinezhad/HAVEN/actions/workflows/repository-security.yml)
-[MIT license](LICENSE) · [Security model](#security-model) · [Local evaluation](#local-evaluation) · [Test evidence](TEST_REPORT.md) · [Contributing](CONTRIBUTING.md)
+[MIT license](LICENSE) · [Security model](#security-model) · [Guided setup](#guided-setup) · [Test evidence](TEST_REPORT.md) · [Contributing](CONTRIBUTING.md)
 
 > [!IMPORTANT]
 > **Experimental software; independent security review is pending.** Local tests demonstrate implemented behavior, not a security certification. Production onboarding remains disabled by a source-level gate. Read [SECURITY_STATUS.md](SECURITY_STATUS.md) before evaluating or deploying the project.
@@ -53,6 +53,7 @@ HAVEN treats those questions as implementation requirements. Its value is the co
 | **Reliable delivery** | Durable PostgreSQL acceptance, ordered signed histories, retryable encrypted outbox, and cached local history. Redis carries transient hints and rate-limit state. |
 | **Account protection** | Secure cookies, CSRF and exact Origin checks, credential-bound sessions, revocation checks, bounded unfinished sign-ins, and explicit recovery. |
 | **Considered interface** | Responsive desktop/mobile layouts, light/dark themes, English/Persian and RTL support, keyboard interaction, and reduced-motion behavior. |
+| **Guided installation** | `./setup.sh` collects the setup details, creates unique credentials, builds and starts an isolated Docker stack, and verifies HTTPS/login. Interrupted setup resumes without replacing secrets. |
 | **Self-hosted operations** | Separate database roles, TLS-only access, encrypted backup tooling, signed artifact tooling, retention cleanup, and documented deployment procedures. |
 
 ## Security model
@@ -122,7 +123,12 @@ It asks for the installation name, community name, administrator username, and H
 
 Prerequisites: **Python 3.10+, OpenSSL, a Linux x86_64 Docker engine, and Docker Compose 2.24.4+**. The Docker build supplies the application runtimes; host Node.js, Rust and uv are unnecessary for this path. Initial builds need access to the pinned images and dependency registries.
 
-Choose **local evaluation** for working loopback-only messaging. With Chrome/Chromium and NSS `certutil` installed, the wizard prepares a separate trusted test browser profile. Choose **gated server** to configure a server using an existing certificate with the correct IP SAN and a matching private key. Server messaging remains blocked by the release gate; setup does not qualify production use or obtain a publicly trusted certificate.
+| Wizard mode | Access and requirements |
+|---|---|
+| **Local evaluation** | Working messaging on this computer at `https://localhost:8447` by default. With Chrome/Chromium and NSS `certutil` installed, setup prepares a separate trusted test browser profile. |
+| **Gated server** | Configures your server IP and existing matching IP-SAN TLS certificate/key. Normal server messaging stays blocked until release requirements pass. Public certificate issuance, client trust and remote reachability require external infrastructure. |
+
+The wizard prints the address, protected administrator credential path, and browser launcher after verification. Client message keys are created in the browser at first setup. Installation does not qualify production use.
 
 Passwords and configuration stay in owner-only files under `.local/setup/<name>`. The wizard prints the address, protected credential path, browser launcher, and management commands. Interrupted setup can be resumed with `./setup.sh --resume <name>` without rotating secrets. See the [guided setup runbook](docs/runbooks/guided-setup.md) for TLS, recovery, and operational limits.
 
@@ -163,6 +169,9 @@ A running local server uses an immutable copy of its completed build. After rebu
 
 Recorded local evidence includes:
 
+- **13 installer tests** plus real Docker setup, failure/retry recovery, trusted browser sign-in and TLS rejection checks.
+- The dependency-alert remediation reran **all 70 API tests** after removing the unused Daphne/Twisted/Autobahn development stack. Python audits now include development tools; [all nine original alerts are mapped to their remediation](docs/security/dependency-alert-remediation.md).
+
 - **70 API tests** for authentication, authorization, sessions, concurrency, migrations, retention, attachments, and device enrollment.
 - **205 upstream protocol vector tests passed**, with ignored/filtered/unsupported-suite cases recorded.
 - Native Rust properties and browser tests covering interoperability, prior-build compatibility, tampering, replay, media, and key lifecycle.
@@ -181,9 +190,10 @@ bash scripts/test-provider-vectors.sh
 npm run typecheck --prefix apps/web
 HAVEN_BROWSER=firefox npm test --prefix apps/web -- crypto.spec.ts integration.spec.ts
 
-# Publication hygiene and dependency review
+# Publication hygiene and dependency review (including Python development tools)
+bash scripts/audit-python.sh
 GITLEAKS_BIN=/absolute/path/to/gitleaks bash scripts/scan-repository.sh
-cargo audit --file packages/crypto-core/Cargo.lock
+make dependency-audit
 ```
 
 `make production-build` produces gated engineering images. `make release-check` intentionally fails until external acceptance requirements are complete. The local Docker compatibility overlay is test-only and must not be used as a production hardening profile.

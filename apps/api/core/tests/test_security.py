@@ -8,7 +8,7 @@ from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 from django.conf import settings
 from django.utils import timezone
 from django.test import override_settings
-from channels.testing import WebsocketCommunicator
+from .asgi_socket import WebsocketProbe
 from haven.asgi import application
 from core import models as m
 from .conftest import post as raw_post, login, csrf
@@ -263,7 +263,7 @@ def test_enrollment_requires_existing_signature(client, credentials):
 @pytest.mark.asyncio
 @pytest.mark.django_db(transaction=True)
 async def test_hostile_websocket_origin():
-    ws = WebsocketCommunicator(application, "/ws/v1", headers=[(b"origin", b"https://evil.test")])
+    ws = WebsocketProbe(application, "/ws/v1", headers=[(b"origin", b"https://evil.test")])
     connected, code = await ws.connect()
     assert not connected and code == 4403
     await ws.disconnect()

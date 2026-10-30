@@ -14,7 +14,7 @@ Primary sources consulted while implementing (build-time network only; app does 
 - [OWASP ASVS 5](https://asvs.owasp.org/): control planning; no formal ASVS certification.
 - Next 16.4.3 bundled documentation for Client Components, proxy and nonce CSP was read (apps/web/node_modules/next/dist/docs/). Version-pinned code and production build, not assumed older APIs.
 - [Django security archive](https://docs.djangoproject.com/en/5.2/releases/security/), package registry versions, npm audit, pip-audit and RustSec audit checked. Exact machine outputs in docs/evidence.
-- [Twisted IMAP advisory](https://github.com/twisted/twisted/security/advisories/GHSA-8pqf-f4m5-798g): development-only dependency finding; production Uvicorn excludes it.
+- [Twisted IMAP advisory](https://github.com/twisted/twisted/security/advisories/GHSA-8pqf-f4m5-798g): historical development-only dependency finding; the entire Daphne/Twisted/Autobahn dependency chain was removed on 2026-10-30. See [remediation](dependency-alert-remediation.md).
 - RustSec RUSTSEC-2026-0330/0331 flag optional libcrux-kem 0.0.9 in Cargo.lock. Active native/WASM dependency trees must be compared; do not confuse disabled post-quantum backend dependencies with a clean lockfile audit. proc-macro-error2 has an unmaintained warning.
 
 No source supplies an independent audit of HAVEN, and none is claimed.
