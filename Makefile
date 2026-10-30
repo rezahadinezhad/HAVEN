@@ -1,5 +1,9 @@
 SHELL := /bin/bash
-.PHONY: doctor prepare dev test security-test crypto production-build offline-bundle deploy-staging pki-create-offline-root pki-issue-ip-leaf certificate-check backup restore-check outage-drill failover-plan release-check
+.PHONY: setup setup-test doctor prepare dev test security-test crypto production-build offline-bundle deploy-staging pki-create-offline-root pki-issue-ip-leaf certificate-check backup restore-check outage-drill failover-plan release-check
+setup:
+	./setup.sh
+setup-test:
+	python3 -m unittest discover -s scripts/tests -v
 prepare:
 	bash scripts/prepare.sh
 doctor:

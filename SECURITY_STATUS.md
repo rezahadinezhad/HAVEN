@@ -2,6 +2,10 @@
 
 **Release classification: BLOCKED.** Local integration works with real OpenMLS and trusted loopback-IP TLS. This does not establish that the complete specification is release-qualified. Normal settings retain `CRYPTO_READY=False`; release-check deliberately returns nonzero. No environment variable silently enables production cryptography. The isolated loopback integration settings are for test/evaluation only.
 
+## Guided installer boundaries
+
+The guided setup uses owner-only state, unique generated credentials, exact TLS identities, separate database roles and isolated Docker project names. Local evaluation can explicitly use a reduced-hardening loopback profile on incompatible hosts; server setup refuses that exception. The local CA is trusted only in a separate optional browser profile, never installed into the system store, and its signing key is excluded from the TLS mount. Server setup requires an existing trusted IP-SAN certificate; it does not issue public certificates, configure remote reachability, renew certificates, schedule backups or implement in-place upgrades. HTTPS/admin checks do not qualify cryptography or infrastructure. Server messaging and release remain gated. See [guided setup](docs/runbooks/guided-setup.md) and [executed tests](docs/evidence/setup-wizard-2026-10-30.md).
+
 ## Implemented and locally exercised
 
 - RFC 9420 suite 0x0001 through OpenMLS 0.9.2/RustCrypto: X25519, AES-128-GCM, SHA-256 and Ed25519. Public MLS KeyPackages/wire bindings are checked by a bounded native executable; servers receive no private provider snapshots.

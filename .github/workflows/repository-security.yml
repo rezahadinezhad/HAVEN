@@ -15,6 +15,8 @@ jobs:
           persist-credentials: false
       - name: Check publishable paths and report privacy
         run: python3 scripts/repository-safety.py
+      - name: Test guided setup and TLS rejection paths
+        run: python3 -m unittest discover -s scripts/tests -v
       - name: Install verified secret scanner
         shell: bash
         run: |

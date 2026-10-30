@@ -108,7 +108,25 @@ flowchart LR
 
 The browser handles message encryption, verification, and local key storage. Django enforces account/device authorization and coordinates durable delivery. PostgreSQL is the authoritative store; Redis notifications help synchronization but do not replace it. TLS protects account authentication and transport metadata as well as the encrypted messaging traffic.
 
-## Local evaluation
+## Guided setup
+
+Run the terminal wizard to configure and start an isolated Docker installation:
+
+```bash
+git clone https://github.com/rezahadinezhad/HAVEN.git
+cd HAVEN
+./setup.sh
+```
+
+It asks for the installation name, community name, administrator username, and HTTPS port. It generates unique secrets and administrator credentials, builds the application, prepares database roles and migrations, starts the services, and checks verified HTTPS and administrator login. Nothing needs to be copied into `.env` by hand.
+
+Prerequisites: **Python 3.10+, OpenSSL, a Linux x86_64 Docker engine, and Docker Compose 2.24.4+**. The Docker build supplies the application runtimes; host Node.js, Rust and uv are unnecessary for this path. Initial builds need access to the pinned images and dependency registries.
+
+Choose **local evaluation** for working loopback-only messaging. With Chrome/Chromium and NSS `certutil` installed, the wizard prepares a separate trusted test browser profile. Choose **gated server** to configure a server using an existing certificate with the correct IP SAN and a matching private key. Server messaging remains blocked by the release gate; setup does not qualify production use or obtain a publicly trusted certificate.
+
+Passwords and configuration stay in owner-only files under `.local/setup/<name>`. The wizard prints the address, protected credential path, browser launcher, and management commands. Interrupted setup can be resumed with `./setup.sh --resume <name>` without rotating secrets. See the [guided setup runbook](docs/runbooks/guided-setup.md) for TLS, recovery, and operational limits.
+
+## Source development
 
 Prepared native server artifacts target **Linux x86_64**. Prerequisites: Docker/Compose, Python 3.12/uv, Node.js, Rust, OpenSSL, and the browser trust tooling described in the [operations runbook](docs/runbooks/operations.md). Exact versions are recorded in `.nvmrc`, `.python-version`, `rust-toolchain.toml`, and the dependency lockfiles.
 
