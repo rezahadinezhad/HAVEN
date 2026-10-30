@@ -6,7 +6,7 @@ import uuid
 from datetime import timedelta
 import pytest
 from asgiref.sync import sync_to_async
-from channels.testing import WebsocketCommunicator
+from .asgi_socket import WebsocketProbe
 from django.utils import timezone
 from core import models as m
 from haven.asgi import application
@@ -46,7 +46,7 @@ def identities():
 
 
 def socket(token):
-    ws = WebsocketCommunicator(
+    ws = WebsocketProbe(
         application,
         "/ws/v1",
         headers=[
@@ -94,7 +94,7 @@ async def test_scoped_typing_and_revocation(settings):
 
 async def test_unauthed_and_bounded_frames(settings):
     settings.CRYPTO_READY = True
-    missing = WebsocketCommunicator(
+    missing = WebsocketProbe(
         application, "/ws/v1", headers=[(b"host", b"127.0.0.1:8443"), (b"origin", b"https://127.0.0.1:8443")]
     )
     missing.scope["scheme"] = "wss"

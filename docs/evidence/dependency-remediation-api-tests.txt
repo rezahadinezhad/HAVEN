@@ -1,0 +1,5 @@
+All checks passed!
+58 files already formatted
+No changes detected
+......................................................................   [100%]
+70 passed in 31.26s

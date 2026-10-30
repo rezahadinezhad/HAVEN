@@ -15,6 +15,10 @@ jobs:
           persist-credentials: false
       - name: Check publishable paths and report privacy
         run: python3 scripts/repository-safety.py
+      - name: Verify reviewed source manifest
+        run: sha256sum --check SOURCE_MANIFEST.sha256 > /dev/null
+      - name: Test guided setup and TLS rejection paths
+        run: python3 -m unittest discover -s scripts/tests -v
       - name: Install verified secret scanner
         shell: bash
         run: |
@@ -27,7 +31,22 @@ jobs:
       - name: Scan history with redacted output
         run: '"$RUNNER_TEMP/gitleaks" git --redact --no-banner'
       - name: Audit JavaScript lockfile
-        run: npm audit --prefix apps/web --audit-level=moderate
+        run: npm audit --prefix apps/web --audit-level=low
+  python-advisories:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Install pinned uv
+        uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2
+        with:
+          version: "0.13.1"
+          python-version: "3.12"
+          enable-cache: false
+      - name: Audit all Python dependency groups without suppression
+        run: bash scripts/audit-python.sh
   rust-advisories:
     runs-on: ubuntu-latest
     timeout-minutes: 20
