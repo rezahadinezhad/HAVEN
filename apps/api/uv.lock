@@ -497,7 +497,7 @@ requires-dist = [
     { name = "psycopg", extras = ["binary"], specifier = ">=3.2,<3.4" },
     { name = "redis", specifier = ">=6,<8" },
     { name = "rfc8785", specifier = "==0.1.4" },
-    { name = "uvicorn", extras = ["standard"], specifier = ">=0.38,<1" },
+    { name = "uvicorn", extras = ["standard"], specifier = ">=0.54.0,<1" },
 ]
 
 [package.metadata.requires-dev]
