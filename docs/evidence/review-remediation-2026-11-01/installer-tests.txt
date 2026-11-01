@@ -1,0 +1,21 @@
+test_collision_rejected_before_recording_ownership (test_setup.SetupTests.test_collision_rejected_before_recording_ownership) ... [1/6] Checking Docker, architecture and source integrity…
+ok
+test_dotenv_injection_rejected (test_setup.SetupTests.test_dotenv_injection_rejected) ... ok
+test_exact_hosts_and_no_server_compatibility (test_setup.SetupTests.test_exact_hosts_and_no_server_compatibility) ... ok
+test_log_redacts_credentials_and_stdin_not_command (test_setup.SetupTests.test_log_redacts_credentials_and_stdin_not_command) ... ok
+test_manifest_tampering_and_coverage (test_setup.SetupTests.test_manifest_tampering_and_coverage) ... ok
+test_occupied_port_rejected (test_setup.SetupTests.test_occupied_port_rejected) ... ok
+test_overlay_never_enables_nonloopback_messaging (test_setup.SetupTests.test_overlay_never_enables_nonloopback_messaging) ... ok
+test_private_files_and_symlinks (test_setup.SetupTests.test_private_files_and_symlinks) ... ok
+test_stale_or_unowned_resume_preserves_secrets (test_setup.SetupTests.test_stale_or_unowned_resume_preserves_secrets) ... [1/6] Checking Docker, architecture and source integrity…
+[1/6] Checking Docker, architecture and source integrity…
+ok
+test_interrupted_tls_generation_never_publishes_partial_bundle (test_setup.TLSTests.test_interrupted_tls_generation_never_publishes_partial_bundle) ... ok
+test_real_chain_ip_hostname_key_and_resume (test_setup.TLSTests.test_real_chain_ip_hostname_key_and_resume) ... ok
+test_reject_ca_leaf_and_mismatched_key (test_setup.TLSTests.test_reject_ca_leaf_and_mismatched_key) ... ok
+test_reject_wrong_ip_hostname_untrusted_and_near_expiry (test_setup.TLSTests.test_reject_wrong_ip_hostname_untrusted_and_near_expiry) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.932s
+
+OK

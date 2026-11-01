@@ -1,0 +1,3 @@
+{"check": "conversation_pagination", "actual": 101, "list_count": 100, "sync_count": 100, "list_sync_overlap": 99}
+{"check": "proof_fetch", "status": 200, "proof_count": 100, "ciphertext_selected": true, "unneeded_ciphertext_bytes": 15000000}
+{"check": "global_login_exhaustion", "unrelated_login_status": 429}

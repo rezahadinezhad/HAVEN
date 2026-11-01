@@ -21,7 +21,7 @@ device=obj({'id':ID,'user_id':ID,'label':S,'identity':S,'public_key':S,'trust_st
 certificate=obj({k:device['properties'][k] for k in ['id','user_id','identity','public_key']}|{'role':{'enum':['owner','moderator','member']}})
 transition=obj({'action':{'enum':['add','remove','update','transfer','role']},'device_id':{'type':['string','null']},'next_epoch':N,'members':arr(ref('Certificate')),'welcome_hash':S,'state_hash':S})
 header=obj({'domain':{'const':'haven/envelope/v1'},'v':{'const':1},'conversation_id':ID,'group_id':S,'sender_device':ID,'client_message_id':ID,'epoch':N,'seq':N,'previous_hash':S,'ciphertext_hash':S,'transition':{'oneOf':[ref('Transition'),{'type':'null'}]}})
-conv=obj({'id':ID,'kind':{'enum':['direct','group']},'group_id':S,'epoch':N,'last_seq':N,'status':S,'head_hash':S})
+conv=obj({'id':ID,'kind':{'enum':['direct','group']},'group_id':S,'epoch':N,'last_seq':N,'status':S,'head_hash':S,'receipt_version':N})
 genesis=obj({'domain':{'const':'haven/genesis/v1'},'id':ID,'kind':{'enum':['direct','group']},'group_id':S,'members':arr(ref('Certificate'))})
 env=obj({'id':ID,'client_message_id':ID,'sender_device':ID,'v':{'const':1},'seq':N,'epoch':N,'kind':{'enum':['application','commit']},'header':ref('DeliveryHeader'),'signature':S,'chain_hash':S,'ciphertext':S,'received_at':DATE,'welcome':S,'transition':ref('Transition')},['id','client_message_id','sender_device','v','seq','epoch','kind','header','signature','chain_hash'])
 privacy=obj({'delivered_ciphertext_grace_hours':N,'attachment_days':N,'abandoned_upload_hours':N,'audit_days':N,'cleanup_interval_seconds':N,'unsynced_ciphertext_expires':B,'signed_history_retained':B,'accounts_and_membership_retained':B,'ingress_observes_ip':B,'independent_review':B})
@@ -67,8 +67,8 @@ def response(name,method,params):
     if name=='Conversations':return arr(ref('Conversation')) if method=='get' and not params else obj(conv['properties']|{'genesis':ref('Genesis'),'genesis_signature':S,'members':arr(obj({'device':ref('Device'),'role':S,'valid_from_epoch':N,'leaving':B}))}) if params else ref('Conversation')
     if name in ['Messages','CryptoEvents']:return obj({'messages':arr(ref('Envelope')),'last_seq':N,'head_hash':S}) if method=='get' else obj({'id':ID,'seq':N,'state':{'const':'server_accepted'},'envelope':ref('Envelope')})
     if name=='Proofs':return obj({'proofs':arr(ref('Envelope')),'last_seq':N,'head_hash':S,'genesis':ref('Genesis'),'genesis_signature':S})
-    if name=='Acks':return obj({'seq':N,'state':{'const':'recipient_synced'}}) if method=='post' else obj({'cursors':arr(obj({'device_id':ID,'last_acked_seq':N}))})
-    if name=='Sync':return obj({'conversations':arr(ref('Conversation')),'strategy':S,'max_page':N})
+    if name=='Acks':return obj({'seq':N,'state':{'const':'recipient_synced'}}) if method=='post' else obj({'version':N,'cursors':arr(obj({'device_id':ID,'last_acked_seq':N}))})
+    if name=='Sync':return obj({'conversations':arr(ref('Conversation')),'next_cursor':{'type':['string','null']},'strategy':S,'max_page':N})
     if name=='RecoveryStart':return obj({'id':ID,'nonce':S})
     if name=='Attachments':return obj({'id':ID,'status':S},['id'])
     if name=='ViewOnceAttachment':return obj({'state':{'enum':['available','opened','sent']}}) if method=='get' else obj({'expires_at':{'type':'string','format':'date-time'}})
@@ -88,6 +88,9 @@ for pattern in urlpatterns:
         media='application/octet-stream' if name=='Chunk' and method=='get' else 'application/json'
         op={'operationId':f'{name}_{method}_{len(paths)}','security':[] if name in ['Health','CSRF','Login','Redeem','RecoveryStart','RecoveryReset'] else [{'cookieAuth':[]}], 'responses':{str(code):{'description':'Committed success' if code<300 else 'Request rejected; no secret diagnostics','content':{media:{'schema':response(name,method,params) if code<300 else {'type':'object','additionalProperties':True}}}} for code in ([200,201,400,403,404,409,429,503]+([410] if name in ['Messages','CryptoEvents'] and method=='get' else []))}}
         if params:op['parameters']=[{'name':p,'in':'path','required':True,'schema':{'type':'integer' if p=='index' else 'string','minimum':0} if p=='index' else {'type':'string','format':'uuid'}} for p in params]
+        if name in ['Conversations','Sync'] and method=='get' and not params:op.setdefault('parameters',[]).append({'name':'cursor','in':'query','required':False,'schema':S,'description':'Signed keyset cursor. Conversation array responses expose continuation in X-Haven-Next-Cursor.'})
+        if name=='Conversations' and method=='get' and not params:
+            for code in ['200','201']:op['responses'][code]['headers']={'X-Haven-Next-Cursor':{'description':'Present only when another page exists','schema':S}}
         if name=='Chunk' and method=='get':op.setdefault('parameters',[]).append({'name':'X-Haven-View-Token','in':'header','required':False,'description':'Temporary, device-bound session capability required for view-once attachments. Never a media decryption key. Never place in a URL.','schema':{'type':'string','pattern':'^[0-9a-f]{64}$'}})
         if method in ['post','patch','put']:
             schema=request_schema(requests[name]()) if name in requests else obj({})

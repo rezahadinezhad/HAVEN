@@ -59,12 +59,23 @@ decryption keys on devices, subject to implementation/endpoint assumptions.
 ## IPs, logs and memory
 
 Supplied primary/backup/bridge Nginx configurations remove common client address
-headers before forwarding to Django/Next; the dev proxy does the same. Ingress
-still sees network addresses in live connections and volatile rate/connection
-limits. Root/kernel/provider observation cannot be prevented by switching off
-logs. No IP is added to a Django model. Login limits use account-specific keyed
-labels plus a service budget, avoiding one five-login budget on the entire
-community after IP-header removal. Per-IP ingress abuse controls remain.
+headers before forwarding to Django/Next. The one exception is the exact login
+path: public ingress replaces `X-Forwarded-For` with its observed transport peer;
+the allowlisted backup bridge relays that value. The loopback development proxy
+also overwrites it from the socket. Caller-supplied forwarding identities are not
+accepted at public ingress. The API's source and account/source login counters use
+keyed HMAC labels with a 120-second Redis TTL. No source IP is added to a Django
+model, metric label, application log or audit record. Raw addresses exist briefly
+in request memory and transport state. A four-operation in-flight Argon2 bound
+replaces the shared minute-long login budget; malformed bodies do not spend a
+credential-verification budget. Public ingress additionally limits login attempts
+to 30/minute per address with a five-request burst. Users behind a shared NAT
+share that ingress budget.
+
+The private API listener must remain unreachable from untrusted clients, and only
+trusted ingress may set forwarded scheme/source headers. Ingress still sees
+network addresses in live connections and volatile rate/connection limits.
+Root/kernel/provider observation cannot be prevented by switching off logs.
 
 Nginx request/error logs and request/response spooling are disabled. Supplied
 PostgreSQL statement/bind-parameter/connection logging and query process titles

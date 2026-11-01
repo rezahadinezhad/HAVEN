@@ -1,0 +1,96 @@
+{
+  "auditReportVersion": 2,
+  "vulnerabilities": {
+    "@redocly/openapi-core": {
+      "name": "@redocly/openapi-core",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "minimatch"
+      ],
+      "effects": [
+        "openapi-typescript"
+      ],
+      "range": "<=2.6.0",
+      "nodes": [
+        "node_modules/@redocly/openapi-core"
+      ],
+      "fixAvailable": {
+        "name": "openapi-typescript",
+        "version": "6.7.6",
+        "isSemVerMajor": true
+      }
+    },
+    "minimatch": {
+      "name": "minimatch",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1244012,
+          "name": "minimatch",
+          "dependency": "minimatch",
+          "title": "minimatch has potential denial of service via globparts amplification",
+          "url": "https://github.com/advisories/GHSA-g3hv-75wg-m249",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-405"
+          ],
+          "cvss": {
+            "score": 0,
+            "vectorString": null
+          },
+          "range": "<11.0.1"
+        }
+      ],
+      "effects": [
+        "@redocly/openapi-core"
+      ],
+      "range": "<11.0.1",
+      "nodes": [
+        "node_modules/minimatch"
+      ],
+      "fixAvailable": {
+        "name": "openapi-typescript",
+        "version": "6.7.6",
+        "isSemVerMajor": true
+      }
+    },
+    "openapi-typescript": {
+      "name": "openapi-typescript",
+      "severity": "moderate",
+      "isDirect": true,
+      "via": [
+        "@redocly/openapi-core"
+      ],
+      "effects": [],
+      "range": ">=7.0.0-next.0",
+      "nodes": [
+        "node_modules/openapi-typescript"
+      ],
+      "fixAvailable": {
+        "name": "openapi-typescript",
+        "version": "6.7.6",
+        "isSemVerMajor": true
+      }
+    }
+  },
+  "metadata": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 0,
+      "moderate": 3,
+      "high": 0,
+      "critical": 0,
+      "total": 3
+    },
+    "dependencies": {
+      "prod": 54,
+      "dev": 68,
+      "optional": 65,
+      "peer": 0,
+      "peerOptional": 0,
+      "total": 160
+    }
+  }
+}

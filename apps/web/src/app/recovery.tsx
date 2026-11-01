@@ -19,8 +19,10 @@ export function AccountRecovery({
     setBusy(true);
     setError("");
     try {
-      if (!file || file.size > 24000000)
-        throw new Error("Select your encrypted recovery kit (maximum 24 MB).");
+      if (!file || file.size > 256 * 1024 * 1024)
+        throw new Error(
+          "Select your encrypted recovery kit (maximum 256 MiB).",
+        );
       const kit = JSON.parse(await file.text()) as {
         format: string;
         scope: string;

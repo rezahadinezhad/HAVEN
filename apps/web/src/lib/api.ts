@@ -9,6 +9,7 @@ export type Conversation = {
   last_seq: number;
   status: string;
   head_hash: string;
+  receipt_version?: number;
 };
 export type Envelope = {
   id: string;
@@ -87,7 +88,22 @@ export async function api<T>(
         : { "Content-Type": "application/json", "X-CSRFToken": csrf },
     body: value === undefined ? undefined : JSON.stringify(value),
   });
-  const data = await response.json();
+  let data = await response.json();
+  // Preserve the array API for callers while following bounded server pages.
+  if (
+    method === "GET" &&
+    response.ok &&
+    (path === "conversations" || path.startsWith("conversations?cursor="))
+  ) {
+    const cursor = response.headers.get("X-Haven-Next-Cursor");
+    if (cursor)
+      data = [
+        ...data,
+        ...(await api<Conversation[]>(
+          "conversations?cursor=" + encodeURIComponent(cursor),
+        )),
+      ];
+  }
   if (
     !response.ok &&
     response.status === 403 &&

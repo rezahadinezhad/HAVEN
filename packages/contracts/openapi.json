@@ -279,6 +279,10 @@
           },
           "head_hash": {
             "type": "string"
+          },
+          "receipt_version": {
+            "type": "integer",
+            "minimum": 0
           }
         },
         "required": [
@@ -288,7 +292,8 @@
           "epoch",
           "last_seq",
           "status",
-          "head_hash"
+          "head_hash",
+          "receipt_version"
         ],
         "additionalProperties": false
       },
@@ -4807,6 +4812,14 @@
                   }
                 }
               }
+            },
+            "headers": {
+              "X-Haven-Next-Cursor": {
+                "description": "Present only when another page exists",
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           },
           "201": {
@@ -4818,6 +4831,14 @@
                   "items": {
                     "$ref": "#/components/schemas/Conversation"
                   }
+                }
+              }
+            },
+            "headers": {
+              "X-Haven-Next-Cursor": {
+                "description": "Present only when another page exists",
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -4888,7 +4909,18 @@
               }
             }
           }
-        }
+        },
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Signed keyset cursor. Conversation array responses expose continuation in X-Haven-Next-Cursor."
+          }
+        ]
       },
       "post": {
         "operationId": "Conversations_post_28",
@@ -5074,6 +5106,10 @@
                     "head_hash": {
                       "type": "string"
                     },
+                    "receipt_version": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
                     "genesis": {
                       "$ref": "#/components/schemas/Genesis"
                     },
@@ -5117,6 +5153,7 @@
                     "last_seq",
                     "status",
                     "head_hash",
+                    "receipt_version",
                     "genesis",
                     "genesis_signature",
                     "members"
@@ -5160,6 +5197,10 @@
                     "head_hash": {
                       "type": "string"
                     },
+                    "receipt_version": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
                     "genesis": {
                       "$ref": "#/components/schemas/Genesis"
                     },
@@ -5203,6 +5244,7 @@
                     "last_seq",
                     "status",
                     "head_hash",
+                    "receipt_version",
                     "genesis",
                     "genesis_signature",
                     "members"
@@ -6373,6 +6415,10 @@
                 "schema": {
                   "type": "object",
                   "properties": {
+                    "version": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
                     "cursors": {
                       "type": "array",
                       "items": {
@@ -6396,6 +6442,7 @@
                     }
                   },
                   "required": [
+                    "version",
                     "cursors"
                   ],
                   "additionalProperties": false
@@ -6410,6 +6457,10 @@
                 "schema": {
                   "type": "object",
                   "properties": {
+                    "version": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
                     "cursors": {
                       "type": "array",
                       "items": {
@@ -6433,6 +6484,7 @@
                     }
                   },
                   "required": [
+                    "version",
                     "cursors"
                   ],
                   "additionalProperties": false
@@ -6698,6 +6750,12 @@
                         "$ref": "#/components/schemas/Conversation"
                       }
                     },
+                    "next_cursor": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
                     "strategy": {
                       "type": "string"
                     },
@@ -6708,6 +6766,7 @@
                   },
                   "required": [
                     "conversations",
+                    "next_cursor",
                     "strategy",
                     "max_page"
                   ],
@@ -6729,6 +6788,12 @@
                         "$ref": "#/components/schemas/Conversation"
                       }
                     },
+                    "next_cursor": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
                     "strategy": {
                       "type": "string"
                     },
@@ -6739,6 +6804,7 @@
                   },
                   "required": [
                     "conversations",
+                    "next_cursor",
                     "strategy",
                     "max_page"
                   ],
@@ -6813,7 +6879,18 @@
               }
             }
           }
-        }
+        },
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Signed keyset cursor. Conversation array responses expose continuation in X-Haven-Next-Cursor."
+          }
+        ]
       }
     },
     "/api/v1/attachments/init": {

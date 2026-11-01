@@ -439,7 +439,7 @@ export default function Haven() {
       api<Conversation[]>("conversations")
         .then(setConversations)
         .catch(() => {});
-  }, [user, health]);
+  }, [user, health?.crypto_ready]);
   useEffect(() => {
     Promise.all(
       [...devices, ...members].map(
@@ -450,7 +450,8 @@ export default function Haven() {
   useEffect(() => {
     if (!vault || pendingApproval) return;
     let sessionCheckedAt = 0,
-      sessionCheckedMonotonic = -Infinity;
+      sessionCheckedMonotonic = -Infinity,
+      rejectedSeen = vault.state.rejected_event_count || 0;
     return connectionLoop(
       async () => {
         if (
@@ -496,7 +497,7 @@ export default function Haven() {
         let warning = deliveryWarning;
         for (const c of list) {
           try {
-            await vault.sync(c);
+            await vault.syncIfChanged(c);
           } catch (e) {
             warning =
               e instanceof Error &&
@@ -533,7 +534,18 @@ export default function Haven() {
             body: "New encrypted activity. Open your trusted conversation.",
           });
         if (vaultRef.current !== vault) return;
-        setEvents([...vault.state.events]);
+        setEvents((old) =>
+          old.length === vault.state.events.length &&
+          old.every((event, i) => event === vault.state.events[i])
+            ? old
+            : [...vault.state.events],
+        );
+        if ((vault.state.rejected_event_count || 0) > rejectedSeen) {
+          setNotice(
+            "A message contained invalid content and was skipped. Newer messages remain available.",
+          );
+          rejectedSeen = vault.state.rejected_event_count || 0;
+        }
         if (warning) setError(warning);
       },
       setOnline,
@@ -2383,7 +2395,7 @@ export default function Haven() {
                             const file = e.target.files?.[0];
                             if (file)
                               void perform(async () => {
-                                if (file.size > 24000000)
+                                if (file.size > 256 * 1024 * 1024)
                                   throw new Error("Kit too large");
                                 const kit = JSON.parse(await file.text()) as {
                                   format: string;

@@ -22,6 +22,21 @@ http {
     ssl_session_tickets off;
     allow @BACKUP_PEER_IP@;
     deny all;
+    # Login source is overwritten at public ingress and relayed only by the allowed backup peer.
+    location = /api/v1/auth/login {
+      proxy_pass http://@API_UPSTREAM@;
+      proxy_set_header Host $http_host;
+      proxy_set_header X-Forwarded-Proto https;
+      proxy_set_header X-Real-IP "";
+      proxy_set_header X-Forwarded-For $http_x_forwarded_for;
+      proxy_set_header Forwarded "";
+      proxy_set_header X-Client-IP "";
+      proxy_set_header True-Client-IP "";
+      proxy_set_header CF-Connecting-IP "";
+      proxy_set_header X-Forwarded-Host "";
+      proxy_connect_timeout 5s;
+      proxy_read_timeout 60s;
+    }
     location /api/v1/ {
       proxy_pass http://@API_UPSTREAM@;
       proxy_set_header Host $http_host;

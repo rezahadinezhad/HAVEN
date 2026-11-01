@@ -2,6 +2,7 @@ import base64
 import hashlib
 import json
 import secrets
+import threading
 import os
 from pathlib import Path
 from cryptography import x509
@@ -12,9 +13,10 @@ from django.conf import settings
 from django.contrib.auth import authenticate
 from django.contrib.auth.password_validation import validate_password
 from django.core.cache import cache
+from django.core import signing
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import transaction, IntegrityError
-from django.db.models import Sum, Q, Min
+from django.db.models import Sum, Q, Min, F
 from django.http import HttpResponse
 from django.middleware.csrf import get_token, rotate_token
 from django.shortcuts import get_object_or_404
@@ -32,6 +34,7 @@ from .attachment_lifecycle import finish_if_consumed
 from .middleware import digest
 from . import protocol as p
 from .privacy import rate_key, policy as privacy_policy
+from .storage import reserve, CONVERSATION_OVERHEAD
 
 
 def b64(value):
@@ -176,12 +179,23 @@ class CSRF(Public):
         return Response({"csrf": get_token(request)})
 
 
+_login_slots = threading.BoundedSemaphore(4)
+
+
 class Login(Public):
     def post(self, request):
-        rate(request, "login.total", 300, identity="service")
         d = data(request, s.Login)
-        rate(request, "login.account", 5, identity=m.User.normalize_username(d["username"]))
-        user = authenticate(username=d["username"], password=d["password"])
+        source = request.META.get("REMOTE_ADDR", "")
+        rate(request, "login.source", 30, identity=source)
+        rate(request, "login.account_source", 5, identity=[m.User.normalize_username(d["username"]), source])
+        # Bound simultaneous Argon2 memory/CPU, rather than letting one caller
+        # spend a service-wide minute's sign-in quota for everybody else.
+        if not _login_slots.acquire(blocking=False):
+            raise Throttled(wait=1)
+        try:
+            user = authenticate(username=d["username"], password=d["password"])
+        finally:
+            _login_slots.release()
         if user is None:
             return Response({"error": "invalid_credentials"}, status=400)
         return issue_session(request, user)
@@ -468,6 +482,9 @@ class SystemStatus(View):
                 "privacy": privacy_policy(),
                 "privacy_maintenance": cache.get("privacy:maintenance") or {"status": "not_observed"},
                 "database_bytes": database_bytes,
+                "logical_message_storage": m.StorageUsage.objects.filter(pk="service")
+                .values("used_bytes", "pending_bytes", "envelope_count", "conversation_count")
+                .first(),
                 "api_process_max_rss_kib": usage.ru_maxrss,
                 "api_process_cpu_seconds": usage.ru_utime + usage.ru_stime,
                 "api_filesystem_free_bytes": shutil.disk_usage("/").free,
@@ -758,7 +775,11 @@ class Conversations(View):
                     "genesis_signature": b64(conv.genesis_signature),
                 }
             )
-        return Response([conversation_json(x) for x in query.order_by("-created_at")[:100]])
+        items, cursor = conversation_page(query, request)
+        response = Response([conversation_json(x) for x in items])
+        if cursor:
+            response["X-Haven-Next-Cursor"] = cursor
+        return response
 
     @transaction.atomic
     def post(self, request):
@@ -784,6 +805,7 @@ class Conversations(View):
             ):
                 raise ValidationError("Conversation conflict")
             return Response(conversation_json(old))
+        reserve(request.user.pk, CONVERSATION_OVERHEAD, conversations=1)
         c = m.Conversation.objects.create(
             id=d["id"],
             kind=d["kind"],
@@ -797,6 +819,39 @@ class Conversations(View):
         return Response(conversation_json(c), status=201)
 
 
+def conversation_page(query, request):
+    cursor = request.query_params.get("cursor")
+    # Signed, expiring keyset cursor; no growing OFFSET scan. All pages in a
+    # traversal share an upper creation-time boundary.
+    cutoff = timezone.now().isoformat()
+    if cursor:
+        try:
+            value = signing.loads(cursor, salt="haven/conversations/v1", max_age=3600)
+            if value["device"] != str(request._request.device.pk):
+                raise ValueError()
+            cutoff = value["cutoff"]
+            query = query.filter(
+                Q(created_at__lt=value["time"]) | Q(created_at=value["time"], pk__lt=value["id"])
+            )
+        except (signing.BadSignature, ValueError, TypeError, KeyError):
+            raise ValidationError("Invalid conversation cursor") from None
+    rows = list(query.filter(created_at__lte=cutoff).order_by("-created_at", "-pk")[:101])
+    next_cursor = None
+    if len(rows) > 100:
+        last = rows[99]
+        next_cursor = signing.dumps(
+            {
+                "device": str(request._request.device.pk),
+                "cutoff": cutoff,
+                "time": last.created_at.isoformat(),
+                "id": str(last.pk),
+            },
+            salt="haven/conversations/v1",
+            compress=True,
+        )
+    return rows[:100], next_cursor
+
+
 def conversation_json(c):
     return {
         "id": str(c.pk),
@@ -806,6 +861,7 @@ def conversation_json(c):
         "last_seq": c.last_seq,
         "status": c.status,
         "head_hash": c.head_hash,
+        "receipt_version": c.receipt_version,
     }
 
 
@@ -875,6 +931,12 @@ def save_envelope(request, c, member, d, kind, transition=None):
     wire = p.public_validate(op="wire", ciphertext=b64(d["ciphertext"]))
     if wire != {"group_id": c.group_id, "epoch": c.epoch}:
         raise ValidationError("MLS wire binding")
+    charged = len(d["ciphertext"]) + len(p.canonical(expected)) + len(d["signature"]) + 4096
+    if transition:
+        charged += len(p.canonical(transition)) + len(d.get("welcome", b""))
+    reserve(
+        request.user.pk, charged, pending=len(d["ciphertext"]) if kind == "application" else 0, envelopes=1
+    )
     c.last_seq += 1
     c.head_hash = p.chain_hash(expected, d["signature"])
     c.save(update_fields=["last_seq", "head_hash"])
@@ -948,9 +1010,13 @@ class Proofs(View):
             after = max(0, int(request.query_params.get("after_seq", "0")))
         except ValueError:
             raise ValidationError("Invalid cursor") from None
-        items = m.MessageEnvelope.objects.filter(conversation=c, server_seq__gt=after).order_by("server_seq")[
-            :100
-        ]
+        items = (
+            m.MessageEnvelope.objects.defer(
+                "ciphertext", "request_digest", "received_at", "ciphertext_retired"
+            )
+            .filter(conversation=c, server_seq__gt=after)
+            .order_by("server_seq")[:100]
+        )
         return Response(
             {
                 "proofs": [envelope_json(e, proof=True) for e in items],
@@ -1081,8 +1147,11 @@ class CryptoEvents(Messages):
         elif action == "remove":
             m.Membership.objects.filter(conversation=c, device=target).update(removed_at_epoch=c.epoch)
         elif action in ("transfer", "role"):
-            for item in after:
-                m.Membership.objects.filter(conversation=c, device_id=item["id"]).update(role=item["role"])
+            if action == "transfer":
+                m.Membership.objects.filter(conversation=c, device=member.device).update(role="moderator")
+            m.Membership.objects.filter(conversation=c, device=target).update(
+                role="owner" if action == "transfer" else d.get("role", "member")
+            )
         unsafe = (
             m.Membership.objects.filter(conversation=c, removed_at_epoch=None)
             .filter(Q(device__revoked_at__isnull=False) | ~Q(leave_signature=b""))
@@ -1098,11 +1167,12 @@ class Acks(View):
         c, member = membership(request, cid)
         return Response(
             {
+                "version": c.receipt_version,
                 "cursors": list(
                     m.DeliveryCursor.objects.filter(conversation=c)
                     .exclude(device__user_id=member.device.user_id)
                     .values("device_id", "last_acked_seq")
-                )
+                ),
             }
         )
 
@@ -1113,8 +1183,10 @@ class Acks(View):
         if d["seq"] > c.last_seq:
             raise ValidationError("Future cursor")
         cursor, _ = m.DeliveryCursor.objects.get_or_create(device=member.device, conversation=c)
-        cursor.last_acked_seq = max(cursor.last_acked_seq, d["seq"])
-        cursor.save()
+        if d["seq"] > cursor.last_acked_seq:
+            cursor.last_acked_seq = d["seq"]
+            cursor.save(update_fields=["last_acked_seq", "updated_at"])
+            m.Conversation.objects.filter(pk=c.pk).update(receipt_version=F("receipt_version") + 1)
         # Bounded updates: receipts are derived from durable per-device cursor, not human reading.
         return Response({"seq": cursor.last_acked_seq, "state": "recipient_synced"})
 
@@ -1123,9 +1195,11 @@ class Sync(View):
     def get(self, request):
         device = trusted_device(request)
         convs = m.Conversation.objects.filter(membership__device=device, membership__removed_at_epoch=None)
+        items, cursor = conversation_page(convs, request)
         return Response(
             {
-                "conversations": [conversation_json(c) for c in convs.order_by("created_at")[:100]],
+                "conversations": [conversation_json(c) for c in items],
+                "next_cursor": cursor,
                 "strategy": "per_conversation_sequence",
                 "max_page": 100,
             }

@@ -3,6 +3,8 @@
 export function uiError(error: unknown): string {
   const message =
     error instanceof Error ? error.message : "Operation unavailable";
+  if (message.includes("VAULT_CAPACITY_REACHED"))
+    return "Local storage is full. Export your history, then clear delivered history before continuing. Pending messages are preserved.";
   if (
     message.includes("Existing-device approval or verified recovery required")
   )

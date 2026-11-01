@@ -27,7 +27,7 @@ function derive(scope: string, secret: string, salt: Uint8Array) {
 }
 self.onmessage = (e) => {
   chain = chain.then(async () => {
-    const { id, op, secret, value, scope } = e.data;
+    const { id, op, secret, value, scope, binding } = e.data;
     try {
       await sodium.ready;
       if (
@@ -38,7 +38,17 @@ self.onmessage = (e) => {
         secret.length > 256
       )
         throw new Error();
-      const aad = sodium.from_string("haven/vault/v1:" + scope);
+      if (
+        binding !== undefined &&
+        (typeof binding !== "string" ||
+          !/^history:[0-9a-f-]{36}$/.test(binding))
+      )
+        throw new Error();
+      const aad = sodium.from_string(
+        binding === undefined
+          ? "haven/vault/v1:" + scope
+          : JSON.stringify(["haven/vault/record/v1", scope, binding]),
+      );
       if (op === "seal") {
         const salt =
             cached?.scope === scope && cached.secret === secret
@@ -47,8 +57,9 @@ self.onmessage = (e) => {
           key = derive(scope, secret, salt),
           nonce = sodium.randombytes_buf(24);
         const plain = sodium.from_string(JSON.stringify(value));
-        if (plain.length > 16000000) throw new Error();
         try {
+          if (plain.length > 16000000)
+            throw new Error("VAULT_CAPACITY_REACHED");
           const ciphertext = sodium.crypto_aead_xchacha20poly1305_ietf_encrypt(
             plain,
             aad,
@@ -94,8 +105,14 @@ self.onmessage = (e) => {
           sodium.memzero(plain);
         }
       } else throw new Error();
-    } catch {
-      self.postMessage({ id, error: "VAULT_REJECTED" });
+    } catch (error) {
+      self.postMessage({
+        id,
+        error:
+          error instanceof Error && error.message === "VAULT_CAPACITY_REACHED"
+            ? "VAULT_CAPACITY_REACHED"
+            : "VAULT_REJECTED",
+      });
     }
   });
 };

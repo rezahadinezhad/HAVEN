@@ -9,6 +9,7 @@ function upstreamHeaders(req) {
   const headers = { ...req.headers, "x-forwarded-proto": "https" };
   for (const name of ["x-forwarded-for", "x-real-ip", "forwarded", "x-client-ip", "true-client-ip", "cf-connecting-ip", "x-forwarded-host"])
     delete headers[name];
+  if (req.url.split("?")[0] === "/api/v1/auth/login") headers["x-forwarded-for"] = req.socket.remoteAddress;
   return headers;
 }
 const server = https.createServer(

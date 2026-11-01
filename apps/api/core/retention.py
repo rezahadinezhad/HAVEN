@@ -7,6 +7,8 @@ from django.db.models import Exists, OuterRef, Q
 from django.utils import timezone
 from . import models as m
 from .attachment_lifecycle import finish_if_consumed
+from .storage import release_ciphertexts
+from django.db.models.functions import Length
 
 
 def retire_delivered(now, batch_size=500):
@@ -49,11 +51,17 @@ def retire_delivered(now, batch_size=500):
             # Same lock as membership transitions, sends, and ACKs. Recheck after
             # acquiring it: an approval/change could have introduced another device.
             m.Conversation.objects.select_for_update().get(pk=cid)
+            releasing = list(
+                eligible.filter(pk__in=ids)
+                .annotate(size=Length("ciphertext"))
+                .values_list("sender_device__user_id", "size")
+            )
             retired += eligible.filter(pk__in=ids).update(
                 ciphertext=b"",
                 received_at=None,
                 ciphertext_retired=True,
             )
+            release_ciphertexts(releasing)
     return retired
 
 

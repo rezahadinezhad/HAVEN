@@ -21,6 +21,7 @@ import {
 } from "./device-unlock";
 import {
   loadVault,
+  openVault,
   saveVault,
   unseal,
   stopVaultWorker,
@@ -92,6 +93,8 @@ export class Messenger {
   ) {}
   private chain: Promise<unknown> = Promise.resolve();
   private locked = false;
+  private acked = new Map<string, number>();
+  private receiptVersions = new Map<string, number>();
   private directStarts = new Map<string, Promise<Conversation>>();
   public connectionError = "";
   static async unlock(user: string, secret: string) {
@@ -100,7 +103,7 @@ export class Messenger {
       throw new Error(
         "No local vault. Enroll a fresh device or recover your account.",
       );
-    const state = await unseal<VaultState>(secret, user, stored.sealed);
+    const state = await openVault(user, secret, stored);
     if (
       state.v !== 1 ||
       state.profile !== "haven-delivery-v2" ||
@@ -334,7 +337,10 @@ export class Messenger {
   }
   private next() {
     if (this.locked) throw new Error("Vault locked");
-    return structuredClone(this.state);
+    return {
+      ...structuredClone({ ...this.state, events: [] }),
+      events: [...this.state.events],
+    };
   }
   private noPendingCommit() {
     if (this.locked) throw new Error("Vault locked");
@@ -357,14 +363,15 @@ export class Messenger {
       const n = this.next();
       n.view_once_opened ||= {};
       n.view_once_opened[id] = true;
-      for (const event of n.events) {
-        if (event.file?.id === id && event.file.view_once) {
-          event.file.key = "";
-          event.file.prefix = "";
-          event.file.name = "";
-          event.text = undefined;
-        }
-      }
+      n.events = n.events.map((event) =>
+        event.file?.id === id && event.file.view_once
+          ? {
+              ...event,
+              file: { ...event.file, key: "", prefix: "", name: "" },
+              text: undefined,
+            }
+          : event,
+      );
       await this.persist(n);
     });
   }
@@ -981,8 +988,9 @@ export class Messenger {
           const h = this.state.heads[cid];
           if (h.epoch !== pending.body.epoch) {
             const n = this.next();
-            const item = n.events.find((x) => x.id === id);
-            if (item) item.state = "failed";
+            n.events = n.events.map((item) =>
+              item.id === id ? { ...item, state: "failed" } : item,
+            );
             delete n.outbox[id];
             await this.persist(n);
             throw new Error(
@@ -1034,11 +1042,11 @@ export class Messenger {
           n.crypto = pending.candidate;
         }
         delete n.outbox[id];
-        const item = n.events.find((x) => x.id === id);
-        if (item) {
-          item.state = "server_accepted";
-          item.seq = ack.seq;
-        }
+        n.events = n.events.map((item) =>
+          item.id === id
+            ? { ...item, state: "server_accepted", seq: ack.seq }
+            : item,
+        );
         await this.persist(n);
         if (ack.envelope) {
           const h = ack.envelope.header;
@@ -1062,8 +1070,26 @@ export class Messenger {
   async sync(c: Conversation, _devices: Device[] = []) {
     return this.serial(() => this.syncInternal(c));
   }
-  private async syncInternal(c: Conversation) {
+  // Only the background loop may use a freshly fetched discovery snapshot to
+  // skip unchanged history. Manual/control reconciliation always rereads detail.
+  async syncIfChanged(c: Conversation) {
+    return this.serial(() => this.syncInternal(c, true));
+  }
+  private async syncInternal(c: Conversation, allowUnchanged = false) {
     this.noPendingCommit();
+    const retained = this.state.heads[c.id];
+    if (
+      allowUnchanged &&
+      retained?.genesis_hash &&
+      retained.seq === c.last_seq &&
+      retained.hash === c.head_hash &&
+      retained.epoch === c.epoch &&
+      retained.group_id === c.group_id &&
+      retained.seq === this.state.cursor[c.id]
+    ) {
+      await this.syncReceipts(c);
+      return;
+    }
     const detail = await api<Detail>(`conversations/${c.id}`),
       g = detail.genesis;
     if (
@@ -1214,11 +1240,11 @@ export class Messenger {
               "Unexpected own-device message: restored or cloned state. Recover into a fresh device.",
             );
           if (!t) {
-            const ownEvent = n.events.find(
-              (x) => x.id === e.client_message_id,
-            )!;
-            ownEvent.state = "server_accepted";
-            ownEvent.seq = e.seq;
+            n.events = n.events.map((item) =>
+              item.id === e.client_message_id
+                ? { ...item, state: "server_accepted", seq: e.seq }
+                : item,
+            );
             delete n.outbox[e.client_message_id];
           }
           if (t) {
@@ -1273,24 +1299,29 @@ export class Messenger {
             throw new Error("Hidden membership commit rejected");
           n.crypto = x.state;
           if (e.welcome) n.needs_package = true;
-          if (x.result.plaintext) {
-            const event = authenticatedEvent(JSON.parse(x.result.plaintext));
-            if (
-              event.id !== e.client_message_id ||
-              event.sender !== e.sender_device ||
-              event.conversation_id !== c.id ||
-              ![
-                "text",
-                "edit",
-                "delete",
-                "reaction",
-                "file",
-                "title",
-                "receipt",
-              ].includes(event.type)
-            )
-              throw new Error("Invalid authenticated event");
-            if (!n.events.some((x) => x.id === event.id))
+          if (!t && x.result.kind === "application") {
+            // Only application parsing failures are quarantined. All transport,
+            // signature, sender, MLS and membership checks above remain fatal.
+            let event: ReturnType<typeof authenticatedEvent> | undefined;
+            try {
+              const decoded = authenticatedEvent(
+                JSON.parse(x.result.plaintext ?? ""),
+              );
+              if (
+                decoded.id !== e.client_message_id ||
+                decoded.sender !== e.sender_device ||
+                decoded.conversation_id !== c.id
+              )
+                throw new Error("Invalid authenticated event binding");
+              event = decoded;
+            } catch {
+              n.rejected_event_count = (n.rejected_event_count || 0) + 1;
+              n.rejected_events = [
+                ...(n.rejected_events || []),
+                { conversation_id: c.id, seq: e.seq, id: e.client_message_id },
+              ].slice(-64);
+            }
+            if (event && !n.events.some((x) => x.id === event.id))
               n.events.push({
                 ...event,
                 transport_hash: e.header.ciphertext_hash,
@@ -1313,11 +1344,22 @@ export class Messenger {
       }
       if (after === before) throw new Error("Missing encrypted history");
     }
-    await api(`conversations/${c.id}/acks`, "POST", { seq: after });
     if (this.state.needs_package) await this.packageInternal();
-    const receipts = await api<{ cursors: { last_acked_seq: number }[] }>(
-      `conversations/${c.id}/acks`,
-    );
+    await this.syncReceipts({ ...c, receipt_version: detail.receipt_version });
+  }
+  private async syncReceipts(c: Conversation) {
+    const seq = this.state.cursor[c.id] || 0;
+    // Retry once after every unlock and after a lost ACK response; cached idle
+    // sweeps do not write unchanged cursors.
+    if (this.acked.get(c.id) !== seq) {
+      await api(`conversations/${c.id}/acks`, "POST", { seq });
+      this.acked.set(c.id, seq);
+    }
+    if (this.receiptVersions.get(c.id) === (c.receipt_version ?? 0)) return;
+    const receipts = await api<{
+      cursors: { last_acked_seq: number }[];
+      version?: number;
+    }>(`conversations/${c.id}/acks`);
     const upto = Math.max(0, ...receipts.cursors.map((x) => x.last_acked_seq));
     if (
       this.state.events.some(
@@ -1330,16 +1372,17 @@ export class Messenger {
       )
     ) {
       const n = this.next();
-      for (const e of n.events)
-        if (
-          e.conversation_id === c.id &&
-          e.sender === n.device_id &&
-          e.seq &&
-          e.seq <= upto
-        )
-          e.state = "recipient_synced";
+      n.events = n.events.map((e) =>
+        e.conversation_id === c.id &&
+        e.sender === n.device_id &&
+        e.seq &&
+        e.seq <= upto
+          ? { ...e, state: "recipient_synced" }
+          : e,
+      );
       await this.persist(n);
     }
+    this.receiptVersions.set(c.id, receipts.version ?? c.receipt_version ?? 0);
   }
 }
 export async function fingerprintOf(publicKey: string) {

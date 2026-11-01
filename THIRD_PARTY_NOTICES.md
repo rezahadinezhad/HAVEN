@@ -29,3 +29,7 @@ The latest provider backport supersedes the previous unresolved Rust vulnerabili
 ## Public project license
 
 Original HAVEN code and project-authored documentation are distributed under the root MIT LICENSE. Vendored libraries, fonts, icons and authoring skills retain their own license terms and notices; the root license does not relicense third-party material.
+
+## Review remediation, 2026-11-01
+
+Contract generation now uses development-only openapi-typescript 6.7.6 (MIT), with its compatible undici fetch dependency pinned to 6.29.1 (MIT). The regenerated OpenAPI types and API client pass TypeScript checks; full npm audits include this tooling. This replaces the previously recorded Redocly/minimatch dependency path. Exact graph, notices and hashes remain in the npm lockfile/distributed dependencies. Cryptographic providers and their licenses are unchanged.

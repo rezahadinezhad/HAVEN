@@ -1,5 +1,9 @@
 # Implementation status
 
+## Review remediation — 2026-11-01
+
+Implemented the seven source-review fixes across API admission/accounting, encrypted browser persistence and background synchronization. Migrations 0011/0012 backfill budgets and index keyset discovery; browser storage v3 migrates legacy vaults atomically and preserves active ratchets. See [implementation decisions](docs/adr/0012-review-remediation-storage-and-sync.md), [upgrade steps](docs/security/review-remediation-2026-11-01.md) and [current evidence](docs/evidence/review-remediation-2026-11-01/README.md). This supersedes older monolithic-snapshot and idle-polling behavior below; the production/external qualification gate is unchanged.
+
 Release label: **BLOCKED**. The working loopback integration is substantially beyond the initial scaffold, but the complete release-1 acceptance and external security gates have not passed. The production source gate remains closed.
 
 Minimal-retention hardening is implemented: ACK-safe ciphertext retirement, short-lived auth/security/media metadata, view-once consumption minimization, separate cleanup worker, IP-header/log/spooling controls and explicit EN/FA policy. The current account/membership/signed proof graph remains server-visible. See ADR 0006, docs/security/server-data-retention.md and the latest test report. No independent assurance or anonymity claim is added.

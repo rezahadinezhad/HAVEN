@@ -1,0 +1,14 @@
+Final verification batch completed with exit status 0:
+
+- Ruff lint: all checks passed.
+- Ruff formatting: 62 files already formatted.
+- Django makemigrations --check --dry-run: no changes detected.
+- npm run typecheck --prefix apps/web: tsc --noEmit passed.
+- scripts/check-crypto-vendor.py: pinned upstream source hashes passed.
+- scripts/repository-safety.py: publishable paths/evidence policy passed.
+- sha256sum --check SOURCE_MANIFEST.sha256: passed.
+- sha256sum --check docs/evidence/crypto-assets.sha256: passed.
+- git diff --check: passed.
+
+Summary of the final verification command batch. Production build output is
+retained in web-build.txt.
