@@ -1,0 +1,113 @@
+{
+  "baseline_revision": "0240706",
+  "same_current_client": true,
+  "scope": "one sequential baseline then current trial; synthetic localhost services/shared host; no production capacity inference",
+  "results": {
+    "baseline": {
+      "send": {
+        "samples": 30,
+        "median_ms": 205,
+        "p95_ms": 393.30000000447035,
+        "total_ms": 7195.20000000298
+      },
+      "receive_sync": {
+        "samples": 30,
+        "median_ms": 140.10000000149012,
+        "p95_ms": 195,
+        "total_ms": 4371.5
+      },
+      "encrypted_vault_draft": {
+        "samples": 30,
+        "median_ms": 3.5,
+        "p95_ms": 5.5,
+        "total_ms": 108.60000001639128
+      },
+      "idle_sync": {
+        "samples": 10,
+        "median_ms": 29.299999997019768,
+        "p95_ms": 33,
+        "total_ms": 289.29999999701977
+      },
+      "wss_connect_and_heartbeat": {
+        "samples": 10,
+        "median_ms": 44.20000000298023,
+        "p95_ms": 64.80000000447035,
+        "total_ms": 446.3999999985099
+      },
+      "delivered_messages": 30,
+      "http_api_bodies": {
+        "requests": 370,
+        "upload_bytes": 44346,
+        "download_bytes": 425864
+      },
+      "scope": "30 sequential real browser MLS sends and durable recipient syncs; same current client for both API versions; excludes TLS/header bandwidth, mobile battery and production throughput",
+      "api_cpu_seconds": 6.75,
+      "api_peak_rss_kib": 154672,
+      "postgres_counters": {
+        "xact_commit": 2156,
+        "blks_read": 0,
+        "blks_hit": 488892,
+        "tup_returned": 299577,
+        "tup_fetched": 297288,
+        "tup_inserted": 84,
+        "tup_updated": 323,
+        "tup_deleted": 1,
+        "temp_bytes": 0,
+        "deadlocks": 0
+      }
+    },
+    "current": {
+      "send": {
+        "samples": 30,
+        "median_ms": 204.5,
+        "p95_ms": 291.6000000014901,
+        "total_ms": 6392.19999999553
+      },
+      "receive_sync": {
+        "samples": 30,
+        "median_ms": 136.20000000298023,
+        "p95_ms": 161.89999999850988,
+        "total_ms": 4217.89999999851
+      },
+      "encrypted_vault_draft": {
+        "samples": 30,
+        "median_ms": 3.1999999955296516,
+        "p95_ms": 5.899999998509884,
+        "total_ms": 103.10000000149012
+      },
+      "idle_sync": {
+        "samples": 10,
+        "median_ms": 29.400000005960464,
+        "p95_ms": 33.30000000447035,
+        "total_ms": 291.3999999985099
+      },
+      "wss_connect_and_heartbeat": {
+        "samples": 10,
+        "median_ms": 40.099999994039536,
+        "p95_ms": 54.100000001490116,
+        "total_ms": 433.29999999701977
+      },
+      "delivered_messages": 30,
+      "http_api_bodies": {
+        "requests": 370,
+        "upload_bytes": 44346,
+        "download_bytes": 421904
+      },
+      "scope": "30 sequential real browser MLS sends and durable recipient syncs; same current client for both API versions; excludes TLS/header bandwidth, mobile battery and production throughput",
+      "api_cpu_seconds": 6.48,
+      "api_peak_rss_kib": 154688,
+      "postgres_counters": {
+        "xact_commit": 2140,
+        "blks_read": 0,
+        "blks_hit": 482371,
+        "tup_returned": 293685,
+        "tup_fetched": 292765,
+        "tup_inserted": 60,
+        "tup_updated": 210,
+        "tup_deleted": 0,
+        "temp_bytes": 0,
+        "deadlocks": 0
+      }
+    }
+  }
+}

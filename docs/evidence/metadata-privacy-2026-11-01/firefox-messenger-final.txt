@@ -1,0 +1,78 @@
+
+> haven-web@0.2.0 test
+> playwright test --reporter=list tests/messenger-ui.spec.ts
+
+
+Running 1 test using 1 worker
+
+(node:366968) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Messenger UI: navigating trusted origins
+Messenger UI: harnesses loaded
+Messenger UI: bootstrap authenticated
+Messenger UI: invitations issued
+  ✘  1 tests/messenger-ui.spec.ts:8:5 › real UI: vault enrollment, fingerprint verification, MLS group, text, offline shell and queued send (3.0m)
+
+
+  1) tests/messenger-ui.spec.ts:8:5 › real UI: vault enrollment, fingerprint verification, MLS group, text, offline shell and queued send
+
+    Test timeout of 180000ms exceeded.
+
+    Error: locator.click: Target page, context or browser has been closed
+    Browser logs:
+
+    <launching> /home/reza-hadinezhad/.cache/ms-playwright/firefox-1555/firefox/firefox -no-remote -headless -profile /tmp/haven-firefox-test-KwW8WD -juggler-pipe about:blank
+    <launched> pid=367162
+    [pid=367162][err] *** You are running in headless mode.
+    [pid=367162][err] JavaScript warning: resource://services-settings/Utils.sys.mjs, line 125: unreachable code after return statement
+    [pid=367162][out]
+    [pid=367162][out] Juggler listening to the pipe
+    [pid=367162][out] console.error: "Error fetching the wallpaper attachments URL" (new SyntaxError("JSON.parse: unexpected end of data at line 1 column 1 of the JSON data", ""))
+    [pid=367162][out] console.error: services.settings:
+    [pid=367162][out]   Message: EmptyDatabaseError: "main/nimbus-desktop-experiments" has not been synced yet
+    [pid=367162][out]   Stack:
+    [pid=367162][out]     EmptyDatabaseError@resource://services-settings/Database.sys.mjs:19:5
+    [pid=367162][out] list@resource://services-settings/Database.sys.mjs:96:13
+    [pid=367162][out]
+    [pid=367162][out] console.warn: services.settings: #fetchAttachment: Forcing fallbackToDump to false due to Utils.LOAD_DUMPS being false
+    [pid=367162][out] console.error: (new NotFoundError("Could not find fa0fc42c-d91d-fca7-34eb-806ff46062dc in cache or dump", "resource://services-settings/Attachments.sys.mjs", 48))
+    [pid=367162][out] console.warn: "Unable to find the attachment for" "fa0fc42c-d91d-fca7-34eb-806ff46062dc"
+    [pid=367162][out] console.warn: LoginRecipes: "Falling back to a synchronous message for: https://127.0.0.1:8445."
+    [pid=367162][out] Crash Annotation GraphicsCriticalError: |[0][GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt (t=6.79581) [GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+    [pid=367162][out] console.warn: BackupService: "There was an error while trying to get the Document's directory" [Exception... "Component returned failure code: 0x80004005 (NS_ERROR_FAILURE) [nsIProperties.get]"  nsresult: "0x80004005 (NS_ERROR_FAILURE)"  location: "JS frame :: resource:///modules/backup/BackupService.sys.mjs :: get docsDirFolderPath :: line 1299"  data: no]
+    [pid=367162][out] console.error: services.settings:
+    [pid=367162][out]   Message: EmptyDatabaseError: "main/nimbus-desktop-experiments" has not been synced yet
+    [pid=367162][out]   Stack:
+    [pid=367162][out]     EmptyDatabaseError@resource://services-settings/Database.sys.mjs:19:5
+    [pid=367162][out] list@resource://services-settings/Database.sys.mjs:96:13
+    [pid=367162][out]
+    [pid=367162][out] console.error: "Could not download new icon" (new ServerInfoError("Server response is invalid SyntaxError: JSON.parse: unexpected end of data at line 1 column 1 of the JSON data", "resource://services-settings/Attachments.sys.mjs", 40))
+    [pid=367162] <gracefully close start>
+    Call log:
+      - waiting for getByRole('button', { name: 'Look up a known device', exact: true })
+        - locator resolved to <button disabled>Look up a known device</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not stable
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+        322 × waiting for element to be visible, enabled and stable
+            - element is not enabled
+          - retrying click action
+            - waiting 500ms
+        - waiting for element to be visible, enabled and stable
+
+        at [pid=367162][out]     EmptyDatabaseError@resource://services-settings/Database.sys.mjs:19:5
+        at [pid=367162][out] list@resource://services-settings/Database.sys.mjs:96:13
+        at [pid=367162][out]     EmptyDatabaseError@resource://services-settings/Database.sys.mjs:19:5
+        at [pid=367162][out] list@resource://services-settings/Database.sys.mjs:96:13
+        at /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/messenger-ui.spec.ts:87:8
+
+    Error Context: test-results/messenger-ui-real-UI-vault-fd132-fline-shell-and-queued-send/error-context.md
+
+  1 failed
+    tests/messenger-ui.spec.ts:8:5 › real UI: vault enrollment, fingerprint verification, MLS group, text, offline shell and queued send

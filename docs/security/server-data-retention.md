@@ -1,5 +1,9 @@
 # Server data minimization
 
+## Metadata hardening update — 2026-11-02
+
+Migrations 0013/0014 remove `Session.last_seen`, `DeliveryCursor.updated_at`, `AttachmentChunk.stored_at` and unused `DeliveryReceipt`, permit expired KeyPackage owners to be cleared, and index pending expiry work without indexing fully scrubbed tombstones. Cleanup clears the owner/claim/payload/consumed time after expiry, including legacy empty payloads. Active retry claims and permanent digest exclusion remain. Message responses omit exact acceptance time, notification routing reads omit content/proof columns, and Redis account-channel groups expire in 120 seconds with authenticated refresh. Abandoned-upload deletion rechecks its shared row lock; failure status no longer leaves a fresh cached success. [Controlled upgrade](metadata-privacy/upgrade.md), [inventory](metadata-privacy/README.md) and [EN/FA notice](metadata-privacy/privacy-notice.md). No change to unsynced ciphertext/grace/media/audit policies below; no graph anonymity or physical erasure claim.
+
 Engineering hardening, not an anonymity claim or an independent security review.
 No extra user device, user-operated relay, Tor requirement or external runtime
 service is introduced. Existing direct HTTPS-by-IP browser messaging is preserved.
@@ -19,7 +23,7 @@ service is introduced. Existing direct HTTPS-by-IP browser messaging is preserve
 | Successful login audit rows | No longer written; legacy rows removed by cleanup |
 | Security audit events | Seven days |
 | Sent notification outbox rows | One hour; unsent rows preserved |
-| Expired public key-package payload/claim link | Removed; package digest/device replay tombstone retained indefinitely |
+| Expired public key-package payload/owner/claim link | Removed; package digest/ID/expiry replay tombstone retained indefinitely |
 | Redis rate-limit labels | Keyed HMAC with a server secret outside Redis/DB, scoped by purpose/identity/minute; 120-second TTL |
 
 Cleanup runs in a dedicated `privacy` service every five minutes, with at most

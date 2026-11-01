@@ -1,0 +1,1 @@
+PASS: real 0007-to-0008 migration preserves consumed/unopened states and live capability, caps existing TTL, and refuses unsafe rollback

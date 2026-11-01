@@ -1,0 +1,103 @@
+{
+  "rows": [
+    {
+      "plaintext_bytes": 1,
+      "receive_median_us": 765,
+      "receive_p95_us": 978,
+      "samples": 40,
+      "send_median_us": 801,
+      "send_p95_us": 1028,
+      "wire_max_bytes": 148,
+      "wire_min_bytes": 148
+    },
+    {
+      "plaintext_bytes": 16,
+      "receive_median_us": 557,
+      "receive_p95_us": 789,
+      "samples": 40,
+      "send_median_us": 569,
+      "send_p95_us": 766,
+      "wire_max_bytes": 163,
+      "wire_min_bytes": 163
+    },
+    {
+      "plaintext_bytes": 64,
+      "receive_median_us": 603,
+      "receive_p95_us": 920,
+      "samples": 40,
+      "send_median_us": 659,
+      "send_p95_us": 926,
+      "wire_max_bytes": 212,
+      "wire_min_bytes": 212
+    },
+    {
+      "plaintext_bytes": 128,
+      "receive_median_us": 537,
+      "receive_p95_us": 599,
+      "samples": 40,
+      "send_median_us": 549,
+      "send_p95_us": 647,
+      "wire_max_bytes": 276,
+      "wire_min_bytes": 276
+    },
+    {
+      "plaintext_bytes": 255,
+      "receive_median_us": 551,
+      "receive_p95_us": 624,
+      "samples": 40,
+      "send_median_us": 570,
+      "send_p95_us": 709,
+      "wire_max_bytes": 403,
+      "wire_min_bytes": 403
+    },
+    {
+      "plaintext_bytes": 256,
+      "receive_median_us": 555,
+      "receive_p95_us": 974,
+      "samples": 40,
+      "send_median_us": 573,
+      "send_p95_us": 987,
+      "wire_max_bytes": 404,
+      "wire_min_bytes": 404
+    },
+    {
+      "plaintext_bytes": 1024,
+      "receive_median_us": 898,
+      "receive_p95_us": 959,
+      "samples": 40,
+      "send_median_us": 919,
+      "send_p95_us": 998,
+      "wire_max_bytes": 1172,
+      "wire_min_bytes": 1172
+    },
+    {
+      "plaintext_bytes": 4096,
+      "receive_median_us": 967,
+      "receive_p95_us": 1091,
+      "samples": 40,
+      "send_median_us": 1002,
+      "send_p95_us": 1131,
+      "wire_max_bytes": 4244,
+      "wire_min_bytes": 4244
+    },
+    {
+      "plaintext_bytes": 131072,
+      "receive_median_us": 2223,
+      "receive_p95_us": 3393,
+      "samples": 40,
+      "send_median_us": 2574,
+      "send_p95_us": 3631,
+      "wire_max_bytes": 131224,
+      "wire_min_bytes": 131224
+    }
+  ],
+  "scope": "native adapter including snapshot serialization; excludes network, database, browser and battery",
+  "resources": {
+    "cpu_user_seconds": 0.63,
+    "cpu_system_seconds": 0.03,
+    "peak_rss_kib": 5612,
+    "elapsed_seconds": 0.66
+  },
+  "trial": 1,
+  "binary_sha256": "6165118040745b8868a495a708a4ce22a56791017689ad096e9db8b3b6953072"
+}

@@ -1,0 +1,1 @@
+PASS: 612 reviewable source/artifact entries match SOURCE_MANIFEST.sha256; volatile evidence and manifest itself are excluded by policy.

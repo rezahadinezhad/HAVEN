@@ -1,0 +1,195 @@
+{
+  "environment": {
+    "platform": "Linux-7.0.0-42-generic-x86_64-with-glibc2.43",
+    "machine": "x86_64",
+    "logical_cpus": 8,
+    "rust": "see rustc-version.txt"
+  },
+  "baseline_revision": "0240706",
+  "runs_per_binary": 3,
+  "roundtrips_per_run": 360,
+  "scope": "native adapter including snapshot serialization; shared host, nonrandomized alternating order; not causal end-to-end capacity evidence",
+  "rows": [
+    {
+      "plaintext_bytes": 1,
+      "baseline_send_median_us": 657,
+      "baseline_receive_median_us": 665,
+      "baseline_send_p95_us": 1009,
+      "baseline_receive_p95_us": 978,
+      "baseline_wire_min_bytes": 148,
+      "baseline_wire_max_bytes": 148,
+      "current_send_median_us": 518,
+      "current_receive_median_us": 508,
+      "current_send_p95_us": 561,
+      "current_receive_p95_us": 576,
+      "current_wire_min_bytes": 320,
+      "current_wire_max_bytes": 320
+    },
+    {
+      "plaintext_bytes": 16,
+      "baseline_send_median_us": 569,
+      "baseline_receive_median_us": 557,
+      "baseline_send_p95_us": 766,
+      "baseline_receive_p95_us": 789,
+      "baseline_wire_min_bytes": 163,
+      "baseline_wire_max_bytes": 163,
+      "current_send_median_us": 519,
+      "current_receive_median_us": 502,
+      "current_send_p95_us": 594,
+      "current_receive_p95_us": 610,
+      "current_wire_min_bytes": 320,
+      "current_wire_max_bytes": 320
+    },
+    {
+      "plaintext_bytes": 64,
+      "baseline_send_median_us": 561,
+      "baseline_receive_median_us": 547,
+      "baseline_send_p95_us": 898,
+      "baseline_receive_p95_us": 696,
+      "baseline_wire_min_bytes": 212,
+      "baseline_wire_max_bytes": 212,
+      "current_send_median_us": 522,
+      "current_receive_median_us": 496,
+      "current_send_p95_us": 721,
+      "current_receive_p95_us": 641,
+      "current_wire_min_bytes": 320,
+      "current_wire_max_bytes": 320
+    },
+    {
+      "plaintext_bytes": 128,
+      "baseline_send_median_us": 549,
+      "baseline_receive_median_us": 537,
+      "baseline_send_p95_us": 794,
+      "baseline_receive_p95_us": 740,
+      "baseline_wire_min_bytes": 276,
+      "baseline_wire_max_bytes": 276,
+      "current_send_median_us": 513,
+      "current_receive_median_us": 505,
+      "current_send_p95_us": 896,
+      "current_receive_p95_us": 795,
+      "current_wire_min_bytes": 320,
+      "current_wire_max_bytes": 320
+    },
+    {
+      "plaintext_bytes": 255,
+      "baseline_send_median_us": 553,
+      "baseline_receive_median_us": 551,
+      "baseline_send_p95_us": 709,
+      "baseline_receive_p95_us": 659,
+      "baseline_wire_min_bytes": 403,
+      "baseline_wire_max_bytes": 403,
+      "current_send_median_us": 502,
+      "current_receive_median_us": 501,
+      "current_send_p95_us": 826,
+      "current_receive_p95_us": 669,
+      "current_wire_min_bytes": 576,
+      "current_wire_max_bytes": 576
+    },
+    {
+      "plaintext_bytes": 256,
+      "baseline_send_median_us": 569,
+      "baseline_receive_median_us": 555,
+      "baseline_send_p95_us": 987,
+      "baseline_receive_p95_us": 946,
+      "baseline_wire_min_bytes": 404,
+      "baseline_wire_max_bytes": 404,
+      "current_send_median_us": 521,
+      "current_receive_median_us": 499,
+      "current_send_p95_us": 629,
+      "current_receive_p95_us": 795,
+      "current_wire_min_bytes": 576,
+      "current_wire_max_bytes": 576
+    },
+    {
+      "plaintext_bytes": 1024,
+      "baseline_send_median_us": 599,
+      "baseline_receive_median_us": 570,
+      "baseline_send_p95_us": 916,
+      "baseline_receive_p95_us": 851,
+      "baseline_wire_min_bytes": 1172,
+      "baseline_wire_max_bytes": 1172,
+      "current_send_median_us": 511,
+      "current_receive_median_us": 503,
+      "current_send_p95_us": 547,
+      "current_receive_p95_us": 549,
+      "current_wire_min_bytes": 1344,
+      "current_wire_max_bytes": 1344
+    },
+    {
+      "plaintext_bytes": 4096,
+      "baseline_send_median_us": 609,
+      "baseline_receive_median_us": 596,
+      "baseline_send_p95_us": 865,
+      "baseline_receive_p95_us": 809,
+      "baseline_wire_min_bytes": 4244,
+      "baseline_wire_max_bytes": 4244,
+      "current_send_median_us": 503,
+      "current_receive_median_us": 499,
+      "current_send_p95_us": 584,
+      "current_receive_p95_us": 567,
+      "current_wire_min_bytes": 4416,
+      "current_wire_max_bytes": 4416
+    },
+    {
+      "plaintext_bytes": 131072,
+      "baseline_send_median_us": 2279,
+      "baseline_receive_median_us": 2140,
+      "baseline_send_p95_us": 3454,
+      "baseline_receive_p95_us": 3188,
+      "baseline_wire_min_bytes": 131224,
+      "baseline_wire_max_bytes": 131224,
+      "current_send_median_us": 2036,
+      "current_receive_median_us": 1838,
+      "current_send_p95_us": 2497,
+      "current_receive_p95_us": 2207,
+      "current_wire_min_bytes": 131394,
+      "current_wire_max_bytes": 131394
+    }
+  ],
+  "resources": {
+    "baseline": {
+      "cpu_user_seconds": [
+        0.59,
+        0.63,
+        0.47
+      ],
+      "cpu_system_seconds": [
+        0.02,
+        0.03,
+        0.02
+      ],
+      "peak_rss_kib": [
+        5756,
+        5612,
+        5696
+      ],
+      "elapsed_seconds": [
+        0.62,
+        0.66,
+        0.5
+      ]
+    },
+    "current": {
+      "cpu_user_seconds": [
+        0.56,
+        0.44,
+        0.48
+      ],
+      "cpu_system_seconds": [
+        0.02,
+        0.02,
+        0.02
+      ],
+      "peak_rss_kib": [
+        5700,
+        5744,
+        5576
+      ],
+      "elapsed_seconds": [
+        0.58,
+        0.47,
+        0.5
+      ]
+    }
+  }
+}

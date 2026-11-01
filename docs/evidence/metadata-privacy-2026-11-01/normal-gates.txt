@@ -1,0 +1,1 @@
+PASS: normal settings keep CRYPTO_READY=False and reject cryptographic API operations

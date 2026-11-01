@@ -1,0 +1,14 @@
+
+> haven-web@0.2.0 test
+> playwright test --reporter=list tests/crypto.spec.ts
+
+
+Running 3 tests using 1 worker
+
+(node:465966) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/crypto.spec.ts:3:5 › real OpenMLS WASM: two-way, persisted reload, reordering, add/remove, tamper and replay (1.2s)
+  ✓  2 tests/crypto.spec.ts:246:5 › vault rejects wrong secret and modified ciphertext (917ms)
+  ✓  3 tests/crypto.spec.ts:286:5 › native Rust snapshot and MLS ciphertext interoperate with browser WASM (284ms)
+
+  3 passed (3.3s)

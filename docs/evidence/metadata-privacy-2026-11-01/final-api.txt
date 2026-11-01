@@ -1,0 +1,35 @@
+....................................................F....F.............. [ 87%]
+..........                                                               [100%]
+=================================== FAILURES ===================================
+_______________ test_migration_revokes_existing_unbound_sessions _______________
+core/tests/test_credential_sessions.py:136: in test_migration_revokes_existing_unbound_sessions
+    executor.migrate([old])
+.venv/lib/python3.12/site-packages/django/db/migrations/executor.py:141: in migrate
+    state = self._migrate_all_backwards(plan, full_plan, fake=fake)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/django/db/migrations/executor.py:219: in _migrate_all_backwards
+    self.unapply_migration(states[migration], migration, fake=fake)
+.venv/lib/python3.12/site-packages/django/db/migrations/executor.py:282: in unapply_migration
+    state = migration.unapply(state, schema_editor)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/django/db/migrations/migration.py:159: in unapply
+    raise IrreversibleError(
+E   django.db.migrations.exceptions.IrreversibleError: Operation <RunPython <function RunPython.noop at 0x731c9bc8f4c0>> in core.0013_metadata_minimization is not reversible
+______ test_migration_backfills_existing_ciphertext_control_and_metadata _______
+core/tests/test_review_remediation.py:211: in test_migration_backfills_existing_ciphertext_control_and_metadata
+    executor.migrate([old])
+.venv/lib/python3.12/site-packages/django/db/migrations/executor.py:141: in migrate
+    state = self._migrate_all_backwards(plan, full_plan, fake=fake)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/django/db/migrations/executor.py:219: in _migrate_all_backwards
+    self.unapply_migration(states[migration], migration, fake=fake)
+.venv/lib/python3.12/site-packages/django/db/migrations/executor.py:282: in unapply_migration
+    state = migration.unapply(state, schema_editor)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/django/db/migrations/migration.py:159: in unapply
+    raise IrreversibleError(
+E   django.db.migrations.exceptions.IrreversibleError: Operation <RunPython <function RunPython.noop at 0x731c9bc8f4c0>> in core.0013_metadata_minimization is not reversible
+=========================== short test summary info ============================
+FAILED core/tests/test_credential_sessions.py::test_migration_revokes_existing_unbound_sessions
+FAILED core/tests/test_review_remediation.py::test_migration_backfills_existing_ciphertext_control_and_metadata
+2 failed, 80 passed in 56.46s

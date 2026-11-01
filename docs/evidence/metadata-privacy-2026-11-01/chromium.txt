@@ -1,0 +1,60 @@
+
+> haven-web@0.2.0 test
+> playwright test --reporter=list
+
+
+Running 40 tests using 1 worker
+
+(node:274349) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 tests/chat-experience.spec.ts:11:5 › conversation UX: encrypted messages, keyboard/IME, drafts, replies, scrolling, media, mobile and RTL (48.6s)
+  ✓   2 tests/crypto.spec.ts:3:5 › real OpenMLS WASM: two-way, persisted reload, reordering, add/remove, tamper and replay (1.1s)
+  ✓   3 tests/crypto.spec.ts:246:5 › vault rejects wrong secret and modified ciphertext (906ms)
+  ✓   4 tests/crypto.spec.ts:276:5 › native Rust snapshot and MLS ciphertext interoperate with browser WASM (269ms)
+  ✓   5 tests/design.spec.ts:11:5 › redesigned real account: responsive navigation, setup, themes, RTL, reduced motion and local assets (3.1s)
+  ✓   6 tests/design.spec.ts:205:5 › CSP-safe accessible announcer and blocked arbitrary inline scripts/styles (563ms)
+  -   7 tests/device-unlock-ui.spec.ts:8:5 › opt-in hostname: real vault setup, PRF enrollment, reload unlock and removal
+  ✓   8 tests/device-unlock.spec.ts:72:5 › device verified PRF wraps the passphrase locally, survives reload, and can be removed (207ms)
+  ✓   9 tests/device-unlock.spec.ts:121:5 › no PRF means no stored unlock record (158ms)
+  ✓  10 tests/device-unlock.spec.ts:149:5 › user verification failure cannot enroll a device unlock (153ms)
+  ✓  11 tests/device-unlock.spec.ts:179:5 › copied encrypted record cannot unlock another account (159ms)
+  ✓  12 tests/device-unlock.spec.ts:227:5 › direct IP origin never offers WebAuthn unlock (134ms)
+  ✓  13 tests/first-chat-approval.spec.ts:10:5 › guide preserves pending browser keys; administrator invitation controls and normal crypto gate remain effective (8.2s)
+  ✓  14 tests/first-chat-retry.spec.ts:10:5 › direct-chat setup recovers an accepted request after a lost response and reload; concurrent retries reuse one chat (3.7s)
+  ✓  15 tests/first-chat.spec.ts:12:5 › ordinary members: guided setup, private invitation, explicit mutual verification, chat and unlock (11.7s)
+  ✓  16 tests/first-chat.spec.ts:255:5 › friend links reject foreign origins, mismatched fingerprints, changed pins; responsive RTL guide (7.8s)
+QA bootstrap respects the account limiter; waiting its 60-second retry window.
+  ✓  17 tests/integration.spec.ts:7:5 › browser MLS → Django/PostgreSQL: verified group, bidirectional delivery, durable retry, media, removal and reload (1.4m)
+  ✓  18 tests/messenger-ui.spec.ts:8:5 › real UI: vault enrollment, fingerprint verification, MLS group, text, offline shell and queued send (1.4m)
+  ✓  19 tests/metadata-privacy.spec.ts:3:5 › padded OpenMLS messages keep lengths coarse across browser reload and rekey (382ms)
+  ✓  20 tests/passphrase.spec.ts:35:5 › generator uses exactly 32 CSPRNG bytes, lossless base64url and fails closed without secure randomness (240ms)
+  ✓  21 tests/passphrase.spec.ts:126:5 › new vault: generate, reveal/copy, regenerate/manual reset, save confirmation and real reload/unlock without network disclosure (4.5s)
+  ✓  22 tests/passphrase.spec.ts:355:5 › generator failure and clipboard denial remain usable; cancellation discards unsaved state; RTL and source gate (2.4s)
+  ✓  23 tests/privacy.spec.ts:21:5 › retired server ciphertext: persisted browser MLS state reloads and continues across rekey (5.7s)
+  -  24 tests/provider-upgrade.spec.ts:28:5 › upstream provider backport exchanges MLS with previous browser build and opens previous snapshots
+  -  25 tests/provider-upgrade.spec.ts:119:5 › rebuilt native Rust provider snapshot interoperates with rebuilt WASM
+  ✓  26 tests/review-remediation.spec.ts:8:5 › paged encrypted history: >16 MB, incremental writes, atomic failure, tamper rejection and reload (3.7s)
+  ✓  27 tests/review-remediation.spec.ts:150:5 › real server and MLS: quarantine invalid application content, reload, idle sync, reject bad ciphertext (4.0s)
+  ✓  28 tests/review-remediation.spec.ts:358:5 › legacy vault migrates without restoring ratchets; history updates remove old encrypted records (1.2s)
+  ✓  29 tests/session-hardening.spec.ts:6:5 › real vault: pagehide, suspended inactivity, offline access and confirmed remote logout (16.8s)
+  -  30 tests/showcase.spec.ts:7:5 › public showcase: real encrypted conversation, responsive layout and review notice
+  ✓  31 tests/vault-storage.spec.ts:3:5 › vault key rotation reencrypts every history record and never reuses records sealed with an old secret (1.0s)
+  ✓  32 tests/vault-storage.spec.ts:68:5 › API conversation helper follows all continuation headers and preserves the array contract (291ms)
+  ✓  33 tests/vault-storage.spec.ts:110:5 › locking while a save awaits storage or hashing cannot recreate a secret-bearing worker (596ms)
+View-once: creating three accounts and a second approved recipient device
+View-once: device enrollment and fingerprint verification complete
+View-once: four-device MLS group synchronized
+View-once: synthetic photo/video fixtures generated
+Revoked URL reload blocked by engine: true (decoded-memory cache is outside the view-once guarantee)
+  ✓  34 tests/view-once.spec.ts:8:5 › view-once real UI: encrypted photo/video, account-wide consume, independent group recipients, no cache/export/reopen (28.5s)
+(node:291235) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  35 tests/restart.spec.ts:71:5 › actual API SIGKILL after durable acceptance: browser reload retries the exact ciphertext once (7.4s)
+  ✓  36 tests/rollback-gate.spec.ts:5:5 › characterize snapshot rollback: integration must not silently trust restored ratchets (292ms)
+  ✓  37 tests/standby-origin.spec.ts:80:5 › prepared distinct IP origins: verified private TLS, fail-closed mismatch, fenced database promotion and continuing MLS messages (21.7s)
+  ✓  38 tests/ui.spec.ts:7:5 › trusted TLS, login, invitation and operator account flows, bilingual mobile layout (2.1s)
+  ✓  39 tests/ui.spec.ts:86:5 › untrusted browser rejects the IP certificate (3.4s)
+  ✓  40 tests/ui.spec.ts:104:5 › expired IP leaf is rejected even with the correct trusted test root (419ms)
+
+  4 skipped
+  36 passed (6.1m)

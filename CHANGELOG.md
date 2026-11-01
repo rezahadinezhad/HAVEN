@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased — 2026-11-02
+
+- Extended Firefox regressions found and fixed a voice-note format bug: retain recorded blob MIME after MediaRecorder resets its type at stop. Private attachment metadata and actual playback stay intact. Correct the AEAD negative test to always flip a ciphertext byte rather than occasionally making no change.
+
+- Minimize metadata: remove unused ACK/upload/session timestamps and receipt table; disassociate expired KeyPackage owners/claimants with a partial expiry index; omit exact acceptance time from responses and project routing reads.
+- Bound stale Redis account-channel associations to two minutes with authenticated renewal; preserve authoritative HTTP delivery during Redis failure.
+- Use native OpenMLS 256-byte application padding, preserving existing state/queued ciphertext and rejecting unknown configuration resets. Rebuild WASM/contracts/offline assets.
+- Serialize abandoned-upload cleanup with completion, report aggregate maintenance failures, and add PostgreSQL/Redis/browser/native/dump-restore regressions and accurate EN/FA privacy disclosures. Coordinated migration 0013/0014 required; normal production gate stays closed.
+
 ## Unreleased — 2026-11-01
 
 - Resolve all seven source-review findings: malformed application content no longer blocks later messages; encrypted history commits in separate records with the ratchet checkpoint; server message quotas preserve unsynchronized data; login throttling isolates sources; idle synchronization avoids per-conversation traffic/writes; proof queries omit ciphertext; conversation discovery follows signed continuation cursors.

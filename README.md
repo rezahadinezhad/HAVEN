@@ -16,6 +16,8 @@ The result is a functioning, self-hosted implementation built with **Django, Nex
 > [!IMPORTANT]
 > **Experimental software; independent security review is pending.** Local tests demonstrate implemented behavior, not a security certification. Production onboarding remains disabled by a source-level gate. Read [SECURITY_STATUS.md](SECURITY_STATUS.md) before evaluating or deploying the project.
 
+Metadata-privacy hardening now removes redundant activity timestamps, expires temporary routing associations, reduces API/worker disclosure and pads new MLS messages. The account/conversation graph remains visible to the service. See the [inventory, threat model, migration procedure and measured limitations](docs/security/metadata-privacy/README.md).
+
 ## The engineering question
 
 Content encryption is one part of a private messenger. The harder product questions surround it: how a person trusts a new browser, where keys live, how a queued message survives a restart, what revocation actually stops, and which metadata the server still needs.

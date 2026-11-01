@@ -1,0 +1,219 @@
+
+> haven-web@0.2.0 test
+> playwright test --reporter=list
+
+
+Running 40 tests using 1 worker
+
+(node:300909) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 tests/chat-experience.spec.ts:11:5 › conversation UX: encrypted messages, keyboard/IME, drafts, replies, scrolling, media, mobile and RTL (53.5s)
+  ✓   2 tests/crypto.spec.ts:3:5 › real OpenMLS WASM: two-way, persisted reload, reordering, add/remove, tamper and replay (3.9s)
+  ✓   3 tests/crypto.spec.ts:246:5 › vault rejects wrong secret and modified ciphertext (4.8s)
+  ✓   4 tests/crypto.spec.ts:276:5 › native Rust snapshot and MLS ciphertext interoperate with browser WASM (4.6s)
+  ✓   5 tests/design.spec.ts:11:5 › redesigned real account: responsive navigation, setup, themes, RTL, reduced motion and local assets (5.7s)
+  ✓   6 tests/design.spec.ts:205:5 › CSP-safe accessible announcer and blocked arbitrary inline scripts/styles (3.1s)
+  -   7 tests/device-unlock-ui.spec.ts:8:5 › opt-in hostname: real vault setup, PRF enrollment, reload unlock and removal
+  -   8 tests/device-unlock.spec.ts:72:5 › device verified PRF wraps the passphrase locally, survives reload, and can be removed
+  -   9 tests/device-unlock.spec.ts:121:5 › no PRF means no stored unlock record
+  -  10 tests/device-unlock.spec.ts:149:5 › user verification failure cannot enroll a device unlock
+  -  11 tests/device-unlock.spec.ts:179:5 › copied encrypted record cannot unlock another account
+  ✓  12 tests/device-unlock.spec.ts:227:5 › direct IP origin never offers WebAuthn unlock (2.7s)
+  ✓  13 tests/first-chat-approval.spec.ts:10:5 › guide preserves pending browser keys; administrator invitation controls and normal crypto gate remain effective (13.6s)
+  ✓  14 tests/first-chat-retry.spec.ts:10:5 › direct-chat setup recovers an accepted request after a lost response and reload; concurrent retries reuse one chat (7.2s)
+  ✓  15 tests/first-chat.spec.ts:12:5 › ordinary members: guided setup, private invitation, explicit mutual verification, chat and unlock (15.0s)
+  ✓  16 tests/first-chat.spec.ts:255:5 › friend links reject foreign origins, mismatched fingerprints, changed pins; responsive RTL guide (12.4s)
+  ✓  17 tests/integration.spec.ts:7:5 › browser MLS → Django/PostgreSQL: verified group, bidirectional delivery, durable retry, media, removal and reload (34.8s)
+  ✘  18 tests/messenger-ui.spec.ts:8:5 › real UI: vault enrollment, fingerprint verification, MLS group, text, offline shell and queued send (2.4s)
+(node:314313) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  19 tests/metadata-privacy.spec.ts:3:5 › padded OpenMLS messages keep lengths coarse across browser reload and rekey (2.9s)
+  ✓  20 tests/passphrase.spec.ts:35:5 › generator uses exactly 32 CSPRNG bytes, lossless base64url and fails closed without secure randomness (3.0s)
+  ✓  21 tests/passphrase.spec.ts:126:5 › new vault: generate, reveal/copy, regenerate/manual reset, save confirmation and real reload/unlock without network disclosure (7.6s)
+  ✓  22 tests/passphrase.spec.ts:355:5 › generator failure and clipboard denial remain usable; cancellation discards unsaved state; RTL and source gate (5.1s)
+  ✓  23 tests/privacy.spec.ts:21:5 › retired server ciphertext: persisted browser MLS state reloads and continues across rekey (10.3s)
+  -  24 tests/provider-upgrade.spec.ts:28:5 › upstream provider backport exchanges MLS with previous browser build and opens previous snapshots
+  -  25 tests/provider-upgrade.spec.ts:119:5 › rebuilt native Rust provider snapshot interoperates with rebuilt WASM
+  ✓  26 tests/review-remediation.spec.ts:8:5 › paged encrypted history: >16 MB, incremental writes, atomic failure, tamper rejection and reload (7.7s)
+  ✓  27 tests/review-remediation.spec.ts:150:5 › real server and MLS: quarantine invalid application content, reload, idle sync, reject bad ciphertext (7.8s)
+  ✓  28 tests/review-remediation.spec.ts:358:5 › legacy vault migrates without restoring ratchets; history updates remove old encrypted records (4.0s)
+  ✓  29 tests/session-hardening.spec.ts:6:5 › real vault: pagehide, suspended inactivity, offline access and confirmed remote logout (20.1s)
+  -  30 tests/showcase.spec.ts:7:5 › public showcase: real encrypted conversation, responsive layout and review notice
+  ✓  31 tests/vault-storage.spec.ts:3:5 › vault key rotation reencrypts every history record and never reuses records sealed with an old secret (3.6s)
+  ✓  32 tests/vault-storage.spec.ts:68:5 › API conversation helper follows all continuation headers and preserves the array contract (2.8s)
+  ✓  33 tests/vault-storage.spec.ts:110:5 › locking while a save awaits storage or hashing cannot recreate a secret-bearing worker (3.2s)
+View-once: creating three accounts and a second approved recipient device
+View-once: device enrollment and fingerprint verification complete
+View-once: four-device MLS group synchronized
+View-once: synthetic photo/video fixtures generated
+Revoked URL reload blocked by engine: false (decoded-memory cache is outside the view-once guarantee)
+  ✓  34 tests/view-once.spec.ts:8:5 › view-once real UI: encrypted photo/video, account-wide consume, independent group recipients, no cache/export/reopen (34.5s)
+(node:323631) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  35 tests/restart.spec.ts:71:5 › actual API SIGKILL after durable acceptance: browser reload retries the exact ciphertext once (1.9s)
+(node:323958) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  36 tests/rollback-gate.spec.ts:5:5 › characterize snapshot rollback: integration must not silently trust restored ratchets (2.1s)
+(node:324260) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  37 tests/standby-origin.spec.ts:80:5 › prepared distinct IP origins: verified private TLS, fail-closed mismatch, fenced database promotion and continuing MLS messages (12.9s)
+(node:326825) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  38 tests/ui.spec.ts:7:5 › trusted TLS, login, invitation and operator account flows, bilingual mobile layout (2.1s)
+(node:327090) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  39 tests/ui.spec.ts:86:5 › untrusted browser rejects the IP certificate (986ms)
+  ✘  40 tests/ui.spec.ts:104:5 › expired IP leaf is rejected even with the correct trusted test root (2.3s)
+
+
+  1) tests/messenger-ui.spec.ts:8:5 › real UI: vault enrollment, fingerprint verification, MLS group, text, offline shell and queued send
+
+    Error: browserType.launchPersistentContext: Unknown permission: microphone
+    Call log:
+      - <launching> /home/reza-hadinezhad/.cache/ms-playwright/firefox-1555/firefox/firefox -no-remote -headless -profile /tmp/haven-firefox-test-gxIPRW -juggler-pipe about:blank
+      - <launched> pid=313857
+      - [pid=313857][err] *** You are running in headless mode.
+      - [pid=313857][err] JavaScript warning: resource://services-settings/Utils.sys.mjs, line 125: unreachable code after return statement
+      - [pid=313857][out]
+      - [pid=313857][out] Juggler listening to the pipe
+      - [pid=313857] <gracefully close start>
+      - [pid=313857][out] console.error: "Error fetching the wallpaper attachments URL" (new SyntaxError("JSON.parse: unexpected end of data at line 1 column 1 of the JSON data", ""))
+      - [pid=313857][out] console.error: services.settings:
+      - [pid=313857][out]   Message: EmptyDatabaseError: "main/nimbus-desktop-experiments" has not been synced yet
+      - [pid=313857][out]   Stack:
+      - [pid=313857][out]     EmptyDatabaseError@resource://services-settings/Database.sys.mjs:19:5
+      - [pid=313857][out] list@resource://services-settings/Database.sys.mjs:96:13
+      - [pid=313857][out]
+      - [pid=313857][err] JavaScript error: chrome://juggler/content/Helper.js, line 82: NS_ERROR_FAILURE: Component returned failure code: 0x80004005 (NS_ERROR_FAILURE) [nsIWebProgress.removeProgressListener]
+      - [pid=313857] <process did exit: exitCode=0, signal=null>
+      - [pid=313857] starting temporary directories cleanup
+      - [pid=313857] finished temporary directories cleanup
+      - [pid=313857] <gracefully close end>
+
+
+       at fixtures.ts:59
+
+      57 |           path.join(dir, file),
+      58 |         );
+    > 59 |       const context = await firefox.launchPersistentContext(dir, {
+         |                       ^
+      60 |         ...options,
+      61 |         headless: true,
+      62 |         env: {
+        at Browser2.browser.newContext (/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/fixtures.ts:59:23)
+        at /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/messenger-ui.spec.ts:12:20
+
+    Error Context: test-results/messenger-ui-real-UI-vault-fd132-fline-shell-and-queued-send/error-context.md
+
+  2) tests/restart.spec.ts:71:5 › actual API SIGKILL after durable acceptance: browser reload retries the exact ciphertext once
+
+    Error: page.goto: SEC_ERROR_UNKNOWN_ISSUER
+    Call log:
+      - navigating to "https://127.0.0.1:8446/__integration__/", waiting until "load"
+
+
+      94 |       b = await bContext.newPage();
+      95 |     for (const p of [a, b]) {
+    > 96 |       await p.goto(origin + "/__integration__/");
+         |               ^
+      97 |       await p.waitForFunction(() => !!(window as any).havenIntegration);
+      98 |     }
+      99 |     const invites = await a.evaluate(async (credentials) => {
+        at /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/restart.spec.ts:96:15
+
+    Error Context: test-results/restart-actual-API-SIGKILL-25999-s-the-exact-ciphertext-once/error-context.md
+
+  3) tests/rollback-gate.spec.ts:5:5 › characterize snapshot rollback: integration must not silently trust restored ratchets
+
+    Error: page.goto: SEC_ERROR_UNKNOWN_ISSUER
+    Call log:
+      - navigating to "https://127.0.0.1:8443/pof.html", waiting until "load"
+
+
+       6 |   page,
+       7 | }) => {
+    >  8 |   await page.goto("/pof.html");
+         |              ^
+       9 |   await page.waitForFunction(() => !!(window as any).havenPoF);
+      10 |   const result = await page.evaluate(() => {
+      11 |     const call = (state: string, command: any) =>
+        at /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/rollback-gate.spec.ts:8:14
+
+    Error Context: test-results/rollback-gate-characterize-56d1d-tly-trust-restored-ratchets/error-context.md
+
+  4) tests/standby-origin.spec.ts:80:5 › prepared distinct IP origins: verified private TLS, fail-closed mismatch, fenced database promotion and continuing MLS messages
+
+    Error: page.goto: SEC_ERROR_UNKNOWN_ISSUER
+    Call log:
+      - navigating to "https://127.0.0.1:8448/__integration__/", waiting until "load"
+
+
+      240 |     const pages = [a, b, sa, sb];
+      241 |     for (const [i, p] of pages.entries()) {
+    > 242 |       await p.goto(
+          |               ^
+      243 |         (i < 2 ? primaryOrigin : backupOrigin) + "/__integration__/",
+      244 |       );
+      245 |       await p.waitForFunction(() => !!(window as any).havenIntegration);
+        at /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/standby-origin.spec.ts:242:15
+
+    Error Context: test-results/standby-origin-prepared-di-bd0a8-and-continuing-MLS-messages/error-context.md
+
+  5) tests/ui.spec.ts:7:5 › trusted TLS, login, invitation and operator account flows, bilingual mobile layout
+
+    Error: page.goto: SEC_ERROR_UNKNOWN_ISSUER
+    Call log:
+      - navigating to "https://127.0.0.1:8443/", waiting until "load"
+
+
+      12 |     if (new URL(r.url()).hostname !== "127.0.0.1") foreign.push(r.url());
+      13 |   });
+    > 14 |   const response = await page.goto("/");
+         |                               ^
+      15 |   const csp = response!.headers()["content-security-policy"];
+      16 |   expect(csp).toContain("'nonce-");
+      17 |   expect(csp).not.toContain("'unsafe-eval'");
+        at /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/ui.spec.ts:14:31
+
+    Error Context: test-results/ui-trusted-TLS-login-invit-93aca-ows-bilingual-mobile-layout/error-context.md
+
+  6) tests/ui.spec.ts:104:5 › expired IP leaf is rejected even with the correct trusted test root ──
+
+    Error: expect(received).rejects.toThrow(expected)
+
+    Expected pattern: /ERR_CERT_DATE_INVALID|certificate/
+    Received message: "page.goto: SEC_ERROR_UNKNOWN_ISSUER
+    Call log:
+      - navigating to \"https://127.0.0.1:46201/\", waiting until \"load\"
+    "
+
+          123 |   try {
+          124 |     const port = (server.address() as import("node:net").AddressInfo).port;
+        > 125 |     await expect(page.goto(`https://127.0.0.1:${port}/`)).rejects.toThrow(
+              |                       ^
+          126 |       /ERR_CERT_DATE_INVALID|certificate/,
+          127 |     );
+          128 |   } finally {
+
+          at tests/ui.spec.ts:125:23
+
+      123 |   try {
+      124 |     const port = (server.address() as import("node:net").AddressInfo).port;
+    > 125 |     await expect(page.goto(`https://127.0.0.1:${port}/`)).rejects.toThrow(
+          |                                                                   ^
+      126 |       /ERR_CERT_DATE_INVALID|certificate/,
+      127 |     );
+      128 |   } finally {
+        at /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/ui.spec.ts:125:67
+
+    Error Context: test-results/ui-expired-IP-leaf-is-reje-0667c-e-correct-trusted-test-root/error-context.md
+
+  6 failed
+    tests/messenger-ui.spec.ts:8:5 › real UI: vault enrollment, fingerprint verification, MLS group, text, offline shell and queued send
+    tests/restart.spec.ts:71:5 › actual API SIGKILL after durable acceptance: browser reload retries the exact ciphertext once
+    tests/rollback-gate.spec.ts:5:5 › characterize snapshot rollback: integration must not silently trust restored ratchets
+    tests/standby-origin.spec.ts:80:5 › prepared distinct IP origins: verified private TLS, fail-closed mismatch, fenced database promotion and continuing MLS messages
+    tests/ui.spec.ts:7:5 › trusted TLS, login, invitation and operator account flows, bilingual mobile layout
+    tests/ui.spec.ts:104:5 › expired IP leaf is rejected even with the correct trusted test root ───
+  8 skipped
+  26 passed (5.2m)

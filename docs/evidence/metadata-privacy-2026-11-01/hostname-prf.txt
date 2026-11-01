@@ -1,0 +1,39 @@
+
+> haven-web@0.2.0 build
+> node scripts/patch-next-announcer.mjs && next build && node scripts/build-offline-shell.mjs
+
+Next 16.4.3 accessibility announcer uses external CSS; CSP remains strict.
+▲ Next.js 16.4.3 (Turbopack)
+✓ Running next.config.ts took 201ms
+- Experiments (use with caution):
+  · cpus: 2
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 1304ms
+  Running TypeScript ...
+  Finished TypeScript in 2.3s ...
+  Collecting page data using 2 workers ...
+  Generating static pages using 2 workers (0/3) ...
+✓ Generating static pages using 2 workers (3/3) in 124ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ƒ /
+└ ○ /_not-found
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+Prepared 19 local offline shell assets
+
+Running 1 test using 1 worker
+
+(node:499009) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/1] tests/device-unlock-ui.spec.ts:8:5 › opt-in hostname: real vault setup, PRF enrollment, reload unlock and removal
+  1 passed (6.8s)

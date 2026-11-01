@@ -1,5 +1,9 @@
 # Implementation status
 
+## Metadata privacy — 2026-11-02
+
+Implemented migration 0013 metadata removal and expired-package disassociation; 0014 adds a partial expiry index excluding scrubbed tombstones. Added API/worker projections, bounded Redis group retention with authenticated renewal, native MLS padding with legacy-config handling, concurrency and actual dump/restore regression evidence. API contracts/WASM/offline assets are regenerated; browser storage and identity formats remain compatible. [Inventory, threat model, decisions, upgrade and report](docs/security/metadata-privacy/README.md) distinguish implemented hardening from research-only routing. The central social graph, online-service trust and external release blockers remain. No production/staging upgrade was performed for this initiative.
+
 ## Review remediation — 2026-11-01
 
 Implemented the seven source-review fixes across API admission/accounting, encrypted browser persistence and background synchronization. Migrations 0011/0012 backfill budgets and index keyset discovery; browser storage v3 migrates legacy vaults atomically and preserves active ratchets. See [implementation decisions](docs/adr/0012-review-remediation-storage-and-sync.md), [upgrade steps](docs/security/review-remediation-2026-11-01.md) and [current evidence](docs/evidence/review-remediation-2026-11-01/README.md). This supersedes older monolithic-snapshot and idle-polling behavior below; the production/external qualification gate is unchanged.

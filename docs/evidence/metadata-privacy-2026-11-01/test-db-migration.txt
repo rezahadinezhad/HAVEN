@@ -1,0 +1,4 @@
+Operations to perform:
+  Apply all migrations: auth, contenttypes, core, sessions
+Running migrations:
+  Applying core.0014_keypackage_privacy_index... OK

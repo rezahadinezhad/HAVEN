@@ -1,0 +1,7 @@
+Limit  (cost=104.49..105.37 rows=353 width=24)
+  ->  Sort  (cost=104.49..105.37 rows=353 width=24)
+        Sort Key: expires_at, id
+        ->  Bitmap Heap Scan on core_devicekeypackage  (cost=18.26..89.55 rows=353 width=24)
+              Recheck Cond: ((expires_at <= '2026-11-01 20:56:33.855369+00'::timestamp with time zone) AND ((package <> '\x'::bytea) OR (device_id IS NOT NULL) OR (claimed_by_id IS NOT NULL) OR (consumed_at IS NOT NULL)))
+              ->  Bitmap Index Scan on keypackage_privacy_expiry  (cost=0.00..18.17 rows=353 width=0)
+                    Index Cond: (expires_at <= '2026-11-01 20:56:33.855369+00'::timestamp with time zone)

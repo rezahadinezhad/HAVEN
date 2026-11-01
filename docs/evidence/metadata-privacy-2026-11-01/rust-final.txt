@@ -1,0 +1,24 @@
+   Compiling haven-crypto-core v0.1.0 (/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/packages/crypto-core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 18.21s
+     Running unittests src/lib.rs (packages/crypto-core/target/debug/deps/haven_crypto_core-1d6b9e8fa086a0ed)
+
+running 5 tests
+test tests::arbitrary_public_frames_are_bounded_and_never_panic ... ok
+test tests::native_to_wasm_golden_fixture ... ok
+test tests::native_roundtrip ... ok
+test tests::padding_preserves_legacy_state_plaintext_replay_and_bounds ... ok
+test tests::unicode_serialization_preserves_authenticated_plaintext ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 7.22s
+
+     Running unittests src/bin/haven-public-verify.rs (packages/crypto-core/target/debug/deps/haven_public_verify-abf197f43a154eaa)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests haven_crypto_core
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

@@ -28,3 +28,7 @@ consumption-state minimization and request/logging/spooling controls. Account,
 device and signed conversation history remain visible in a database theft; live
 ingress still sees IPs. A compromised origin can still steal client keys. See
 docs/security/server-data-retention.md for exact categories and upgrade limits.
+
+## Metadata privacy capability model — 2026-11-02
+
+The [A1–A8 attacker matrix](../security/metadata-privacy/threat-model.md) and [field/flow inventory](../security/metadata-privacy/README.md) distinguish a DB dump, readable historical backups, curious/compromised live service, hosting observer, ISP, broad domestic observer and malicious client. Central signed history and memberships still expose the graph; native padding and minimization do not provide network anonymity. Advanced routing remains an isolated specification pending review.

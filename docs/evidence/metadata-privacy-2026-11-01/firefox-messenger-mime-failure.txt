@@ -1,0 +1,39 @@
+
+> haven-web@0.2.0 test
+> playwright test --reporter=list tests/messenger-ui.spec.ts
+
+
+Running 1 test using 1 worker
+
+(node:387994) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 tests/messenger-ui.spec.ts:8:5 › real UI: vault enrollment, fingerprint verification, MLS group, text, offline shell and queued send (58.2s)
+
+
+  1) tests/messenger-ui.spec.ts:8:5 › real UI: vault enrollment, fingerprint verification, MLS group, text, offline shell and queued send
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('button', { name: 'Decrypt and play voice note', exact: true })
+    Expected: visible
+    Timeout: 20000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('button', { name: 'Decrypt and play voice note', exact: true }) with timeout 20000ms
+      - waiting for getByRole('button', { name: 'Decrypt and play voice note', exact: true })
+
+
+      203 |   await expect(
+      204 |     b.getByRole("button", { name: "Decrypt and play voice note", exact: true }),
+    > 205 |   ).toBeVisible({ timeout: 20000 });
+          |     ^
+      206 |   await b
+      207 |     .getByRole("button", { name: "Decrypt and play voice note", exact: true })
+      208 |     .click();
+        at /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/messenger-ui.spec.ts:205:5
+
+    Error Context: test-results/messenger-ui-real-UI-vault-fd132-fline-shell-and-queued-send/error-context.md
+
+  1 failed
+    tests/messenger-ui.spec.ts:8:5 › real UI: vault enrollment, fingerprint verification, MLS group, text, offline shell and queued send

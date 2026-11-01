@@ -1,0 +1,357 @@
+.local/upstream-kats/openmls.tar.gz: OK
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.30s
+     Running unittests src/lib.rs (target/debug/deps/openmls-ee5a23ed9854e75b)
+
+running 208 tests
+test ciphersuite::tests_and_kats::tests::test_hpke_seal_open_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::kats::welcome::test_read_vectors ... ok
+ ERROR openmls::treesync::node::leaf_node::capabilities > Leaf node does not support all required extension types
+
+                Supported extensions: []
+
+                Required extensions: [Unknown(61441)]
+test group::mls_group::tests_and_kats::tests::commit_builder_leaf_node_validation::commit_builder_fails_when_leaf_node_capabilities_insufficient_required_capabilities_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test ciphersuite::tests_and_kats::kat_crypto_basics::read_test_vectors ... ok
+test group::mls_group::tests_and_kats::tests::commit_builder_leaf_node_validation::commit_builder_fails_when_leaf_node_capabilities_insufficient_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+ ERROR openmls::group::public_group::staged_commit      > Error building the proposal queue for the commit (ProposalNotFound)
+test group::mls_group::tests_and_kats::tests::decryption_ratchet_updates::failed_commit_staging_does_not_consume_generation_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+ ERROR openmls::framing::private_message_in             >   Ciphertext decryption error
+test group::mls_group::tests_and_kats::tests::decryption_ratchet_updates::tampered_message_does_not_consume_generation_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+ ERROR openmls::framing::private_message_in             >   Ciphertext decryption error
+test group::mls_group::tests_and_kats::tests::mls_group::builder_pattern_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::mls_group::commit_with_new_signer_mismatched_ciphersuite_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::mls_group::commit_with_new_signer_mismatched_credential_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::decryption_ratchet_updates::tampered_copy_does_not_consume_out_of_order_generation_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::mls_group::deletion_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::mls_group::export_secret_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::mls_group::failed_groupinfo_decryption_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::decryption_ratchet_updates::invalid_signature_does_not_advance_handshake_ratchet_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::external_init::test_external_init_broken_signature_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+ ERROR openmls::framing::private_message_in             >   Ciphertext decryption error
+test group::mls_group::tests_and_kats::tests::decryption_ratchet_updates::invalid_signature_does_not_advance_ratchet_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::mls_group::max_past_epochs_join_config_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::decryption_ratchet_updates::undecryptable_content_does_not_advance_ratchet_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::mls_group::key_package_deletion_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::mls_group::commit_with_new_signer_signs_group_info_with_new_signer_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::mls_group::own_commit_without_update_path_without_pending_is_staged_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+ ERROR openmls::framing::private_message_in             >   Ciphertext decryption error
+test group::mls_group::tests_and_kats::tests::mls_group::own_commit_processing_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::mls_group::own_commit_mismatch_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::mls_group::propose_self_update_with_new_signer_mismatched_ciphersuite_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::mls_group::group_replacement_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+ ERROR openmls::framing::private_message_in             >   Ciphertext decryption error
+ ERROR openmls::framing::private_message_in             >   Ciphertext generation out of bounds 4294967295
+	TooDistantInTheFuture
+test group::mls_group::tests_and_kats::tests::mls_group::proposal_application_after_self_was_removed_ref_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::mls_group::join_multiple_groups_last_resort_extension_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::mls_group::propose_self_update_with_new_signer_mismatched_credential_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::mls_group::propose_self_update_with_new_signer_committed_by_proposer_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::mls_group::psks_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::mls_group::proposal_application_after_self_was_removed_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::mls_group::propose_self_update_with_new_signer_roundtrip_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::mls_group::staged_join_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::mls_group::remove_prosposal_by_ref_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::mls_group::test_mls_group_persistence_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::mls_group::staged_commit_creation_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::mls_group::test_update_group_context_with_unknown_extension_using_update_function_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::mls_group::test_commit_with_update_path_leaf_node_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::mls_group::signature_key_rotation_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::decryption_ratchet_updates::rejected_messages_leave_message_secrets_unchanged_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::mls_group::test_verify_staged_commit_credentials_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::mls_group::test_pending_commit_logic_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::mls_group::unknown_extensions_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::mls_group::update_path_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::mls_group::remover_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::past_secrets::keep_all_policy_with_timestamp_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::mls_group::update_group_context_with_unknown_extension_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::mls_group::update_proposal_alice_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::past_secrets::test_empty_secret_tree_store_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::past_secrets::test_secret_tree_store_migration_next_epoch_duration_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::past_secrets::test_secret_tree_store_migration_next_epoch_timestamp_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::past_secrets::test_secret_tree_store_mixed_delete_by_duration_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::past_secrets::test_secret_tree_store_mixed_delete_by_timestamp_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::past_secrets::test_secret_tree_store_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::past_secrets::test_update_policy_persistence_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::past_secrets::max_epochs_policy_with_timestamp_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::past_secrets::delete_all_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::mls_group::update_proposal_bob_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::proposals::group_context_extension_proposal_fails_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::past_secrets::max_epochs_with_duration_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::past_secrets::keep_all_policy_with_duration_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::past_secrets::test_update_policy_via_set_configuration_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::proposals::group_context_extension_proposal_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::proposals::group_context_extensions_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::proposals::self_remove_proposals_always_public_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::proposals::proposal_queue_functions_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+ ERROR openmls::treesync::node::leaf_node::capabilities > Leaf node does not support all required extension types
+
+                Supported extensions: []
+
+                Required extensions: [Unknown(65280)]
+test group::mls_group::tests_and_kats::tests::proposals::required_extension_key_package_mismatch_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::proposals::proposal_queue_order_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::past_secrets::test_update_policy_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::proposals::self_remove_proposals_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+ ERROR openmls::framing::private_message_in             >   Ciphertext generation out of bounds 0
+	SecretReuseError
+ ERROR openmls::framing::private_message_in             >   Ciphertext generation out of bounds 0
+	SecretReuseError
+test group::mls_group::tests_and_kats::tests::secret_tree_persistence::test_secret_tree_persistence ... ok
+test group::tests_and_kats::kats::transcript_hashes::read_test_vectors_transcript ... ok
+test group::mls_group::tests_and_kats::tests::proposals::remove_and_update_processing_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::capabilities_check::valn0311_removed_member_capabilities_skipped_in_check_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::commit_validation::test_partial_proposal_commit_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::capabilities_check::test_valn0104_new_member_unsupported_credential_type_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+ ERROR openmls::group::public_group::staged_commit      > Error building the proposal queue for the commit (SelfRemoval)
+test group::tests_and_kats::tests::aad::test_add_member_with_aad_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::kats::messages::read_test_vectors_messages ... ok
+test group::tests_and_kats::tests::commit_validation::test_valsem200_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::commit_validation::test_valsem202_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::commit_validation::test_valsem203_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+ ERROR openmls::group::mls_group::staged_commit         > Confirmation tag mismatch
+test group::tests_and_kats::tests::commit_validation::test_valsem204_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::commit_validation::test_valsem205_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::commit_validation::test_valsem201_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::capabilities_check::test_valn0104_new_member_capabilities_not_support_all_credential_types_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::mls_group::tests_and_kats::tests::mls_group::test_invalid_plaintext_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::external_add_proposal::external_add_proposal_should_fail_when_invalid_external_senders_index_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::encoding::test_add_proposal_encoding_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::external_add_proposal::external_add_proposal_should_fail_when_invalid_signature_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::external_add_proposal::external_add_proposal_should_fail_when_no_external_senders_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::encoding::test_update_proposal_encoding_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::external_add_proposal::external_add_proposal_should_suceeed_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::encoding::test_remove_proposal_encoding_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::external_commit_builder::external_commit_consistent_credential_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::external_commit_builder::external_commit_rejects_divergent_credential_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::encoding::test_commit_encoding_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::external_commit_builder::external_commit_rejects_new_signer_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::external_commit_validation::test_external_commit_unsupported_group_context_extension_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::external_commit_builder::external_commit_builder_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::external_commit_validation::test_pure_ciphertext_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::external_commit_remove_prior::external_commit_remove_prior_after_truncation_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::external_commit::test_external_commit_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::external_commit_validation::test_valsem240_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::external_commit_validation::test_valsem241_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::external_group_context_extensions_proposal::external_group_context_ext_proposal_should_fail_when_invalid_external_senders_index_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::external_commit_validation::test_valsem245_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::external_group_context_extensions_proposal::external_group_context_ext_proposal_should_fail_when_invalid_signature_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::external_group_context_extensions_proposal::external_group_context_ext_proposal_should_fail_when_no_external_senders_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::external_commit_validation::test_valsem246_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::external_group_context_extensions_proposal::external_group_context_ext_proposal_should_succeed_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::external_commit_validation::test_valsem244_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::external_group_context_extensions_proposal::external_group_context_ext_proposal_should_succeed_unknown_extension_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::external_join_add_proposal::external_join_add_proposal_should_be_signed_by_key_package_it_references_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::external_remove_proposal::external_remove_proposal_should_fail_when_invalid_external_senders_index_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::external_join_add_proposal::new_member_proposal_sender_should_be_reserved_for_join_proposals_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::external_remove_proposal::external_remove_proposal_should_fail_when_no_external_senders_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::external_remove_proposal::external_remove_proposal_should_fail_when_invalid_signature_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::external_remove_proposal::external_remove_proposal_should_remove_member_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::framing::bad_padding_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::external_commit_validation::test_valsem242_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::external_join_add_proposal::test_valn1504_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::framing_validation::test_valsem002_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+ ERROR openmls::group::public_group::validation         > Wrong Epoch: message.epoch() 3 != 2 self.group_context().epoch()
+ ERROR openmls::group::public_group::validation         > Wrong Epoch: message.epoch() 1 != 2 self.group_context().epoch()
+test group::tests_and_kats::tests::framing_validation::test_valsem004_sender_index_out_of_range_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::framing_validation::test_valsem004_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+ ERROR openmls::group::public_group::validation         > Wrong Epoch: message.epoch() 2 != 3 self.group_context().epoch()
+test group::tests_and_kats::tests::framing_validation::test_valsem003_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::framing_validation::test_valsem005_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+ ERROR openmls::framing::private_message_in             > Sender data decryption error
+ ERROR openmls::framing::private_message_in             >   Ciphertext decryption error
+test group::tests_and_kats::tests::framing_validation::test_valsem006_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::framing_validation::test_valsem007_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::encoding::test_welcome_message_encoding_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::framing_validation::test_valsem008_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::framing_validation::test_valsem009_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::group::create_group_info_flag_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ignored
+test group::tests_and_kats::tests::group::create_commit_optional_path_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::framing_validation::test_valsem010_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::group::test_create_group_info_with_extensions_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ignored
+test group::tests_and_kats::tests::group::use_ratchet_tree_extension_flag_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::group::wrong_group_create_config_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::group::basic_group_setup_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::external_join_add_proposal::external_join_add_proposal_should_succeed_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::group_context_extensions::fail_2_gce_proposals_1_commit_valn0308_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::group_context_extensions::fail_create_update_proposal_insufficient_capabilities_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMX448_AES256GCM_SHA512_Ed448
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMX448_AES256GCM_SHA512_Ed448
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMX448_AES256GCM_SHA512_Ed448
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMX448_AES256GCM_SHA512_Ed448
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMX448_AES256GCM_SHA512_Ed448
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMX448_AES256GCM_SHA512_Ed448
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMX448_AES256GCM_SHA512_Ed448
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMX448_AES256GCM_SHA512_Ed448
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMP521_AES256GCM_SHA512_P521
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMP521_AES256GCM_SHA512_P521
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMP521_AES256GCM_SHA512_P521
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMP521_AES256GCM_SHA512_P521
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMP521_AES256GCM_SHA512_P521
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMP521_AES256GCM_SHA512_P521
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMP521_AES256GCM_SHA512_P521
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMP521_AES256GCM_SHA512_P521
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMX448_CHACHA20POLY1305_SHA512_Ed448
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMX448_CHACHA20POLY1305_SHA512_Ed448
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMX448_CHACHA20POLY1305_SHA512_Ed448
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMX448_CHACHA20POLY1305_SHA512_Ed448
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMX448_CHACHA20POLY1305_SHA512_Ed448
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMX448_CHACHA20POLY1305_SHA512_Ed448
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMX448_CHACHA20POLY1305_SHA512_Ed448
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMX448_CHACHA20POLY1305_SHA512_Ed448
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMP384_AES256GCM_SHA384_P384
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMP384_AES256GCM_SHA384_P384
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMP384_AES256GCM_SHA384_P384
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMP384_AES256GCM_SHA384_P384
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMP384_AES256GCM_SHA384_P384
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMP384_AES256GCM_SHA384_P384
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMP384_AES256GCM_SHA384_P384
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMP384_AES256GCM_SHA384_P384
+test group::tests_and_kats::tests::group::decrypt_after_leaf_index_reuse_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::group_context_extensions::fail_insufficient_extensiontype_capabilities_commit_path_valn0502_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+ ERROR openmls::treesync::node::leaf_node::capabilities                > Leaf node does not support all required extension types
+
+                Supported extensions: [Unknown(61441)]
+
+                Required extensions: [Unknown(61442)]
+test group::tests_and_kats::tests::group_context_extensions::fail_insufficient_extensiontype_capabilities_add_valn0103_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::group_context_extensions::fail_insufficient_extensiontype_capabilities_update_proposal_valn0502_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+ ERROR openmls::treesync::node::leaf_node                              > Leaf node does not support required extension Unknown(61443)
+
+                    Supported extensions: [Unknown(61441), Unknown(61442)]
+test group::tests_and_kats::tests::group_context_extensions::fail_unsupported_gces_add_valn1001_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::group_context_extensions::join_rejects_unsupported_group_context_extension_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ignored
+ ERROR openmls::treesync::node::leaf_node::capabilities                > Leaf node does not support all required extension types
+
+                Supported extensions: [Unknown(61441), Unknown(61443)]
+
+                Required extensions: [Unknown(61442)]
+test group::tests_and_kats::tests::group_context_extensions::fail_insufficient_extensiontype_capabilities_update_valn0103_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::group_context_extensions::fail_key_package_version_valn0201_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+ ERROR openmls::treesync::node::leaf_node::capabilities                > Leaf node does not support all required extension types
+
+                Supported extensions: [Unknown(61441), Unknown(61442)]
+
+                Required extensions: [Unknown(61506)]
+test group::tests_and_kats::tests::group_context_extensions::proposal_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::group_context_extensions::happy_case_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::key_package_in::valn0108_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+ ERROR openmls::group::mls_group::exporting                            > Got a key that is larger than u16::MAX
+test group::tests_and_kats::tests::group::group_operations_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::group_context_extensions::self_update_happy_case_simple_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::group_context_extensions::self_update_happy_case_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::encoding::test_application_message_encoding_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::proposal_validation::test_valsem101b_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::proposal_validation::test_valsem101a_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::proposal_validation::test_valsem102_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::proposal_validation::test_valsem107_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::proposal_validation::test_valsem103_valsem104_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::proposal_validation::test_valsem108_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::proposal_validation::test_valsem112_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::proposal_validation::test_valsem110_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::proposal_validation::test_valsem111_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::unsupported_ciphersuite::external_commit_rejects_unsupported_ciphersuite ... ok
+test group::tests_and_kats::tests::unsupported_ciphersuite::group_create_rejects_unsupported_ciphersuite ... ok
+test group::tests_and_kats::tests::remove_operation::remove_blank_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::unsupported_ciphersuite::welcome_rejects_unsupported_ciphersuite ... ok
+test group::tests_and_kats::tests::proposal_validation::valsem113_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::utils::test_random ... ok
+test group::tests_and_kats::tests::wire_format_policy::test_wire_policy_negative_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::utils::test_setup_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test schedule::tests_and_kats::kats::key_schedule::read_test_vectors_key_schedule_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test schedule::tests_and_kats::tests::test_psks_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test storage::kat_storage_stability::generate_kats_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test schedule::tests_and_kats::kats::psk_secret::read_test_vectors_ps_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::wire_format_policy::test_wire_policy_positive_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::remove_operation::test_remove_operation_variants_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::proposal_validation::test_valsem105_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+ ERROR openmls::tree::sender_ratchet                                   >   Generation is too far in the past (broke out of order tolerance (5) 2 < 11).
+ ERROR openmls::tree::sender_ratchet                                   >   Generation is too far in the past (broke out of order tolerance (5) 2 < 11).
+test tree::tests_and_kats::unit_tests::test_secret_tree::prepare_and_apply_match_sender_ratchet_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test tree::tests_and_kats::unit_tests::test_secret_tree::prepare_decryption_leaves_ratchet_unchanged_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test tree::tests_and_kats::unit_tests::test_secret_tree::secret_tree_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::past_secrets::test_past_secrets_in_group_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+ ERROR openmls::tree::sender_ratchet                                   >   Generation is too far in the past (broke out of order tolerance (5) 2 < 11).
+test tree::tests_and_kats::unit_tests::test_sender_ratchet::decryption_follows_the_ratchet_chain_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test tree::tests_and_kats::unit_tests::test_sender_ratchet::peek_leaves_decryption_ratchet_unchanged_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test tree::tests_and_kats::unit_tests::test_sender_ratchet::sender_ratchet_generation_overflow ... ok
+ ERROR openmls::tree::sender_ratchet                                   > The ratchet moved since the generation was peeked.
+test tree::tests_and_kats::unit_tests::test_sender_ratchet::stale_peeked_generation_is_rejected_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+ ERROR openmls::tree::sender_ratchet                                   >   Generation is too far in the past (broke out of order tolerance (5) 5 < 11).
+test tree::tests_and_kats::unit_tests::test_sender_ratchet::test_forward_secrecy_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test tree::tests_and_kats::unit_tests::test_sender_ratchet::test_max_forward_distance_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+ ERROR openmls::tree::sender_ratchet                                   >   Generation is too far in the past (broke out of order tolerance (5) 4 < 10).
+test tree::tests_and_kats::unit_tests::test_sender_ratchet::test_out_of_order_generations_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test tree::tests_and_kats::unit_tests::test_secret_tree::increment_generation_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+ ERROR openmls::tree::sender_ratchet                                   >   Generation is too far in the past (broke out of order tolerance (5) 995 < 1001).
+ ERROR openmls::tree::secret_tree                                      > Sender index is not in the tree.
+test treesync::tests_and_kats::kats::kat_tree_operations::read_test_vectors_tree_operations_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test tree::tests_and_kats::kats::secret_tree::read_test_vectors_st_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test treesync::tests_and_kats::tests::leaf_node_params_extension_validation ... ok
+test treesync::tests_and_kats::tests::test_diff::test_free_leaf_computation_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test treesync::tests_and_kats::tests::test_unmerged_leaves::test_deserialize_sorted_unmerged_leaves ... ok
+test treesync::tests_and_kats::tests::test_unmerged_leaves::test_deserialize_unsorted_unmerged_leaves ... ok
+test treesync::tests_and_kats::tests::test_unmerged_leaves::test_insert_unmerged_leaf ... ok
+ ERROR openmls::tree::secret_tree                                      > Sender index is not in the tree.
+test tree::tests_and_kats::unit_tests::test_secret_tree::test_boundaries_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test treesync::tests_and_kats::tests::that_commit_secret_is_derived_from_end_of_update_path_not_root_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test tree::tests_and_kats::kats::kat_message_protection::read_test_vectors_mp_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test group::tests_and_kats::tests::framing::padding_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test treesync::tests_and_kats::kats::kat_tree_validation::read_test_vectors_tree_validation_rustcrypto_MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519 ... ok
+test treesync::tests_and_kats::kats::kat_treekem::read_test_vectors_treekem ... ok
+test tree::tests_and_kats::kats::kat_encryption::read_test_vectors_encryption ... ok
+test group::mls_group::tests_and_kats::kats::passive_client::test_read_vectors has been running for over 60 seconds
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMX448_AES256GCM_SHA512_Ed448
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMX448_AES256GCM_SHA512_Ed448
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMX448_AES256GCM_SHA512_Ed448
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMX448_AES256GCM_SHA512_Ed448
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMX448_AES256GCM_SHA512_Ed448
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMX448_AES256GCM_SHA512_Ed448
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMX448_AES256GCM_SHA512_Ed448
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMX448_AES256GCM_SHA512_Ed448
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMX448_AES256GCM_SHA512_Ed448
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMX448_AES256GCM_SHA512_Ed448
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMX448_AES256GCM_SHA512_Ed448
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMX448_AES256GCM_SHA512_Ed448
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMX448_AES256GCM_SHA512_Ed448
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMP521_AES256GCM_SHA512_P521
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMP521_AES256GCM_SHA512_P521
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMP521_AES256GCM_SHA512_P521
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMP521_AES256GCM_SHA512_P521
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMP521_AES256GCM_SHA512_P521
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMP521_AES256GCM_SHA512_P521
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMP521_AES256GCM_SHA512_P521
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMP521_AES256GCM_SHA512_P521
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMP521_AES256GCM_SHA512_P521
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMP521_AES256GCM_SHA512_P521
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMP521_AES256GCM_SHA512_P521
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMP521_AES256GCM_SHA512_P521
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMP521_AES256GCM_SHA512_P521
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMX448_CHACHA20POLY1305_SHA512_Ed448
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMX448_CHACHA20POLY1305_SHA512_Ed448
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMX448_CHACHA20POLY1305_SHA512_Ed448
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMX448_CHACHA20POLY1305_SHA512_Ed448
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMX448_CHACHA20POLY1305_SHA512_Ed448
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMX448_CHACHA20POLY1305_SHA512_Ed448
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMX448_CHACHA20POLY1305_SHA512_Ed448
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMX448_CHACHA20POLY1305_SHA512_Ed448
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMX448_CHACHA20POLY1305_SHA512_Ed448
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMX448_CHACHA20POLY1305_SHA512_Ed448
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMX448_CHACHA20POLY1305_SHA512_Ed448
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMX448_CHACHA20POLY1305_SHA512_Ed448
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMX448_CHACHA20POLY1305_SHA512_Ed448
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMP384_AES256GCM_SHA384_P384
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMP384_AES256GCM_SHA384_P384
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMP384_AES256GCM_SHA384_P384
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMP384_AES256GCM_SHA384_P384
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMP384_AES256GCM_SHA384_P384
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMP384_AES256GCM_SHA384_P384
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMP384_AES256GCM_SHA384_P384
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMP384_AES256GCM_SHA384_P384
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMP384_AES256GCM_SHA384_P384
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMP384_AES256GCM_SHA384_P384
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMP384_AES256GCM_SHA384_P384
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMP384_AES256GCM_SHA384_P384
+ WARN  openmls::group::mls_group::tests_and_kats::kats::passive_client > Skipping MLS_256_DHKEMP384_AES256GCM_SHA384_P384
+test group::mls_group::tests_and_kats::kats::passive_client::test_read_vectors ... ok
+
+test result: ok. 205 passed; 0 failed; 3 ignored; 0 measured; 91 filtered out; finished in 64.68s

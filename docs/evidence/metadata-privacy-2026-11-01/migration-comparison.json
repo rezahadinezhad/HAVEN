@@ -1,0 +1,33 @@
+{
+  "before": {
+    "invariant_sha256": "4dc861b80d3e95fc246728c54483ac4fad9f13c8faceb08ddc637ebd652cb165",
+    "recoverable_activity_columns": 3,
+    "legacy_receipt_table": true,
+    "membership_edges": 3,
+    "keypackage_device_links": 2,
+    "keypackage_claim_links": 2
+  },
+  "after_schema": {
+    "invariant_sha256": "4dc861b80d3e95fc246728c54483ac4fad9f13c8faceb08ddc637ebd652cb165",
+    "recoverable_activity_columns": 0,
+    "legacy_receipt_table": false,
+    "membership_edges": 3,
+    "keypackage_device_links": 2,
+    "keypackage_claim_links": 2
+  },
+  "after_cleanup": {
+    "invariant_sha256": "4dc861b80d3e95fc246728c54483ac4fad9f13c8faceb08ddc637ebd652cb165",
+    "recoverable_activity_columns": 0,
+    "legacy_receipt_table": false,
+    "membership_edges": 3,
+    "keypackage_device_links": 1,
+    "keypackage_claim_links": 1
+  },
+  "synthetic_dump_sha256": "af63319521917a00be046e0c9a2a1a5ff8234b9e389020664c90bdf3ceff7bc0",
+  "dump_bytes": 92516,
+  "dump_restore": "PASS",
+  "invariants_preserved": "PASS",
+  "reverse_refused_without_changes": "PASS",
+  "restart_idempotent": "PASS",
+  "scope": "Synthetic schema/routing/retention fixture, not MLS ciphertext validity; no identity unlinkability claim"
+}
