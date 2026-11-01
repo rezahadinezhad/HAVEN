@@ -13,6 +13,9 @@ use wasm_bindgen::prelude::*;
 
 const SUITE: Ciphersuite = Ciphersuite::MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519;
 const MAX_INPUT: usize = 16 * 1024 * 1024;
+// RFC 9420 PrivateMessage padding, authenticated and removed by OpenMLS.
+// At most 255 padding bytes; framing may grow too. No cover-traffic timer.
+const MESSAGE_PADDING: usize = 256;
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 #[derive(Default)]
 struct Provider {
@@ -104,6 +107,7 @@ pub fn run(state: &str, command: &str) -> Result<String> {
         let config = MlsGroupCreateConfig::builder()
             .ciphersuite(SUITE)
             .use_ratchet_tree_extension(true)
+            .padding_size(MESSAGE_PADDING)
             .build();
         let group = MlsGroup::new_with_group_id(
             &provider,
@@ -125,6 +129,7 @@ pub fn run(state: &str, command: &str) -> Result<String> {
         };
         let config = MlsGroupJoinConfig::builder()
             .use_ratchet_tree_extension(true)
+            .padding_size(MESSAGE_PADDING)
             .build();
         let group = StagedWelcome::new_from_welcome(&provider, &config, welcome, None)?
             .into_group(&provider)?;
@@ -172,6 +177,22 @@ pub fn run(state: &str, command: &str) -> Result<String> {
                 let plaintext = str_field(&c, "plaintext")?;
                 if plaintext.len() > 131072 {
                     return Err("message limit".into());
+                }
+                // Upgrade the adapter's known legacy config without touching
+                // keys, epoch, ratchets or secret-retention policy. Unknown
+                // configs fail closed instead of being reset to defaults.
+                if group.configuration().padding_size() != MESSAGE_PADDING {
+                    let legacy = MlsGroupJoinConfig::builder()
+                        .use_ratchet_tree_extension(true)
+                        .build();
+                    if group.configuration() != &legacy {
+                        return Err("unsupported group configuration".into());
+                    }
+                    let padded = MlsGroupJoinConfig::builder()
+                        .use_ratchet_tree_extension(true)
+                        .padding_size(MESSAGE_PADDING)
+                        .build();
+                    group.set_configuration(provider.storage(), &padded)?;
                 }
                 result["ciphertext"] = json!(wire(&group.create_message(
                     &provider,
@@ -275,6 +296,127 @@ pub fn execute(state: &str, command: &str) -> std::result::Result<String, JsValu
 mod tests {
     use super::*;
     use proptest::prelude::*;
+
+    fn step(state: &mut String, command: Value) -> Value {
+        let out: Value = serde_json::from_str(&run(state, &command.to_string()).unwrap()).unwrap();
+        *state = out["state"].as_str().unwrap().to_owned();
+        out["result"].clone()
+    }
+
+    fn with_padding(state: &str, padding: usize) -> String {
+        let mut snapshot: Snapshot = serde_json::from_str(state).unwrap();
+        let provider = Provider::default();
+        *provider.store.values.write().unwrap() = snapshot.store.into_iter().collect();
+        let mut group = MlsGroup::load(provider.storage(), &GroupId::from_slice(b"padding"))
+            .unwrap()
+            .unwrap();
+        group
+            .set_configuration(
+                provider.storage(),
+                &MlsGroupJoinConfig::builder()
+                    .use_ratchet_tree_extension(true)
+                    .padding_size(padding)
+                    .build(),
+            )
+            .unwrap();
+        snapshot.store = provider
+            .store
+            .values
+            .read()
+            .unwrap()
+            .iter()
+            .map(|(k, v)| (k.clone(), v.clone()))
+            .collect();
+        serde_json::to_string(&snapshot).unwrap()
+    }
+
+    #[test]
+    fn padding_preserves_legacy_state_plaintext_replay_and_bounds() {
+        let (mut a, mut b) = (String::new(), String::new());
+        step(&mut a, json!({"op":"init","identity":"padding-a"}));
+        step(&mut b, json!({"op":"init","identity":"padding-b"}));
+        let kp = step(&mut b, json!({"op":"package"}));
+        step(&mut a, json!({"op":"create","group_id":"padding"}));
+        let add = step(
+            &mut a,
+            json!({"op":"add","group_id":"padding","key_package":kp["key_package"]}),
+        );
+        step(
+            &mut b,
+            json!({"op":"join","group_id":"padding","welcome":add["welcome"]}),
+        );
+        // Emulate old vault configs through the upstream storage API, retaining
+        // real secrets, epochs and ratchets. No application state reset.
+        a = with_padding(&a, 0);
+        b = with_padding(&b, 0);
+        let unsupported = with_padding(&a, 128);
+        assert!(run(
+            &unsupported,
+            &json!({"op":"encrypt","group_id":"padding","plaintext":"x"}).to_string()
+        )
+        .is_err());
+        let mut small_lengths = Vec::new();
+        for size in [1, 16, 64, 128, 255, 256, 1024, 131072] {
+            let text = "x".repeat(size);
+            let encrypted = step(
+                &mut a,
+                json!({"op":"encrypt","group_id":"padding","plaintext":text}),
+            );
+            let wire_bytes = B64
+                .decode(encrypted["ciphertext"].as_str().unwrap())
+                .unwrap();
+            assert!(wire_bytes.len() <= size + 152 + 255);
+            if size <= 128 {
+                small_lengths.push(wire_bytes.len());
+            }
+            let mut corrupted = wire_bytes;
+            *corrupted.last_mut().unwrap() ^= 1;
+            assert!(run(
+                &b,
+                &json!({"op":"process","group_id":"padding","ciphertext":B64.encode(corrupted)})
+                    .to_string()
+            )
+            .is_err());
+            let out = step(
+                &mut b,
+                json!({"op":"process","group_id":"padding","ciphertext":encrypted["ciphertext"]}),
+            );
+            assert_eq!(out["plaintext"], text);
+            assert!(run(
+                &b,
+                &json!({"op":"process","group_id":"padding","ciphertext":encrypted["ciphertext"]})
+                    .to_string()
+            )
+            .is_err());
+        }
+        assert!(small_lengths.iter().all(|n| *n == small_lengths[0]));
+        assert!(run(
+            &a,
+            &json!({"op":"encrypt","group_id":"padding","plaintext":"x".repeat(131073)})
+                .to_string()
+        )
+        .is_err());
+        // An epoch update after config migration must still be authenticated.
+        let update = step(&mut a, json!({"op":"update","group_id":"padding"}));
+        assert_eq!(
+            step(
+                &mut b,
+                json!({"op":"process","group_id":"padding","ciphertext":update["commit"]})
+            )["kind"],
+            "commit"
+        );
+        let reply = step(
+            &mut b,
+            json!({"op":"encrypt","group_id":"padding","plaintext":"سلام"}),
+        );
+        assert_eq!(
+            step(
+                &mut a,
+                json!({"op":"process","group_id":"padding","ciphertext":reply["ciphertext"]})
+            )["plaintext"],
+            "سلام"
+        );
+    }
     proptest! {
         #![proptest_config(ProptestConfig::with_cases(64))]
         #[test]

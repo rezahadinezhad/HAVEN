@@ -376,13 +376,6 @@
           "ciphertext": {
             "type": "string"
           },
-          "received_at": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "date-time"
-          },
           "welcome": {
             "type": "string"
           },

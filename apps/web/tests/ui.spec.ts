@@ -1,4 +1,5 @@
-import { test, expect, chromium } from "@playwright/test";
+import { test, expect } from "./fixtures";
+import { chromium } from "@playwright/test";
 import fs from "node:fs";
 import path from "node:path";
 const credentials = JSON.parse(
@@ -123,7 +124,7 @@ test("expired IP leaf is rejected even with the correct trusted test root", asyn
   try {
     const port = (server.address() as import("node:net").AddressInfo).port;
     await expect(page.goto(`https://127.0.0.1:${port}/`)).rejects.toThrow(
-      /ERR_CERT_DATE_INVALID|certificate/,
+      /ERR_CERT_DATE_INVALID|SEC_ERROR_EXPIRED_CERTIFICATE|certificate/,
     );
   } finally {
     await new Promise<void>((resolve) => server.close(() => resolve()));

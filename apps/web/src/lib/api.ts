@@ -20,7 +20,6 @@ export type Envelope = {
   epoch: number;
   kind: "application" | "commit";
   ciphertext: string;
-  received_at: string | null;
   ciphertext_retired?: boolean;
   welcome?: string;
   transition?: Record<string, unknown>;

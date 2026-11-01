@@ -254,8 +254,6 @@ export interface components {
       signature: string;
       chain_hash: string;
       ciphertext?: string;
-      /** Format: date-time */
-      received_at?: string | null;
       welcome?: string;
       transition?: components["schemas"]["Transition"];
       ciphertext_retired?: boolean;

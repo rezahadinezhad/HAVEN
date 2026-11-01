@@ -1,4 +1,5 @@
-import { test, expect, type BrowserContext, type Page } from "@playwright/test";
+import { test, expect } from "./fixtures";
+import type { BrowserContext, Page } from "@playwright/test";
 import fs from "node:fs";
 import path from "node:path";
 import { randomBytes } from "node:crypto";

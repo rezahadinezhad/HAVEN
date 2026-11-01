@@ -261,7 +261,17 @@ test("vault rejects wrong secret and modified ciphertext", async ({ page }) => {
       "incorrect long unlock secret",
       sealed.value,
     );
-    sealed.value.ciphertext = "A" + sealed.value.ciphertext.slice(1);
+    const encoded = sealed.value.ciphertext
+      .replace(/-/g, "+")
+      .replace(/_/g, "/");
+    const bytes = Uint8Array.from(atob(encoded), (value) =>
+      value.charCodeAt(0),
+    );
+    bytes[0] ^= 1; // Always alter authenticated bytes; a replacement "A" could already match.
+    sealed.value.ciphertext = btoa(String.fromCharCode(...bytes))
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=+$/, "");
     const tamper = await ask(
       "open",
       "long test only unlock secret",

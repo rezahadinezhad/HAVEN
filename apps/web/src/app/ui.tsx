@@ -833,7 +833,7 @@ export default function Haven() {
         stream.getTracks().forEach((track) => track.stop());
         throw e;
       }
-      const chunks: BlobPart[] = [];
+      const chunks: Blob[] = [];
       recorder.current = r;
       let bytes = 0,
         oversize = false;
@@ -854,12 +854,16 @@ export default function Haven() {
           setError("Voice note exceeds 25 MiB. Record a shorter note.");
           return;
         }
+        // Firefox resets recorder.mimeType on stop. The recorded blobs retain
+        // their actual type; keep that metadata inside the encrypted attachment.
+        const mime = chunks.find((chunk) => chunk.type)?.type || r.mimeType;
+        const extension = mime.includes("mp4")
+          ? "mp4"
+          : mime.includes("ogg")
+            ? "ogg"
+            : "webm";
         void attach(
-          new File(
-            chunks,
-            "voice-note." + (r.mimeType.includes("mp4") ? "mp4" : "webm"),
-            { type: r.mimeType },
-          ),
+          new File(chunks, "voice-note." + extension, { type: mime }),
           false,
         );
       };

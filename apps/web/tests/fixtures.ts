@@ -58,6 +58,23 @@ export const test = base.extend({
         );
       const context = await firefox.launchPersistentContext(dir, {
         ...options,
+        // Playwright Firefox cannot grant the Chromium microphone permission.
+        // Its built-in fake capture device exercises MediaRecorder instead.
+        permissions: options.permissions?.filter(
+          (value) => value !== "microphone",
+        ),
+        firefoxUserPrefs: {
+          // Answer only the browser's persistence prompt in disposable QA
+          // profiles. IndexedDB, encryption and write-failure tests stay real.
+          "dom.storageManager.prompt.testing": true,
+          "dom.storageManager.prompt.testing.allow": true,
+          ...(options.permissions?.includes("microphone")
+            ? {
+                "media.navigator.streams.fake": true,
+                "media.navigator.permission.disabled": true,
+              }
+            : {}),
+        },
         headless: true,
         env: {
           PATH: process.env.PATH || "/usr/bin:/bin",

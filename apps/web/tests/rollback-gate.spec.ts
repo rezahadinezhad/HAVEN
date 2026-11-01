@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./fixtures";
 import fs from "node:fs";
 // This is a characterization of a release-blocking limitation, not a passing security invariant.
 // Restoring a complete earlier provider snapshot can resurrect an already-used receive ratchet.
