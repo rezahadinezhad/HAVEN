@@ -118,6 +118,9 @@ CHANNEL_LAYERS = {
             "hosts": [os.environ.get("REDIS_URL", "redis://127.0.0.1:56379/0")],
             "capacity": 100,
             "expiry": 30,
+            # Bound stale account-to-channel links after a crashed connection.
+            # Authenticated heartbeats refresh this; HTTP remains authoritative.
+            "group_expiry": 120,
         },
     }
 }

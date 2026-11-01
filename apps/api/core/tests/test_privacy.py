@@ -178,6 +178,7 @@ def test_worker_reports_failure_without_traceback_or_secrets(capsys):
             call_command("maintain_privacy", once=True)
     captured = capsys.readouterr()
     assert "SECRET_MARKER" not in captured.out + captured.err
+    assert cache.get("privacy:maintenance") == {"status": "unavailable"}
     call_command("maintain_privacy", once=True, stdout=StringIO())
     assert cache.get("privacy:maintenance")["status"] == "ok"
 

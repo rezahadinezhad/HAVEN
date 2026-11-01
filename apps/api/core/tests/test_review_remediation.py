@@ -198,7 +198,7 @@ def test_concurrent_message_quota_across_conversations(settings, monkeypatch):
 
 
 @pytest.mark.django_db(transaction=True)
-def test_migration_backfills_existing_ciphertext_control_and_metadata():
+def test_migration_backfills_existing_ciphertext_control_and_metadata(migration_database):
     from django.db.migrations.executor import MigrationExecutor
     from django.db.models import Sum
     import rfc8785

@@ -125,7 +125,7 @@ def test_blank_or_tampered_binding_fails_closed(client, credentials):
 
 
 @pytest.mark.django_db(transaction=True)
-def test_migration_revokes_existing_unbound_sessions():
+def test_migration_revokes_existing_unbound_sessions(migration_database):
     from django.db import connection
     from django.db.migrations.executor import MigrationExecutor
 

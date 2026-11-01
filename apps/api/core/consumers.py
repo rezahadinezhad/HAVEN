@@ -105,6 +105,13 @@ class SyncConsumer(AsyncJsonWebsocketConsumer):
         if not await session_user(self.token):
             await self.close(code=4401)
             return
+        try:
+            # Refresh the short Redis group TTL only after session validation.
+            # Also repairs membership after a transient Redis restart.
+            await self.channel_layer.group_add(self.group, self.channel_name)
+        except Exception:
+            await self.close(code=1013)
+            return
         await asyncio.to_thread(websocket_lease, self.channel_name)
         if d["kind"] in ("ephemeral.typing", "ephemeral.presence"):
             if set(d) != {"v", "kind", "conversation_id"}:

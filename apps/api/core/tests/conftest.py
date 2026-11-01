@@ -35,3 +35,33 @@ def post(c, path, value):
 def login(c, credentials):
     u, pw = credentials
     return post(c, "auth/login", {"username": u.username, "password": pw})
+
+
+@pytest.fixture
+def migration_database(transactional_db):
+    """Forward-only migration tests use a fresh synthetic DB, never reverse data loss."""
+    import psycopg
+    from psycopg import sql
+    from django.db import connection
+
+    config = connection.settings_dict
+    original = config["NAME"]
+    assert original.startswith("test_") and config["HOST"] == "127.0.0.1"
+    name = "test_haven_migration_" + secrets.token_hex(8)
+    with psycopg.connect(
+        dbname=original,
+        user=config["USER"],
+        password=config["PASSWORD"],
+        host=config["HOST"],
+        port=config["PORT"],
+        autocommit=True,
+    ) as admin:
+        admin.execute(sql.SQL("CREATE DATABASE {}").format(sql.Identifier(name)))
+        connection.close()
+        config["NAME"] = name
+        try:
+            yield
+        finally:
+            connection.close()
+            config["NAME"] = original
+            admin.execute(sql.SQL("DROP DATABASE {} WITH (FORCE)").format(sql.Identifier(name)))

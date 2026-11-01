@@ -879,9 +879,7 @@ def envelope_json(e, device=None, proof=False):
         "chain_hash": e.chain_hash,
     }
     if not proof:
-        result.update(
-            ciphertext=b64(e.ciphertext), received_at=e.received_at, ciphertext_retired=e.ciphertext_retired
-        )
+        result.update(ciphertext=b64(e.ciphertext), ciphertext_retired=e.ciphertext_retired)
         if e.kind == "commit":
             control = e.cryptocontrolevent
             result["transition"] = control.transition
@@ -978,9 +976,9 @@ class Messages(View):
         except ValueError:
             raise ValidationError("Invalid cursor") from None
         envs = list(
-            m.MessageEnvelope.objects.filter(conversation=c, server_seq__gt=after).order_by("server_seq")[
-                :limit
-            ]
+            m.MessageEnvelope.objects.defer("received_at", "request_digest")
+            .filter(conversation=c, server_seq__gt=after)
+            .order_by("server_seq")[:limit]
         )
         if any(e.ciphertext_retired for e in envs):
             return Response({"error": "history_retired_use_verified_fresh_device"}, status=410)
@@ -1185,7 +1183,7 @@ class Acks(View):
         cursor, _ = m.DeliveryCursor.objects.get_or_create(device=member.device, conversation=c)
         if d["seq"] > cursor.last_acked_seq:
             cursor.last_acked_seq = d["seq"]
-            cursor.save(update_fields=["last_acked_seq", "updated_at"])
+            cursor.save(update_fields=["last_acked_seq"])
             m.Conversation.objects.filter(pk=c.pk).update(receipt_version=F("receipt_version") + 1)
         # Bounded updates: receipts are derived from durable per-device cursor, not human reading.
         return Response({"seq": cursor.last_acked_seq, "state": "recipient_synced"})

@@ -52,7 +52,6 @@ class Session(models.Model):
     expires_at = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
     revoked_at = models.DateTimeField(null=True)
-    last_seen = models.DateTimeField(auto_now=True)
     device_challenge = models.CharField(max_length=64, blank=True)
 
     def save(self, *args, **kwargs):
@@ -66,7 +65,8 @@ class Session(models.Model):
 
 class DeviceKeyPackage(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    device = models.ForeignKey(Device, on_delete=models.PROTECT)
+    # After expiry only the globally unique digest is needed to reject reuse.
+    device = models.ForeignKey(Device, null=True, on_delete=models.PROTECT)
     package = models.BinaryField()
     digest = models.CharField(max_length=64, unique=True)
     cipher_suite = models.PositiveIntegerField(default=1)
@@ -74,6 +74,20 @@ class DeviceKeyPackage(models.Model):
     expires_at = models.DateTimeField()
     consumed_at = models.DateTimeField(null=True)
     claimed_by = models.ForeignKey(Device, null=True, related_name="+", on_delete=models.PROTECT)
+
+    class Meta:
+        indexes = [
+            models.Index(
+                fields=["expires_at", "id"],
+                condition=(
+                    ~models.Q(package=b"")
+                    | models.Q(device__isnull=False)
+                    | models.Q(claimed_by__isnull=False)
+                    | models.Q(consumed_at__isnull=False)
+                ),
+                name="keypackage_privacy_expiry",
+            )
+        ]
 
 
 class Conversation(models.Model):
@@ -145,20 +159,9 @@ class DeliveryCursor(models.Model):
     device = models.ForeignKey(Device, on_delete=models.PROTECT)
     conversation = models.ForeignKey(Conversation, on_delete=models.PROTECT)
     last_acked_seq = models.PositiveBigIntegerField(default=0)
-    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         constraints = [models.UniqueConstraint(fields=["device", "conversation"], name="device_cursor")]
-
-
-class DeliveryReceipt(models.Model):
-    envelope = models.ForeignKey(MessageEnvelope, on_delete=models.PROTECT)
-    device = models.ForeignKey(Device, on_delete=models.PROTECT)
-    state = models.CharField(max_length=20, default="recipient_synced")
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        constraints = [models.UniqueConstraint(fields=["envelope", "device"], name="device_receipt")]
 
 
 class NotificationOutbox(models.Model):
@@ -206,7 +209,6 @@ class AttachmentChunk(models.Model):
     content_hash = models.CharField(max_length=64)
     byte_length = models.PositiveIntegerField()
     ciphertext = models.BinaryField()  # v1 self-hosted PostgreSQL blobs; bounded <= 1MiB/chunk.
-    stored_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         constraints = [models.UniqueConstraint(fields=["attachment", "chunk_index"], name="chunk_once")]

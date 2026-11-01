@@ -22,7 +22,8 @@ class Command(BaseCommand):
                     rows = (
                         NotificationOutbox.objects.select_for_update(skip_locked=True)
                         .filter(sent_at=None)
-                        .select_related("envelope")[:100]
+                        .select_related("envelope")
+                        .only("envelope__conversation_id", "sent_at", "attempts")[:100]
                     )
                     for row in rows:
                         users = (

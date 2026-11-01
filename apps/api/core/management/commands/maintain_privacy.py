@@ -20,6 +20,10 @@ class Command(BaseCommand):
                 cache.set("privacy:maintenance", {"status": "ok", "counts": counts}, timeout=900)
                 self.stdout.write("Privacy maintenance completed")
             except Exception:
+                try:
+                    cache.set("privacy:maintenance", {"status": "unavailable"}, timeout=900)
+                except Exception:
+                    pass  # Redis can be unavailable too; stale status expires.
                 self.stderr.write("Privacy maintenance unavailable; inspect aggregate health")
                 if options["once"]:
                     raise SystemExit(1) from None

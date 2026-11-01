@@ -68,8 +68,27 @@ def retire_delivered(now, batch_size=500):
 def delete_batch(query, batch_size):
     ids = list(query.order_by("pk").values_list("pk", flat=True)[:batch_size])
     if ids:
-        query.model.objects.filter(pk__in=ids).delete()
+        query.filter(pk__in=ids).delete()
     return len(ids)
+
+
+def delete_attachments(now, batch_size):
+    eligible = m.EncryptedAttachment.objects.filter(
+        Q(expires_at__lte=now)
+        | Q(status="uploading", created_at__lte=now - timedelta(hours=1))
+        | Q(status="deleted")
+    )
+    ids = list(eligible.order_by("pk").values_list("pk", flat=True)[:batch_size])
+    deleted = 0
+    for aid in ids:
+        with transaction.atomic():
+            # Upload completion and view claims take this same lock. Recheck
+            # after waiting: a completed upload must not be treated as abandoned.
+            attachment = eligible.select_for_update().filter(pk=aid).first()
+            if attachment:
+                attachment.delete()
+                deleted += 1
+    return deleted
 
 
 def cleanup(batch_size=500):
@@ -97,14 +116,7 @@ def cleanup(batch_size=500):
                     lease_expires_at=None,
                 )
                 finish_if_consumed(a)
-    counts["attachments"] = delete_batch(
-        m.EncryptedAttachment.objects.filter(
-            Q(expires_at__lte=now)
-            | Q(status="uploading", created_at__lte=now - timedelta(hours=1))
-            | Q(status="deleted")
-        ),
-        batch_size,
-    )
+    counts["attachments"] = delete_attachments(now, batch_size)
     counts["challenges"] = delete_batch(
         m.RecoveryChallenge.objects.filter(Q(expires_at__lte=now) | Q(consumed_at__isnull=False)), batch_size
     )
@@ -127,13 +139,13 @@ def cleanup(batch_size=500):
         m.NotificationOutbox.objects.filter(sent_at__lte=now - timedelta(hours=1)), batch_size
     )
     # Claims must remain retryable until expiry. Digest tombstones are not deleted.
-    expired = list(
-        m.DeviceKeyPackage.objects.filter(expires_at__lte=now)
-        .exclude(package=b"")
-        .values_list("pk", flat=True)[:batch_size]
+    obsolete_packages = m.DeviceKeyPackage.objects.filter(expires_at__lte=now).filter(
+        ~Q(package=b"") | Q(device__isnull=False) | Q(claimed_by__isnull=False) | Q(consumed_at__isnull=False)
     )
+    expired = list(obsolete_packages.order_by("expires_at", "pk").values_list("pk", flat=True)[:batch_size])
     counts["packages"] = m.DeviceKeyPackage.objects.filter(pk__in=expired).update(
         package=b"",
+        device=None,
         claimed_by=None,
         consumed_at=None,
     )

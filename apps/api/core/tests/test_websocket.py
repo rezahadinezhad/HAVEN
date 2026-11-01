@@ -117,6 +117,35 @@ async def test_unauthed_and_bounded_frames(settings):
             await ws.disconnect()
 
 
+async def test_redis_account_channel_link_expires_and_valid_heartbeat_refreshes(settings):
+    import redis.asyncio as redis
+    from channels.layers import get_channel_layer
+
+    items, _ = await identities()
+    layer = get_channel_layer()
+    assert layer.group_expiry == 120
+    db = redis.Redis.from_url(settings.CHANNEL_LAYERS["default"]["CONFIG"]["hosts"][0])
+    key = layer._group_key("user." + str(items[0][0].user_id))
+    ws = socket(items[0][1])
+    try:
+        assert (await ws.connect())[0]
+        await ws.receive_json_from()
+        assert 0 < await db.ttl(key) <= 120
+        # Actual Redis state loss, no mocked channel layer: heartbeat restores it.
+        await db.delete(key)
+        await ws.send_json_to({"v": 1, "kind": "heartbeat"})
+        assert (await ws.receive_json_from())["kind"] == "heartbeat"
+        assert 0 < await db.ttl(key) <= 120
+        await sync_to_async(m.Session.objects.filter(pk=items[0][2].pk).update)(revoked_at=timezone.now())
+        await db.delete(key)
+        await ws.send_json_to({"v": 1, "kind": "heartbeat"})
+        assert (await ws.receive_output())["code"] == 4401
+        assert not await db.exists(key)  # Revoked credentials cannot renew the association.
+    finally:
+        await ws.disconnect()
+        await db.aclose()
+
+
 @pytest.mark.parametrize(
     "scheme,host,origin",
     [
