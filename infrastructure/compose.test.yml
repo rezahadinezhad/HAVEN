@@ -1,6 +1,7 @@
 name: haven-test
 services:
   db:
+    labels: {haven.test-only: "true"}
     image: postgres:16.14-bookworm@sha256:64154d0babcb1741988719e703419af0382b19953706149f9872fbd0f438efa8
     environment:
       POSTGRES_DB: haven
@@ -14,6 +15,7 @@ services:
       timeout: 2s
       retries: 20
   redis:
+    labels: {haven.test-only: "true"}
     image: redis:7.4.6-alpine@sha256:3b73847e72874be07e6657b129a94761662b79bc0f679273757d4218573b2a98
     ports: ["127.0.0.1:56379:6379"]
     command: ["redis-server", "--save", "", "--appendonly", "no"]

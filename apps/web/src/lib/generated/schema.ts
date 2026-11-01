@@ -5,711 +5,152 @@
 
 export interface paths {
   "/api/v1/health": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
     get: operations["Health_get_0"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
   };
   "/api/v1/auth/csrf": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
     get: operations["CSRF_get_1"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
   };
   "/api/v1/auth/login": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
     post: operations["Login_post_2"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
   };
   "/api/v1/invitations/redeem": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
     post: operations["Redeem_post_3"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
   };
   "/api/v1/recovery/key": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
     post: operations["RecoveryKey_post_4"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
   };
   "/api/v1/recovery/start": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
     post: operations["RecoveryStart_post_5"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
   };
   "/api/v1/recovery/reset": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
     post: operations["RecoveryReset_post_6"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
   };
   "/api/v1/auth/me": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
     get: operations["Me_get_7"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
   };
   "/api/v1/auth/disable": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
     post: operations["DisableAccount_post_8"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
   };
   "/api/v1/auth/logout": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
     post: operations["Logout_post_9"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
   };
   "/api/v1/auth/logout-all": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
     post: operations["Logout_post_10"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
   };
   "/api/v1/auth/change-password": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
     post: operations["ChangePassword_post_11"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
   };
   "/api/v1/admin/invitations": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
     get: operations["Invitations_get_12"];
-    put?: never;
     post: operations["Invitations_post_13"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
   };
   "/api/v1/admin/invitations/{iid}/revoke": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
     post: operations["RevokeInvitation_post_13"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
   };
   "/api/v1/admin/devices": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
     get: operations["AdminDevices_get_14"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
   };
   "/api/v1/admin/devices/{did}/revoke": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
     post: operations["AdminDevices_post_15"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
   };
   "/api/v1/admin/users": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
     get: operations["Users_get_16"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
   };
   "/api/v1/admin/users/{uid}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
     patch: operations["Users_patch_17"];
-    trace?: never;
   };
   "/api/v1/admin/system-status": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
     get: operations["SystemStatus_get_18"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
     patch: operations["SystemStatus_patch_19"];
-    trace?: never;
   };
   "/api/v1/devices": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
     get: operations["Devices_get_19"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
   };
   "/api/v1/devices/enrollment/request": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
     post: operations["EnrollmentRequest_post_20"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
   };
   "/api/v1/devices/enrollment/approve": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
     post: operations["EnrollmentApprove_post_21"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
   };
   "/api/v1/devices/enrollment/complete": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
     post: operations["EnrollmentComplete_post_22"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
   };
   "/api/v1/devices/{did}/revoke": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
     post: operations["RevokeDevice_post_23"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
   };
   "/api/v1/crypto/devices/{uid}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
     get: operations["PeerDevices_get_24"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
   };
   "/api/v1/crypto/key-packages": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
     get: operations["KeyPackages_get_25"];
-    put?: never;
     post: operations["KeyPackages_post_26"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
   };
   "/api/v1/crypto/key-packages/{did}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
     get: operations["KeyPackages_get_26"];
-    put?: never;
     post: operations["KeyPackages_post_27"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
   };
   "/api/v1/conversations": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
     get: operations["Conversations_get_27"];
-    put?: never;
     post: operations["Conversations_post_28"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
   };
   "/api/v1/conversations/{cid}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
     get: operations["Conversations_get_28"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
   };
   "/api/v1/conversations/{cid}/members/propose": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
     post: operations["MembersPropose_post_29"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
   };
   "/api/v1/conversations/{cid}/messages": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
     get: operations["Messages_get_30"];
-    put?: never;
     post: operations["Messages_post_31"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
   };
   "/api/v1/conversations/{cid}/crypto-events": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
     get: operations["CryptoEvents_get_31"];
-    put?: never;
     post: operations["CryptoEvents_post_32"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
   };
   "/api/v1/conversations/{cid}/proofs": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
     get: operations["Proofs_get_32"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
   };
   "/api/v1/conversations/{cid}/acks": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
     get: operations["Acks_get_33"];
-    put?: never;
     post: operations["Acks_post_34"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
   };
   "/api/v1/sync": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
     get: operations["Sync_get_34"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
   };
   "/api/v1/attachments/init": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
     post: operations["Attachments_post_35"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
   };
   "/api/v1/attachments/{aid}/view-once": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
     get: operations["ViewOnceAttachment_get_36"];
-    put?: never;
     post: operations["ViewOnceAttachment_post_37"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
   };
   "/api/v1/attachments/{aid}/view-once/close": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
     post: operations["CloseViewOnceAttachment_post_37"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
   };
   "/api/v1/attachments/{aid}/chunks/{index}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
     get: operations["Chunk_get_38"];
     put: operations["Chunk_put_39"];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
   };
   "/api/v1/attachments/{aid}/complete": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
     post: operations["CompleteAttachment_post_39"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
   };
   "/api/v1/attachments/{aid}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
     delete: operations["DeleteAttachment_delete_40"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
   };
   "/api/v1/privacy-policy": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
     get: operations["PrivacyPolicy_get_41"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
   };
   "/api/v1/invitations": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
     get: operations["FriendInvitations_get_42"];
-    put?: never;
     post: operations["FriendInvitations_post_43"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
   };
   "/api/v1/invitations/{iid}/revoke": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
     post: operations["FriendRevokeInvitation_post_43"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
   };
 }
+
 export type webhooks = Record<string, never>;
+
 export interface components {
   schemas: {
     User: {
@@ -784,6 +225,7 @@ export interface components {
       last_seq: number;
       status: string;
       head_hash: string;
+      receipt_version: number;
     };
     Genesis: {
       /** @constant */
@@ -859,22 +301,16 @@ export interface components {
   headers: never;
   pathItems: never;
 }
+
 export type $defs = Record<string, never>;
+
+export type external = Record<string, never>;
+
 export interface operations {
   Health_get_0: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             status: string;
@@ -887,9 +323,6 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             status: string;
@@ -902,9 +335,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -913,9 +343,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -924,9 +351,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -935,9 +359,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -946,9 +367,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -957,9 +375,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -969,19 +384,9 @@ export interface operations {
     };
   };
   CSRF_get_1: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             csrf: string;
@@ -990,9 +395,6 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             csrf: string;
@@ -1001,9 +403,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1012,9 +411,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1023,9 +419,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1034,9 +427,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1045,9 +435,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1056,9 +443,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1068,12 +452,6 @@ export interface operations {
     };
   };
   Login_post_2: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
     requestBody: {
       content: {
         "application/json": {
@@ -1085,9 +463,6 @@ export interface operations {
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             user: components["schemas"]["User"];
@@ -1097,9 +472,6 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             user: components["schemas"]["User"];
@@ -1109,9 +481,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1120,9 +489,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1131,9 +497,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1142,9 +505,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1153,9 +513,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1164,9 +521,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1176,12 +530,6 @@ export interface operations {
     };
   };
   Redeem_post_3: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
     requestBody: {
       content: {
         "application/json": {
@@ -1195,9 +543,6 @@ export interface operations {
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             user: components["schemas"]["User"];
@@ -1207,9 +552,6 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             user: components["schemas"]["User"];
@@ -1219,9 +561,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1230,9 +569,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1241,9 +577,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1252,9 +585,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1263,9 +593,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1274,9 +601,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1286,12 +610,6 @@ export interface operations {
     };
   };
   RecoveryKey_post_4: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
     requestBody: {
       content: {
         "application/json": {
@@ -1302,9 +620,6 @@ export interface operations {
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             ok: boolean;
@@ -1313,9 +628,6 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             ok: boolean;
@@ -1324,9 +636,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1335,9 +644,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1346,9 +652,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1357,9 +660,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1368,9 +668,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1379,9 +676,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1391,12 +685,6 @@ export interface operations {
     };
   };
   RecoveryStart_post_5: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
     requestBody: {
       content: {
         "application/json": {
@@ -1408,9 +696,6 @@ export interface operations {
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             /** Format: uuid */
@@ -1421,9 +706,6 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             /** Format: uuid */
@@ -1434,9 +716,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1445,9 +724,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1456,9 +732,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1467,9 +740,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1478,9 +748,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1489,9 +756,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1501,12 +765,6 @@ export interface operations {
     };
   };
   RecoveryReset_post_6: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
     requestBody: {
       content: {
         "application/json": {
@@ -1530,9 +788,6 @@ export interface operations {
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             user: components["schemas"]["User"];
@@ -1542,9 +797,6 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             user: components["schemas"]["User"];
@@ -1554,9 +806,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1565,9 +814,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1576,9 +822,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1587,9 +830,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1598,9 +838,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1609,9 +846,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1621,19 +855,9 @@ export interface operations {
     };
   };
   Me_get_7: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             user: components["schemas"]["User"];
@@ -1645,9 +869,6 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             user: components["schemas"]["User"];
@@ -1659,9 +880,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1670,9 +888,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1681,9 +896,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1692,9 +904,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1703,9 +912,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1714,9 +920,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1726,12 +929,6 @@ export interface operations {
     };
   };
   DisableAccount_post_8: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
     requestBody: {
       content: {
         "application/json": {
@@ -1744,9 +941,6 @@ export interface operations {
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1755,9 +949,6 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1766,9 +957,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1777,9 +965,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1788,9 +973,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1799,9 +981,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1810,9 +989,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1821,9 +997,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1833,12 +1006,6 @@ export interface operations {
     };
   };
   Logout_post_9: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
     requestBody: {
       content: {
         "application/json": Record<string, never>;
@@ -1847,9 +1014,6 @@ export interface operations {
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             ok: boolean;
@@ -1858,9 +1022,6 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             ok: boolean;
@@ -1869,9 +1030,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1880,9 +1038,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1891,9 +1046,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1902,9 +1054,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1913,9 +1062,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1924,9 +1070,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1936,12 +1079,6 @@ export interface operations {
     };
   };
   Logout_post_10: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
     requestBody: {
       content: {
         "application/json": Record<string, never>;
@@ -1950,9 +1087,6 @@ export interface operations {
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             ok: boolean;
@@ -1961,9 +1095,6 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             ok: boolean;
@@ -1972,9 +1103,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1983,9 +1111,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -1994,9 +1119,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2005,9 +1127,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2016,9 +1135,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2027,9 +1143,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2039,12 +1152,6 @@ export interface operations {
     };
   };
   ChangePassword_post_11: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
     requestBody: {
       content: {
         "application/json": {
@@ -2056,9 +1163,6 @@ export interface operations {
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2067,9 +1171,6 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2078,9 +1179,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2089,9 +1187,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2100,9 +1195,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2111,9 +1203,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2122,9 +1211,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2133,9 +1219,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2145,19 +1228,9 @@ export interface operations {
     };
   };
   Invitations_get_12: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             /** Format: uuid */
@@ -2174,9 +1247,6 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             /** Format: uuid */
@@ -2193,9 +1263,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2204,9 +1271,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2215,9 +1279,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2226,9 +1287,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2237,9 +1295,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2248,9 +1303,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2260,12 +1312,6 @@ export interface operations {
     };
   };
   Invitations_post_13: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
     requestBody: {
       content: {
         "application/json": {
@@ -2277,9 +1323,6 @@ export interface operations {
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             /** Format: uuid */
@@ -2292,9 +1335,6 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             /** Format: uuid */
@@ -2307,9 +1347,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2318,9 +1355,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2329,9 +1363,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2340,9 +1371,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2351,9 +1379,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2362,9 +1387,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2375,12 +1397,9 @@ export interface operations {
   };
   RevokeInvitation_post_13: {
     parameters: {
-      query?: never;
-      header?: never;
       path: {
         iid: string;
       };
-      cookie?: never;
     };
     requestBody: {
       content: {
@@ -2390,9 +1409,6 @@ export interface operations {
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             ok: boolean;
@@ -2401,9 +1417,6 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             ok: boolean;
@@ -2412,9 +1425,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2423,9 +1433,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2434,9 +1441,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2445,9 +1449,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2456,9 +1457,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2467,9 +1465,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2479,19 +1474,9 @@ export interface operations {
     };
   };
   AdminDevices_get_14: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2500,9 +1485,6 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2511,9 +1493,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2522,9 +1501,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2533,9 +1509,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2544,9 +1517,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2555,9 +1525,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2566,9 +1533,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2579,12 +1543,9 @@ export interface operations {
   };
   AdminDevices_post_15: {
     parameters: {
-      query?: never;
-      header?: never;
       path: {
         did: string;
       };
-      cookie?: never;
     };
     requestBody: {
       content: {
@@ -2594,9 +1555,6 @@ export interface operations {
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2605,9 +1563,6 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2616,9 +1571,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2627,9 +1579,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2638,9 +1587,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2649,9 +1595,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2660,9 +1603,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2671,9 +1611,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2683,37 +1620,21 @@ export interface operations {
     };
   };
   Users_get_16: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": components["schemas"]["User"][];
         };
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": components["schemas"]["User"][];
         };
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2722,9 +1643,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2733,9 +1651,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2744,9 +1659,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2755,9 +1667,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2766,9 +1675,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2779,12 +1685,9 @@ export interface operations {
   };
   Users_patch_17: {
     parameters: {
-      query?: never;
-      header?: never;
       path: {
         uid: string;
       };
-      cookie?: never;
     };
     requestBody: {
       content: {
@@ -2798,27 +1701,18 @@ export interface operations {
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": components["schemas"]["User"];
         };
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": components["schemas"]["User"];
         };
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2827,9 +1721,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2838,9 +1729,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2849,9 +1737,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2860,9 +1745,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2871,9 +1753,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2883,19 +1762,9 @@ export interface operations {
     };
   };
   SystemStatus_get_18: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2904,9 +1773,6 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2915,9 +1781,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2926,9 +1789,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2937,9 +1797,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2948,9 +1805,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2959,9 +1813,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2970,9 +1821,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -2982,12 +1830,6 @@ export interface operations {
     };
   };
   SystemStatus_patch_19: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
     requestBody: {
       content: {
         "application/json": {
@@ -3000,9 +1842,6 @@ export interface operations {
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3011,9 +1850,6 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3022,9 +1858,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3033,9 +1866,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3044,9 +1874,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3055,9 +1882,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3066,9 +1890,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3077,9 +1898,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3089,37 +1907,21 @@ export interface operations {
     };
   };
   Devices_get_19: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": components["schemas"]["Device"][];
         };
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": components["schemas"]["Device"][];
         };
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3128,9 +1930,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3139,9 +1938,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3150,9 +1946,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3161,9 +1954,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3172,9 +1962,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3184,12 +1971,6 @@ export interface operations {
     };
   };
   EnrollmentRequest_post_20: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
     requestBody: {
       content: {
         "application/json": {
@@ -3204,9 +1985,6 @@ export interface operations {
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             /** Format: uuid */
@@ -3228,9 +2006,6 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             /** Format: uuid */
@@ -3252,9 +2027,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3263,9 +2035,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3274,9 +2043,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3285,9 +2051,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3296,9 +2059,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3307,9 +2067,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3319,12 +2076,6 @@ export interface operations {
     };
   };
   EnrollmentApprove_post_21: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
     requestBody: {
       content: {
         "application/json": {
@@ -3337,9 +2088,6 @@ export interface operations {
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             ok: boolean;
@@ -3348,9 +2096,6 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             ok: boolean;
@@ -3359,9 +2104,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3370,9 +2112,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3381,9 +2120,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3392,9 +2128,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3403,9 +2136,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3414,9 +2144,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3426,12 +2153,6 @@ export interface operations {
     };
   };
   EnrollmentComplete_post_22: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
     requestBody: {
       content: {
         "application/json": {
@@ -3444,27 +2165,18 @@ export interface operations {
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": components["schemas"]["Device"];
         };
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": components["schemas"]["Device"];
         };
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3473,9 +2185,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3484,9 +2193,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3495,9 +2201,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3506,9 +2209,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3517,9 +2217,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3530,12 +2227,9 @@ export interface operations {
   };
   RevokeDevice_post_23: {
     parameters: {
-      query?: never;
-      header?: never;
       path: {
         did: string;
       };
-      cookie?: never;
     };
     requestBody: {
       content: {
@@ -3545,9 +2239,6 @@ export interface operations {
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3556,9 +2247,6 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3567,9 +2255,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3578,9 +2263,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3589,9 +2271,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3600,9 +2279,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3611,9 +2287,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3622,9 +2295,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3635,38 +2305,25 @@ export interface operations {
   };
   PeerDevices_get_24: {
     parameters: {
-      query?: never;
-      header?: never;
       path: {
         uid: string;
       };
-      cookie?: never;
     };
-    requestBody?: never;
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": components["schemas"]["Device"][];
         };
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": components["schemas"]["Device"][];
         };
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3675,9 +2332,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3686,9 +2340,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3697,9 +2348,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3708,9 +2356,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3719,9 +2364,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3731,19 +2373,9 @@ export interface operations {
     };
   };
   KeyPackages_get_25: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             /** Format: uuid */
@@ -3753,9 +2385,6 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             /** Format: uuid */
@@ -3765,9 +2394,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3776,9 +2402,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3787,9 +2410,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3798,9 +2418,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3809,9 +2426,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3820,9 +2434,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3832,12 +2443,6 @@ export interface operations {
     };
   };
   KeyPackages_post_26: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
     requestBody: {
       content: {
         "application/json": {
@@ -3848,9 +2453,6 @@ export interface operations {
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             /** Format: uuid */
@@ -3860,9 +2462,6 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             /** Format: uuid */
@@ -3872,9 +2471,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3883,9 +2479,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3894,9 +2487,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3905,9 +2495,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3916,9 +2503,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3927,9 +2511,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3940,20 +2521,13 @@ export interface operations {
   };
   KeyPackages_get_26: {
     parameters: {
-      query?: never;
-      header?: never;
       path: {
         did: string;
       };
-      cookie?: never;
     };
-    requestBody?: never;
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             device: components["schemas"]["Device"];
@@ -3962,9 +2536,6 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             device: components["schemas"]["Device"];
@@ -3973,9 +2544,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3984,9 +2552,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -3995,9 +2560,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4006,9 +2568,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4017,9 +2576,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4028,9 +2584,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4041,12 +2594,9 @@ export interface operations {
   };
   KeyPackages_post_27: {
     parameters: {
-      query?: never;
-      header?: never;
       path: {
         did: string;
       };
-      cookie?: never;
     };
     requestBody: {
       content: {
@@ -4056,9 +2606,6 @@ export interface operations {
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             /** Format: uuid */
@@ -4070,9 +2617,6 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             /** Format: uuid */
@@ -4084,9 +2628,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4095,9 +2636,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4106,9 +2644,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4117,9 +2652,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4128,9 +2660,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4139,9 +2668,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4152,17 +2678,17 @@ export interface operations {
   };
   Conversations_get_27: {
     parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+      query?: {
+        /** @description Signed keyset cursor. Conversation array responses expose continuation in X-Haven-Next-Cursor. */
+        cursor?: string;
+      };
     };
-    requestBody?: never;
     responses: {
       /** @description Committed success */
       200: {
         headers: {
-          [name: string]: unknown;
+          /** @description Present only when another page exists */
+          "X-Haven-Next-Cursor"?: string;
         };
         content: {
           "application/json": components["schemas"]["Conversation"][];
@@ -4171,7 +2697,8 @@ export interface operations {
       /** @description Committed success */
       201: {
         headers: {
-          [name: string]: unknown;
+          /** @description Present only when another page exists */
+          "X-Haven-Next-Cursor"?: string;
         };
         content: {
           "application/json": components["schemas"]["Conversation"][];
@@ -4179,9 +2706,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4190,9 +2714,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4201,9 +2722,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4212,9 +2730,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4223,9 +2738,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4234,9 +2746,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4246,12 +2755,6 @@ export interface operations {
     };
   };
   Conversations_post_28: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
     requestBody: {
       content: {
         "application/json": {
@@ -4270,27 +2773,18 @@ export interface operations {
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": components["schemas"]["Conversation"];
         };
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": components["schemas"]["Conversation"];
         };
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4299,9 +2793,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4310,9 +2801,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4321,9 +2809,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4332,9 +2817,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4343,9 +2825,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4356,20 +2835,13 @@ export interface operations {
   };
   Conversations_get_28: {
     parameters: {
-      query?: never;
-      header?: never;
       path: {
         cid: string;
       };
-      cookie?: never;
     };
-    requestBody?: never;
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             /** Format: uuid */
@@ -4381,6 +2853,7 @@ export interface operations {
             last_seq: number;
             status: string;
             head_hash: string;
+            receipt_version: number;
             genesis: components["schemas"]["Genesis"];
             genesis_signature: string;
             members: {
@@ -4394,9 +2867,6 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             /** Format: uuid */
@@ -4408,6 +2878,7 @@ export interface operations {
             last_seq: number;
             status: string;
             head_hash: string;
+            receipt_version: number;
             genesis: components["schemas"]["Genesis"];
             genesis_signature: string;
             members: {
@@ -4421,9 +2892,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4432,9 +2900,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4443,9 +2908,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4454,9 +2916,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4465,9 +2924,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4476,9 +2932,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4489,12 +2942,9 @@ export interface operations {
   };
   MembersPropose_post_29: {
     parameters: {
-      query?: never;
-      header?: never;
       path: {
         cid: string;
       };
-      cookie?: never;
     };
     requestBody: {
       content: {
@@ -4508,9 +2958,6 @@ export interface operations {
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4519,9 +2966,6 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4530,9 +2974,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4541,9 +2982,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4552,9 +2990,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4563,9 +2998,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4574,9 +3006,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4585,9 +3014,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4598,20 +3024,13 @@ export interface operations {
   };
   Messages_get_30: {
     parameters: {
-      query?: never;
-      header?: never;
       path: {
         cid: string;
       };
-      cookie?: never;
     };
-    requestBody?: never;
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             messages: components["schemas"]["Envelope"][];
@@ -4622,9 +3041,6 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             messages: components["schemas"]["Envelope"][];
@@ -4635,9 +3051,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4646,9 +3059,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4657,9 +3067,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4668,9 +3075,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4679,9 +3083,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       410: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4690,9 +3091,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4701,9 +3099,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4714,12 +3109,9 @@ export interface operations {
   };
   Messages_post_31: {
     parameters: {
-      query?: never;
-      header?: never;
       path: {
         cid: string;
       };
-      cookie?: never;
     };
     requestBody: {
       content: {
@@ -4739,9 +3131,6 @@ export interface operations {
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             /** Format: uuid */
@@ -4755,9 +3144,6 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             /** Format: uuid */
@@ -4771,9 +3157,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4782,9 +3165,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4793,9 +3173,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4804,9 +3181,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4815,9 +3189,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4826,9 +3197,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4839,20 +3207,13 @@ export interface operations {
   };
   CryptoEvents_get_31: {
     parameters: {
-      query?: never;
-      header?: never;
       path: {
         cid: string;
       };
-      cookie?: never;
     };
-    requestBody?: never;
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             messages: components["schemas"]["Envelope"][];
@@ -4863,9 +3224,6 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             messages: components["schemas"]["Envelope"][];
@@ -4876,9 +3234,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4887,9 +3242,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4898,9 +3250,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4909,9 +3258,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4920,9 +3266,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       410: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4931,9 +3274,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4942,9 +3282,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -4955,12 +3292,9 @@ export interface operations {
   };
   CryptoEvents_post_32: {
     parameters: {
-      query?: never;
-      header?: never;
       path: {
         cid: string;
       };
-      cookie?: never;
     };
     requestBody: {
       content: {
@@ -4989,9 +3323,6 @@ export interface operations {
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             /** Format: uuid */
@@ -5005,9 +3336,6 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             /** Format: uuid */
@@ -5021,9 +3349,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5032,9 +3357,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5043,9 +3365,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5054,9 +3373,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5065,9 +3381,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5076,9 +3389,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5089,20 +3399,13 @@ export interface operations {
   };
   Proofs_get_32: {
     parameters: {
-      query?: never;
-      header?: never;
       path: {
         cid: string;
       };
-      cookie?: never;
     };
-    requestBody?: never;
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             proofs: components["schemas"]["Envelope"][];
@@ -5115,9 +3418,6 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             proofs: components["schemas"]["Envelope"][];
@@ -5130,9 +3430,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5141,9 +3438,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5152,9 +3446,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5163,9 +3454,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5174,9 +3462,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5185,9 +3470,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5198,22 +3480,16 @@ export interface operations {
   };
   Acks_get_33: {
     parameters: {
-      query?: never;
-      header?: never;
       path: {
         cid: string;
       };
-      cookie?: never;
     };
-    requestBody?: never;
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
+            version: number;
             cursors: {
               /** Format: uuid */
               device_id: string;
@@ -5224,11 +3500,9 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
+            version: number;
             cursors: {
               /** Format: uuid */
               device_id: string;
@@ -5239,9 +3513,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5250,9 +3521,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5261,9 +3529,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5272,9 +3537,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5283,9 +3545,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5294,9 +3553,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5307,12 +3563,9 @@ export interface operations {
   };
   Acks_post_34: {
     parameters: {
-      query?: never;
-      header?: never;
       path: {
         cid: string;
       };
-      cookie?: never;
     };
     requestBody: {
       content: {
@@ -5324,9 +3577,6 @@ export interface operations {
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             seq: number;
@@ -5337,9 +3587,6 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             seq: number;
@@ -5350,9 +3597,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5361,9 +3605,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5372,9 +3613,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5383,9 +3621,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5394,9 +3629,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5405,9 +3637,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5418,21 +3647,18 @@ export interface operations {
   };
   Sync_get_34: {
     parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+      query?: {
+        /** @description Signed keyset cursor. Conversation array responses expose continuation in X-Haven-Next-Cursor. */
+        cursor?: string;
+      };
     };
-    requestBody?: never;
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             conversations: components["schemas"]["Conversation"][];
+            next_cursor: string | null;
             strategy: string;
             max_page: number;
           };
@@ -5440,12 +3666,10 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             conversations: components["schemas"]["Conversation"][];
+            next_cursor: string | null;
             strategy: string;
             max_page: number;
           };
@@ -5453,9 +3677,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5464,9 +3685,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5475,9 +3693,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5486,9 +3701,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5497,9 +3709,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5508,9 +3717,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5520,12 +3726,6 @@ export interface operations {
     };
   };
   Attachments_post_35: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
     requestBody: {
       content: {
         "application/json": {
@@ -5542,9 +3742,6 @@ export interface operations {
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             /** Format: uuid */
@@ -5555,9 +3752,6 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             /** Format: uuid */
@@ -5568,9 +3762,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5579,9 +3770,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5590,9 +3778,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5601,9 +3786,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5612,9 +3794,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5623,9 +3802,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5636,20 +3812,13 @@ export interface operations {
   };
   ViewOnceAttachment_get_36: {
     parameters: {
-      query?: never;
-      header?: never;
       path: {
         aid: string;
       };
-      cookie?: never;
     };
-    requestBody?: never;
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             /** @enum {unknown} */
@@ -5659,9 +3828,6 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             /** @enum {unknown} */
@@ -5671,9 +3837,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5682,9 +3845,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5693,9 +3853,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5704,9 +3861,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5715,9 +3869,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5726,9 +3877,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5739,12 +3887,9 @@ export interface operations {
   };
   ViewOnceAttachment_post_37: {
     parameters: {
-      query?: never;
-      header?: never;
       path: {
         aid: string;
       };
-      cookie?: never;
     };
     requestBody: {
       content: {
@@ -5756,9 +3901,6 @@ export interface operations {
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             /** Format: date-time */
@@ -5768,9 +3910,6 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             /** Format: date-time */
@@ -5780,9 +3919,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5791,9 +3927,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5802,9 +3935,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5813,9 +3943,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5824,9 +3951,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5835,9 +3959,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5848,12 +3969,9 @@ export interface operations {
   };
   CloseViewOnceAttachment_post_37: {
     parameters: {
-      query?: never;
-      header?: never;
       path: {
         aid: string;
       };
-      cookie?: never;
     };
     requestBody: {
       content: {
@@ -5865,9 +3983,6 @@ export interface operations {
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             ok: boolean;
@@ -5876,9 +3991,6 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             ok: boolean;
@@ -5887,9 +3999,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5898,9 +4007,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5909,9 +4015,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5920,9 +4023,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5931,9 +4031,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5942,9 +4039,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -5955,7 +4049,6 @@ export interface operations {
   };
   Chunk_get_38: {
     parameters: {
-      query?: never;
       header?: {
         /** @description Temporary, device-bound session capability required for view-once attachments. Never a media decryption key. Never place in a URL. */
         "X-Haven-View-Token"?: string;
@@ -5964,33 +4057,22 @@ export interface operations {
         aid: string;
         index: number;
       };
-      cookie?: never;
     };
-    requestBody?: never;
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/octet-stream": string;
         };
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/octet-stream": string;
         };
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/octet-stream": {
             [key: string]: unknown;
@@ -5999,9 +4081,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/octet-stream": {
             [key: string]: unknown;
@@ -6010,9 +4089,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/octet-stream": {
             [key: string]: unknown;
@@ -6021,9 +4097,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/octet-stream": {
             [key: string]: unknown;
@@ -6032,9 +4105,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/octet-stream": {
             [key: string]: unknown;
@@ -6043,9 +4113,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/octet-stream": {
             [key: string]: unknown;
@@ -6056,13 +4123,10 @@ export interface operations {
   };
   Chunk_put_39: {
     parameters: {
-      query?: never;
-      header?: never;
       path: {
         aid: string;
         index: number;
       };
-      cookie?: never;
     };
     requestBody: {
       content: {
@@ -6072,9 +4136,6 @@ export interface operations {
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             hash: string;
@@ -6084,9 +4145,6 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             hash: string;
@@ -6096,9 +4154,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -6107,9 +4162,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -6118,9 +4170,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -6129,9 +4178,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -6140,9 +4186,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -6151,9 +4194,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -6164,12 +4204,9 @@ export interface operations {
   };
   CompleteAttachment_post_39: {
     parameters: {
-      query?: never;
-      header?: never;
       path: {
         aid: string;
       };
-      cookie?: never;
     };
     requestBody: {
       content: {
@@ -6179,9 +4216,6 @@ export interface operations {
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             ok: boolean;
@@ -6190,9 +4224,6 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             ok: boolean;
@@ -6201,9 +4232,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -6212,9 +4240,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -6223,9 +4248,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -6234,9 +4256,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -6245,9 +4264,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -6256,9 +4272,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -6269,20 +4282,13 @@ export interface operations {
   };
   DeleteAttachment_delete_40: {
     parameters: {
-      query?: never;
-      header?: never;
       path: {
         aid: string;
       };
-      cookie?: never;
     };
-    requestBody?: never;
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             ok: boolean;
@@ -6291,9 +4297,6 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             ok: boolean;
@@ -6302,9 +4305,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -6313,9 +4313,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -6324,9 +4321,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -6335,9 +4329,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -6346,9 +4337,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -6357,9 +4345,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -6369,37 +4354,21 @@ export interface operations {
     };
   };
   PrivacyPolicy_get_41: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": components["schemas"]["PrivacyPolicy"];
         };
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": components["schemas"]["PrivacyPolicy"];
         };
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -6408,9 +4377,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -6419,9 +4385,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -6430,9 +4393,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -6441,9 +4401,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -6452,9 +4409,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -6464,37 +4418,21 @@ export interface operations {
     };
   };
   FriendInvitations_get_42: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": components["schemas"]["InvitationAccess"];
         };
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": components["schemas"]["InvitationAccess"];
         };
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -6503,9 +4441,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -6514,9 +4449,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -6525,9 +4457,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -6536,9 +4465,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -6547,9 +4473,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -6559,12 +4482,6 @@ export interface operations {
     };
   };
   FriendInvitations_post_43: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
     requestBody: {
       content: {
         "application/json": {
@@ -6576,9 +4493,6 @@ export interface operations {
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             /** Format: uuid */
@@ -6591,9 +4505,6 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             /** Format: uuid */
@@ -6606,9 +4517,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -6617,9 +4525,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -6628,9 +4533,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -6639,9 +4541,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -6650,9 +4549,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -6661,9 +4557,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -6674,12 +4567,9 @@ export interface operations {
   };
   FriendRevokeInvitation_post_43: {
     parameters: {
-      query?: never;
-      header?: never;
       path: {
         iid: string;
       };
-      cookie?: never;
     };
     requestBody: {
       content: {
@@ -6689,9 +4579,6 @@ export interface operations {
     responses: {
       /** @description Committed success */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             ok: boolean;
@@ -6700,9 +4587,6 @@ export interface operations {
       };
       /** @description Committed success */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             ok: boolean;
@@ -6711,9 +4595,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       400: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -6722,9 +4603,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       403: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -6733,9 +4611,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       404: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -6744,9 +4619,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       409: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -6755,9 +4627,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       429: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;
@@ -6766,9 +4635,6 @@ export interface operations {
       };
       /** @description Request rejected; no secret diagnostics */
       503: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           "application/json": {
             [key: string]: unknown;

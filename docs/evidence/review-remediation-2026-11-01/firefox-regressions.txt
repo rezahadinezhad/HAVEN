@@ -1,0 +1,19 @@
+
+> haven-web@0.2.0 test
+> playwright test review-remediation.spec.ts vault-storage.spec.ts provider-upgrade.spec.ts
+
+
+Running 8 tests using 1 worker
+
+(node:90012) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/provider-upgrade.spec.ts:28:5 › upstream provider backport exchanges MLS with previous browser build and opens previous snapshots (5.0s)
+  ✓  2 tests/provider-upgrade.spec.ts:119:5 › rebuilt native Rust provider snapshot interoperates with rebuilt WASM (4.6s)
+  ✓  3 tests/review-remediation.spec.ts:8:5 › paged encrypted history: >16 MB, incremental writes, atomic failure, tamper rejection and reload (18.6s)
+  ✓  4 tests/review-remediation.spec.ts:150:5 › real server and MLS: quarantine invalid application content, reload, idle sync, reject bad ciphertext (13.3s)
+  ✓  5 tests/review-remediation.spec.ts:358:5 › legacy vault migrates without restoring ratchets; history updates remove old encrypted records (6.4s)
+  ✓  6 tests/vault-storage.spec.ts:3:5 › vault key rotation reencrypts every history record and never reuses records sealed with an old secret (5.6s)
+  ✓  7 tests/vault-storage.spec.ts:68:5 › API conversation helper follows all continuation headers and preserves the array contract (3.9s)
+  ✓  8 tests/vault-storage.spec.ts:110:5 › locking while a save awaits storage or hashing cannot recreate a secret-bearing worker (4.8s)
+
+  8 passed (1.1m)

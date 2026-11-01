@@ -1,5 +1,15 @@
 # Test report — local engineering qualification
 
+## Existing staging upgrade — 2026-11-01
+
+Applied migrations 0011/0012 on the existing `haven` database after verifying an encrypted backup through an isolated restore. Original rows across 29 data tables were preserved; the expected one content type and four model permissions were added. Accounting backfill, no-pending-migration state and runtime privilege boundaries passed independent checks. Versioned API/web images and the existing ingress/workers are running on verified loopback HTTPS. Reviewed artifact hashes, offline asset resolution, CSP/Origin defenses and sandboxed browser rendering passed; no uncaught browser errors or foreign network requests were observed. [Deployment evidence](docs/evidence/review-remediation-2026-11-01/staging-upgrade.json) excludes protected database/credential material. Production qualification remains gated.
+
+## Source-review remediation verification — 2026-11-01
+
+The final real PostgreSQL/Redis suite passed **78 tests**. The complete Chromium run passed **37 tests**, with two optional skips: hostname PRF UI passed separately, and documentation capture remained intentionally opt-in. Eight Firefox regression/provider tests passed. Native Rust passed four library tests; installer/TLS tests passed all 13 cases. Production build/typecheck, real pinned Nginx source-header checks, standby rendering and source-hash checks passed. Full npm/Python/Rust audits found no known vulnerabilities; the existing conditional Rust proof-tool maintenance warning remains visible. No production capacity, physical mobile qualification or independent cryptographic certification is inferred.
+
+New coverage exercises all seven review remediations plus secret rotation, atomic storage failure, legacy storage migration and cancellation while hashing/waiting for Web Locks. Full delivery tests include process-kill retry, Redis outage, cross-origin TLS rejection and fenced disposable database promotion. Earlier stale-snapshot and fixture failures were fixed and rerun, not hidden through skipping. See [complete evidence and reproduction notes](docs/evidence/review-remediation-2026-11-01/README.md) and [the remediation report](docs/security/review-remediation-2026-11-01.md).
+
 Date: 2026-10-30 (Asia/Tehran; test logs use UTC; earlier sections retain their original evidence dates). **Release status: BLOCKED.** Results concern the recorded source/workspace and isolated test infrastructure. No independent security review, physical-phone test, public IP deployment or Iranian carrier qualification is claimed. See controls.csv for incomplete full criteria; a local subcheck does not make an entire external criterion PASS.
 
 ## Latest: GitHub dependency alerts and setup presentation

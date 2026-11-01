@@ -175,3 +175,12 @@ MLS_PUBLIC_VERIFIER = os.environ.get(
     "MLS_PUBLIC_VERIFIER",
     str(BASE_DIR.parent.parent / "packages/crypto-core/bin/haven-public-verify-x86_64-linux"),
 )
+
+# Logical budgets include conservative per-row/index overhead. Physical disk/WAL
+# capacity must exceed the logical service limit (see storage runbook).
+MESSAGE_ACCOUNT_BYTES = 256 * 1024 * 1024
+MESSAGE_ACCOUNT_PENDING_BYTES = 64 * 1024 * 1024
+MESSAGE_SERVICE_BYTES = 5 * 1024 * 1024 * 1024
+MESSAGE_ACCOUNT_ENVELOPES = 100000
+MESSAGE_SERVICE_ENVELOPES = 2000000
+MAX_OWNED_CONVERSATIONS = 500

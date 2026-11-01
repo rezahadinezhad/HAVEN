@@ -85,8 +85,15 @@ def main():
                 assert received["cookie"] == headers["Cookie"]
                 assert received["x-csrftoken"] == marker and received["x-haven-view-token"] == marker
                 assert received["origin"] == base and received["x-forwarded-proto"] == "https"
+            # Login is the sole exception: replace spoofed forwarding data with
+            # the observed transport peer, without storing it in logs/metrics.
+            req = urllib.request.Request(base + "/api/v1/auth/login", data=b"{}", headers=dict.fromkeys(PRIVATE_HEADERS, marker))
+            with opener.open(req, timeout=5) as response:
+                received = json.load(response)
+            assert received.get("x-forwarded-for") == "127.0.0.1"
+            assert all(key.lower() not in received for key in PRIVATE_HEADERS if key != "X-Forwarded-For")
             assert marker not in run("docker", "logs", name)
-            print("PASS: real pinned Nginx, verified IP TLS, API/WS/web strip client address headers, preserve auth/CSRF/media capability, no request markers in logs")
+            print("PASS: real pinned Nginx, verified IP TLS, API/WS/web strip client address headers; login alone overwrites source for throttling, preserve auth/CSRF/media capability, no request markers in logs")
     finally:
         subprocess.run(["docker", "rm", "-f", name], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         echo.shutdown()

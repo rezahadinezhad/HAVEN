@@ -88,7 +88,11 @@ class Conversation(models.Model):
     genesis = models.JSONField(default=dict)
     genesis_signature = models.BinaryField(default=bytes)
     head_hash = models.CharField(max_length=64, blank=True)
+    receipt_version = models.PositiveBigIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        indexes = [models.Index(fields=["-created_at", "-id"], name="conversation_page_order")]
 
 
 class Membership(models.Model):
@@ -253,3 +257,11 @@ class ServerPolicy(models.Model):
     invitations_paused = models.BooleanField(default=False)
     member_invitations = models.BooleanField(default=True)
     maintenance = models.CharField(max_length=300, blank=True)
+
+
+class StorageUsage(models.Model):
+    key = models.CharField(primary_key=True, max_length=80)
+    used_bytes = models.PositiveBigIntegerField(default=0)
+    pending_bytes = models.PositiveBigIntegerField(default=0)
+    envelope_count = models.PositiveBigIntegerField(default=0)
+    conversation_count = models.PositiveBigIntegerField(default=0)

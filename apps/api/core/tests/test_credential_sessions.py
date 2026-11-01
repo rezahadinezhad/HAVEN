@@ -131,6 +131,7 @@ def test_migration_revokes_existing_unbound_sessions():
 
     old, new = ("core", "0009_member_invitations"), ("core", "0010_credential_bound_sessions")
     executor = MigrationExecutor(connection)
+    latest = executor.loader.graph.leaf_nodes()
     try:
         executor.migrate([old])
         apps = executor.loader.project_state([old]).apps
@@ -145,7 +146,7 @@ def test_migration_revokes_existing_unbound_sessions():
         migrated = m.Session.objects.get(pk=session.pk)
         assert not migrated.auth_hash and migrated.revoked_at is not None
     finally:
-        MigrationExecutor(connection).migrate([new])
+        MigrationExecutor(connection).migrate(latest)
 
 
 def test_enrollment_rechecks_revocation_after_request_authentication(

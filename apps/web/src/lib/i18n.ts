@@ -1,5 +1,9 @@
 export type Language = "en" | "fa";
 const fa: Record<string, string> = {
+  "Local storage is full. Export your history, then clear delivered history before continuing. Pending messages are preserved.":
+    "فضای ذخیره‌سازی محلی پر شده است. از تاریخچه خروجی بگیرید و سپس تاریخچه تحویل‌شده را پاک کنید. پیام‌های در انتظار ارسال حفظ می‌شوند.",
+  "A message contained invalid content and was skipped. Newer messages remain available.":
+    "محتوای یک پیام نامعتبر بود و از آن گذشتیم. پیام‌های جدیدتر همچنان در دسترس هستند.",
   "Your sign-in expired or was revoked. Your vault is locked. Sign in again to continue.":
     "ورود شما منقضی یا لغو شده است. مخزن قفل شد. برای ادامه دوباره وارد حساب شوید.",
   "Unlock with this device": "باز کردن با این دستگاه",

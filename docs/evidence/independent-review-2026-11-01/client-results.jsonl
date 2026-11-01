@@ -1,0 +1,2 @@
+{"check":"malformed_authenticated_message","real_MLS_wire_verified":true,"attempts":2,"errors":["Expected property name or '}' in JSON at position 1 (line 1 column 2)","Expected property name or '}' in JSON at position 1 (line 1 column 2)"],"cursor":1,"later_valid_message_received":false,"persistence_writes":0}
+{"check":"idle_sync","http_requests":3,"requests":[["conversations/f58df7ce-cb83-434c-9d86-84ce66dc145a","GET"],["conversations/f58df7ce-cb83-434c-9d86-84ce66dc145a/acks","POST"],["conversations/f58df7ce-cb83-434c-9d86-84ce66dc145a/acks","GET"]]}

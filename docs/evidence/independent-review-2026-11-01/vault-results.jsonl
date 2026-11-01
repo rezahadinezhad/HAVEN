@@ -1,0 +1,3 @@
+{"check":"vault_snapshot_capacity","events":100,"serialized_bytes":2023809,"result":"sealed","milliseconds":501}
+{"check":"vault_snapshot_capacity","events":500,"serialized_bytes":10118209,"result":"sealed","milliseconds":238}
+{"check":"vault_snapshot_capacity","events":800,"serialized_bytes":16189009,"result":"VAULT_REJECTED","milliseconds":76}

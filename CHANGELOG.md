@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased — 2026-11-01
+
+- Resolve all seven source-review findings: malformed application content no longer blocks later messages; encrypted history commits in separate records with the ratchet checkpoint; server message quotas preserve unsynchronized data; login throttling isolates sources; idle synchronization avoids per-conversation traffic/writes; proof queries omit ciphertext; conversation discovery follows signed continuation cursors.
+- Preserve legacy vault/recovery compatibility, enforce atomic history updates and lock cancellation, and reencrypt history when the secret changes. Add PostgreSQL migration/concurrency and Chromium/Firefox regressions.
+- Replace the vulnerable development-only schema-generator dependency path, regenerate API contracts, and document coordinated API/client migration. Production onboarding remains gated.
+
 ## Unreleased — Visible attachment previews and media-type picker
 
 The paperclip now offers Photos & videos, Audio and File choices with matching native picker filters. Pending photos render their actual local pixels; videos and audio have native playback controls before Send. Unsupported/undecodable content has a clear fallback, and SVG/HTML/documents are never embedded as active content. Replacement, removal, send, lock and navigation release preview resources. The confirmation panel keeps Send available while content scrolls. Music/audio attachments have appropriate playback labels. Chat tips was removed from the composer and guidance moved to Connection & help. File-scoped view-once intent and the existing encryption/consumption/TLS gates remain intact. No new dependency, server schema or cryptographic primitive.

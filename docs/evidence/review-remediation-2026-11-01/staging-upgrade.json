@@ -1,0 +1,53 @@
+{
+  "deployment": "existing loopback staging project haven",
+  "url": "https://127.0.0.1:8444",
+  "status": "complete",
+  "core_migrations_applied": [
+    "0011_storage_and_sync_budgets",
+    "0012_conversation_page_index"
+  ],
+  "pending_migrations": false,
+  "original_data_tables_verified": 29,
+  "original_rows_preserved": true,
+  "expected_new_content_types": 1,
+  "expected_new_permissions": 4,
+  "accounting_backfill_verified": true,
+  "encrypted_backup_restore_verified": true,
+  "backup_key_stored_separately": true,
+  "verified_tls": true,
+  "strict_csp": true,
+  "untrusted_origin_rejected": true,
+  "reviewed_artifact_hashes_match": true,
+  "runtime_privileges_verified": true,
+  "browser": {
+    "status": 200,
+    "trusted_https": true,
+    "secure_context": true,
+    "sign_in_visible": true,
+    "uncaught_errors": 0,
+    "foreign_requests": 0,
+    "browser_sandbox": true,
+    "title": "HAVEN \u00b7 Private community"
+  },
+  "running_services": [
+    "db",
+    "redis",
+    "api",
+    "web",
+    "outbox",
+    "privacy",
+    "ingress"
+  ],
+  "all_restart_counts_zero": true,
+  "api_image": "haven-api:review-20261101t165637z",
+  "web_image": "haven-web:review-20261101t165637z",
+  "api_image_id": "sha256:756eabe3583c63bd5c0c9948c15d9ccb02c8db98796c0c20532b161a6f4f71a5",
+  "web_image_id": "sha256:ec55c80fa5c7f0246e8cf7defb142b99e8d76aa41c1aec6a9e0f6f27e491834d",
+  "image_build_source_manifest_sha256": "fcdf16aa125d27674faa237a11a95fd72a5f20dea6c462305db286aa4c1f8b64",
+  "production_crypto_ready": false,
+  "notes": [
+    "Host network used only for web build because default build bridge could not reach registry. Runtime service networks remain unchanged.",
+    "Existing TLS private key and account credentials preserved. Renewed test leaf under the existing test CA.",
+    "Browser vault migration runs after unlock on the next successful local save; server migration does not access client keys."
+  ]
+}

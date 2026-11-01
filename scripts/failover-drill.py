@@ -39,7 +39,12 @@ def snapshot(name):
     return {'envelopes':int(query(name,'SELECT count(*) FROM core_messageenvelope;')),'ciphertext_and_order_sha256':hashlib.sha256(rows.encode()).hexdigest()}
 try:
     source=os.environ.get('HAVEN_DRILL_SOURCE','haven-test-db-1')
-    if source!='haven-test-db-1':raise RuntimeError('Only the disposable development database is allowed as a copy source')
+    # Project names may vary for isolated regression runs. Require explicit
+    # test-only provenance instead of accepting an arbitrary production source.
+    info=json.loads(docker('inspect',source).stdout)[0]
+    labels=info['Config'].get('Labels') or {}
+    if labels.get('haven.test-only')!='true' or labels.get('com.docker.compose.service')!='db':
+        raise RuntimeError('Only a compose database explicitly labelled haven.test-only may be copied')
     dump=docker('exec',source,'pg_dump','-U','haven','-d','haven','--format=custom','--no-owner').stdout
     docker('network','create',* ([] if interactive else ['--internal']),'--label','haven.drill='+nonce,network)
     subnet=json.loads(docker('network','inspect',network).stdout)[0]['IPAM']['Config'][0]['Subnet']
