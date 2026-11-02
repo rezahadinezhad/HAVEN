@@ -2,6 +2,7 @@ import { test, expect, loginBootstrap } from "./fixtures";
 import fs from "node:fs";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
+import type { Device, User } from "../src/lib/api";
 
 const root = path.resolve("../..");
 const credentials = JSON.parse(
@@ -39,7 +40,7 @@ test("retired server ciphertext: persisted browser MLS state reloads and continu
         [0, 1].map(() => h.api("admin/invitations", "POST", { hours: 1 })),
       );
     }, credentials);
-    const identities = [];
+    const identities: { device: Device; user: User; secret: string }[] = [];
     for (const [i, page] of pages.entries()) {
       identities.push(
         await page.evaluate(async (token) => {
@@ -103,6 +104,7 @@ test("retired server ciphertext: persisted browser MLS state reloads and continu
       async (conv) => (window as any).m.sync(conv),
       await detail(),
     );
+    const rollbackAnchor = await detail();
     const result = execFileSync(
       root + "/apps/api/.venv/bin/python",
       [
@@ -193,6 +195,103 @@ print(json.dumps({'retired':rows.filter(ciphertext_retired=True, ciphertext=b'',
       status: 410,
       body: { error: "history_retired_use_verified_fresh_device" },
     });
+    // Actual synthetic PostgreSQL head rewind with a newer retained browser
+    // checkpoint. This covers a censored/older server head, not simultaneous
+    // rollback of every endpoint or a complete production restore matrix.
+    const latest = await detail();
+    const setHead = (head: typeof latest) => {
+      execFileSync(
+        root + "/apps/api/.venv/bin/python",
+        [
+          "manage.py",
+          "shell",
+          "--no-imports",
+          "-c",
+          `
+import json, os
+from django.db import connection, transaction
+from core.models import Conversation
+assert connection.settings_dict['HOST'] == '127.0.0.1'
+assert str(connection.settings_dict['PORT']) == '55432'
+head = json.loads(os.environ['HAVEN_SYNTHETIC_HEAD'])
+with transaction.atomic():
+ c = Conversation.objects.select_for_update().select_related('creator__user').get(pk=head['id'])
+ assert c.creator.user.username.startswith('privacy_')
+ c.last_seq, c.head_hash, c.epoch = head['last_seq'], head['head_hash'], head['epoch']
+ c.save(update_fields=['last_seq', 'head_hash', 'epoch'])
+`,
+        ],
+        {
+          cwd: root + "/apps/api",
+          env: {
+            ...process.env,
+            ...environment,
+            HAVEN_SYNTHETIC_HEAD: JSON.stringify({
+              id: cid,
+              last_seq: head.last_seq,
+              head_hash: head.head_hash,
+              epoch: head.epoch,
+            }),
+          },
+          stdio: "pipe",
+        },
+      );
+    };
+    const checkpoint = () =>
+      a.evaluate(
+        async ({ cid, userId }) => {
+          const w = window as any;
+          const hash = async (value: unknown) =>
+            Array.from(
+              new Uint8Array(
+                await crypto.subtle.digest(
+                  "SHA-256",
+                  new TextEncoder().encode(JSON.stringify(value)),
+                ),
+              ),
+            )
+              .map((v) => v.toString(16).padStart(2, "0"))
+              .join("");
+          return {
+            memory: await hash(w.m.state),
+            durable: await hash(await w.havenIntegration.loadVault(userId)),
+            cursor: w.m.state.cursor[cid],
+          };
+        },
+        { cid, userId: identities[0].user.id },
+      );
+    const beforeRollback = await checkpoint();
+    let rollbackAcks = 0;
+    const observeAck = (request: { method(): string; url(): string }) => {
+      if (
+        request.method() === "POST" &&
+        request.url().endsWith(`/conversations/${cid}/acks`)
+      )
+        rollbackAcks++;
+    };
+    a.on("request", observeAck);
+    try {
+      setHead(rollbackAnchor);
+      const rejected = await a.evaluate(async (cid) => {
+        const w = window as any;
+        try {
+          await w.m.sync(await w.havenIntegration.api(`conversations/${cid}`));
+          return "ACCEPTED_OLDER_HEAD";
+        } catch (error) {
+          return (error as Error).message;
+        }
+      }, cid);
+      expect(rejected).toMatch(/rollback|retained cursor/i);
+      expect(await checkpoint()).toEqual(beforeRollback);
+      expect(rollbackAcks).toBe(0);
+    } finally {
+      a.off("request", observeAck);
+      setHead(latest);
+    }
+    await a.evaluate(async (cid) => {
+      const w = window as any;
+      await w.m.sync(await w.havenIntegration.api(`conversations/${cid}`));
+    }, cid);
   } finally {
     for (const context of contexts) await context.close();
   }

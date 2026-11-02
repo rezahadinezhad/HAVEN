@@ -112,7 +112,10 @@ test("real vault: pagehide, suspended inactivity, offline access and confirmed r
     });
     const offlineProbe = page.waitForEvent("requestfailed", {
       predicate: (r) => r.url().endsWith("/api/v1/auth/me"),
-      timeout: 20000,
+      // An in-flight successful probe can record the shifted clock before
+      // offline mode takes effect. Allow the actual 30-second auth interval
+      // plus the bounded 5–6-second poll instead of racing that completion.
+      timeout: 45000,
     });
     await context.setOffline(true);
     await offlineProbe;

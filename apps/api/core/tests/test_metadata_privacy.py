@@ -151,3 +151,87 @@ def test_cleanup_rechecks_abandoned_upload_after_concurrent_completion():
         assert future.result(timeout=10) == 0
     assert m.EncryptedAttachment.objects.get(pk=attachment.pk).status == "complete"
     assert m.AttachmentChunk.objects.filter(attachment=attachment).exists()
+
+
+def test_cookie_resolution_omits_unneeded_profile_enrollment_and_session_columns(settings):
+    from core.middleware import resolve_session
+    from .test_view_once import bound_client
+
+    client, device = bound_client()
+    with CaptureQueriesContext(connection) as queries:
+        session = resolve_session(client.cookies[settings.SESSION_COOKIE_NAME].value)
+        assert session.user_id == device.user_id and session.device_id == device.pk
+        assert session.user.get_session_auth_hash() == device.user.get_session_auth_hash()
+    assert len(queries) == 1
+    selected = queries[0]["sql"].split(" FROM ")[0]
+    for column in [
+        "username",
+        "display_name",
+        "first_name",
+        "last_name",
+        "last_login",
+        "is_staff",
+        "is_superuser",
+        "date_joined",
+        "recovery_public_key",
+        "security_generation",
+        "credential",
+        "label",
+        "challenge",
+        "approval_signature",
+        "approved_by_id",
+        "created_at",
+        "expires_at",
+        "device_challenge",
+        "token_hash",
+    ]:
+        if f'"{column}"' in selected:
+            pytest.fail("Authentication selected an unnecessary column: " + column)
+    assert '"core_user"."password"' in selected  # Required to validate current credential binding.
+    assert '"core_session"."auth_hash"' in selected
+
+
+def test_roster_read_projects_only_signed_certificate_fields():
+    from core.protocol import roster
+
+    _, _, _, _, conv, _ = delivery()
+    with CaptureQueriesContext(connection) as queries:
+        result = roster(conv)
+    assert len(result) == 2 and len(queries) == 1
+    selected = queries[0]["sql"].split(" FROM ")[0]
+    for column in [
+        "credential",
+        "label",
+        "challenge",
+        "approval_signature",
+        "approved_by_id",
+        "created_at",
+        "expires_at",
+        "leave_signature",
+    ]:
+        if f'"{column}"' in selected:
+            pytest.fail("Roster selected an unnecessary column: " + column)
+
+
+def test_public_device_lookup_never_selects_target_password_or_profile(settings):
+    settings.CRYPTO_READY = True
+    client, _, _, target, _, _ = delivery()
+    with CaptureQueriesContext(connection) as queries:
+        response = client.get(f"/api/v1/crypto/key-packages/{target.pk}", secure=True)
+    assert response.status_code == 200 and response.json()["device"]["id"] == str(target.pk)
+    target_reads = [q["sql"].split(" FROM ")[0] for q in queries if 'FROM "core_device"' in q["sql"]]
+    assert len(target_reads) == 1
+    for column in [
+        "password",
+        "username",
+        "display_name",
+        "first_name",
+        "last_name",
+        "last_login",
+        "recovery_public_key",
+        "credential",
+        "expires_at",
+        "created_at",
+    ]:
+        if f'"{column}"' in target_reads[0]:
+            pytest.fail("Public credential lookup selected an unnecessary column: " + column)

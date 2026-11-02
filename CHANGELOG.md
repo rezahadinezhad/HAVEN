@@ -2,6 +2,12 @@
 
 ## Unreleased — 2026-11-02
 
+New enrollment proofs hide the global session ordinal using nonce-scoped HMAC context while preserving strict existing browser validation. Migration 0016 versions nonce storage and prevents legacy verification from becoming a guessing oracle; old in-flight proofs remain valid.
+
+- Fence current HTTP session/device/account authority and target membership grants with sorted account/conversation locks. Roll back partial writes on handled API failures and bound bodies before locking.
+- Remove expired unfinished enrollment associations using an ID-only replay marker and partial expiry index (forward-only migration 0015); preserve trusted/revoked/referenced identities and reject excluded IDs during signed recovery.
+- Project authentication, membership, roster and public credential SQL onto required columns. Add actual PG/native races, failure rollback, browser server-head rollback and isolated TLS/WAL/I/O load evidence with explicit failed capacity targets.
+
 - Extended Firefox regressions found and fixed a voice-note format bug: retain recorded blob MIME after MediaRecorder resets its type at stop. Private attachment metadata and actual playback stay intact. Correct the AEAD negative test to always flip a ciphertext byte rather than occasionally making no change.
 
 - Minimize metadata: remove unused ACK/upload/session timestamps and receipt table; disassociate expired KeyPackage owners/claimants with a partial expiry index; omit exact acceptance time from responses and project routing reads.

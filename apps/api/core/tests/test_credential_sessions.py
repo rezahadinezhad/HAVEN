@@ -87,15 +87,17 @@ def test_concurrent_password_changes_cannot_both_use_old_password(credentials, m
         client.defaults.update(HTTP_HOST="127.0.0.1:8443", HTTP_ORIGIN="https://127.0.0.1:8443")
         assert login(client, credentials).status_code == 200
     barrier = Barrier(2)
-    original = views.data
+    from core.auth import CookieAuthentication
 
-    def wait_before_lock(request, serializer):
-        value = original(request, serializer)
-        if serializer is views.s.Password:
+    original = CookieAuthentication.authenticate
+
+    def wait_before_lock(self, request):
+        value = original(self, request)
+        if request.method == "POST" and request.path.endswith("/auth/change-password"):
             barrier.wait(timeout=10)
         return value
 
-    monkeypatch.setattr(views, "data", wait_before_lock)
+    monkeypatch.setattr(CookieAuthentication, "authenticate", wait_before_lock)
     candidates = [secrets.token_urlsafe(32), secrets.token_urlsafe(32)]
 
     def change(args):
@@ -109,7 +111,7 @@ def test_concurrent_password_changes_cannot_both_use_old_password(credentials, m
             close_old_connections()
 
     with ThreadPoolExecutor(max_workers=2) as pool:
-        assert sorted(pool.map(change, zip((first, second), candidates))) == [200, 400]
+        assert sorted(pool.map(change, zip((first, second), candidates))) == [200, 403]
     assert m.Session.objects.filter(revoked_at=None).count() == 0
     user = m.User.objects.get(pk=credentials[0].pk)
     assert sum(user.check_password(value) for value in candidates) == 1

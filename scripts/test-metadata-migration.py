@@ -73,6 +73,7 @@ get=lambda name:apps.get_model('core',name)
 now=timezone.now()
 users=[get('User').objects.create(username='synthetic_'+str(i),password='!',is_active=True) for i in range(3)]
 devices=[get('Device').objects.create(user=u,label='Synthetic',identity=str(u.pk)+':synthetic',public_key=b'x'*32,trust_state='approved',expires_at=now+timedelta(days=1)) for u in users]
+get('Device').objects.create(user=users[0],label='Expired enrollment',identity='synthetic-expired',public_key=b'p'*32,trust_state='pending',expires_at=now-timedelta(minutes=1))
 c=get('Conversation').objects.create(creator=devices[0],kind='group',group_id=uuid.uuid4().hex,last_seq=2,genesis={'members':[{'user_id':str(u.pk),'device_id':str(d.pk)} for u,d in zip(users,devices)]},genesis_signature=b's'*64,head_hash='h'*64,receipt_version=1)
 for d in devices:get('Membership').objects.create(conversation=c,device=d,valid_from_epoch=0)
 for seq,kind in [(1,'commit'),(2,'application')]:
@@ -83,7 +84,7 @@ get('DeliveryCursor').objects.create(device=devices[0],conversation=c,last_acked
 get('DeliveryReceipt').objects.create(device=devices[0],envelope=e)
 # Offline recipients deliberately have no cursor. No retirement is allowed.
 get('NotificationOutbox').objects.create(envelope=e)
-get('Session').objects.create(user=users[0],device=devices[0],token_hash='t'*64,auth_hash='a'*64,expires_at=now+timedelta(hours=1))
+get('Session').objects.create(user=users[0],device=devices[0],token_hash='t'*64,auth_hash='a'*64,device_challenge='c'*64,expires_at=now+timedelta(hours=1))
 for expiry, payload in [(now-timedelta(days=1),b'expired'),(now+timedelta(days=1),b'live')]:
  get('DeviceKeyPackage').objects.create(device=devices[1],claimed_by=devices[0],consumed_at=now,package=payload,digest=uuid.uuid4().hex*2,expires_at=expiry)
 a=get('EncryptedAttachment').objects.create(uploader_device=devices[0],conversation=c,epoch=0,ciphertext_size=32,chunk_count=1,view_once=True,status='complete',expires_at=now+timedelta(days=1))
@@ -114,14 +115,14 @@ fields={
 def encode(value):
  if isinstance(value,(bytes,memoryview)):return bytes(value).hex()
  return str(value)
-material={name:list(get(name).objects.order_by('pk').values(*names)) for name,names in fields.items()}
+material={name:list((get(name).objects.exclude(trust_state='pending') if name=='Device' else get(name).objects).order_by('pk').values(*names)) for name,names in fields.items()}
 checksum=hashlib.sha256(json.dumps(material,sort_keys=True,default=encode).encode()).hexdigest()
 with connection.cursor() as cur:
  cur.execute("SELECT count(*) FROM information_schema.columns WHERE table_schema='public' AND (table_name,column_name) IN (('core_session','last_seen'),('core_deliverycursor','updated_at'),('core_attachmentchunk','stored_at'))")
  times=cur.fetchone()[0]
  cur.execute('SELECT count(DISTINCT (device_id,conversation_id)) FROM core_membership')
  edges=cur.fetchone()[0]
-print(json.dumps({'invariant_sha256':checksum,'recoverable_activity_columns':times,'legacy_receipt_table': 'core_deliveryreceipt' in connection.introspection.table_names(),'membership_edges':edges,'keypackage_device_links':get('DeviceKeyPackage').objects.filter(device__isnull=False).count(),'keypackage_claim_links':get('DeviceKeyPackage').objects.filter(claimed_by__isnull=False).count()}))
+print(json.dumps({'pending_device_account_links':get('Device').objects.filter(trust_state='pending').count(),'enrollment_replay_markers': connection.introspection.table_names().count('core_deviceenrollmenttombstone') and get('DeviceEnrollmentTombstone').objects.count(),'invariant_sha256':checksum,'recoverable_activity_columns':times,'legacy_receipt_table': 'core_deliveryreceipt' in connection.introspection.table_names(),'membership_edges':edges,'keypackage_device_links':get('DeviceKeyPackage').objects.filter(device__isnull=False).count(),'keypackage_claim_links':get('DeviceKeyPackage').objects.filter(claimed_by__isnull=False).count()}))
 """
 
 
@@ -194,6 +195,9 @@ with psycopg.connect(
         assert after_cleanup["invariant_sha256"] == before["invariant_sha256"]
         assert after_cleanup["membership_edges"] == before["membership_edges"] == 3
         assert after_cleanup["recoverable_activity_columns"] == 0
+        assert before["pending_device_account_links"] == 1
+        assert after_cleanup["pending_device_account_links"] == 0
+        assert after_cleanup["enrollment_replay_markers"] == 1
         assert not after_cleanup["legacy_receipt_table"]
         assert (
             after_cleanup["keypackage_device_links"]

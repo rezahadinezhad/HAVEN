@@ -43,6 +43,20 @@ class Device(models.Model):
     expires_at = models.DateTimeField()
     revoked_at = models.DateTimeField(null=True)
 
+    class Meta:
+        indexes = [
+            models.Index(
+                fields=["expires_at", "id"],
+                condition=models.Q(trust_state="pending", revoked_at__isnull=True),
+                name="pending_device_expiry",
+            )
+        ]
+
+
+class DeviceEnrollmentTombstone(models.Model):
+    # Reject reuse of an expired enrollment without retaining its account/key/label.
+    id = models.UUIDField(primary_key=True, editable=False)
+
 
 class Session(models.Model):
     token_hash = models.CharField(max_length=64, unique=True)
@@ -52,7 +66,7 @@ class Session(models.Model):
     expires_at = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
     revoked_at = models.DateTimeField(null=True)
-    device_challenge = models.CharField(max_length=64, blank=True)
+    device_challenge = models.CharField(max_length=67, blank=True)
 
     def save(self, *args, **kwargs):
         # Bind only at creation. An unrelated session update must never refresh

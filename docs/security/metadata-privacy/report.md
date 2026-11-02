@@ -1,5 +1,7 @@
 # HAVEN metadata privacy engineering report
 
+**Historical bounded-hardening report.** These changes were subsequently merged/pushed at the user's request at `71b2ba0`. Current continuation results, extra authority/enrollment/SQL hardening and remaining requirements are in [the completion report](completion-report.md) and [requirements matrix](requirements.csv). Original counts/results below describe that earlier source snapshot.
+
 Date: 2026-11-02. Baseline: `0240706` (merged PR #18). Branch: `codex/metadata-privacy-hardening`. **Production release status: BLOCKED.** Local hardening is implemented; the original external assurance/field gates and the unmeasured performance dimensions below remain open. No merge, deployment, production schema change or deletion of existing backups was performed.
 
 ## 1. Executive summary

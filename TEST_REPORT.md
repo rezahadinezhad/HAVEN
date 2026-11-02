@@ -1,5 +1,9 @@
 # Test report — local engineering qualification
 
+## Metadata continuation — 2026-11-02
+
+The continuation preserves failing before-fix race outputs and passing real PG/native remediation tests, dump/restore selected-state invariants, actual browser server-head rollback rejection without ACK/state advancement, and actual Nginx TLS/header checks. SQL regressions inspect real selected columns. Isolated 500-session native load measures TLS records and PostgreSQL WAL/I/O; missed targets and interrupted validation runs are not passes. Final backend: 111 passed; Chromium: 39 passed/two optional skips; Firefox: 35 passed/six disclosed skips. Rust: five library tests and 205 official upstream vectors pass (three ignored/91 filtered). Final commands/counts are recorded in the [continuation evidence index](docs/evidence/metadata-completion-2026-11-02/README.md); production, external review and physical/domestic qualification remain blocked.
+
 ## Metadata privacy hardening — 2026-11-02
 
 Baseline `0240706` passed 78 backend tests. Updated PostgreSQL/Redis suite passes 84; native Rust passes five library tests and exact upstream vectors pass 205 with three ignored/91 filtered. Rebuilt Chromium passes 38 with two optional skips and preserved old-provider compatibility tests enabled. Full Firefox passes 34 with six explicitly unsupported/optional skips, and the separate trusted-hostname/virtual-PRF test passes. Final Chromium crypto checks pass all three after repairing URL-safe tamper encoding. See [the authoritative evidence index](docs/evidence/metadata-privacy-2026-11-01/README.md). Real Nginx, Linux WebKit smoke, installer/TLS, production WASM/web build, contracts/typecheck, Ruff/migration drift, actual pg_dump/restore, cleanup concurrency and field inventory checks pass. Failure logs and fixes are retained; TLS verification and the production gate were never disabled.
@@ -276,7 +280,7 @@ Django deployment warnings W005/W021 concern domain/subdomain HSTS/preload and a
 - Actual public-IP certificates, private CA phone trust, issuer renewal during international isolation, two independent domestic providers and Iranian carrier routes.
 - Hardened production container execution on this host, verified private-tunnel/TLS replication, provider fencing and physical-user standby continuity. The two-IP prepared-origin path is locally tested.
 - Fresh separate host/air-gapped installation, complete compiler toolchain rebuild and bit-for-bit artifact reproducibility; signed hash/source build is narrower.
-- 100-user/500-session/20-message-per-second/five-file workload, p95 budgets, two-hour soak, reference-host thermals and production RPO/RTO.
+- Reference-host 20-message-per-second/p95 qualification, physical-device thermals and production RPO/RTO remain open. The metadata continuation separately records the local native 100-user/500-session/five-file workload and completed two-hour 1-message/s run, including failed stress/earlier soak evidence.
 - Independent cryptographic integration review, penetration test and owner release approval.
 
 These omissions keep release qualification BLOCKED. No false all-tests-complete, wartime safety, independent audit or production capacity claim follows from local passes.

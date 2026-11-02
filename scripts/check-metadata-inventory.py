@@ -2,6 +2,7 @@
 """Offline schema coverage check; opens no database connection and emits no record values."""
 
 import csv
+import ast
 import os
 import sys
 from pathlib import Path
@@ -44,6 +45,19 @@ for row in rows:
         row[key]
         for key in ["purpose", "sensitivity", "api_exposure", "retention", "source"]
     )
+locations = {
+    ("core." + model.name, node.targets[0].id): f"apps/api/core/models.py:{node.lineno}"
+    for model in ast.parse((root / "apps/api/core/models.py").read_text()).body
+    if isinstance(model, ast.ClassDef)
+    for node in model.body
+    if isinstance(node, ast.Assign) and isinstance(node.targets[0], ast.Name)
+}
+for row in rows:
+    location = locations.get((row["model"], row["field"]))
+    if location and row["column"] != "REMOVED":
+        assert row["source"].split(";")[0] == location, (
+            f"Stale field source: {row['model']}.{row['field']}"
+        )
 print(
     f"PASS: {len(current)} current and {len(rows) - len(current)} retired fields classified; no record data read"
 )

@@ -18,6 +18,22 @@ def resolve_session(token):
         return None
     session = (
         Session.objects.select_related("user", "device")
+        .only(
+            "id",
+            "auth_hash",
+            "user_id",
+            "device_id",
+            "user__id",
+            "user__password",
+            "user__is_active",
+            "user__role",
+            "device__id",
+            "device__user_id",
+            "device__identity",
+            "device__public_key",
+            "device__trust_state",
+            "device__revoked_at",
+        )
         .filter(
             token_hash=digest(token), revoked_at=None, expires_at__gt=timezone.now(), user__is_active=True
         )

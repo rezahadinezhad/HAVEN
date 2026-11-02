@@ -16,7 +16,7 @@ The result is a functioning, self-hosted implementation built with **Django, Nex
 > [!IMPORTANT]
 > **Experimental software; independent security review is pending.** Local tests demonstrate implemented behavior, not a security certification. Production onboarding remains disabled by a source-level gate. Read [SECURITY_STATUS.md](SECURITY_STATUS.md) before evaluating or deploying the project.
 
-Metadata-privacy hardening now removes redundant activity timestamps, expires temporary routing associations, reduces API/worker disclosure and pads new MLS messages. The account/conversation graph remains visible to the service. See the [inventory, threat model, migration procedure and measured limitations](docs/security/metadata-privacy/README.md).
+Metadata-privacy hardening now removes redundant activity timestamps, expires temporary routing associations, reduces API/worker disclosure and pads new MLS messages. The continuation adds transactional authority fences, replay-safe expired enrollment cleanup and narrower authentication/credential SQL reads. The account/conversation graph remains visible to the service. See the [inventory, threat model, migration procedure and measured limitations](docs/security/metadata-privacy/README.md).
 
 ## The engineering question
 

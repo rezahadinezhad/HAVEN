@@ -1,5 +1,11 @@
 # Implementation status
 
+## Metadata continuation — 2026-11-02
+
+New enrollment proofs hide the global session ordinal using nonce-scoped HMAC context while preserving strict existing browser validation. Migration 0016 versions nonce storage and prevents legacy verification from becoming a guessing oracle; old in-flight proofs remain valid.
+
+Implemented transactional authority refresh and sorted cross-account/conversation locks; rollback of handled API errors; SQL field minimization; replay-safe cleanup of expired unfinished enrollments and signed-recovery exclusion. Migrations 0015/0016 require matching API/workers and refuse unsafe reversal. New one-use scoped enrollment handles preserve strict client signing checks without exposing the global session ordinal. Added real PG/native/browser failure/race and isolated TLS/WAL/I/O load evidence. [Completion report and acceptance scope](docs/security/metadata-privacy/completion-report.md). No production deployment or release-gate change.
+
 ## Metadata privacy — 2026-11-02
 
 Implemented migration 0013 metadata removal and expired-package disassociation; 0014 adds a partial expiry index excluding scrubbed tombstones. Added API/worker projections, bounded Redis group retention with authenticated renewal, native MLS padding with legacy-config handling, concurrency and actual dump/restore regression evidence. API contracts/WASM/offline assets are regenerated; browser storage and identity formats remain compatible. [Inventory, threat model, decisions, upgrade and report](docs/security/metadata-privacy/README.md) distinguish implemented hardening from research-only routing. The central social graph, online-service trust and external release blockers remain. No production/staging upgrade was performed for this initiative.

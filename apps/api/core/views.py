@@ -21,7 +21,7 @@ from django.http import HttpResponse
 from django.middleware.csrf import get_token, rotate_token
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
-from django.utils.crypto import constant_time_compare
+from django.utils.crypto import constant_time_compare, salted_hmac
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
 from rest_framework.views import APIView
@@ -31,6 +31,7 @@ from rest_framework.exceptions import PermissionDenied, ValidationError, Throttl
 from .observability import snapshot as operational_snapshot
 from . import models as m, serializers as s
 from .attachment_lifecycle import finish_if_consumed
+from .authorization import authorize_current_session, require_rekey
 from .middleware import digest
 from . import protocol as p
 from .privacy import rate_key, policy as privacy_policy
@@ -96,7 +97,24 @@ def membership(request, cid, lock=False, control=False):
     conv = get_object_or_404(
         m.Conversation.objects.select_for_update() if lock else m.Conversation.objects, pk=cid
     )
-    member = get_object_or_404(m.Membership, conversation=conv, device=device, removed_at_epoch=None)
+    member = get_object_or_404(
+        m.Membership.objects.select_related("device").only(
+            "conversation_id",
+            "device_id",
+            "role",
+            "valid_from_epoch",
+            "removed_at_epoch",
+            "start_seq",
+            "leave_signature",
+            "device__id",
+            "device__user_id",
+            "device__identity",
+            "device__public_key",
+        ),
+        conversation=conv,
+        device=device,
+        removed_at_epoch=None,
+    )
     if conv.status != "active" and request.method not in ("GET", "HEAD") and not control:
         raise PermissionDenied("Conversation requires rekey")
     return conv, member
@@ -151,11 +169,40 @@ def user_json(user):
 
 @method_decorator(csrf_protect, name="dispatch")
 class View(APIView):
-    pass
+    authority_fence = True
+
+    def mutation_accounts(self, request, **kwargs):
+        return ()
+
+    def initial(self, request, *args, **kwargs):
+        super().initial(request, *args, **kwargs)
+        if self.authority_fence:
+            write = request.method not in ("GET", "HEAD", "OPTIONS")
+            if write:
+                # Bound and read the body before holding any account row lock.
+                # Matches supplied ingress's 1400k cap; parsing still uses the
+                # endpoint's tighter serializers/chunk bounds.
+                if len(request.body) > 1400 * 1024:
+                    raise ValidationError("Request body too large")
+            authorize_current_session(
+                request,
+                extra_accounts=self.mutation_accounts(request, **kwargs) if write else (),
+                lock=write,
+            )
+
+    def dispatch(self, request, *args, **kwargs):
+        with transaction.atomic():
+            response = super().dispatch(request, *args, **kwargs)
+            # DRF handles API exceptions internally. Its error response must not
+            # commit partial writes from a handler without its own atomic block.
+            if response.status_code >= 400:
+                transaction.set_rollback(True)
+            return response
 
 
 class Public(View):
     permission_classes = [AllowAny]
+    authority_fence = False
 
 
 class Health(Public):
@@ -394,6 +441,10 @@ class RevokeInvitation(View):
 
 
 class Users(View):
+    def mutation_accounts(self, request, **kwargs):
+        admin(request, super_only=True)
+        return (kwargs["uid"],) if "uid" in kwargs else ()
+
     def get(self, request):
         admin(request)
         return Response([user_json(u) for u in m.User.objects.order_by("date_joined")[:200]])
@@ -413,7 +464,7 @@ class Users(View):
         if not user.is_active:
             m.Session.objects.filter(user=user).update(revoked_at=timezone.now())
             m.Device.objects.filter(user=user).update(revoked_at=timezone.now(), trust_state="revoked")
-            m.Conversation.objects.filter(membership__device__user=user).update(status="rekey_required")
+            require_rekey(m.Conversation.objects.filter(membership__device__user=user))
         audit(request.user, "user.updated", uid)
         return Response(user_json(user))
 
@@ -537,6 +588,20 @@ def device_json(d):
     }
 
 
+DEVICE_RESPONSE_FIELDS = (
+    "id",
+    "user_id",
+    "label",
+    "identity",
+    "public_key",
+    "trust_state",
+    "revoked_at",
+    "approved_by_id",
+    "challenge",
+    "approval_signature",
+)
+
+
 def verify(key, signature, payload):
     try:
         Ed25519PublicKey.from_public_bytes(bytes(key)).verify(signature, payload)
@@ -546,6 +611,28 @@ def verify(key, signature, payload):
 
 def enrollment_payload(d):
     return f"haven/enrollment/v1:{d.user_id}:{d.pk}:{b64(d.public_key)}:{d.challenge}".encode()
+
+
+def session_enrollment_payload(session, device):
+    # Keep explicit account/session/device/nonce binding without exposing the
+    # global numeric session ordinal. The existing fresh nonce rotates this
+    # purpose-scoped handle; stable device IDs still make this non-anonymous.
+    stored = session.device_challenge
+    # Legacy challenges already in flight remain verifiable. New challenges
+    # carry an explicit storage version, so guessing an old numeric ordinal
+    # cannot turn backward compatibility into an oracle for a fresh challenge.
+    if len(stored) == 64 and all(c in "0123456789abcdef" for c in stored):
+        return f"haven/session/v1:{session.pk}:{device.pk}:{stored}"
+    if not stored.startswith("v2:") or len(stored) != 67:
+        raise PermissionDenied("Request a fresh device session challenge")
+    nonce = stored[3:]
+    if any(c not in "0123456789abcdef" for c in nonce):
+        raise PermissionDenied("Request a fresh device session challenge")
+    context = f"{session.user_id}:{session.pk}:{device.pk}:{nonce}"
+    handle = salted_hmac("haven/session-enrollment/context/v1", context, algorithm="sha256").hexdigest()
+    # Decimal encoding preserves the old client's strict v1 wire grammar. It
+    # remains an opaque string, never a JavaScript number or global ordinal.
+    return f"haven/session/v1:{int(handle, 16)}:{device.pk}:{nonce}"
 
 
 class Devices(View):
@@ -574,6 +661,8 @@ class EnrollmentRequest(View):
             if device.trust_state == "pending" and device.expires_at <= timezone.now():
                 raise PermissionDenied("Enrollment expired; create a fresh device")
         else:
+            if m.DeviceEnrollmentTombstone.objects.filter(pk=d["id"]).exists():
+                raise PermissionDenied("Enrollment expired; create a fresh device")
             device = m.Device.objects.create(
                 id=d["id"],
                 user=request.user,
@@ -583,9 +672,9 @@ class EnrollmentRequest(View):
                 challenge=secrets.token_hex(32),
                 expires_at=timezone.now() + timedelta(minutes=10),
             )
-        request.auth.device_challenge = secrets.token_hex(32)
+        request.auth.device_challenge = "v2:" + secrets.token_hex(32)
         request.auth.save(update_fields=["device_challenge"])
-        payload = f"haven/session/v1:{request.auth.pk}:{device.pk}:{request.auth.device_challenge}"
+        payload = session_enrollment_payload(request.auth, device)
         return Response({**device_json(device), "signing_payload": payload}, status=201)
 
 
@@ -636,8 +725,7 @@ class EnrollmentComplete(View):
             raise PermissionDenied("Session changed; sign in again")
         if not session.device_challenge:
             raise PermissionDenied("Request a fresh device session challenge")
-        payload = f"haven/session/v1:{session.pk}:{target.pk}:{session.device_challenge}".encode()
-        verify(target.public_key, d["signature"], payload)
+        verify(target.public_key, d["signature"], session_enrollment_payload(session, target).encode())
         target.trust_state = "approved"
         target.save(update_fields=["trust_state"])
         user.device_bootstrapped = True
@@ -659,7 +747,7 @@ class RevokeDevice(View):
         device.save()
         m.Session.objects.filter(device=device).update(revoked_at=timezone.now())
         # Stop all application traffic until authorized MLS removal completes. Do not claim server revoke rekeys MLS.
-        m.Conversation.objects.filter(membership__device=device).update(status="rekey_required")
+        require_rekey(m.Conversation.objects.filter(membership__device=device))
         audit(request.user, "device.revoked", did)
         return Response({"ok": True, "rekey_required": True})
 
@@ -706,7 +794,9 @@ class KeyPackages(View):
     def get(self, request, did):
         requester = trusted_device(request)
         rate(request, "device.lookup", 30)
-        target = get_object_or_404(m.Device.objects.select_related("user"), pk=did)
+        target = get_object_or_404(
+            m.Device.objects.select_related("user").only(*DEVICE_RESPONSE_FIELDS, "user__is_active"), pk=did
+        )
         if target.trust_state != "approved" or target.revoked_at or not target.user.is_active:
             shared_history = m.Membership.objects.filter(
                 device=requester,
@@ -726,7 +816,11 @@ class KeyPackages(View):
         rate(request, "claim", 30)
         # The requested credential must be explicitly known by opaque device ID; client verifies fingerprint OOB.
         target = get_object_or_404(
-            m.Device, pk=did, trust_state="approved", revoked_at=None, user__is_active=True
+            m.Device.objects.only(*DEVICE_RESPONSE_FIELDS),
+            pk=did,
+            trust_state="approved",
+            revoked_at=None,
+            user__is_active=True,
         )
         # A claim is an idempotent reservation for this claimant, never another Add authorization.
         p = (
@@ -1052,6 +1146,20 @@ class MembersPropose(View):
 
 
 class CryptoEvents(Messages):
+    def mutation_accounts(self, request, **kwargs):
+        # Precheck authority before allowing a cross-account lock. The handler
+        # rechecks after all fences and the current-session refresh. A target
+        # cannot be added/transferred while its revocation/recovery is in flight.
+        device = trusted_device(request)
+        member = get_object_or_404(
+            m.Membership, conversation_id=kwargs["cid"], device=device, removed_at_epoch=None
+        )
+        if member.role not in ("owner", "moderator"):
+            raise PermissionDenied("Owner or moderator required")
+        d = data(request, s.Control)
+        uid = m.Device.objects.filter(pk=d.get("device_id")).values_list("user_id", flat=True).first()
+        return (uid,) if uid else ()
+
     @transaction.atomic
     def post(self, request, cid):
         rate(request, "membership", 30)
@@ -1063,7 +1171,16 @@ class CryptoEvents(Messages):
         if member.role not in ("owner", "moderator"):
             raise PermissionDenied("Owner or moderator required")
         action = d["action"]
-        target = get_object_or_404(m.Device, pk=d.get("device_id")) if action != "update" else None
+        target = (
+            get_object_or_404(
+                m.Device.objects.select_related("user").only(
+                    "id", "user_id", "identity", "public_key", "trust_state", "revoked_at", "user__is_active"
+                ),
+                pk=d.get("device_id"),
+            )
+            if action != "update"
+            else None
+        )
         before = p.roster(c)
         after = [dict(x) for x in before]
         if action == "add":
@@ -1500,6 +1617,11 @@ class RecoveryReset(Public):
         }
         verify(user.recovery_public_key, d["signature"], p.canonical(signed))
         verify(device["public_key"], d["device_signature"], p.canonical(signed))
+        if (
+            m.Device.objects.filter(pk=device["id"]).exists()
+            or m.DeviceEnrollmentTombstone.objects.filter(pk=device["id"]).exists()
+        ):
+            raise ValidationError("Fresh device ID required")
         try:
             validate_password(d["new_password"], user)
         except DjangoValidationError as exc:
@@ -1507,7 +1629,7 @@ class RecoveryReset(Public):
         now = timezone.now()
         m.Session.objects.filter(user=user).update(revoked_at=now)
         m.Device.objects.filter(user=user).update(revoked_at=now, trust_state="revoked")
-        m.Conversation.objects.filter(membership__device__user=user).update(status="rekey_required")
+        require_rekey(m.Conversation.objects.filter(membership__device__user=user))
         user.security_generation += 1
         user.device_bootstrapped = True
         user.recovery_public_key = d["recovery_public_key"]
@@ -1529,6 +1651,11 @@ class RecoveryReset(Public):
 
 
 class AdminDevices(View):
+    def mutation_accounts(self, request, **kwargs):
+        admin(request)
+        uid = m.Device.objects.filter(pk=kwargs.get("did")).values_list("user_id", flat=True).first()
+        return (uid,) if uid else ()
+
     def get(self, request):
         admin(request)
         return Response(
@@ -1548,8 +1675,8 @@ class AdminDevices(View):
         device.trust_state = "revoked"
         device.save(update_fields=["revoked_at", "trust_state"])
         m.Session.objects.filter(device=device).update(revoked_at=timezone.now())
-        m.Conversation.objects.filter(membership__device=device, membership__removed_at_epoch=None).update(
-            status="rekey_required"
+        require_rekey(
+            m.Conversation.objects.filter(membership__device=device, membership__removed_at_epoch=None)
         )
         audit(request.user, "admin.device_revoked", did)
         return Response({"ok": True, "rekey_required": True})
@@ -1568,7 +1695,7 @@ class DisableAccount(View):
         user.save(update_fields=["is_active"])
         m.Session.objects.filter(user=user).update(revoked_at=timezone.now())
         m.Device.objects.filter(user=user).update(revoked_at=timezone.now(), trust_state="revoked")
-        m.Conversation.objects.filter(membership__device__user=user).update(status="rekey_required")
+        require_rekey(m.Conversation.objects.filter(membership__device__user=user))
         audit(user, "account.disabled")
         response = Response(
             {

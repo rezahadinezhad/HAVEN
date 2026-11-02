@@ -3,6 +3,7 @@
 from datetime import timedelta
 from django.conf import settings
 from django.db import transaction
+from django.db.models.deletion import ProtectedError
 from django.db.models import Exists, OuterRef, Q
 from django.utils import timezone
 from . import models as m
@@ -91,6 +92,28 @@ def delete_attachments(now, batch_size):
     return deleted
 
 
+def delete_pending_devices(now, batch_size):
+    eligible = m.Device.objects.filter(trust_state="pending", revoked_at=None, expires_at__lte=now)
+    candidates = list(eligible.order_by("expires_at", "pk").values_list("pk", "user_id")[:batch_size])
+    deleted = protected = 0
+    for did, uid in candidates:
+        try:
+            with transaction.atomic():
+                # Enrollment/approval/completion and revocation use this same
+                # account-before-device order. An approved device is never pruned.
+                m.User.objects.select_for_update().values_list("pk", flat=True).get(pk=uid)
+                device = eligible.select_for_update().only("id").filter(pk=did).first()
+                if device:
+                    m.DeviceEnrollmentTombstone.objects.get_or_create(pk=did)
+                    device.delete()
+                    deleted += 1
+        except ProtectedError:
+            # Unexpected historical references are evidence to retain the row,
+            # not permission to cascade identity/MLS/delivery records.
+            protected += 1
+    return deleted, protected
+
+
 def cleanup(batch_size=500):
     now = timezone.now()
     counts = {}
@@ -123,6 +146,7 @@ def cleanup(batch_size=500):
     counts["sessions"] = delete_batch(
         m.Session.objects.filter(Q(expires_at__lte=now) | Q(revoked_at__isnull=False)), batch_size
     )
+    counts["pending_devices"], counts["pending_devices_protected"] = delete_pending_devices(now, batch_size)
     counts["invitations"] = delete_batch(
         m.Invitation.objects.filter(
             Q(expires_at__lte=now) | Q(revoked_at__isnull=False) | Q(consumed_at__isnull=False)

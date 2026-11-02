@@ -57,9 +57,9 @@ def roster(conversation):
     return sorted(
         [
             {**certificate(m.device), "role": m.role}
-            for m in Membership.objects.select_related("device").filter(
-                conversation=conversation, removed_at_epoch=None
-            )
+            for m in Membership.objects.select_related("device")
+            .only("role", "device__id", "device__user_id", "device__identity", "device__public_key")
+            .filter(conversation=conversation, removed_at_epoch=None)
         ],
         key=lambda x: x["id"],
     )

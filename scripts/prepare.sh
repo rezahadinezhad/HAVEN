@@ -14,5 +14,6 @@ uv sync --project apps/api --frozen --python 3.12
 npm ci --prefix apps/web --ignore-scripts
 scripts/build-crypto.sh
 scripts/build-public-verifier.sh
+cargo build --manifest-path packages/crypto-core/Cargo.toml --release --example protocol_client --locked -j 2
 NEXT_TELEMETRY_DISABLED=1 npm run build --prefix apps/web
 scripts/dev-cert.sh

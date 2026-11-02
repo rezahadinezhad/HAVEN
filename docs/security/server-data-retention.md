@@ -161,3 +161,7 @@ echo services with verified test-CA TLS; it never disables verification. Evidenc
 and qualifications are in TEST_REPORT.md.
 
 Session hardening (ADR 0011 / migration 0010) adds a server-only credential-binding HMAC to session rows so password updates invalidate older bearer tokens. It is neither a plaintext password nor an E2E key. Unfinished sign-ins are limited to five rows per account at new issuance, deleting the oldest unfinished rows; bound device sessions are excluded. Existing expiry/revocation cleanup remains. No IP, location, user-agent fingerprint or per-poll presence timestamp was added by this change; password hashes, credential-binding tags and account/device linkage remain visible in a stolen database. It is not an anonymity guarantee.
+
+## Expired pending enrollment continuation
+
+Migration 0015 adds ID-only expired-enrollment replay markers and a partial expiry index. Matching cleanup locks account then device, rechecks pending/unrevoked/expired state and atomically records the marker before deleting only unreferenced never-approved enrollment rows. Approved/revoked/historical devices stay. Unexpected protected references are retained and counted as `pending_devices_protected`. Up to 500 candidates/pass; no hard deletion deadline under backlog/failure. Enrollment and signed recovery reject excluded IDs. Restore must preserve markers; reversal and old/new API/cleanup mixtures are unsafe. No identity/vault reset or physical erasure is implied.

@@ -6,6 +6,7 @@ set -a
 source .local/test.env
 set +a
 node scripts/build-integration.mjs
+cargo build --manifest-path packages/crypto-core/Cargo.toml --release --example protocol_client --locked -j 2
 (cd apps/api && .venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q)
 cargo fmt --manifest-path packages/crypto-core/Cargo.toml --check
 HAVEN_GOLDEN_FILE="$PWD/.local/native-wasm-golden.json" cargo test --manifest-path packages/crypto-core/Cargo.toml --locked -j 2
