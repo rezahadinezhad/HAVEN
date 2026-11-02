@@ -2,7 +2,7 @@
 
 ## Dependency qualification — 2026-11-02
 
-Reviewed update graph, canonical-signature compatibility, sha2 fingerprint conversion, pinned Node 26 online/offline images and additional functional CI are implemented on the maintenance branch. [Qualification and final disposition](docs/security/dependency-maintenance-2026-11-02.md).
+Reviewed update graph, canonical-signature compatibility, sha2 fingerprint conversion, pinned Node 26 online/offline images and additional functional CI are implemented and pass local qualification. [Qualification and final disposition](docs/security/dependency-maintenance-2026-11-02.md).
 
 ## Runtime and realistic workload continuation — 2026-11-02
 

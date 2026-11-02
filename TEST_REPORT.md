@@ -2,7 +2,7 @@
 
 ## Dependency qualification — 2026-11-02
 
-Dependency maintenance validation is recorded separately in the [qualification report](docs/security/dependency-maintenance-2026-11-02.md); historical performance and browser results below are not relabeled as tests of the new graph.
+Updated graph: 132 API tests per database configuration, six native tests, 205 upstream vectors, 39 unique Chromium cases and 35 Firefox cases pass. Initial fixture failures and conditional skips remain disclosed. Dependency maintenance validation is recorded separately in the [qualification report](docs/security/dependency-maintenance-2026-11-02.md); historical performance and browser results below are not relabeled as tests of the new graph.
 
 ## Metadata load attribution — 2026-11-02
 

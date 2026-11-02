@@ -2,7 +2,7 @@
 
 ## Dependency qualification — 2026-11-02
 
-Fourteen proposals are being qualified against real backend/native/browser paths; Python 3.15 is excluded by the declared runtime/framework support. [Dependency decisions and evidence](docs/security/dependency-maintenance-2026-11-02.md). The production gate and independent-review requirements remain unchanged.
+Fourteen proposals pass local backend/native/browser qualification; Python 3.15 is excluded by the declared runtime/framework support. [Dependency decisions and evidence](docs/security/dependency-maintenance-2026-11-02.md). The production gate and independent-review requirements remain unchanged.
 
 ## Runtime and realistic workload continuation — 2026-11-02
 

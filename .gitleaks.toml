@@ -43,3 +43,12 @@ condition = "AND"
 paths = ['''^docs/evidence/metadata-(?:completion|load-profiling|throughput-fix|realistic-workload)-2026-11-02/.+\.json$''']
 regexTarget = "secret"
 regexes = ['''^(?:1990e818b5a55445d8776f9f1f222c454eeef7fea413781bf5a0dad908f32010|ddac459e3b706c4597e965d2864b5fb9aa62b1c4a0ecdc1573ccbd942fe36bcb)$''']
+
+# The exact owner-local Docker tag below is a public build label, not an API key.
+[[allowlists]]
+targetRules = ["generic-api-key"]
+description = "verified local Docker image tag in dependency build provenance"
+condition = "AND"
+paths = ['''^docs/evidence/dependency-maintenance-2026-11-02/(?:image-binding\.json|api-offline-build\.txt)$''']
+regexTarget = "secret"
+regexes = ['''^dependency-maintenance-20261102$''']

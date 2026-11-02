@@ -1,0 +1,11 @@
+{
+  "node": "26.13.0",
+  "typescript": "7.0.2",
+  "python": "Python 3.12.15",
+  "rust": "rustc 1.96.1 (31fca3adb 2026-06-26)",
+  "qualification_source_commit": "5ea6ef8cfeac9603cc55e03e3eed45f2a51f545e",
+  "scope": "shared Linux workstation; synthetic loopback services; isolated PostgreSQL/Redis and real cryptographic/browser paths",
+  "production_deployment": false,
+  "crypto_ready": false,
+  "old_performance_results_requalified": false
+}

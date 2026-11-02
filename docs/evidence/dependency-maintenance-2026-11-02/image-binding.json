@@ -1,0 +1,16 @@
+{
+  "api": {
+    "tag": "haven-api:dependency-maintenance-20261102",
+    "id": "sha256:ce2ef8cc12e0428e3c263e25661501bee50dae79d433c0cdefe84e2c825a814d",
+    "created": "2026-11-02T23:18:54.530194892+03:30",
+    "user": "10001:10001",
+    "build_network": "none"
+  },
+  "web": {
+    "tag": "haven-web:dependency-offline-20261102",
+    "id": "sha256:a5f6f62df8148057449cb73eaaba4aff74d589cda31629577fb48c5ace68d17a",
+    "created": "2026-11-02T23:19:48.12774741+03:30",
+    "user": "node",
+    "build_network": "none"
+  }
+}

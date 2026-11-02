@@ -22,6 +22,10 @@ cases = [
     ("docs/evidence/metadata-realistic-workload-2026-11-02/probe.json", secrets.token_hex(32), 1),
     ("docs/evidence/metadata-realistic-workload-2026-11-02/probe.json", "prefix" + public_hash, 1),
     ("src/probe.json", public_hash, 1),
+    ("docs/evidence/dependency-maintenance-2026-11-02/image-binding.json", "dependency-maintenance-20261102", 0),
+    ("docs/evidence/dependency-maintenance-2026-11-02/image-binding.json", secrets.token_hex(32), 1),
+    ("docs/evidence/dependency-maintenance-2026-11-02/image-binding.json", "prefix-dependency-maintenance-20261102", 1),
+    ("src/probe.json", "dependency-maintenance-20261102", 1),
 ]
 with tempfile.TemporaryDirectory(prefix="haven-scan-policy-") as folder:
     base = Path(folder)
@@ -36,4 +40,4 @@ with tempfile.TemporaryDirectory(prefix="haven-scan-policy-") as folder:
             cwd=case,
         )
         assert result.returncode == expected, f"Scanner exception boundary failed for case {index}"
-print("PASS: known public checksum accepted; new values, modified values and other paths rejected")
+print("PASS: public checksums/build label accepted; new values, modified values and other paths rejected (8 probes)")

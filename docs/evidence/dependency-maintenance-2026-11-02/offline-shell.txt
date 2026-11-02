@@ -1,0 +1,1 @@
+PASS public-shell update after worker restart: current cached shell, previous-cache cleanup, unrelated cache preserved, API/WS/foreign bypass, mismatched manifest rejected.
