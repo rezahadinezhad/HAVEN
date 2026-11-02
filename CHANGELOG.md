@@ -2,6 +2,8 @@
 
 ## Unreleased — 2026-11-02
 
+- Correct the synthetic load generator with independently sharded native crypto workers and ordered conversation lanes. Add private aggregate generator/API/SQL/connection/checkpoint timing, PostgreSQL wait sampling and container CPU counters. Controlled one/ten-worker and baseline trials show crypto serialization is not the primary remaining limit; 20/s stays unqualified. No messenger runtime or security limits changed.
+
 New enrollment proofs hide the global session ordinal using nonce-scoped HMAC context while preserving strict existing browser validation. Migration 0016 versions nonce storage and prevents legacy verification from becoming a guessing oracle; old in-flight proofs remain valid.
 
 - Fence current HTTP session/device/account authority and target membership grants with sorted account/conversation locks. Roll back partial writes on handled API failures and bound bodies before locking.

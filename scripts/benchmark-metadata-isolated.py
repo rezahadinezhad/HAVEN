@@ -30,6 +30,12 @@ parser.add_argument("--resilience", action="store_true")
 parser.add_argument("--seconds", type=int, default=120)
 parser.add_argument("--rate", type=float, default=20)
 parser.add_argument("--rekey-every", type=int, default=100)
+parser.add_argument(
+    "--crypto-workers",
+    type=int,
+    default=10,
+    help="Independent native processes, 1–50; use 1 for the serialized control",
+)
 args = parser.parse_args()
 source_manifest_sha256 = hashlib.sha256(
     subprocess.check_output(
@@ -40,6 +46,7 @@ if (
     not 1 <= args.seconds <= 7200
     or not 0 < args.rate <= 20
     or not 1 <= args.rekey_every <= 1000
+    or not 1 <= args.crypto_workers <= 50
 ):
     raise SystemExit(
         "Bounded workload required (1–7200 seconds, up to 20 messages/second)"
@@ -83,6 +90,7 @@ environment = {
     "HAVEN_ISOLATED_LOAD": "synthetic-only",
     "HAVEN_LOAD_PRIVATE": str(folder),
     "HAVEN_LOAD_API": str(work),
+    "HAVEN_LOAD_CRYPTO_WORKERS": str(args.crypto_workers),
     "HAVEN_LOAD_SECONDS": str(args.seconds),
     "HAVEN_LOAD_RATE": str(args.rate),
     "HAVEN_LOAD_REKEY_EVERY": str(args.rekey_every),
@@ -103,6 +111,22 @@ name = "haven-synthetic-load-" + secrets.token_hex(5)
 containers, children = [], []
 log = (folder / "private.log").open("w")
 python = ROOT / "apps/api/.venv/bin/python"
+# Private settings/ASGI adapters add synthetic instrumentation to either API
+# revision. Production application/settings files are never edited or exposed.
+(folder / "metadata_profile_settings.py").write_text(
+    "from haven.integration_settings import *\n"
+    'MIDDLEWARE = ["metadata_load_profile.RequestProfiler", *MIDDLEWARE]\n'
+)
+(folder / "metadata_profile_asgi.py").write_text(
+    "from metadata_load_profile import ASGIProfiler\n"
+    "from haven.asgi import application as original\n"
+    "application = ASGIProfiler(original)\n"
+)
+api_environment = {
+    **environment,
+    "DJANGO_SETTINGS_MODULE": "metadata_profile_settings",
+    "PYTHONPATH": os.pathsep.join((str(folder), str(ROOT / "scripts"), str(work))),
+}
 source_files = [
     *[
         (work / name)
@@ -128,6 +152,8 @@ source_files = [
             "scripts/benchmark-metadata-load.py",
             "scripts/metadata-tls-meter.mjs",
             "scripts/metadata-load-media.mjs",
+            "scripts/metadata_load_instruments.py",
+            "scripts/metadata_load_profile.py",
             "packages/crypto-core/src/lib.rs",
             "packages/crypto-core/examples/protocol_client.rs",
             "packages/crypto-core/Cargo.toml",
@@ -167,6 +193,33 @@ def owned_container(suffix, *arguments):
 def cpu(pid):
     values = Path(f"/proc/{pid}/stat").read_text().split()
     return (int(values[13]) + int(values[14])) / os.sysconf("SC_CLK_TCK")
+
+
+def await_profile(name):
+    for _ in range(100):
+        if (folder / name).is_file():
+            return json.loads((folder / name).read_text())
+        time.sleep(0.1)
+    raise RuntimeError("Synthetic API profile handshake timed out")
+
+
+def container_usage(instance):
+    pid = int(docker("inspect", "--format", "{{.State.Pid}}", instance))
+    entry = next(
+        line.split("::", 1)[1]
+        for line in Path(f"/proc/{pid}/cgroup").read_text().splitlines()
+        if line.startswith("0::")
+    )
+    folder = Path("/sys/fs/cgroup") / entry.lstrip("/")
+    return {
+        "cpu": {
+            line.split()[0]: int(line.split()[1])
+            for line in (folder / "cpu.stat").read_text().splitlines()
+        },
+        "memory_current_bytes": int((folder / "memory.current").read_text()),
+        "memory_peak_bytes": int((folder / "memory.peak").read_text()),
+        "scope": "Owned container cgroup v2, includes every PostgreSQL child and container page cache; peak includes setup",
+    }
 
 
 try:
@@ -234,7 +287,7 @@ try:
     api = subprocess.Popen(
         [
             str(ROOT / "apps/api/.venv/bin/uvicorn"),
-            "haven.asgi:application",
+            "metadata_profile_asgi:application",
             "--host",
             "127.0.0.1",
             "--port",
@@ -245,7 +298,7 @@ try:
             "2048",
         ],
         cwd=work,
-        env=environment,
+        env=api_environment,
         stdout=log,
         stderr=log,
     )
@@ -309,9 +362,12 @@ try:
         )
     before_cpu = cpu(api.pid)
     before_publisher_cpu = cpu(publisher.pid)
+    before_pg_usage = container_usage(pg)
     before_block_io = docker(
         "stats", "--no-stream", "--format", "{{json .BlockIO}}", pg
     )
+    api.send_signal(signal.SIGUSR2)
+    await_profile("api-profile-ready.json")
     meter.send_signal(signal.SIGUSR1)
     worker.stdin.write("GO\n")
     worker.stdin.flush()
@@ -326,6 +382,8 @@ try:
     result["notification_worker_cpu_seconds"] = (
         cpu(publisher.pid) - before_publisher_cpu
     )
+    result["postgres_container_usage_before"] = before_pg_usage
+    result["postgres_container_usage_after"] = container_usage(pg)
     result["api_peak_rss_kib"] = int(
         next(
             line.split()[1]
@@ -334,6 +392,8 @@ try:
         )
     )
     result["postgres_container_block_io_before"] = json.loads(before_block_io)
+    api.send_signal(signal.SIGUSR1)
+    result["api_profile"] = await_profile("api-profile.json")
     result["postgres_container_block_io_after"] = json.loads(
         docker("stats", "--no-stream", "--format", "{{json .BlockIO}}", pg)
     )

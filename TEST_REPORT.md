@@ -1,5 +1,9 @@
 # Test report — local engineering qualification
 
+## Metadata load attribution — 2026-11-02
+
+Three new instrument regressions pass with real independent native worker keys/signatures, failure/lifecycle checks and profiler isolation. The smoke run and three full synthetic 500-socket integrations verify every offered message, all nine recipients, five encrypted files and persisted native checkpoint restoration. One-worker current, ten-worker current and ten-worker baseline all miss offered 20/s with zero socket errors; crypto wait falls below 0.1 ms while HTTP and variable disk latency remain dominant. [Methods, exact metrics and limitations](docs/security/metadata-privacy/load-profiling.md). Product API/web/crypto/ingress source is unchanged; prior full product-suite counts below remain historical results, not newly repeated runs.
+
 ## Metadata continuation — 2026-11-02
 
 The continuation preserves failing before-fix race outputs and passing real PG/native remediation tests, dump/restore selected-state invariants, actual browser server-head rollback rejection without ACK/state advancement, and actual Nginx TLS/header checks. SQL regressions inspect real selected columns. Isolated 500-session native load measures TLS records and PostgreSQL WAL/I/O; missed targets and interrupted validation runs are not passes. Final backend: 111 passed; Chromium: 39 passed/two optional skips; Firefox: 35 passed/six disclosed skips. Rust: five library tests and 205 official upstream vectors pass (three ignored/91 filtered). Final commands/counts are recorded in the [continuation evidence index](docs/evidence/metadata-completion-2026-11-02/README.md); production, external review and physical/domestic qualification remain blocked.

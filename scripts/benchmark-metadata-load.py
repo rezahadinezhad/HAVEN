@@ -9,6 +9,8 @@ Native client exercises real MLS; it is not the browser vault or physical phones
 import asyncio
 import base64
 from concurrent.futures import ThreadPoolExecutor
+from collections import deque
+from contextlib import ExitStack
 from datetime import timedelta
 import hashlib
 from http.client import HTTPSConnection, HTTPException
@@ -23,6 +25,8 @@ import sys
 import threading
 import time
 import uuid
+
+from metadata_load_instruments import CryptoPool, Timings, WaitSampler, process_usage
 
 import rfc8785
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
@@ -52,14 +56,12 @@ PRIVATE = Path(os.environ["HAVEN_LOAD_PRIVATE"])
 if PRIVATE.stat().st_mode & 0o077:
     raise SystemExit("Private directory required")
 SSL = ssl.create_default_context(cafile=str(ROOT / ".local/tls/root.crt"))
-crypto = subprocess.Popen(
-    [str(ROOT / "packages/crypto-core/target/release/examples/protocol_client")],
-    stdin=subprocess.PIPE,
-    stdout=subprocess.PIPE,
-    stderr=subprocess.DEVNULL,
-    text=True,
+timings = Timings()
+crypto = CryptoPool(
+    ROOT / "packages/crypto-core/target/release/examples/protocol_client",
+    int(os.environ.get("HAVEN_LOAD_CRYPTO_WORKERS", "10")),
+    timings,
 )
-crypto_lock = threading.Lock()
 checkpoint_key = AESGCM.generate_key(bit_length=256)
 # Synthetic recovery custody, outside the DB and never published. This is a
 # protected test fixture key, not a claim about browser/passphrase key custody.
@@ -90,14 +92,9 @@ RESILIENCE = os.environ.get("HAVEN_LOAD_RECONNECT") == "1"
 
 
 def native(client, op, **kw):
-    with crypto_lock:
-        crypto.stdin.write(
-            json.dumps({"client": client.id, "command": {"op": op, **kw}}) + "\n"
-        )
-        crypto.stdin.flush()
-        value = json.loads(crypto.stdout.readline())
-    if value.get("ok") is not True:
-        raise RuntimeError("Native MLS operation rejected: " + op)
+    value = crypto.exchange(
+        client.shard, {"client": client.id, "command": {"op": op, **kw}}
+    )
     client.state = value["state"]
     return value["result"]
 
@@ -118,6 +115,8 @@ class Client:
     def __init__(self, user, n):
         self.user, self.id, self.state = user, str(uuid.uuid4()), ""
         self.identity = f"{user.pk}:{self.id}"
+        # Two accounts form one ten-device group; keep that group on one worker.
+        self.shard = (n // 2) % len(crypto.workers)
         self.ip = f"127.0.2.{n + 1}"
         self.token = secrets.token_urlsafe(48)
         self.cookies = {settings.SESSION_COOKIE_NAME: self.token}
@@ -154,8 +153,14 @@ class Client:
         }
 
     def request(self, path, method="GET", body=None, expected=(200,), raw=False):
+        started = time.monotonic()
         with self.http_lock:
-            return self._request(path, method, body, expected, raw)
+            acquired = time.monotonic()
+            timings.record("http_client_lock_wait", acquired - started)
+            try:
+                return self._request(path, method, body, expected, raw)
+            finally:
+                timings.record("http_request_total", time.monotonic() - acquired)
 
     def _request(self, path, method, body, expected, raw):
         payload = (
@@ -181,6 +186,7 @@ class Client:
                         else "application/json",
                     }
                 )
+            attempt_started = time.monotonic()
             try:
                 self.http.request(method, "/api/v1/" + path, payload, headers)
                 response = self.http.getresponse()
@@ -193,7 +199,13 @@ class Client:
                     metrics["transport_retries"] = (
                         metrics.get("transport_retries", 0) + 1
                     )
+                timings.record(
+                    "http_failed_transport_attempt", time.monotonic() - attempt_started
+                )
                 continue  # The exact pending request is durable and idempotent.
+            timings.record(
+                "http_successful_transport_attempt", time.monotonic() - attempt_started
+            )
             for name, value in response.getheaders():
                 if name.lower() == "set-cookie":
                     cookie = SimpleCookie()
@@ -218,12 +230,15 @@ class Client:
 
     def checkpoint(self, group, seq, head, pending=None):
         # Atomic encrypted durable state before ACK/send. No plaintext ratchets on disk.
+        started = time.monotonic()
         clear = json.dumps(
             {"state": self.state, "seq": seq, "head": head, "pending": pending}
         ).encode()
         nonce = secrets.token_bytes(12)
         aad = f"haven-load-checkpoint/v1:{self.id}:{group}".encode()
         sealed = nonce + AESGCM(checkpoint_key).encrypt(nonce, clear, aad)
+        encrypted_at = time.monotonic()
+        timings.record("checkpoint_encode_encrypt", encrypted_at - started)
         temp, target = PRIVATE / (self.id + ".tmp"), PRIVATE / (self.id + ".checkpoint")
         fd = os.open(temp, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
         with os.fdopen(fd, "wb") as f:
@@ -236,6 +251,9 @@ class Client:
             os.fsync(directory)
         finally:
             os.close(directory)
+        timings.record(
+            "checkpoint_write_fsync_replace", time.monotonic() - encrypted_at
+        )
 
 
 class Group:
@@ -364,6 +382,7 @@ class Group:
         self.owner.request(f"conversations/{self.id}/acks", "POST", {"seq": self.seq})
 
     def deliver(self, body, plaintext=None):
+        started = time.monotonic()
         previous, seq = body["header"]["previous_hash"], self.seq
         for recipient in self.clients[1:]:
             page = recipient.request(
@@ -401,8 +420,11 @@ class Group:
             if plaintext is not None:
                 with metrics_lock:
                     metrics["delivered"] += 1
+        timings.record("nine_recipient_delivery_total", time.monotonic() - started)
 
-    def send(self, scheduled):
+    def send(self, scheduled, submitted):
+        timings.record("executor_queue_wait", time.monotonic() - submitted)
+        actual_start = time.monotonic()
         if (
             self.messages
             and self.messages % int(os.environ.get("HAVEN_LOAD_REKEY_EVERY", "100"))
@@ -441,6 +463,7 @@ class Group:
         body = self.envelope(encrypted["ciphertext"], mid=mid)
         self.accept(body, "messages")
         accepted = time.monotonic()
+        timings.record("message_start_to_accept", accepted - actual_start)
         with metrics_lock:
             metrics["accepted"] += 1
             send_latencies.append((accepted - scheduled) * 1000)
@@ -679,6 +702,9 @@ try:
         client.csrf = client.request("auth/csrf")["csrf"]
     for n in range(0, len(clients), 10):
         groups.append(Group(clients[n : n + 10]))
+        (PRIVATE / "fixture-progress.json").write_text(
+            json.dumps({"groups": len(groups), "target": 50})
+        )
     ready = threading.Event()
     ws_thread = threading.Thread(
         target=lambda: asyncio.run(sockets(clients, ready)), daemon=True
@@ -701,16 +727,23 @@ try:
             notification_hints=0,
         )
     before = stats()
+    crypto_before = crypto.usage()
+    driver_before = process_usage(os.getpid())
+    sampler = WaitSampler(settings.DATABASES["default"])
+    sampler.start()
+    timings.reset()
     measuring.set()
     start = time.monotonic()
     duration = int(os.environ.get("HAVEN_LOAD_SECONDS", "120"))
     rate = float(os.environ.get("HAVEN_LOAD_RATE", "20"))
-    pending = {}
-    offered, backpressure_stop = 0, False
-    with (
-        ThreadPoolExecutor(max_workers=5) as file_pool,
-        ThreadPoolExecutor(max_workers=50) as pool,
-    ):
+    pending = deque()
+    offered, backpressure_stop, stop_reason = 0, False, None
+    # Each conversation has its own ordered lane. A slow conversation cannot
+    # block scheduling unrelated groups; oldest unfinished work still has the
+    # original strict ten-second bound. No generated message is discarded.
+    with ExitStack() as stack:
+        file_pool = stack.enter_context(ThreadPoolExecutor(max_workers=5))
+        lanes = [stack.enter_context(ThreadPoolExecutor(max_workers=1)) for _ in groups]
         barrier = threading.Barrier(5)
         files = [
             file_pool.submit(transfer_file, group, barrier) for group in groups[:5]
@@ -718,29 +751,54 @@ try:
         for index in range(int(duration * rate)):
             scheduled = start + index / rate
             time.sleep(max(0, scheduled - time.monotonic()))
+            while pending and pending[0][1].done():
+                pending.popleft()[1].result(timeout=0)
+            backlog_expired = bool(pending and time.monotonic() - pending[0][0] > 10)
             if (
-                time.monotonic() - scheduled > 10
+                backlog_expired
+                or time.monotonic() - scheduled > 10
                 or metrics.get("ws_unrecoverable", 0)
                 or (metrics["ws_errors"] and not RESILIENCE)
             ):
                 backpressure_stop = True
+                stop_reason = (
+                    "oldest_unfinished_over_ten_seconds"
+                    if backlog_expired
+                    else "scheduler_lag_or_socket_failure"
+                )
                 break  # Stop offering new work; drain every generated message.
+            timings.record(
+                "scheduler_lag_before_group_wait", time.monotonic() - scheduled
+            )
             group = groups[index % len(groups)]
-            previous = pending.get(group.id)
-            if previous is not None:
-                previous.result(
-                    timeout=60
-                )  # Bounded backpressure; never silently drop or reorder.
-            pending[group.id] = pool.submit(group.send, scheduled)
+            submitted = time.monotonic()
+            timings.record("scheduler_lag_at_submission", submitted - scheduled)
+            future = lanes[index % len(groups)].submit(group.send, scheduled, submitted)
+            pending.append((scheduled, future))
             offered += 1
             if index % max(1, int(rate * 30)) == 0:
                 (PRIVATE / "progress.json").write_text(
                     json.dumps({"elapsed_seconds": time.monotonic() - start, **metrics})
                 )
-        for future in pending.values():
+        for _, future in pending:
             future.result(timeout=120)
         file_ms = [future.result(timeout=120) for future in files]
     elapsed = time.monotonic() - start
+    timings.enabled.clear()
+    wait_profile = sampler.finish()
+    crypto_after = crypto.usage()
+    driver_after = process_usage(os.getpid())
+    generator_usage = {
+        "driver_cpu_seconds": driver_after["cpu_seconds"]
+        - driver_before["cpu_seconds"],
+        "driver_peak_rss_kib": driver_after["peak_rss_kib"],
+        "crypto_workers": len(crypto.workers),
+        "crypto_worker_cpu_seconds": [
+            a["cpu_seconds"] - b["cpu_seconds"]
+            for a, b in zip(crypto_after, crypto_before)
+        ],
+        "crypto_worker_peak_rss_kib": [a["peak_rss_kib"] for a in crypto_after],
+    }
     stop.set()
     ws_thread.join(timeout=35)
     if ws_thread.is_alive():
@@ -761,21 +819,15 @@ try:
         or checkpoint["head"] != restored_group.head
     ):
         raise RuntimeError("Restored checkpoint chain mismatch")
-    with crypto_lock:
-        crypto.stdin.write(
-            json.dumps(
-                {
-                    "client": restored_client.id,
-                    "op": "restore",
-                    "state": checkpoint["state"],
-                    "group_id": restored_group.gid,
-                }
-            )
-            + "\n"
-        )
-        crypto.stdin.flush()
-        if json.loads(crypto.stdout.readline()).get("ok") is not True:
-            raise RuntimeError("Durable native checkpoint restore rejected")
+    crypto.exchange(
+        restored_client.shard,
+        {
+            "client": restored_client.id,
+            "op": "restore",
+            "state": checkpoint["state"],
+            "group_id": restored_group.gid,
+        },
+    )
     restored_group.check_roster(
         native(restored_client, "inspect", group_id=restored_group.gid)
     )
@@ -788,6 +840,10 @@ try:
         json.dumps(
             {
                 "metrics": metrics,
+                "generator_timings": timings.snapshot(),
+                "generator_usage": generator_usage,
+                "postgres_wait_sampling": wait_profile,
+                "instrumentation_scope": "Constant-space aggregate histograms; phase times overlap across concurrent work; CPU separate for driver/crypto/API; no request or SQL text",
                 "resilience_mode": RESILIENCE,
                 "websocket_reconnect": summarize(reconnect_latencies),
                 "zero_socket_error_gate": "FAIL" if metrics["ws_errors"] else "PASS",
@@ -795,6 +851,8 @@ try:
                 "target_status": "NOT_SUSTAINED" if backpressure_stop else "COMPLETED",
                 "websocket_status": "FAILED" if metrics["ws_errors"] else "PASS",
                 "backpressure_stop_seconds": 10,
+                "backpressure_stop_reason": stop_reason,
+                "scheduler": "50 independent ordered conversation lanes; oldest unfinished work and dispatcher lag both bounded to ten seconds",
                 "rekey_every_application_messages_per_group": int(
                     os.environ.get("HAVEN_LOAD_REKEY_EVERY", "100")
                 ),
@@ -815,5 +873,4 @@ try:
     )
 finally:
     stop.set()
-    crypto.terminate()
-    crypto.wait(timeout=10)
+    crypto.close()
