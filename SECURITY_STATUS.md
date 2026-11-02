@@ -1,5 +1,9 @@
 # Security status
 
+## Dependency qualification — 2026-11-02
+
+Fourteen proposals pass local backend/native/browser qualification; Python 3.15 is excluded by the declared runtime/framework support. [Dependency decisions and evidence](docs/security/dependency-maintenance-2026-11-02.md). The production gate and independent-review requirements remain unchanged.
+
 ## Runtime and realistic workload continuation — 2026-11-02
 
 Bounded API execution/database reuse, fresh authority checks, shorter storage/ACK critical sections and batched notification delivery have implementation fixes and regression evidence. Both backend settings pass 132 tests. The realistic natural combined case passes local gates with 100 people, two trusted devices each, 120 initially online identities, 500 initial sockets, a 20-message/s burst, five encrypted files and 30% intermittent accounts. The completed two-hour 2/s soak passes all local gates: 14,400 messages, 60,414 durable recipient copies, 108 MLS updates, 200 restored checkpoints and zero socket errors/deadlocks. [Results and scope](docs/security/metadata-privacy/workload-results.md) retain failed stress/latency/availability attempts. These are shared-workstation native observations; reference-production, physical-device and external assurance gates remain unqualified. Production remains BLOCKED and `CRYPTO_READY=False`. No real deployment was performed.

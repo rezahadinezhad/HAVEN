@@ -1,5 +1,9 @@
 # Changelog
 
+## Dependency qualification — 2026-11-02
+
+Qualify 14 dependency/toolchain proposals together, repair sha2 state-fingerprint encoding while retaining its exact SHA-256 representation, and retain the supported Python runtime. Refresh locked graphs, native/WASM artifacts and Node online/offline images. Add functional dependency CI and narrowly verified public-checksum scanner exceptions with negative probes. [Decisions and validation](docs/security/dependency-maintenance-2026-11-02.md).
+
 ## Unreleased — 2026-11-02
 
 - Correct the synthetic load generator with independently sharded native crypto workers and ordered conversation lanes. Add private aggregate generator/API/SQL/connection/checkpoint timing, PostgreSQL wait sampling and container CPU counters. Controlled one/ten-worker and baseline trials show crypto serialization is not the primary remaining limit; 20/s stays unqualified. No messenger runtime or security limits changed.

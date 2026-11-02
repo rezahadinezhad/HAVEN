@@ -24,6 +24,11 @@ updates:
     directories:
       - /apps/api
       - /apps/web
+    # Django 5.2 and the project's requires-python exclude Python 3.15+.
+    # Revisit with a separately qualified framework/runtime migration.
+    ignore:
+      - dependency-name: python
+        versions: [">=3.15"]
     schedule:
       interval: weekly
     open-pull-requests-limit: 5

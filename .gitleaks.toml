@@ -3,6 +3,7 @@ title = "HAVEN reviewed false positives only"
 useDefault = true
 
 [[allowlists]]
+targetRules = ["generic-api-key"]
 description = "disposable test fixture only"
 condition = "AND"
 paths = ['''^apps/web/tests/device-unlock\.spec\.ts$''']
@@ -10,6 +11,7 @@ regexTarget = "secret"
 regexes = ['''^(?:vault\-test\-phrase\-of\-sufficient\-length\-2026)$''']
 
 [[allowlists]]
+targetRules = ["generic-api-key"]
 description = "crate name, not a key"
 condition = "AND"
 paths = ['''^packages/crypto-core/Cargo\.lock$''']
@@ -17,6 +19,7 @@ regexTarget = "secret"
 regexes = ['''^(?:libcrux\-sha3)$''']
 
 [[allowlists]]
+targetRules = ["generic-api-key"]
 description = "generated libsodium function symbols"
 condition = "AND"
 paths = ['''^apps/web/public/vault-worker\.js$''']
@@ -24,8 +27,28 @@ regexTarget = "secret"
 regexes = ['''^(?:crypto_aead_aegis256_decrypt|crypto_aead_chacha20poly1305_decrypt|crypto_aead_chacha20poly1305_keygen|crypto_kdf_blake2b_BYTES_MAX|crypto_kdf_hkdf_sha512_BYTES_MAX)$''']
 
 [[allowlists]]
+targetRules = ["generic-api-key"]
 description = "public Python image GPG fingerprint"
 condition = "AND"
 paths = ['''^docs/evidence/api-container-audit-v2\.json$''']
 regexTarget = "secret"
 regexes = ['''^(?:7169605F62C751356D054A26A821E680E5FA6305)$''']
+
+# Public SHA-256 values verified against reachable source blobs; these are not credentials.
+# Keep both the evidence path and exact published values constrained.
+[[allowlists]]
+targetRules = ["generic-api-key"]
+description = "reviewed public source checksums in metadata qualification evidence"
+condition = "AND"
+paths = ['''^docs/evidence/metadata-(?:completion|load-profiling|throughput-fix|realistic-workload)-2026-11-02/.+\.json$''']
+regexTarget = "secret"
+regexes = ['''^(?:1990e818b5a55445d8776f9f1f222c454eeef7fea413781bf5a0dad908f32010|ddac459e3b706c4597e965d2864b5fb9aa62b1c4a0ecdc1573ccbd942fe36bcb)$''']
+
+# The exact owner-local Docker tag below is a public build label, not an API key.
+[[allowlists]]
+targetRules = ["generic-api-key"]
+description = "verified local Docker image tag in dependency build provenance"
+condition = "AND"
+paths = ['''^docs/evidence/dependency-maintenance-2026-11-02/(?:image-binding\.json|api-offline-build\.txt)$''']
+regexTarget = "secret"
+regexes = ['''^dependency-maintenance-20261102$''']

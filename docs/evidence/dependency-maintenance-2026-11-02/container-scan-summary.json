@@ -1,0 +1,31 @@
+{
+  "status": "STALE_DATABASE_DIAGNOSTIC_ONLY",
+  "database_updated_at": "2026-10-24T01:18:19.814880615Z",
+  "refresh_attempts": [
+    "default mirror HTTP 403",
+    "GHCR download deadline exceeded"
+  ],
+  "images": {
+    "api": {
+      "counts": {
+        "LOW": 61,
+        "HIGH": 44,
+        "MEDIUM": 58,
+        "UNKNOWN": 1
+      },
+      "with_fixed_version": {},
+      "report_sha256": "92c7b563c1c780989620cbc85bca87a9dbaabf852a3cc18fcb0a3f80eb44041a"
+    },
+    "web": {
+      "counts": {
+        "LOW": 60,
+        "HIGH": 43,
+        "MEDIUM": 60,
+        "UNKNOWN": 1
+      },
+      "with_fixed_version": {},
+      "report_sha256": "f12a46ce3a11137c6b42e2e6ac614519181ec3104582c873327cf37f501c6066"
+    }
+  },
+  "scope": "No fresh OS clean-image or production qualification claim; complete raw scanner reports retained in protected local diagnostics"
+}

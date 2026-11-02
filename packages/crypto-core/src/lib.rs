@@ -17,6 +17,16 @@ const MAX_INPUT: usize = 16 * 1024 * 1024;
 // At most 255 padding bytes; framing may grow too. No cover-traffic timer.
 const MESSAGE_PADDING: usize = 256;
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
+
+fn state_fingerprint(authenticator: &[u8]) -> String {
+    use std::fmt::Write;
+    let mut output = String::with_capacity(64);
+    for byte in Sha256::digest(authenticator) {
+        write!(&mut output, "{byte:02x}").expect("writing to a String cannot fail");
+    }
+    output
+}
+
 #[derive(Default)]
 struct Provider {
     crypto: RustCrypto,
@@ -116,10 +126,7 @@ pub fn run(state: &str, command: &str) -> Result<String> {
             GroupId::from_slice(id.as_bytes()),
             credential,
         )?;
-        result["state_hash"] = json!(format!(
-            "{:x}",
-            Sha256::digest(group.epoch_authenticator().as_slice())
-        ));
+        result["state_hash"] = json!(state_fingerprint(group.epoch_authenticator().as_slice()));
         result["members"] = roster(&group);
         result["epoch"] = json!(group.epoch().as_u64());
     } else if op == "join" {
@@ -136,10 +143,7 @@ pub fn run(state: &str, command: &str) -> Result<String> {
         if group.group_id().as_slice() != str_field(&c, "group_id")?.as_bytes() {
             return Err("group mismatch".into());
         }
-        result["state_hash"] = json!(format!(
-            "{:x}",
-            Sha256::digest(group.epoch_authenticator().as_slice())
-        ));
+        result["state_hash"] = json!(state_fingerprint(group.epoch_authenticator().as_slice()));
         result["members"] = roster(&group);
         result["epoch"] = json!(group.epoch().as_u64());
     } else if !matches!(op, "init" | "package" | "sign") {
@@ -222,10 +226,7 @@ pub fn run(state: &str, command: &str) -> Result<String> {
             "inspect" => {}
             _ => return Err("unknown operation".into()),
         }
-        result["state_hash"] = json!(format!(
-            "{:x}",
-            Sha256::digest(group.epoch_authenticator().as_slice())
-        ));
+        result["state_hash"] = json!(state_fingerprint(group.epoch_authenticator().as_slice()));
         result["members"] = roster(&group);
         result["epoch"] = json!(group.epoch().as_u64());
         result["active"] = json!(group.is_active());
@@ -296,6 +297,22 @@ pub fn execute(state: &str, command: &str) -> std::result::Result<String, JsValu
 mod tests {
     use super::*;
     use proptest::prelude::*;
+
+    #[test]
+    fn state_fingerprint_preserves_sha256_lowercase_padded_encoding() {
+        assert_eq!(
+            state_fingerprint(b""),
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        );
+        assert_eq!(
+            state_fingerprint(b"abc"),
+            "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+        );
+        assert_eq!(
+            state_fingerprint(&[0]),
+            "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d"
+        );
+    }
 
     fn step(state: &mut String, command: Value) -> Value {
         let out: Value = serde_json::from_str(&run(state, &command.to_string()).unwrap()).unwrap();

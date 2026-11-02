@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           fetch-depth: 0
           persist-credentials: false
@@ -30,13 +30,15 @@ jobs:
           tar -xzf "$RUNNER_TEMP/gitleaks.tar.gz" -C "$RUNNER_TEMP" gitleaks
       - name: Scan history with redacted output
         run: '"$RUNNER_TEMP/gitleaks" git --redact --no-banner'
+      - name: Verify secret-scanner exception boundaries
+        run: python3 scripts/test-secret-scan-policy.py --scanner "$RUNNER_TEMP/gitleaks"
       - name: Audit JavaScript lockfile
         run: npm audit --prefix apps/web --audit-level=low
   python-advisories:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
       - name: Install pinned uv
@@ -51,7 +53,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
       - name: Install pinned audit tool
@@ -64,3 +66,68 @@ jobs:
         run: cargo test --manifest-path packages/crypto-core/Cargo.toml --locked -j 2
       - name: Check browser cryptography build
         run: cargo check --manifest-path packages/crypto-core/Cargo.toml --target wasm32-unknown-unknown --lib --locked -j 2
+  backend-regressions:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:16.14-bookworm@sha256:64154d0babcb1741988719e703419af0382b19953706149f9872fbd0f438efa8
+        env:
+          POSTGRES_USER: haven
+          POSTGRES_DB: haven
+          POSTGRES_PASSWORD: disposable-ci-database
+        ports: ["55432:5432"]
+        options: --health-cmd "pg_isready -U haven" --health-interval 2s --health-timeout 5s --health-retries 20
+      redis:
+        image: redis:7.4.6-alpine@sha256:3b73847e72874be07e6657b129a94761662b79bc0f679273757d4218573b2a98
+        ports: ["56379:6379"]
+        options: --health-cmd "redis-cli ping" --health-interval 2s --health-timeout 5s --health-retries 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2
+        with:
+          version: "0.13.1"
+          python-version: "3.12"
+          enable-cache: false
+      - name: Install the reviewed Python graph
+        run: uv sync --project apps/api --frozen
+      - name: Build the native protocol test client
+        run: cargo build --manifest-path packages/crypto-core/Cargo.toml --release --example protocol_client --locked -j 2
+      - name: Check and test both API database configurations
+        working-directory: apps/api
+        env:
+          POSTGRES_PASSWORD: disposable-ci-database
+          HAVEN_SECRET_KEY: disposable-ci-only-key-with-at-least-forty-eight-characters
+        run: |
+          set -euo pipefail
+          .venv/bin/ruff check .
+          .venv/bin/ruff format --check .
+          .venv/bin/python manage.py makemigrations --check --dry-run
+          DJANGO_SETTINGS_MODULE=haven.runtime_settings .venv/bin/pytest -q
+          .venv/bin/pytest -q
+  frontend-regressions:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Verify and build using the pinned Node runtime
+        run: docker build --file apps/web/Dockerfile --tag haven-web:dependency-ci .
+      - name: Start the web image with production restrictions
+        run: |
+          set -euo pipefail
+          job_container=$(docker run --detach --network none --read-only --cap-drop ALL \
+            --security-opt no-new-privileges:true --ulimit core=0:0 \
+            --tmpfs /tmp:rw,size=64m,mode=1777 haven-web:dependency-ci)
+          trap 'docker rm --force "$job_container" > /dev/null' EXIT
+          for attempt in $(seq 1 20); do
+            if docker exec "$job_container" node -e 'Promise.all([fetch("http://127.0.0.1:3100/"), fetch("http://127.0.0.1:3100/pof.html")]).then(([home, harness]) => process.exit(home.status === 200 && harness.status === 404 ? 0 : 1)).catch(() => process.exit(1))'; then
+              exit 0
+            fi
+            sleep 1
+          done
+          docker logs "$job_container"
+          exit 1
