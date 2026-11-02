@@ -26,5 +26,7 @@
   },
   "performance_requalification": false,
   "production_deployment": false,
-  "qualified_source_commit": "a7e200c00e520afabc314c01e16f121481d55ae2"
+  "qualified_source_commit": "a7e200c00e520afabc314c01e16f121481d55ae2",
+  "rate_test_repair_supplement": "rate-test-repair.json",
+  "scope_note": "Initial full local/browser/image qualification; subsequent test-only clock repair is explicitly recorded in the supplement and verified by final CI."
 }

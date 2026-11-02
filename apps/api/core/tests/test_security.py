@@ -3,6 +3,7 @@ import hashlib
 import secrets
 import uuid
 from datetime import timedelta
+from types import SimpleNamespace
 import pytest
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 from django.conf import settings
@@ -103,12 +104,27 @@ def test_auth_transport_origin_csrf_revocation(client, credentials):
     assert client.get("/api/v1/auth/me", secure=True).status_code == 403
 
 
-def test_rate_and_schema(client, credentials):
-    for _ in range(5):
-        assert post(client, "auth/login", {"username": "unknown", "password": "incorrect"}).status_code == 400
-    assert post(client, "auth/login", {"username": "unknown", "password": "incorrect"}).status_code == 429
-    # Other people behind the same ingress/NAT are not all locked out.
-    assert post(client, "auth/login", {"username": "owner", "password": credentials[1]}).status_code == 200
+def test_rate_and_schema(client, credentials, monkeypatch):
+    from core import views
+
+    # Keep each phase inside a known fixed-minute bucket. Actual password work
+    # can otherwise cross a wall-clock minute and legitimately reset the quota.
+    # Redis counters, private rate labels and authentication remain real.
+    now = [timezone.now().replace(second=10, microsecond=0)]
+    monkeypatch.setattr(views, "timezone", SimpleNamespace(now=lambda: now[0]))
+    for _ in range(2):
+        for _ in range(5):
+            assert (
+                post(client, "auth/login", {"username": "unknown", "password": "incorrect"}).status_code
+                == 400
+            )
+        assert post(client, "auth/login", {"username": "unknown", "password": "incorrect"}).status_code == 429
+        # Other people behind the same ingress/NAT are not all locked out.
+        assert (
+            post(client, "auth/login", {"username": "owner", "password": credentials[1]}).status_code == 200
+        )
+        # A new minute starts a fresh bucket and must still enforce its limit.
+        now[0] += timedelta(minutes=1)
 
 
 def test_crypto_release_gate(client, credentials):

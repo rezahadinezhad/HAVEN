@@ -25,6 +25,12 @@ The first attachment-helper probe used insufficient stdout buffering for a 1 MiB
 
 CI retains the prior five checks and adds exact-production-Python backend runs plus a minimal production-image build/import check. The existing host rejects no-new-privileges execution for baseline and candidate images alike; GitHub's independent restricted-container checks remain authoritative for that host-dependent execution restriction. No deployment flag is relaxed.
 
+## Rate-test clock repair found by CI
+
+The first independent PR CI run passed 131 tests and failed `test_rate_and_schema`: the sixth login returned 400 instead of 429. The same source's push CI passed every job. Inspection found a clock-sensitive assumption in the old test: it counts attempts against one fixed-minute bucket without holding them inside that minute. Password work can straddle the boundary, where the production policy deliberately starts a new bucket. The test now controls only the view's clock; actual Redis counters, private key construction, password hashing and both 400/429 assertions remain real. It checks two consecutive buckets, including recovery at rollover and enforcement again, while another account on the same address still succeeds. Production limits and rate code are unchanged.
+
+The initial full/browser/image evidence remains bound to its original source. `rate-test-repair.json` supplements exactly the changed test-file digest, preserving that provenance. Focused tests run under both settings on Python 3.12 and exact-image Python 3.14.9; final CI reruns all four complete backend configurations. The failed run is retained as structured metadata rather than hidden or relabeled. Browser/worker application code is unchanged by this test-only repair and does not require repeating those suites.
+
 ## Limits
 
 The previous throughput/two-hour measurements remain tied to their original dependency graphs. A new longer GHCR database download also failed with unexpected EOF; earlier cached image scan counts are not reassigned to the new images. No new capacity, battery, physical-device, independent cryptographic audit or fresh OS-container security qualification is claimed. Production `CRYPTO_READY=False` and release-gate blockers remain intact. Browser fixtures and private keys stay in protected .local diagnostics; published evidence contains aggregate results and source/artifact checksums only.
