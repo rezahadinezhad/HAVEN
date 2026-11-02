@@ -29,12 +29,12 @@
 #8 DONE 1.7s
 
 #9 [build 5/7] RUN npm ci --offline --ignore-scripts --cache=/npm-cache && rm -rf /npm-cache
-#9 9.347 
+#9 9.347
 #9 9.347 added 98 packages, and audited 99 packages in 9s
-#9 9.347 
+#9 9.347
 #9 9.347 15 packages are looking for funding
 #9 9.348   run `npm fund` for details
-#9 9.349 
+#9 9.349
 #9 9.349 found 0 vulnerabilities
 #9 DONE 18.1s
 
@@ -42,16 +42,16 @@
 #10 DONE 2.4s
 
 #11 [build 7/7] RUN rm -f public/pof.html public/pof.js && npm run build
-#11 1.677 
+#11 1.677
 #11 1.677 > haven-web@0.2.0 build
 #11 1.677 > node scripts/patch-next-announcer.mjs && next build && node scripts/build-offline-shell.mjs
-#11 1.677 
+#11 1.677
 #11 1.719 Next 16.4.3 accessibility announcer uses external CSS; CSP remains strict.
 #11 2.094 ▲ Next.js 16.4.3 (Turbopack)
 #11 2.123 ✓ Running next.config.ts took 29ms
 #11 2.139 - Experiments (use with caution):
 #11 2.139   · cpus: 2
-#11 2.139 
+#11 2.139
 #11 2.163   Creating an optimized production build ...
 #11 8.250 ✓ Compiled successfully in 6.1s
 #11 8.254   Running TypeScript ...
@@ -60,17 +60,17 @@
 #11 9.808   Generating static pages using 2 workers (0/3) ...
 #11 9.920 ✓ Generating static pages using 2 workers (3/3) in 112ms
 #11 9.923   Finalizing page optimization ...
-#11 10.72 
+#11 10.72
 #11 10.73 Route (app)
 #11 10.73 ┌ ƒ /
 #11 10.73 └ ○ /_not-found
-#11 10.73 
-#11 10.73 
+#11 10.73
+#11 10.73
 #11 10.73 ƒ Proxy (Middleware)
-#11 10.73 
+#11 10.73
 #11 10.73 ○  (Static)   prerendered as static content
 #11 10.73 ƒ  (Dynamic)  server-rendered on demand
-#11 10.73 
+#11 10.73
 #11 10.88 Prepared 19 local offline shell assets
 #11 DONE 11.0s
 

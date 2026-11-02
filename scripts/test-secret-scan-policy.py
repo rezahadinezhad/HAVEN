@@ -24,7 +24,7 @@ cases = [
     ("src/probe.json", public_hash, 1),
     ("docs/evidence/dependency-maintenance-2026-11-02/image-binding.json", "dependency-maintenance-20261102", 0),
     ("docs/evidence/dependency-maintenance-2026-11-02/image-binding.json", secrets.token_hex(32), 1),
-    ("docs/evidence/dependency-maintenance-2026-11-02/image-binding.json", "prefix-dependency-maintenance-20261102", 1),
+    ("docs/evidence/dependency-maintenance-2026-11-02/image-binding.json", secrets.token_hex(16) + "-dependency-maintenance-20261102", 1),
     ("src/probe.json", "dependency-maintenance-20261102", 1),
 ]
 with tempfile.TemporaryDirectory(prefix="haven-scan-policy-") as folder:
