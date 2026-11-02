@@ -1,0 +1,653 @@
+FFF...F..FFFFFFFFFFFF...FF.FFFF...F..FF..FFFFFF.FF.FFFFFFFFFFFF.FFF.FFFF [ 62%]
+FFFFF.FFFF.F.....F...FFFFFF...F.............                             [100%]
+=================================== FAILURES ===================================
+__________________________ test_user_and_me_contract ___________________________
+core/tests/test_contracts.py:20: in test_user_and_me_contract
+    assert response.status_code == 200
+E   assert 403 == 200
+E    +  where 403 = <Response status_code=403, "application/json">.status_code
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/auth/me
+___________________ test_operator_pause_and_account_disable ____________________
+core/tests/test_contracts.py:40: in test_operator_pause_and_account_disable
+    assert response.status_code == 200
+E   assert 403 == 200
+E    +  where 403 = <Response status_code=403, "application/json">.status_code
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/admin/system-status
+_____________________ test_member_disable_revokes_session ______________________
+core/tests/test_contracts.py:60: in test_member_disable_revokes_session
+    response = complete(client, did, key, req["signing_payload"])
+                                          ^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'signing_payload'
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/devices/enrollment/request
+___ test_out_of_band_password_change_invalidates_http_without_session_update ___
+core/tests/test_credential_sessions.py:26: in test_out_of_band_password_change_invalidates_http_without_session_update
+    assert session and session.auth_hash and session.auth_hash != user.password
+E   assert (None)
+_______ test_pending_signins_are_bounded_and_never_evict_bound_sessions ________
+core/tests/test_credential_sessions.py:78: in test_pending_signins_are_bounded_and_never_evict_bound_sessions
+    assert resolve_session(issued[-1]) is not None
+E   AssertionError: assert None is not None
+E    +  where None = resolve_session('[REDACTED_EPHEMERAL_SYNTHETIC_TOKEN]')
+_________________ test_blank_or_tampered_binding_fails_closed __________________
+core/tests/test_credential_sessions.py:125: in test_blank_or_tampered_binding_fails_closed
+    m.Session.objects.filter(pk=session.pk).update(auth_hash=value)
+                                ^^^^^^^^^^
+E   AttributeError: 'NoneType' object has no attribute 'pk'
+_______ test_enrollment_rechecks_revocation_after_request_authentication _______
+core/tests/test_credential_sessions.py:175: in test_enrollment_rechecks_revocation_after_request_authentication
+    assert complete(client, did, key, pending["signing_payload"]).status_code == 403
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'signing_payload'
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/devices/enrollment/request
+_____ test_new_proof_hides_global_counter_rotates_and_rejects_stale_replay _____
+core/tests/test_enrollment_identifier_privacy.py:25: in test_new_proof_hides_global_counter_rotates_and_rejects_stale_replay
+    first = enrollment(client, credentials[0], did, key).json()["signing_payload"]
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'signing_payload'
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/devices/enrollment/request
+_______ test_proof_cannot_move_to_another_session_even_with_copied_nonce _______
+core/tests/test_enrollment_identifier_privacy.py:41: in test_proof_cannot_move_to_another_session_even_with_copied_nonce
+    payload = enrollment(client, credentials[0], did, key).json()["signing_payload"]
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'signing_payload'
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/devices/enrollment/request
+____ test_inflight_legacy_proof_still_binds_current_session_and_is_one_use _____
+core/tests/test_enrollment_identifier_privacy.py:59: in test_inflight_legacy_proof_still_binds_current_session_and_is_one_use
+    assert response.status_code == 201
+E   assert 403 == 201
+E    +  where 403 = <Response status_code=403, "application/json">.status_code
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/devices/enrollment/request
+_________ test_fresh_challenge_cannot_probe_the_legacy_global_ordinal __________
+core/tests/test_enrollment_identifier_privacy.py:74: in test_fresh_challenge_cannot_probe_the_legacy_global_ordinal
+    current = enrollment(client, credentials[0], did, key).json()["signing_payload"]
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'signing_payload'
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/devices/enrollment/request
+_ test_unknown_stored_challenge_version_fails_closed_and_refresh_preserves_identity _
+core/tests/test_enrollment_identifier_privacy.py:89: in test_unknown_stored_challenge_version_fails_closed_and_refresh_preserves_identity
+    current = enrollment(client, credentials[0], did, key).json()["signing_payload"]
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'signing_payload'
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/devices/enrollment/request
+_________________ test_member_limits_hash_only_and_revocation __________________
+core/tests/test_friend_invitations.py:34: in test_member_limits_hash_only_and_revocation
+    assert capability(client)["remaining_today"] == 3
+           ^^^^^^^^^^^^^^^^^^
+core/tests/test_friend_invitations.py:26: in capability
+    assert response.status_code == 200
+E   assert 403 == 200
+E    +  where 403 = <Response status_code=403, "application/json">.status_code
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/invitations
+______________ test_policy_crypto_approval_and_operator_controls _______________
+core/tests/test_friend_invitations.py:62: in test_policy_crypto_approval_and_operator_controls
+    assert capability(client)["reason"] == "browser_not_ready"
+           ^^^^^^^^^^^^^^^^^^
+core/tests/test_friend_invitations.py:26: in capability
+    assert response.status_code == 200
+E   assert 403 == 200
+E    +  where 403 = <Response status_code=403, "application/json">.status_code
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/invitations
+______________________ test_ownership_csrf_and_single_use ______________________
+core/tests/test_friend_invitations.py:105: in test_ownership_csrf_and_single_use
+    assert not capability(other)["pending_invitations"]
+               ^^^^^^^^^^^^^^^^^
+core/tests/test_friend_invitations.py:26: in capability
+    assert response.status_code == 200
+E   assert 403 == 200
+E    +  where 403 = <Response status_code=403, "application/json">.status_code
+------------------------------ Captured log call -------------------------------
+WARNING  django.security.csrf:log.py:253 Forbidden (CSRF cookie not set.): /api/v1/invitations
+WARNING  django.request:log.py:253 Forbidden: /api/v1/invitations
+WARNING  django.request:log.py:253 Forbidden: /api/v1/invitations
+WARNING  django.request:log.py:253 Forbidden: /api/v1/invitations
+_______________________ test_utc_reset_and_pending_limit _______________________
+core/tests/test_friend_invitations.py:129: in test_utc_reset_and_pending_limit
+    assert post(client, "invitations", {}).status_code == 201
+E   assert 403 == 201
+E    +  where 403 = <Response status_code=403, "application/json">.status_code
+E    +    where <Response status_code=403, "application/json"> = post(<rest_framework.test.APIClient object at 0x7cdd48473d40>, 'invitations', {})
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/invitations
+__________ test_message_api_does_not_expose_or_select_acceptance_time __________
+core/tests/test_metadata_privacy.py:98: in test_message_api_does_not_expose_or_select_acceptance_time
+    assert response.status_code == 200
+E   assert 403 == 200
+E    +  where 403 = <Response status_code=403, "application/json">.status_code
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/conversations/f50ccc5b-8f4b-4c3b-99c8-4dd85694cdb5/messages
+_ test_cookie_resolution_omits_unneeded_profile_enrollment_and_session_columns _
+core/tests/test_metadata_privacy.py:163: in test_cookie_resolution_omits_unneeded_profile_enrollment_and_session_columns
+    assert session.user_id == device.user_id and session.device_id == device.pk
+           ^^^^^^^^^^^^^^^
+E   AttributeError: 'NoneType' object has no attribute 'user_id'
+______ test_public_device_lookup_never_selects_target_password_or_profile ______
+core/tests/test_metadata_privacy.py:221: in test_public_device_lookup_never_selects_target_password_or_profile
+    assert response.status_code == 200 and response.json()["device"]["id"] == str(target.pk)
+E   assert (403 == 200)
+E    +  where 403 = <Response status_code=403, "application/json">.status_code
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/crypto/key-packages/cceaf090-d21c-4d26-8a00-4c378d8c0ce7
+___ test_real_mls_rejections_preserve_budget_history_outbox_and_exact_retry ____
+core/tests/test_native_privacy_boundaries.py:72: in test_real_mls_rejections_preserve_budget_history_outbox_and_exact_retry
+    assert (
+E   assert 403 == 201
+E    +  where 403 = <Response status_code=403, "application/json">.status_code
+E    +    where <Response status_code=403, "application/json"> = post(<rest_framework.test.APIClient object at 0x7cdd484dbb30>, 'conversations', {'id': '2e069cdf-9e48-4855-8e2f-c998c2dcdbf2', 'kind': 'group', 'group_id': '154e45fda9e043ba916eadc26644beef', 'heade...d': '2e069cdf-9e48-4855-8e2f-c998c2dcdbf2', 'kind': 'group', 'group_id': '154e45fda9e043ba916eadc26644beef', ...}, ...})
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/conversations
+_ test_real_keypackage_expiry_disassociation_never_allows_reupload_or_reclaim __
+core/tests/test_native_privacy_boundaries.py:163: in test_real_keypackage_expiry_disassociation_never_allows_reupload_or_reclaim
+    assert uploaded.status_code == 201
+E   assert 403 == 201
+E    +  where 403 = <Response status_code=403, "application/json">.status_code
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/crypto/key-packages
+__________ test_retirement_requires_every_device_and_preserves_proofs __________
+core/tests/test_privacy.py:79: in test_retirement_requires_every_device_and_preserves_proofs
+    assert proofs.status_code == 200 and len(proofs.json()["proofs"]) == 2
+E   assert (403 == 200)
+E    +  where 403 = <Response status_code=403, "application/json">.status_code
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/conversations/26fd6858-3884-4802-9c8e-c6bd8dc5dc75/proofs
+_________ test_policy_authenticated_and_login_does_not_track_activity __________
+core/tests/test_privacy.py:164: in test_policy_authenticated_and_login_does_not_track_activity
+    assert value["attachment_days"] == 7 and value["delivered_ciphertext_grace_hours"] == 24
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'attachment_days'
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/privacy-policy
+WARNING  django.request:log.py:253 Forbidden: /api/v1/privacy-policy
+___________ test_approved_device_rebind_requires_fresh_session_proof ___________
+core/tests/test_regressions.py:49: in test_approved_device_rebind_requires_fresh_session_proof
+    assert complete(client, did, key, req["signing_payload"]).status_code == 200
+                                      ^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'signing_payload'
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/devices/enrollment/request
+_______________ test_revoke_all_never_reopens_first_device_trust _______________
+core/tests/test_regressions.py:65: in test_revoke_all_never_reopens_first_device_trust
+    assert complete(client, did, key, req["signing_payload"]).status_code == 200
+                                      ^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'signing_payload'
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/devices/enrollment/request
+____________________ test_invalid_header_shapes_are_bounded ____________________
+core/tests/test_regressions.py:97: in test_invalid_header_shapes_are_bounded
+    assert complete(client, did, key, req["signing_payload"]).status_code == 200
+                                      ^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'signing_payload'
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/devices/enrollment/request
+___________ test_historical_revoked_certificate_visibility_is_scoped ___________
+core/tests/test_regressions.py:112: in test_historical_revoked_certificate_visibility_is_scoped
+    assert complete(client, did, key, req["signing_payload"]).status_code == 200
+                                      ^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'signing_payload'
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/devices/enrollment/request
+____________ test_storage_limits_atomic_idempotency_and_retirement _____________
+core/tests/test_review_remediation.py:42: in test_storage_limits_atomic_idempotency_and_retirement
+    cid = conversation(client)
+          ^^^^^^^^^^^^^^^^^^^^
+core/tests/test_review_remediation.py:26: in conversation
+    assert response.status_code == 201
+E   assert 403 == 201
+E    +  where 403 = <Response status_code=403, "application/json">.status_code
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/conversations
+__________________ test_service_budget_and_conversation_limit __________________
+core/tests/test_review_remediation.py:85: in test_service_budget_and_conversation_limit
+    conversation(client)
+core/tests/test_review_remediation.py:26: in conversation
+    assert response.status_code == 201
+E   assert 403 == 201
+E    +  where 403 = <Response status_code=403, "application/json">.status_code
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/conversations
+_______ test_pagination_all_memberships_no_duplicates_and_device_binding _______
+core/tests/test_review_remediation.py:104: in test_pagination_all_memberships_no_duplicates_and_device_binding
+    assert response.status_code == 200
+E   assert 403 == 200
+E    +  where 403 = <Response status_code=403, "application/json">.status_code
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/conversations
+_______ test_proofs_do_not_select_ciphertext_and_idle_ack_does_not_write _______
+core/tests/test_review_remediation.py:135: in test_proofs_do_not_select_ciphertext_and_idle_ack_does_not_write
+    assert response.status_code == 200 and len(response.json()["proofs"]) == 1
+E   assert (403 == 200)
+E    +  where 403 = <Response status_code=403, "application/json">.status_code
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/conversations/5853b121-8705-4382-873a-1a467ccf5309/proofs
+___________________ test_invite_consumption_expiry_and_hash ____________________
+core/tests/test_security.py:71: in test_invite_consumption_expiry_and_hash
+    assert inv.status_code == 201
+E   assert 403 == 201
+E    +  where 403 = <Response status_code=403, "application/json">.status_code
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/admin/invitations
+__________________ test_auth_transport_origin_csrf_revocation __________________
+core/tests/test_security.py:101: in test_auth_transport_origin_csrf_revocation
+    assert client.get("/api/v1/auth/me", secure=True).status_code == 200
+E   assert 403 == 200
+E    +  where 403 = <Response status_code=403, "application/json">.status_code
+E    +    where <Response status_code=403, "application/json"> = get('/api/v1/auth/me', secure=True)
+E    +      where get = <rest_framework.test.APIClient object at 0x7cdd483da510>.get
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Misdirected Request: /api/v1/auth/login
+WARNING  django.security.csrf:log.py:253 Forbidden (CSRF cookie not set.): /api/v1/auth/login
+WARNING  django.request:log.py:253 Forbidden: /api/v1/auth/login
+WARNING  django.request:log.py:253 Forbidden: /api/v1/auth/me
+___________________________ test_crypto_release_gate ___________________________
+core/tests/test_security.py:118: in test_crypto_release_gate
+    assert post(client, "attachments/init", {}).status_code == 400
+E   assert 403 == 400
+E    +  where 403 = <Response status_code=403, "application/json">.status_code
+E    +    where <Response status_code=403, "application/json"> = post(<rest_framework.test.APIClient object at 0x7cdd48994260>, 'attachments/init', {})
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/conversations
+WARNING  django.request:log.py:253 Forbidden: /api/v1/devices/enrollment/request
+WARNING  django.request:log.py:253 Forbidden: /api/v1/attachments/init
+_______________ test_password_reset_revokes_does_not_grant_keys ________________
+core/tests/test_security.py:129: in test_password_reset_revokes_does_not_grant_keys
+    assert result.status_code == 200
+E   assert 403 == 200
+E    +  where 403 = <Response status_code=403, "application/json">.status_code
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/auth/change-password
+________________ test_transport_idempotence_epoch_idor_and_acks ________________
+core/tests/test_security.py:158: in test_transport_idempotence_epoch_idor_and_acks
+    assert post(client, "conversations", {"id": cid, "kind": "direct", "group_id": cid}).status_code == 201
+E   assert 403 == 201
+E    +  where 403 = <Response status_code=403, "application/json">.status_code
+E    +    where <Response status_code=403, "application/json"> = post(<rest_framework.test.APIClient object at 0x7cdd48994b00>, 'conversations', {'id': 'e7533c66-48cf-44b8-a511-40c42629faaa', 'kind': 'direct', 'group_id': 'e7533c66-48cf-44b8-a511-40c42629faaa'})
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/conversations
+_______________ test_attachment_bounds_idempotence_and_no_names ________________
+core/tests/test_security.py:198: in test_attachment_bounds_idempotence_and_no_names
+    a = post(
+E   KeyError: 'id'
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/conversations
+WARNING  django.request:log.py:253 Forbidden: /api/v1/attachments/init
+_________________ test_enrollment_requires_existing_signature __________________
+core/tests/test_security.py:238: in test_enrollment_requires_existing_signature
+    assert req.status_code == 201
+E   assert 403 == 201
+E    +  where 403 = <Response status_code=403, "application/json">.status_code
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/devices/enrollment/request
+______________________ test_invite_expiry_revoke_and_role ______________________
+core/tests/test_security.py:275: in test_invite_expiry_revoke_and_role
+    m.Invitation.objects.filter(pk=inv["id"]).update(expires_at=timezone.now() - timedelta(seconds=1))
+                                   ^^^^^^^^^
+E   KeyError: 'id'
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/admin/invitations
+_______________ test_attachment_cross_user_and_device_revocation _______________
+core/tests/test_security.py:297: in test_attachment_cross_user_and_device_revocation
+    aid = post(
+E   KeyError: 'id'
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/conversations
+WARNING  django.request:log.py:253 Forbidden: /api/v1/attachments/init
+___________ test_per_account_claim_replay_close_and_other_recipient ____________
+core/tests/test_view_once.py:93: in test_per_account_claim_replay_close_and_other_recipient
+    aid, body = uploaded(group)
+                ^^^^^^^^^^^^^^^
+core/tests/test_view_once.py:68: in uploaded
+    assert post(a, "attachments/init", body).status_code == 201
+E   assert 403 == 201
+E    +  where 403 = <Response status_code=403, "application/json">.status_code
+E    +    where <Response status_code=403, "application/json"> = post(<rest_framework.test.APIClient object at 0x7cdd4866c080>, 'attachments/init', {'id': '3c8251a1-d49d-4681-ae94-340a80ac7d12', 'conversation_id': '710bb8fc-4c2f-4181-a420-65fdf71ab6af', 'ciphertext_size': 32, 'chunk_count': 1, ...})
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/attachments/init
+____________ test_leases_expire_without_restoring_views_and_cleanup ____________
+core/tests/test_view_once.py:125: in test_leases_expire_without_restoring_views_and_cleanup
+    aid, _ = uploaded(group)
+             ^^^^^^^^^^^^^^^
+core/tests/test_view_once.py:68: in uploaded
+    assert post(a, "attachments/init", body).status_code == 201
+E   assert 403 == 201
+E    +  where 403 = <Response status_code=403, "application/json">.status_code
+E    +    where <Response status_code=403, "application/json"> = post(<rest_framework.test.APIClient object at 0x7cdd483302f0>, 'attachments/init', {'id': '22c04b72-6164-45d2-84e2-707289f34d88', 'conversation_id': '4f6c713e-35c0-4823-99e3-4522eaf5d41b', 'ciphertext_size': 32, 'chunk_count': 1, ...})
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/attachments/init
+___________ test_scope_mode_rekey_revocation_and_normal_attachments ____________
+core/tests/test_view_once.py:141: in test_scope_mode_rekey_revocation_and_normal_attachments
+    aid, body = uploaded(group)
+                ^^^^^^^^^^^^^^^
+core/tests/test_view_once.py:68: in uploaded
+    assert post(a, "attachments/init", body).status_code == 201
+E   assert 403 == 201
+E    +  where 403 = <Response status_code=403, "application/json">.status_code
+E    +    where <Response status_code=403, "application/json"> = post(<rest_framework.test.APIClient object at 0x7cdd48330da0>, 'attachments/init', {'id': '887241ca-4719-4400-b34c-eecb0e9b2c54', 'conversation_id': 'b6819325-d330-480f-98a4-eeb3dbe13cbe', 'ciphertext_size': 32, 'chunk_count': 1, ...})
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/attachments/init
+___________ test_expiry_cleanup_cannot_reset_a_view_once_identifier ____________
+core/tests/test_view_once.py:199: in test_expiry_cleanup_cannot_reset_a_view_once_identifier
+    aid, body = uploaded(group)
+                ^^^^^^^^^^^^^^^
+core/tests/test_view_once.py:68: in uploaded
+    assert post(a, "attachments/init", body).status_code == 201
+E   assert 403 == 201
+E    +  where 403 = <Response status_code=403, "application/json">.status_code
+E    +    where <Response status_code=403, "application/json"> = post(<rest_framework.test.APIClient object at 0x7cdd4897dfd0>, 'attachments/init', {'id': '0728b683-1a6d-49f1-91e4-df884f772dc2', 'conversation_id': '2263d724-6ddb-42ee-86b0-d451c640aba1', 'ciphertext_size': 32, 'chunk_count': 1, ...})
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/attachments/init
+______ test_message_read_keeps_live_authority_without_a_write_transaction ______
+core/tests/test_authorization_fences.py:23: in test_message_read_keeps_live_authority_without_a_write_transaction
+    assert response.status_code == 200
+E   assert 403 == 200
+E    +  where 403 = <Response status_code=403, "application/json">.status_code
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/conversations/c1dce748-1ce9-4ce4-9e0e-cb6c087c8f2f/messages
+_____________ test_device_revoked_after_authentication_cannot_ack ______________
+core/tests/test_authorization_fences.py:83: in test_device_revoked_after_authentication_cannot_ack
+    response = paused_request(
+core/tests/test_authorization_fences.py:74: in paused_request
+    revoke()
+core/tests/test_authorization_fences.py:88: in <lambda>
+    lambda: assert_revoked(b2, bd),
+            ^^^^^^^^^^^^^^^^^^^^^^
+core/tests/test_authorization_fences.py:96: in assert_revoked
+    assert post(client, f"devices/{device.pk}/revoke", {}).status_code == 200
+E   assert 403 == 200
+E    +  where 403 = <Response status_code=403, "application/json">.status_code
+E    +    where <Response status_code=403, "application/json"> = post(<rest_framework.test.APIClient object at 0x7cdd48994680>, 'devices/138483e4-9a77-4d1f-b068-4dad8ab58f0c/revoke', {})
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/devices/138483e4-9a77-4d1f-b068-4dad8ab58f0c/revoke
+WARNING  django.request:log.py:253 Forbidden: /api/v1/conversations/cdc060c2-3a9c-4576-abc9-9d92b344cff0/acks
+________ test_revocation_after_authentication_cannot_consume_view_once _________
+core/tests/test_authorization_fences.py:101: in test_revocation_after_authentication_cannot_consume_view_once
+    aid, _ = uploaded(group)
+             ^^^^^^^^^^^^^^^
+core/tests/test_view_once.py:68: in uploaded
+    assert post(a, "attachments/init", body).status_code == 201
+E   assert 403 == 201
+E    +  where 403 = <Response status_code=403, "application/json">.status_code
+E    +    where <Response status_code=403, "application/json"> = post(<rest_framework.test.APIClient object at 0x7cdd4866d9d0>, 'attachments/init', {'id': '8c65f85c-5ef6-4e2a-842d-dc18743cfb08', 'conversation_id': '5e8ddcb0-2e49-4273-9e6e-7df76bef381a', 'ciphertext_size': 32, 'chunk_count': 1, ...})
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/attachments/init
+_________ test_read_revalidates_logout_after_middleware_authentication _________
+core/tests/test_authorization_fences.py:120: in test_read_revalidates_logout_after_middleware_authentication
+    response = paused_request(
+core/tests/test_authorization_fences.py:74: in paused_request
+    revoke()
+core/tests/test_authorization_fences.py:125: in <lambda>
+    lambda: assert_logout(other),
+            ^^^^^^^^^^^^^^^^^^^^
+core/tests/test_authorization_fences.py:115: in assert_logout
+    assert post(client, "auth/logout-all", {}).status_code == 200
+E   assert 403 == 200
+E    +  where 403 = <Response status_code=403, "application/json">.status_code
+E    +    where <Response status_code=403, "application/json"> = post(<rest_framework.test.APIClient object at 0x7cdd483d8830>, 'auth/logout-all', {})
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/auth/logout-all
+WARNING  django.request:log.py:253 Forbidden: /api/v1/conversations/c7f3ddc9-dc67-45eb-8ce9-7fa1963ff192/messages
+__________ test_cross_account_revocations_lock_accounts_in_one_order ___________
+core/tests/test_authorization_fences.py:174: in test_cross_account_revocations_lock_accounts_in_one_order
+    assert sorted(pool.map(revoke, [(a, bd), (b, ad)])) == [200, 403]
+E   assert [403, 403] == [200, 403]
+E
+E     At index 0 diff: 403 != 200
+E     Use -v to get more diff
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/admin/devices/54af5873-4b33-4532-b0b4-1798c382293a/revoke
+WARNING  django.request:log.py:253 Forbidden: /api/v1/admin/devices/bad3482a-7192-453e-85e7-e14ff27fb60c/revoke
+_____________ test_handled_api_error_rolls_back_all_request_writes _____________
+core/tests/test_authorization_fences.py:197: in test_handled_api_error_rolls_back_all_request_writes
+    assert post(client, "test/partial", {}).status_code == 400
+E   assert 403 == 400
+E    +  where 403 = <Response status_code=403, "application/json">.status_code
+E    +    where <Response status_code=403, "application/json"> = post(<rest_framework.test.APIClient object at 0x7cdd48332930>, 'test/partial', {})
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/test/partial
+_ test_failure_responses_hide_diagnostics_and_rollback_partial_writes[database] _
+core/tests/test_authorization_fences.py:229: in test_failure_responses_hide_diagnostics_and_rollback_partial_writes
+    assert response.status_code == 503
+E   assert 403 == 503
+E    +  where 403 = <Response status_code=403, "application/json">.status_code
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/test/failure
+__ test_failure_responses_hide_diagnostics_and_rollback_partial_writes[redis] __
+core/tests/test_authorization_fences.py:229: in test_failure_responses_hide_diagnostics_and_rollback_partial_writes
+    assert response.status_code == 503
+E   assert 403 == 503
+E    +  where 403 = <Response status_code=403, "application/json">.status_code
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/test/failure
+_ test_failure_responses_hide_diagnostics_and_rollback_partial_writes[unexpected] _
+core/tests/test_authorization_fences.py:229: in test_failure_responses_hide_diagnostics_and_rollback_partial_writes
+    assert response.status_code == 503
+E   assert 403 == 503
+E    +  where 403 = <Response status_code=403, "application/json">.status_code
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/test/failure
+____________ test_inflight_mutation_finishes_before_waiting_logout _____________
+core/tests/test_authorization_fences.py:276: in test_inflight_mutation_finishes_before_waiting_logout
+    assert entered.wait(10)
+E   assert False
+E    +  where False = wait(10)
+E    +    where wait = <threading.Event at 0x7cdd488d50d0: unset>.wait
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/conversations/3528b7c2-01a6-45e3-acc0-8e157d238546/acks
+___ test_concurrent_account_revocations_rekey_shared_groups_without_deadlock ___
+core/tests/test_authorization_fences.py:318: in test_concurrent_account_revocations_rekey_shared_groups_without_deadlock
+    assert list(pool.map(revoke, [(b, bd), (c, cd)])) == [200, 200]
+E   assert [403, 403] == [200, 200]
+E
+E     At index 0 diff: 403 != 200
+E     Use -v to get more diff
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/devices/cc498e3c-3c79-4762-aee6-1c9595583c73/revoke
+WARNING  django.request:log.py:253 Forbidden: /api/v1/devices/d99e661e-5510-46fe-b05a-d9de2737ef50/revoke
+_____________ test_oversized_body_rejected_before_account_row_lock _____________
+core/tests/test_authorization_fences.py:342: in test_oversized_body_rejected_before_account_row_lock
+    assert response.status_code == 400
+E   assert 403 == 400
+E    +  where 403 = <Response status_code=403, "application/json">.status_code
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/attachments/52950a94-1633-402d-acd5-1e2322ba958e/chunks/0
+________ test_concurrent_password_changes_cannot_both_use_old_password _________
+core/tests/test_credential_sessions.py:114: in test_concurrent_password_changes_cannot_both_use_old_password
+    assert sorted(pool.map(change, zip((first, second), candidates))) == [200, 403]
+E   assert [403, 403] == [200, 403]
+E
+E     At index 0 diff: 403 != 200
+E     Use -v to get more diff
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/auth/change-password
+WARNING  django.request:log.py:253 Forbidden: /api/v1/auth/change-password
+_________ test_slow_socket_auth_query_does_not_block_unrelated_session _________
+core/tests/test_database_runtime.py:48: in test_slow_socket_auth_query_does_not_block_unrelated_session
+    assert await asyncio.wait_for(consumers.session_user(tokens[1]), timeout=0.6) == uid
+E   AssertionError: assert None == '3e0e86ef-5289-4914-a945-93345210e053'
+
+During handling of the above exception, another exception occurred:
+core/tests/test_database_runtime.py:50: in test_slow_socket_auth_query_does_not_block_unrelated_session
+    assert await first == uid
+E   AssertionError: assert None == '3e0e86ef-5289-4914-a945-93345210e053'
+_______ test_socket_auth_still_reads_live_revocation_after_prior_success _______
+core/tests/test_database_runtime.py:55: in test_socket_auth_still_reads_live_revocation_after_prior_success
+    assert await consumers.session_user(tokens[0]) == uid
+E   AssertionError: assert None == 'c7df9f0e-7442-469f-a2ce-77ebfb849ef9'
+______ test_database_failure_closes_socket_for_retry_without_auth_bypass _______
+core/tests/test_database_runtime.py:74: in test_database_failure_closes_socket_for_retry_without_auth_bypass
+    assert (await ws.connect())[0]
+E   assert False
+_________________________ test_concurrent_member_quota _________________________
+core/tests/test_friend_invitations.py:146: in test_concurrent_member_quota
+    assert post(client, "invitations", {}).status_code == 201
+E   assert 403 == 201
+E    +  where 403 = <Response status_code=403, "application/json">.status_code
+E    +    where <Response status_code=403, "application/json"> = post(<rest_framework.test.APIClient object at 0x7cdd48173ad0>, 'invitations', {})
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/invitations
+_______ test_add_waits_for_target_revocation_before_granting_membership ________
+core/tests/test_native_privacy_boundaries.py:198: in test_add_waits_for_target_revocation_before_granting_membership
+    assert (
+E   assert 403 == 201
+E    +  where 403 = <Response status_code=403, "application/json">.status_code
+E    +    where <Response status_code=403, "application/json"> = post(<rest_framework.test.APIClient object at 0x7cdd481a4080>, 'conversations', {'id': '858d8e7e-f9d5-45bf-8d59-aa814b69f965', 'kind': 'group', 'group_id': '2f3ddfd7c319450384c801c2a375cc4a', 'heade...d': '858d8e7e-f9d5-45bf-8d59-aa814b69f965', 'kind': 'group', 'group_id': '2f3ddfd7c319450384c801c2a375cc4a', ...}, ...})
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/conversations
+______________ test_concurrent_message_quota_across_conversations ______________
+core/tests/test_review_remediation.py:174: in test_concurrent_message_quota_across_conversations
+    conversations.append((client, conversation(client)))
+                                  ^^^^^^^^^^^^^^^^^^^^
+core/tests/test_review_remediation.py:26: in conversation
+    assert response.status_code == 201
+E   assert 403 == 201
+E    +  where 403 = <Response status_code=403, "application/json">.status_code
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/conversations
+_____________ test_concurrent_duplicate_send_is_one_committed_row ______________
+core/tests/test_security.py:344: in test_concurrent_duplicate_send_is_one_committed_row
+    results = list(pool.map(submit, range(2)))
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../../../.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/concurrent/futures/_base.py:619: in result_iterator
+    yield _result_or_cancel(fs.pop())
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../../../.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/concurrent/futures/_base.py:317: in _result_or_cancel
+    return fut.result(timeout)
+           ^^^^^^^^^^^^^^^^^^^
+../../../../.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/concurrent/futures/_base.py:456: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+../../../../.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/concurrent/futures/_base.py:401: in __get_result
+    raise self._exception
+../../../../.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/concurrent/futures/thread.py:59: in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+core/tests/test_security.py:338: in submit
+    r = post(c, f"conversations/{cid}/messages", body)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+core/tests/test_security.py:36: in post
+    c = m.Conversation.objects.get(pk=path.split("/")[1])
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/django/db/models/manager.py:87: in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/django/db/models/query.py:635: in get
+    raise self.model.DoesNotExist(
+E   core.models.Conversation.DoesNotExist: Conversation matching query does not exist.
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/conversations
+________ test_concurrent_uploads_in_different_chats_share_account_quota ________
+core/tests/test_upload_quota_race.py:24: in test_concurrent_uploads_in_different_chats_share_account_quota
+    assert post(client, "conversations", {"id": cid, "kind": "group", "group_id": cid}).status_code == 201
+E   assert 403 == 201
+E    +  where 403 = <Response status_code=403, "application/json">.status_code
+E    +    where <Response status_code=403, "application/json"> = post(<rest_framework.test.APIClient object at 0x7cdd489a46b0>, 'conversations', {'id': '30eb1682-ba97-48d2-a980-28af9ea1c2e9', 'kind': 'group', 'group_id': '30eb1682-ba97-48d2-a980-28af9ea1c2e9'})
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/conversations
+_________________ test_simultaneous_devices_only_one_can_claim _________________
+core/tests/test_view_once.py:174: in test_simultaneous_devices_only_one_can_claim
+    aid, _ = uploaded(group)
+             ^^^^^^^^^^^^^^^
+core/tests/test_view_once.py:68: in uploaded
+    assert post(a, "attachments/init", body).status_code == 201
+E   assert 403 == 201
+E    +  where 403 = <Response status_code=403, "application/json">.status_code
+E    +    where <Response status_code=403, "application/json"> = post(<rest_framework.test.APIClient object at 0x7cdd48470e60>, 'attachments/init', {'id': 'd0401889-78ec-4304-8c29-a85c3df008c1', 'conversation_id': '1c0fd75c-30f9-4d4d-b22b-e641ecefd988', 'ciphertext_size': 32, 'chunk_count': 1, ...})
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Forbidden: /api/v1/attachments/init
+______________________ test_scoped_typing_and_revocation _______________________
+core/tests/test_websocket.py:69: in test_scoped_typing_and_revocation
+    assert (await ws.connect())[0]
+E   assert False
+_______________________ test_unauthed_and_bounded_frames _______________________
+core/tests/test_websocket.py:112: in test_unauthed_and_bounded_frames
+    assert (await ws.connect())[0]
+E   assert False
+____ test_redis_account_channel_link_expires_and_valid_heartbeat_refreshes _____
+core/tests/test_websocket.py:131: in test_redis_account_channel_link_expires_and_valid_heartbeat_refreshes
+    assert (await ws.connect())[0]
+E   assert False
+_______________ test_password_change_invalidates_live_websocket ________________
+core/tests/test_websocket.py:177: in test_password_change_invalidates_live_websocket
+    assert (await ws.connect())[0]
+E   assert False
+=========================== short test summary info ============================
+FAILED core/tests/test_contracts.py::test_user_and_me_contract - assert 403 =...
+FAILED core/tests/test_contracts.py::test_operator_pause_and_account_disable
+FAILED core/tests/test_contracts.py::test_member_disable_revokes_session - Ke...
+FAILED core/tests/test_credential_sessions.py::test_out_of_band_password_change_invalidates_http_without_session_update
+FAILED core/tests/test_credential_sessions.py::test_pending_signins_are_bounded_and_never_evict_bound_sessions
+FAILED core/tests/test_credential_sessions.py::test_blank_or_tampered_binding_fails_closed
+FAILED core/tests/test_credential_sessions.py::test_enrollment_rechecks_revocation_after_request_authentication
+FAILED core/tests/test_enrollment_identifier_privacy.py::test_new_proof_hides_global_counter_rotates_and_rejects_stale_replay
+FAILED core/tests/test_enrollment_identifier_privacy.py::test_proof_cannot_move_to_another_session_even_with_copied_nonce
+FAILED core/tests/test_enrollment_identifier_privacy.py::test_inflight_legacy_proof_still_binds_current_session_and_is_one_use
+FAILED core/tests/test_enrollment_identifier_privacy.py::test_fresh_challenge_cannot_probe_the_legacy_global_ordinal
+FAILED core/tests/test_enrollment_identifier_privacy.py::test_unknown_stored_challenge_version_fails_closed_and_refresh_preserves_identity
+FAILED core/tests/test_friend_invitations.py::test_member_limits_hash_only_and_revocation
+FAILED core/tests/test_friend_invitations.py::test_policy_crypto_approval_and_operator_controls
+FAILED core/tests/test_friend_invitations.py::test_ownership_csrf_and_single_use
+FAILED core/tests/test_friend_invitations.py::test_utc_reset_and_pending_limit
+FAILED core/tests/test_metadata_privacy.py::test_message_api_does_not_expose_or_select_acceptance_time
+FAILED core/tests/test_metadata_privacy.py::test_cookie_resolution_omits_unneeded_profile_enrollment_and_session_columns
+FAILED core/tests/test_metadata_privacy.py::test_public_device_lookup_never_selects_target_password_or_profile
+FAILED core/tests/test_native_privacy_boundaries.py::test_real_mls_rejections_preserve_budget_history_outbox_and_exact_retry
+FAILED core/tests/test_native_privacy_boundaries.py::test_real_keypackage_expiry_disassociation_never_allows_reupload_or_reclaim
+FAILED core/tests/test_privacy.py::test_retirement_requires_every_device_and_preserves_proofs
+FAILED core/tests/test_privacy.py::test_policy_authenticated_and_login_does_not_track_activity
+FAILED core/tests/test_regressions.py::test_approved_device_rebind_requires_fresh_session_proof
+FAILED core/tests/test_regressions.py::test_revoke_all_never_reopens_first_device_trust
+FAILED core/tests/test_regressions.py::test_invalid_header_shapes_are_bounded
+FAILED core/tests/test_regressions.py::test_historical_revoked_certificate_visibility_is_scoped
+FAILED core/tests/test_review_remediation.py::test_storage_limits_atomic_idempotency_and_retirement
+FAILED core/tests/test_review_remediation.py::test_service_budget_and_conversation_limit
+FAILED core/tests/test_review_remediation.py::test_pagination_all_memberships_no_duplicates_and_device_binding
+FAILED core/tests/test_review_remediation.py::test_proofs_do_not_select_ciphertext_and_idle_ack_does_not_write
+FAILED core/tests/test_security.py::test_invite_consumption_expiry_and_hash
+FAILED core/tests/test_security.py::test_auth_transport_origin_csrf_revocation
+FAILED core/tests/test_security.py::test_crypto_release_gate - assert 403 == 400
+FAILED core/tests/test_security.py::test_password_reset_revokes_does_not_grant_keys
+FAILED core/tests/test_security.py::test_transport_idempotence_epoch_idor_and_acks
+FAILED core/tests/test_security.py::test_attachment_bounds_idempotence_and_no_names
+FAILED core/tests/test_security.py::test_enrollment_requires_existing_signature
+FAILED core/tests/test_security.py::test_invite_expiry_revoke_and_role - KeyE...
+FAILED core/tests/test_security.py::test_attachment_cross_user_and_device_revocation
+FAILED core/tests/test_view_once.py::test_per_account_claim_replay_close_and_other_recipient
+FAILED core/tests/test_view_once.py::test_leases_expire_without_restoring_views_and_cleanup
+FAILED core/tests/test_view_once.py::test_scope_mode_rekey_revocation_and_normal_attachments
+FAILED core/tests/test_view_once.py::test_expiry_cleanup_cannot_reset_a_view_once_identifier
+FAILED core/tests/test_authorization_fences.py::test_message_read_keeps_live_authority_without_a_write_transaction
+FAILED core/tests/test_authorization_fences.py::test_device_revoked_after_authentication_cannot_ack
+FAILED core/tests/test_authorization_fences.py::test_revocation_after_authentication_cannot_consume_view_once
+FAILED core/tests/test_authorization_fences.py::test_read_revalidates_logout_after_middleware_authentication
+FAILED core/tests/test_authorization_fences.py::test_cross_account_revocations_lock_accounts_in_one_order
+FAILED core/tests/test_authorization_fences.py::test_handled_api_error_rolls_back_all_request_writes
+FAILED core/tests/test_authorization_fences.py::test_failure_responses_hide_diagnostics_and_rollback_partial_writes[database]
+FAILED core/tests/test_authorization_fences.py::test_failure_responses_hide_diagnostics_and_rollback_partial_writes[redis]
+FAILED core/tests/test_authorization_fences.py::test_failure_responses_hide_diagnostics_and_rollback_partial_writes[unexpected]
+FAILED core/tests/test_authorization_fences.py::test_inflight_mutation_finishes_before_waiting_logout
+FAILED core/tests/test_authorization_fences.py::test_concurrent_account_revocations_rekey_shared_groups_without_deadlock
+FAILED core/tests/test_authorization_fences.py::test_oversized_body_rejected_before_account_row_lock
+FAILED core/tests/test_credential_sessions.py::test_concurrent_password_changes_cannot_both_use_old_password
+FAILED core/tests/test_database_runtime.py::test_slow_socket_auth_query_does_not_block_unrelated_session
+FAILED core/tests/test_database_runtime.py::test_socket_auth_still_reads_live_revocation_after_prior_success
+FAILED core/tests/test_database_runtime.py::test_database_failure_closes_socket_for_retry_without_auth_bypass
+FAILED core/tests/test_friend_invitations.py::test_concurrent_member_quota - ...
+FAILED core/tests/test_native_privacy_boundaries.py::test_add_waits_for_target_revocation_before_granting_membership
+FAILED core/tests/test_review_remediation.py::test_concurrent_message_quota_across_conversations
+FAILED core/tests/test_security.py::test_concurrent_duplicate_send_is_one_committed_row
+FAILED core/tests/test_upload_quota_race.py::test_concurrent_uploads_in_different_chats_share_account_quota
+FAILED core/tests/test_view_once.py::test_simultaneous_devices_only_one_can_claim
+FAILED core/tests/test_websocket.py::test_scoped_typing_and_revocation - asse...
+FAILED core/tests/test_websocket.py::test_unauthed_and_bounded_frames - asser...
+FAILED core/tests/test_websocket.py::test_redis_account_channel_link_expires_and_valid_heartbeat_refreshes
+FAILED core/tests/test_websocket.py::test_password_change_invalidates_live_websocket
+70 failed, 46 passed in 61.58s (0:01:01)

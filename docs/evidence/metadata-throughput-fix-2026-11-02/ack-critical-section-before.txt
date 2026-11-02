@@ -1,0 +1,22 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.15, pytest-9.1.1, pluggy-1.7.0
+django: version: 5.2.18, settings: haven.runtime_settings (from option)
+rootdir: /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/api
+configfile: pyproject.toml
+plugins: django-4.14.0, anyio-4.15.1, platformdirs-4.13.5, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 17 items / 15 deselected / 2 selected
+
+apps/api/core/tests/test_authorization_fences.py F.                      [100%]
+
+=================================== FAILURES ===================================
+________ test_slow_ack_cursor_read_does_not_lock_out_another_recipient _________
+apps/api/core/tests/test_authorization_fences.py:77: in test_slow_ack_cursor_read_does_not_lock_out_another_recipient
+    assert threads.submit(ack, second_client).result(timeout=2) == 200
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/concurrent/futures/_base.py:458: in result
+    raise TimeoutError()
+E   TimeoutError
+=========================== short test summary info ============================
+FAILED apps/api/core/tests/test_authorization_fences.py::test_slow_ack_cursor_read_does_not_lock_out_another_recipient
+================== 1 failed, 1 passed, 15 deselected in 4.95s ==================

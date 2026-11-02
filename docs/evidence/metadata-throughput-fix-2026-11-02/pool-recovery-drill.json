@@ -1,0 +1,12 @@
+{
+  "physical_connection_reused": "PASS",
+  "live_revocation_on_reuse": "PASS",
+  "real_sql_error_rolled_back": "PASS",
+  "autocommit_and_sync_commit": "PASS",
+  "terminated_idle_connection_replaced": "PASS",
+  "two_slot_exhaustion_failed_closed": "PASS",
+  "timeout_seconds": 3.0002855190105038,
+  "post_exhaustion_recovery": "PASS",
+  "pool_peak_bound": 2,
+  "scope": "Synthetic isolated PostgreSQL; no auth caching, transaction replay or weakened durability"
+}

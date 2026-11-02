@@ -1,0 +1,5 @@
+{
+  "iterations": 1000,
+  "compile_cpu_ms_each": 0.7536998240000001,
+  "scope": "1000 ORM query construction/SQL compilation operations; milliseconds each numerically equals total seconds; no database records read or SQL/params emitted"
+}

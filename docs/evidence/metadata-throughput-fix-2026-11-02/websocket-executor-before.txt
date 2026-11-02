@@ -1,0 +1,30 @@
+F.                                                                       [100%]
+=================================== FAILURES ===================================
+_________ test_slow_socket_auth_query_does_not_block_unrelated_session _________
+.venv/lib/python3.12/site-packages/asgiref/sync.py:580: in __call__
+    ret = await asyncio.shield(exec_coro)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   asyncio.exceptions.CancelledError
+
+During handling of the above exception, another exception occurred:
+../../../../.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/asyncio/tasks.py:520: in wait_for
+    return await fut
+           ^^^^^^^^^
+.venv/lib/python3.12/site-packages/asgiref/sync.py:597: in __call__
+    ret = await exec_coro
+          ^^^^^^^^^^^^^^^
+E   asyncio.exceptions.CancelledError
+
+The above exception was the direct cause of the following exception:
+core/tests/test_database_runtime.py:46: in test_slow_socket_auth_query_does_not_block_unrelated_session
+    assert await asyncio.wait_for(consumers.session_user(tokens[1]), timeout=0.6) == uid
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../../../.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/asyncio/tasks.py:519: in wait_for
+    async with timeouts.timeout(timeout):
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+../../../../.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/asyncio/timeouts.py:115: in __aexit__
+    raise TimeoutError from exc_val
+E   TimeoutError
+=========================== short test summary info ============================
+FAILED core/tests/test_database_runtime.py::test_slow_socket_auth_query_does_not_block_unrelated_session
+1 failed, 1 passed in 3.61s

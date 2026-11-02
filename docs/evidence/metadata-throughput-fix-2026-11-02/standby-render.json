@@ -1,0 +1,143 @@
+{
+  "primary": {
+    "api": {
+      "profiles": [],
+      "networks": [
+        "private"
+      ]
+    },
+    "db": {
+      "profiles": [],
+      "networks": [
+        "private",
+        "replication"
+      ]
+    },
+    "ingress": {
+      "profiles": [],
+      "networks": [
+        "ingress",
+        "private"
+      ]
+    },
+    "migrate": {
+      "profiles": [],
+      "networks": [
+        "private"
+      ]
+    },
+    "outbox": {
+      "profiles": [],
+      "networks": [
+        "private"
+      ]
+    },
+    "prepare-db-roles": {
+      "profiles": [],
+      "networks": [
+        "private"
+      ]
+    },
+    "primary-bridge": {
+      "profiles": [],
+      "networks": [
+        "bridge_route",
+        "private"
+      ]
+    },
+    "privacy": {
+      "profiles": [],
+      "networks": [
+        "private"
+      ]
+    },
+    "redis": {
+      "profiles": [],
+      "networks": [
+        "private"
+      ]
+    },
+    "web": {
+      "profiles": [],
+      "networks": [
+        "private"
+      ]
+    }
+  },
+  "backup": {
+    "api": {
+      "profiles": [
+        "promoted"
+      ],
+      "networks": [
+        "private"
+      ]
+    },
+    "db": {
+      "profiles": [
+        "replication"
+      ],
+      "networks": [
+        "private",
+        "replication"
+      ]
+    },
+    "ingress": {
+      "profiles": [],
+      "networks": [
+        "ingress",
+        "private"
+      ]
+    },
+    "migrate": {
+      "profiles": [
+        "promoted"
+      ],
+      "networks": [
+        "private"
+      ]
+    },
+    "outbox": {
+      "profiles": [
+        "promoted"
+      ],
+      "networks": [
+        "private"
+      ]
+    },
+    "prepare-db-roles": {
+      "profiles": [
+        "promoted"
+      ],
+      "networks": [
+        "private"
+      ]
+    },
+    "privacy": {
+      "profiles": [
+        "promoted"
+      ],
+      "networks": [
+        "private"
+      ]
+    },
+    "redis": {
+      "profiles": [
+        "promoted"
+      ],
+      "networks": [
+        "private"
+      ]
+    },
+    "web": {
+      "profiles": [],
+      "networks": [
+        "private"
+      ]
+    }
+  },
+  "backup_default_active": [
+    "ingress",
+    "web"
+  ]
+}

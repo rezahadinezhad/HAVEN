@@ -1,0 +1,14 @@
+.F..
+======================================================================
+FAIL: test_profiler_refuses_non_disposable_environment (__main__.InstrumentTests.test_profiler_refuses_non_disposable_environment)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/scripts/test-metadata-load-instruments.py", line 115, in test_profiler_refuses_non_disposable_environment
+    self.assertIn(b"Profiler requires disposable load environment", result.stderr)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: b'Profiler requires disposable load environment' not found in b'Traceback (most recent call last):\n  File "<string>", line 1, in <module>\n    import metadata_load_profile\n  File "/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/scripts/metadata_load_profile.py", line 16, in <module>\n    from django.core.signals import got_request_exception\nModuleNotFoundError: No module named \'django\'\n'
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.220s
+
+FAILED (failures=1)

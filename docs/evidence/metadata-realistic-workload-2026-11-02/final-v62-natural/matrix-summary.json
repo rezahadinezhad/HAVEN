@@ -1,0 +1,15 @@
+{
+  "status": "COMPLETED",
+  "cases": [
+    {
+      "name": "combined-natural",
+      "exit_code": 0,
+      "integrity_status": "PASS",
+      "sender_pipeline_probe_status": "NOT_REQUESTED",
+      "performance_status": "PASS",
+      "wall_seconds_including_setup": 190.89070527000877
+    }
+  ],
+  "private_artifacts": ".local/workload-qualification-aadd35f02a64",
+  "scope": "Serial synthetic native tests on a shared workstation; no production capacity qualification"
+}

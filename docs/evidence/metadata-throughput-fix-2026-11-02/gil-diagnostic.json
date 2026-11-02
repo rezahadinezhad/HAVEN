@@ -1,0 +1,4424 @@
+{
+  "metrics": {
+    "http_requests": 5330,
+    "retry_429": 0,
+    "accepted": 265,
+    "delivered": 2385,
+    "updates": 0,
+    "ws_connected": 0,
+    "ws_peak": 500,
+    "ws_errors": 0,
+    "heartbeats": 500,
+    "transport_retries": 409,
+    "notification_hints": 2650
+  },
+  "generator_timings": {
+    "scheduler_lag_before_group_wait": {
+      "samples": 265,
+      "total_seconds": 0.1626030806801282,
+      "mean_ms": 0.6135965308684083,
+      "max_ms": 9.172991005470976,
+      "histogram_counts": [
+        0,
+        0,
+        0,
+        94,
+        64,
+        24,
+        34,
+        35,
+        10,
+        4,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "p50_bounds": {
+        "lower_ms": 0.1,
+        "upper_ms": 0.25
+      },
+      "p95_bounds": {
+        "lower_ms": 2.5,
+        "upper_ms": 5
+      }
+    },
+    "scheduler_lag_at_submission": {
+      "samples": 265,
+      "total_seconds": 0.16667718553799205,
+      "mean_ms": 0.628970511464121,
+      "max_ms": 9.191631004796363,
+      "histogram_counts": [
+        0,
+        0,
+        0,
+        40,
+        118,
+        24,
+        33,
+        36,
+        10,
+        4,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "p50_bounds": {
+        "lower_ms": 0.1,
+        "upper_ms": 0.25
+      },
+      "p95_bounds": {
+        "lower_ms": 2.5,
+        "upper_ms": 5
+      }
+    },
+    "executor_queue_wait": {
+      "samples": 265,
+      "total_seconds": 2215.876418220169,
+      "mean_ms": 8361.797804604412,
+      "max_ms": 19829.42601200193,
+      "histogram_counts": [
+        0,
+        0,
+        0,
+        0,
+        10,
+        23,
+        9,
+        6,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        7,
+        43,
+        53,
+        112,
+        0,
+        0,
+        0
+      ],
+      "p50_bounds": {
+        "lower_ms": 5000,
+        "upper_ms": 10000
+      },
+      "p95_bounds": {
+        "lower_ms": 10000,
+        "upper_ms": 25000
+      }
+    },
+    "crypto_worker_lock_wait": {
+      "samples": 2915,
+      "total_seconds": 0.47710368417028803,
+      "mean_ms": 0.1636719328199959,
+      "max_ms": 20.51202199072577,
+      "histogram_counts": [
+        2797,
+        5,
+        1,
+        1,
+        2,
+        0,
+        3,
+        25,
+        57,
+        17,
+        7,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "p50_bounds": {
+        "lower_ms": 0,
+        "upper_ms": 0.01
+      },
+      "p95_bounds": {
+        "lower_ms": 0,
+        "upper_ms": 0.01
+      }
+    },
+    "crypto_worker_roundtrip": {
+      "samples": 2915,
+      "total_seconds": 12.381341014202917,
+      "mean_ms": 4.247458323911807,
+      "max_ms": 25.585673996829428,
+      "histogram_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        188,
+        2076,
+        581,
+        69,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "p50_bounds": {
+        "lower_ms": 2.5,
+        "upper_ms": 5
+      },
+      "p95_bounds": {
+        "lower_ms": 5,
+        "upper_ms": 10
+      }
+    },
+    "checkpoint_encode_encrypt": {
+      "samples": 2915,
+      "total_seconds": 2.9682142266683513,
+      "mean_ms": 1.0182553093201892,
+      "max_ms": 11.856922996230423,
+      "histogram_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        340,
+        1811,
+        600,
+        127,
+        35,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "p50_bounds": {
+        "lower_ms": 0.5,
+        "upper_ms": 1
+      },
+      "p95_bounds": {
+        "lower_ms": 2.5,
+        "upper_ms": 5
+      }
+    },
+    "checkpoint_write_fsync_replace": {
+      "samples": 2915,
+      "total_seconds": 23.2036591800279,
+      "mean_ms": 7.9600889125310115,
+      "max_ms": 56.38861400075257,
+      "histogram_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        517,
+        1796,
+        591,
+        9,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "p50_bounds": {
+        "lower_ms": 5,
+        "upper_ms": 10
+      },
+      "p95_bounds": {
+        "lower_ms": 10,
+        "upper_ms": 25
+      }
+    },
+    "http_client_lock_wait": {
+      "samples": 5330,
+      "total_seconds": 1.5914384011557559,
+      "mean_ms": 0.29858131353766526,
+      "max_ms": 377.46937399788294,
+      "histogram_counts": [
+        5303,
+        8,
+        2,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        2,
+        3,
+        5,
+        3,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "p50_bounds": {
+        "lower_ms": 0,
+        "upper_ms": 0.01
+      },
+      "p95_bounds": {
+        "lower_ms": 0,
+        "upper_ms": 0.01
+      }
+    },
+    "http_failed_transport_attempt": {
+      "samples": 409,
+      "total_seconds": 0.40452904188714456,
+      "mean_ms": 0.989068562071258,
+      "max_ms": 10.684879001928493,
+      "histogram_counts": [
+        0,
+        0,
+        0,
+        0,
+        27,
+        198,
+        72,
+        75,
+        26,
+        10,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "p50_bounds": {
+        "lower_ms": 0.25,
+        "upper_ms": 0.5
+      },
+      "p95_bounds": {
+        "lower_ms": 2.5,
+        "upper_ms": 5
+      }
+    },
+    "http_successful_transport_attempt": {
+      "samples": 5330,
+      "total_seconds": 1607.352590923285,
+      "mean_ms": 301.5670902295094,
+      "max_ms": 1130.869612999959,
+      "histogram_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        21,
+        20,
+        113,
+        1627,
+        3224,
+        314,
+        10,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "p50_bounds": {
+        "lower_ms": 250,
+        "upper_ms": 500
+      },
+      "p95_bounds": {
+        "lower_ms": 500,
+        "upper_ms": 1000
+      }
+    },
+    "http_request_total": {
+      "samples": 5330,
+      "total_seconds": 1608.317687769759,
+      "mean_ms": 301.74815905623996,
+      "max_ms": 1130.9839870082214,
+      "histogram_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        21,
+        20,
+        113,
+        1619,
+        3232,
+        314,
+        10,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "p50_bounds": {
+        "lower_ms": 250,
+        "upper_ms": 500
+      },
+      "p95_bounds": {
+        "lower_ms": 500,
+        "upper_ms": 1000
+      }
+    },
+    "message_start_to_accept": {
+      "samples": 265,
+      "total_seconds": 227.32391481408558,
+      "mean_ms": 857.8260936380588,
+      "max_ms": 1542.900947999442,
+      "histogram_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        4,
+        12,
+        190,
+        59,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "p50_bounds": {
+        "lower_ms": 500,
+        "upper_ms": 1000
+      },
+      "p95_bounds": {
+        "lower_ms": 1000,
+        "upper_ms": 2500
+      }
+    },
+    "nine_recipient_delivery_total": {
+      "samples": 265,
+      "total_seconds": 1418.4858843648692,
+      "mean_ms": 5352.776922131582,
+      "max_ms": 6826.765852994868,
+      "histogram_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2,
+        53,
+        210,
+        0,
+        0,
+        0,
+        0
+      ],
+      "p50_bounds": {
+        "lower_ms": 5000,
+        "upper_ms": 10000
+      },
+      "p95_bounds": {
+        "lower_ms": 5000,
+        "upper_ms": 10000
+      }
+    }
+  },
+  "generator_usage": {
+    "driver_cpu_seconds": 13.64,
+    "driver_peak_rss_kib": 433432,
+    "crypto_workers": 10,
+    "crypto_worker_cpu_seconds": [
+      0.74,
+      0.7399999999999999,
+      0.74,
+      0.73,
+      0.73,
+      0.7,
+      0.7,
+      0.7099999999999999,
+      0.71,
+      0.7000000000000001
+    ],
+    "crypto_worker_peak_rss_kib": [
+      9024,
+      9016,
+      8952,
+      8972,
+      9216,
+      8936,
+      8952,
+      9192,
+      8960,
+      9060
+    ]
+  },
+  "postgres_wait_sampling": {
+    "samples": 344,
+    "errors": 0,
+    "interval_mean_ms": 102.25802221802316,
+    "interval_max_ms": 114.89638600323815,
+    "classes": {
+      "idle:Client:ClientRead": {
+        "backend_observations": 16963,
+        "peak_backends": 66
+      },
+      "idle in transaction:Client:ClientRead": {
+        "backend_observations": 3976,
+        "peak_backends": 24
+      },
+      "idle in transaction:CPU_or_runnable:none": {
+        "backend_observations": 54,
+        "peak_backends": 2
+      },
+      "active:Client:ClientRead": {
+        "backend_observations": 49,
+        "peak_backends": 2
+      },
+      "active:IO:WALSync": {
+        "backend_observations": 36,
+        "peak_backends": 1
+      },
+      "active:Lock:transactionid": {
+        "backend_observations": 113,
+        "peak_backends": 2
+      },
+      "active:CPU_or_runnable:none": {
+        "backend_observations": 140,
+        "peak_backends": 3
+      },
+      "idle:CPU_or_runnable:none": {
+        "backend_observations": 35,
+        "peak_backends": 3
+      },
+      "active:Lock:tuple": {
+        "backend_observations": 76,
+        "peak_backends": 6
+      },
+      "idle in transaction:IO:WALWrite": {
+        "backend_observations": 1,
+        "peak_backends": 1
+      },
+      "active:LWLock:WALWrite": {
+        "backend_observations": 11,
+        "peak_backends": 4
+      },
+      "idle in transaction:IO:WALSync": {
+        "backend_observations": 3,
+        "peak_backends": 1
+      },
+      "active:Timeout:VacuumDelay": {
+        "backend_observations": 1,
+        "peak_backends": 1
+      }
+    },
+    "scope": "Sample counts of backends, not exact query wait durations; idle ClientRead is not blocking work; CPU_or_runnable is not measured CPU; sampler connection excluded"
+  },
+  "instrumentation_scope": "Constant-space aggregate histograms; phase times overlap across concurrent work; CPU separate for driver/crypto/API; no request or SQL text",
+  "resilience_mode": false,
+  "websocket_reconnect": {
+    "samples": 0
+  },
+  "zero_socket_error_gate": "PASS",
+  "offered_messages": 265,
+  "target_status": "NOT_SUSTAINED",
+  "websocket_status": "PASS",
+  "backpressure_stop_seconds": 10,
+  "backpressure_stop_reason": "oldest_unfinished_over_ten_seconds",
+  "scheduler": "50 independent ordered conversation lanes; oldest unfinished work and dispatcher lag both bounded to ten seconds",
+  "rekey_every_application_messages_per_group": 100,
+  "encrypted_native_checkpoint_restore": "PASS",
+  "configured_seconds": 40,
+  "configured_messages_per_second": 20.0,
+  "five_concurrent_encrypted_1mib_files": {
+    "samples": 5,
+    "median_ms": 1425.385204012855,
+    "p95_ms": 1675.8162309997715,
+    "max_ms": 1756.7162560008
+  },
+  "elapsed_seconds": 35.18280145600147,
+  "achieved_messages_per_second": 7.532089232047109,
+  "send_scheduled_to_accepted": {
+    "samples": 265,
+    "median_ms": 8882.887977000792,
+    "p95_ms": 18469.49802400195,
+    "max_ms": 20346.36684799625
+  },
+  "scheduled_to_all_nine_durable_acks": {
+    "samples": 265,
+    "median_ms": 14743.926452007145,
+    "p95_ms": 22419.428965993575,
+    "max_ms": 23088.120432992582
+  },
+  "postgres_before": {
+    "wal": {
+      "wal_records": 85781,
+      "wal_fpi": 1972,
+      "wal_bytes": 21935183,
+      "wal_buffers_full": 0,
+      "wal_write": 4789,
+      "wal_sync": 4050,
+      "wal_write_time": 218.721,
+      "wal_sync_time": 14402.539
+    },
+    "io": [
+      {
+        "backend_type": "autovacuum launcher",
+        "object": "relation",
+        "context": "bulkread",
+        "reads": 0,
+        "read_time": 0,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": null,
+        "extend_time": null,
+        "op_bytes": 8192,
+        "hits": 0,
+        "evictions": 0,
+        "fsyncs": null,
+        "fsync_time": null
+      },
+      {
+        "backend_type": "autovacuum launcher",
+        "object": "relation",
+        "context": "normal",
+        "reads": 1,
+        "read_time": 0.013000000000000001,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": null,
+        "extend_time": null,
+        "op_bytes": 8192,
+        "hits": 0,
+        "evictions": 0,
+        "fsyncs": 0,
+        "fsync_time": 0
+      },
+      {
+        "backend_type": "autovacuum worker",
+        "object": "relation",
+        "context": "bulkread",
+        "reads": 0,
+        "read_time": 0,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": null,
+        "extend_time": null,
+        "op_bytes": 8192,
+        "hits": 0,
+        "evictions": 0,
+        "fsyncs": null,
+        "fsync_time": null
+      },
+      {
+        "backend_type": "autovacuum worker",
+        "object": "relation",
+        "context": "normal",
+        "reads": 254,
+        "read_time": 1.6520000000000001,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": 74,
+        "extend_time": 1.043,
+        "op_bytes": 8192,
+        "hits": 20883,
+        "evictions": 0,
+        "fsyncs": 0,
+        "fsync_time": 0
+      },
+      {
+        "backend_type": "autovacuum worker",
+        "object": "relation",
+        "context": "vacuum",
+        "reads": 184,
+        "read_time": 0.529,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": 0,
+        "extend_time": 0,
+        "op_bytes": 8192,
+        "hits": 821,
+        "evictions": 0,
+        "fsyncs": null,
+        "fsync_time": null
+      },
+      {
+        "backend_type": "client backend",
+        "object": "relation",
+        "context": "bulkread",
+        "reads": 916,
+        "read_time": 4.409,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": null,
+        "extend_time": null,
+        "op_bytes": 8192,
+        "hits": 14,
+        "evictions": 0,
+        "fsyncs": null,
+        "fsync_time": null
+      },
+      {
+        "backend_type": "client backend",
+        "object": "relation",
+        "context": "bulkwrite",
+        "reads": 0,
+        "read_time": 0,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": 0,
+        "extend_time": 0,
+        "op_bytes": 8192,
+        "hits": 0,
+        "evictions": 0,
+        "fsyncs": null,
+        "fsync_time": null
+      },
+      {
+        "backend_type": "client backend",
+        "object": "relation",
+        "context": "normal",
+        "reads": 516,
+        "read_time": 4.41,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": 798,
+        "extend_time": 17.136,
+        "op_bytes": 8192,
+        "hits": 451278,
+        "evictions": 0,
+        "fsyncs": 0,
+        "fsync_time": 0
+      },
+      {
+        "backend_type": "client backend",
+        "object": "relation",
+        "context": "vacuum",
+        "reads": 0,
+        "read_time": 0,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": 0,
+        "extend_time": 0,
+        "op_bytes": 8192,
+        "hits": 0,
+        "evictions": 0,
+        "fsyncs": null,
+        "fsync_time": null
+      },
+      {
+        "backend_type": "client backend",
+        "object": "temp relation",
+        "context": "normal",
+        "reads": 0,
+        "read_time": 0,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": null,
+        "writeback_time": null,
+        "extends": 0,
+        "extend_time": 0,
+        "op_bytes": 8192,
+        "hits": 0,
+        "evictions": 0,
+        "fsyncs": null,
+        "fsync_time": null
+      },
+      {
+        "backend_type": "background worker",
+        "object": "relation",
+        "context": "bulkread",
+        "reads": 0,
+        "read_time": 0,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": null,
+        "extend_time": null,
+        "op_bytes": 8192,
+        "hits": 0,
+        "evictions": 0,
+        "fsyncs": null,
+        "fsync_time": null
+      },
+      {
+        "backend_type": "background worker",
+        "object": "relation",
+        "context": "bulkwrite",
+        "reads": 0,
+        "read_time": 0,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": 0,
+        "extend_time": 0,
+        "op_bytes": 8192,
+        "hits": 0,
+        "evictions": 0,
+        "fsyncs": null,
+        "fsync_time": null
+      },
+      {
+        "backend_type": "background worker",
+        "object": "relation",
+        "context": "normal",
+        "reads": 0,
+        "read_time": 0,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": 0,
+        "extend_time": 0,
+        "op_bytes": 8192,
+        "hits": 0,
+        "evictions": 0,
+        "fsyncs": 0,
+        "fsync_time": 0
+      },
+      {
+        "backend_type": "background worker",
+        "object": "relation",
+        "context": "vacuum",
+        "reads": 0,
+        "read_time": 0,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": 0,
+        "extend_time": 0,
+        "op_bytes": 8192,
+        "hits": 0,
+        "evictions": 0,
+        "fsyncs": null,
+        "fsync_time": null
+      },
+      {
+        "backend_type": "background worker",
+        "object": "temp relation",
+        "context": "normal",
+        "reads": 0,
+        "read_time": 0,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": null,
+        "writeback_time": null,
+        "extends": 0,
+        "extend_time": 0,
+        "op_bytes": 8192,
+        "hits": 0,
+        "evictions": 0,
+        "fsyncs": null,
+        "fsync_time": null
+      },
+      {
+        "backend_type": "background writer",
+        "object": "relation",
+        "context": "normal",
+        "reads": null,
+        "read_time": null,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": null,
+        "extend_time": null,
+        "op_bytes": 8192,
+        "hits": null,
+        "evictions": null,
+        "fsyncs": 0,
+        "fsync_time": 0
+      },
+      {
+        "backend_type": "checkpointer",
+        "object": "relation",
+        "context": "normal",
+        "reads": null,
+        "read_time": null,
+        "writes": 919,
+        "write_time": 4.102,
+        "writebacks": 919,
+        "writeback_time": 20.064,
+        "extends": null,
+        "extend_time": null,
+        "op_bytes": 8192,
+        "hits": null,
+        "evictions": null,
+        "fsyncs": 299,
+        "fsync_time": 34.899
+      },
+      {
+        "backend_type": "standalone backend",
+        "object": "relation",
+        "context": "bulkread",
+        "reads": 0,
+        "read_time": 0,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": null,
+        "extend_time": null,
+        "op_bytes": 8192,
+        "hits": 0,
+        "evictions": 0,
+        "fsyncs": null,
+        "fsync_time": null
+      },
+      {
+        "backend_type": "standalone backend",
+        "object": "relation",
+        "context": "bulkwrite",
+        "reads": 0,
+        "read_time": 0,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": 8,
+        "extend_time": 0,
+        "op_bytes": 8192,
+        "hits": 7,
+        "evictions": 0,
+        "fsyncs": null,
+        "fsync_time": null
+      },
+      {
+        "backend_type": "standalone backend",
+        "object": "relation",
+        "context": "normal",
+        "reads": 535,
+        "read_time": 0,
+        "writes": 1009,
+        "write_time": 0,
+        "writebacks": 1009,
+        "writeback_time": 0,
+        "extends": 663,
+        "extend_time": 0,
+        "op_bytes": 8192,
+        "hits": 86999,
+        "evictions": 0,
+        "fsyncs": 0,
+        "fsync_time": 0
+      },
+      {
+        "backend_type": "standalone backend",
+        "object": "relation",
+        "context": "vacuum",
+        "reads": 10,
+        "read_time": 0,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": 0,
+        "extend_time": 0,
+        "op_bytes": 8192,
+        "hits": 907,
+        "evictions": 0,
+        "fsyncs": null,
+        "fsync_time": null
+      },
+      {
+        "backend_type": "startup",
+        "object": "relation",
+        "context": "bulkread",
+        "reads": 0,
+        "read_time": 0,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": null,
+        "extend_time": null,
+        "op_bytes": 8192,
+        "hits": 0,
+        "evictions": 0,
+        "fsyncs": null,
+        "fsync_time": null
+      },
+      {
+        "backend_type": "startup",
+        "object": "relation",
+        "context": "bulkwrite",
+        "reads": 0,
+        "read_time": 0,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": 0,
+        "extend_time": 0,
+        "op_bytes": 8192,
+        "hits": 0,
+        "evictions": 0,
+        "fsyncs": null,
+        "fsync_time": null
+      },
+      {
+        "backend_type": "startup",
+        "object": "relation",
+        "context": "normal",
+        "reads": 0,
+        "read_time": 0,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": 0,
+        "extend_time": 0,
+        "op_bytes": 8192,
+        "hits": 0,
+        "evictions": 0,
+        "fsyncs": 0,
+        "fsync_time": 0
+      },
+      {
+        "backend_type": "startup",
+        "object": "relation",
+        "context": "vacuum",
+        "reads": 0,
+        "read_time": 0,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": 0,
+        "extend_time": 0,
+        "op_bytes": 8192,
+        "hits": 0,
+        "evictions": 0,
+        "fsyncs": null,
+        "fsync_time": null
+      },
+      {
+        "backend_type": "walsender",
+        "object": "relation",
+        "context": "bulkread",
+        "reads": 0,
+        "read_time": 0,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": null,
+        "extend_time": null,
+        "op_bytes": 8192,
+        "hits": 0,
+        "evictions": 0,
+        "fsyncs": null,
+        "fsync_time": null
+      },
+      {
+        "backend_type": "walsender",
+        "object": "relation",
+        "context": "bulkwrite",
+        "reads": 0,
+        "read_time": 0,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": 0,
+        "extend_time": 0,
+        "op_bytes": 8192,
+        "hits": 0,
+        "evictions": 0,
+        "fsyncs": null,
+        "fsync_time": null
+      },
+      {
+        "backend_type": "walsender",
+        "object": "relation",
+        "context": "normal",
+        "reads": 0,
+        "read_time": 0,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": 0,
+        "extend_time": 0,
+        "op_bytes": 8192,
+        "hits": 0,
+        "evictions": 0,
+        "fsyncs": 0,
+        "fsync_time": 0
+      },
+      {
+        "backend_type": "walsender",
+        "object": "relation",
+        "context": "vacuum",
+        "reads": 0,
+        "read_time": 0,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": 0,
+        "extend_time": 0,
+        "op_bytes": 8192,
+        "hits": 0,
+        "evictions": 0,
+        "fsyncs": null,
+        "fsync_time": null
+      },
+      {
+        "backend_type": "walsender",
+        "object": "temp relation",
+        "context": "normal",
+        "reads": 0,
+        "read_time": 0,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": null,
+        "writeback_time": null,
+        "extends": 0,
+        "extend_time": 0,
+        "op_bytes": 8192,
+        "hits": 0,
+        "evictions": 0,
+        "fsyncs": null,
+        "fsync_time": null
+      }
+    ],
+    "db": {
+      "xact_commit": 11040,
+      "xact_rollback": 0,
+      "blks_read": 428,
+      "blks_hit": 460401,
+      "tup_returned": 1172768,
+      "tup_fetched": 135867,
+      "tup_inserted": 7617,
+      "tup_updated": 5765,
+      "tup_deleted": 195,
+      "deadlocks": 0,
+      "temp_bytes": 0
+    },
+    "database_bytes": 15604759,
+    "wal_lsn": "0/251CB88",
+    "settings": {
+      "data_checksums": "on",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "max_connections": "100",
+      "synchronous_commit": "on",
+      "track_io_timing": "on",
+      "track_wal_io_timing": "on"
+    }
+  },
+  "postgres_after": {
+    "wal": {
+      "wal_records": 113416,
+      "wal_fpi": 1981,
+      "wal_bytes": 29919213,
+      "wal_buffers_full": 0,
+      "wal_write": 7634,
+      "wal_sync": 6887,
+      "wal_write_time": 387.152,
+      "wal_sync_time": 18652.166
+    },
+    "io": [
+      {
+        "backend_type": "autovacuum launcher",
+        "object": "relation",
+        "context": "bulkread",
+        "reads": 0,
+        "read_time": 0,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": null,
+        "extend_time": null,
+        "op_bytes": 8192,
+        "hits": 0,
+        "evictions": 0,
+        "fsyncs": null,
+        "fsync_time": null
+      },
+      {
+        "backend_type": "autovacuum launcher",
+        "object": "relation",
+        "context": "normal",
+        "reads": 1,
+        "read_time": 0.013000000000000001,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": null,
+        "extend_time": null,
+        "op_bytes": 8192,
+        "hits": 0,
+        "evictions": 0,
+        "fsyncs": 0,
+        "fsync_time": 0
+      },
+      {
+        "backend_type": "autovacuum worker",
+        "object": "relation",
+        "context": "bulkread",
+        "reads": 0,
+        "read_time": 0,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": null,
+        "extend_time": null,
+        "op_bytes": 8192,
+        "hits": 0,
+        "evictions": 0,
+        "fsyncs": null,
+        "fsync_time": null
+      },
+      {
+        "backend_type": "autovacuum worker",
+        "object": "relation",
+        "context": "normal",
+        "reads": 254,
+        "read_time": 1.6520000000000001,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": 109,
+        "extend_time": 3.045,
+        "op_bytes": 8192,
+        "hits": 24968,
+        "evictions": 0,
+        "fsyncs": 0,
+        "fsync_time": 0
+      },
+      {
+        "backend_type": "autovacuum worker",
+        "object": "relation",
+        "context": "vacuum",
+        "reads": 190,
+        "read_time": 0.599,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": 0,
+        "extend_time": 0,
+        "op_bytes": 8192,
+        "hits": 2162,
+        "evictions": 0,
+        "fsyncs": null,
+        "fsync_time": null
+      },
+      {
+        "backend_type": "client backend",
+        "object": "relation",
+        "context": "bulkread",
+        "reads": 916,
+        "read_time": 4.409,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": null,
+        "extend_time": null,
+        "op_bytes": 8192,
+        "hits": 14,
+        "evictions": 0,
+        "fsyncs": null,
+        "fsync_time": null
+      },
+      {
+        "backend_type": "client backend",
+        "object": "relation",
+        "context": "bulkwrite",
+        "reads": 0,
+        "read_time": 0,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": 0,
+        "extend_time": 0,
+        "op_bytes": 8192,
+        "hits": 0,
+        "evictions": 0,
+        "fsyncs": null,
+        "fsync_time": null
+      },
+      {
+        "backend_type": "client backend",
+        "object": "relation",
+        "context": "normal",
+        "reads": 546,
+        "read_time": 4.936,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": 1584,
+        "extend_time": 34.17,
+        "op_bytes": 8192,
+        "hits": 1113662,
+        "evictions": 0,
+        "fsyncs": 0,
+        "fsync_time": 0
+      },
+      {
+        "backend_type": "client backend",
+        "object": "relation",
+        "context": "vacuum",
+        "reads": 0,
+        "read_time": 0,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": 0,
+        "extend_time": 0,
+        "op_bytes": 8192,
+        "hits": 0,
+        "evictions": 0,
+        "fsyncs": null,
+        "fsync_time": null
+      },
+      {
+        "backend_type": "client backend",
+        "object": "temp relation",
+        "context": "normal",
+        "reads": 0,
+        "read_time": 0,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": null,
+        "writeback_time": null,
+        "extends": 0,
+        "extend_time": 0,
+        "op_bytes": 8192,
+        "hits": 0,
+        "evictions": 0,
+        "fsyncs": null,
+        "fsync_time": null
+      },
+      {
+        "backend_type": "background worker",
+        "object": "relation",
+        "context": "bulkread",
+        "reads": 0,
+        "read_time": 0,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": null,
+        "extend_time": null,
+        "op_bytes": 8192,
+        "hits": 0,
+        "evictions": 0,
+        "fsyncs": null,
+        "fsync_time": null
+      },
+      {
+        "backend_type": "background worker",
+        "object": "relation",
+        "context": "bulkwrite",
+        "reads": 0,
+        "read_time": 0,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": 0,
+        "extend_time": 0,
+        "op_bytes": 8192,
+        "hits": 0,
+        "evictions": 0,
+        "fsyncs": null,
+        "fsync_time": null
+      },
+      {
+        "backend_type": "background worker",
+        "object": "relation",
+        "context": "normal",
+        "reads": 0,
+        "read_time": 0,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": 0,
+        "extend_time": 0,
+        "op_bytes": 8192,
+        "hits": 0,
+        "evictions": 0,
+        "fsyncs": 0,
+        "fsync_time": 0
+      },
+      {
+        "backend_type": "background worker",
+        "object": "relation",
+        "context": "vacuum",
+        "reads": 0,
+        "read_time": 0,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": 0,
+        "extend_time": 0,
+        "op_bytes": 8192,
+        "hits": 0,
+        "evictions": 0,
+        "fsyncs": null,
+        "fsync_time": null
+      },
+      {
+        "backend_type": "background worker",
+        "object": "temp relation",
+        "context": "normal",
+        "reads": 0,
+        "read_time": 0,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": null,
+        "writeback_time": null,
+        "extends": 0,
+        "extend_time": 0,
+        "op_bytes": 8192,
+        "hits": 0,
+        "evictions": 0,
+        "fsyncs": null,
+        "fsync_time": null
+      },
+      {
+        "backend_type": "background writer",
+        "object": "relation",
+        "context": "normal",
+        "reads": null,
+        "read_time": null,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": null,
+        "extend_time": null,
+        "op_bytes": 8192,
+        "hits": null,
+        "evictions": null,
+        "fsyncs": 0,
+        "fsync_time": 0
+      },
+      {
+        "backend_type": "checkpointer",
+        "object": "relation",
+        "context": "normal",
+        "reads": null,
+        "read_time": null,
+        "writes": 919,
+        "write_time": 4.102,
+        "writebacks": 919,
+        "writeback_time": 20.064,
+        "extends": null,
+        "extend_time": null,
+        "op_bytes": 8192,
+        "hits": null,
+        "evictions": null,
+        "fsyncs": 299,
+        "fsync_time": 34.899
+      },
+      {
+        "backend_type": "standalone backend",
+        "object": "relation",
+        "context": "bulkread",
+        "reads": 0,
+        "read_time": 0,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": null,
+        "extend_time": null,
+        "op_bytes": 8192,
+        "hits": 0,
+        "evictions": 0,
+        "fsyncs": null,
+        "fsync_time": null
+      },
+      {
+        "backend_type": "standalone backend",
+        "object": "relation",
+        "context": "bulkwrite",
+        "reads": 0,
+        "read_time": 0,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": 8,
+        "extend_time": 0,
+        "op_bytes": 8192,
+        "hits": 7,
+        "evictions": 0,
+        "fsyncs": null,
+        "fsync_time": null
+      },
+      {
+        "backend_type": "standalone backend",
+        "object": "relation",
+        "context": "normal",
+        "reads": 535,
+        "read_time": 0,
+        "writes": 1009,
+        "write_time": 0,
+        "writebacks": 1009,
+        "writeback_time": 0,
+        "extends": 663,
+        "extend_time": 0,
+        "op_bytes": 8192,
+        "hits": 86999,
+        "evictions": 0,
+        "fsyncs": 0,
+        "fsync_time": 0
+      },
+      {
+        "backend_type": "standalone backend",
+        "object": "relation",
+        "context": "vacuum",
+        "reads": 10,
+        "read_time": 0,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": 0,
+        "extend_time": 0,
+        "op_bytes": 8192,
+        "hits": 907,
+        "evictions": 0,
+        "fsyncs": null,
+        "fsync_time": null
+      },
+      {
+        "backend_type": "startup",
+        "object": "relation",
+        "context": "bulkread",
+        "reads": 0,
+        "read_time": 0,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": null,
+        "extend_time": null,
+        "op_bytes": 8192,
+        "hits": 0,
+        "evictions": 0,
+        "fsyncs": null,
+        "fsync_time": null
+      },
+      {
+        "backend_type": "startup",
+        "object": "relation",
+        "context": "bulkwrite",
+        "reads": 0,
+        "read_time": 0,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": 0,
+        "extend_time": 0,
+        "op_bytes": 8192,
+        "hits": 0,
+        "evictions": 0,
+        "fsyncs": null,
+        "fsync_time": null
+      },
+      {
+        "backend_type": "startup",
+        "object": "relation",
+        "context": "normal",
+        "reads": 0,
+        "read_time": 0,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": 0,
+        "extend_time": 0,
+        "op_bytes": 8192,
+        "hits": 0,
+        "evictions": 0,
+        "fsyncs": 0,
+        "fsync_time": 0
+      },
+      {
+        "backend_type": "startup",
+        "object": "relation",
+        "context": "vacuum",
+        "reads": 0,
+        "read_time": 0,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": 0,
+        "extend_time": 0,
+        "op_bytes": 8192,
+        "hits": 0,
+        "evictions": 0,
+        "fsyncs": null,
+        "fsync_time": null
+      },
+      {
+        "backend_type": "walsender",
+        "object": "relation",
+        "context": "bulkread",
+        "reads": 0,
+        "read_time": 0,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": null,
+        "extend_time": null,
+        "op_bytes": 8192,
+        "hits": 0,
+        "evictions": 0,
+        "fsyncs": null,
+        "fsync_time": null
+      },
+      {
+        "backend_type": "walsender",
+        "object": "relation",
+        "context": "bulkwrite",
+        "reads": 0,
+        "read_time": 0,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": 0,
+        "extend_time": 0,
+        "op_bytes": 8192,
+        "hits": 0,
+        "evictions": 0,
+        "fsyncs": null,
+        "fsync_time": null
+      },
+      {
+        "backend_type": "walsender",
+        "object": "relation",
+        "context": "normal",
+        "reads": 0,
+        "read_time": 0,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": 0,
+        "extend_time": 0,
+        "op_bytes": 8192,
+        "hits": 0,
+        "evictions": 0,
+        "fsyncs": 0,
+        "fsync_time": 0
+      },
+      {
+        "backend_type": "walsender",
+        "object": "relation",
+        "context": "vacuum",
+        "reads": 0,
+        "read_time": 0,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": 0,
+        "writeback_time": 0,
+        "extends": 0,
+        "extend_time": 0,
+        "op_bytes": 8192,
+        "hits": 0,
+        "evictions": 0,
+        "fsyncs": null,
+        "fsync_time": null
+      },
+      {
+        "backend_type": "walsender",
+        "object": "temp relation",
+        "context": "normal",
+        "reads": 0,
+        "read_time": 0,
+        "writes": 0,
+        "write_time": 0,
+        "writebacks": null,
+        "writeback_time": null,
+        "extends": 0,
+        "extend_time": 0,
+        "op_bytes": 8192,
+        "hits": 0,
+        "evictions": 0,
+        "fsyncs": null,
+        "fsync_time": null
+      }
+    ],
+    "db": {
+      "xact_commit": 34235,
+      "xact_rollback": 0,
+      "blks_read": 464,
+      "blks_hit": 1126565,
+      "tup_returned": 3294279,
+      "tup_fetched": 359625,
+      "tup_inserted": 10924,
+      "tup_updated": 12049,
+      "tup_deleted": 291,
+      "deadlocks": 0,
+      "temp_bytes": 0
+    },
+    "database_bytes": 22168079,
+    "wal_lsn": "0/2CD0058",
+    "settings": {
+      "data_checksums": "on",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "max_connections": "100",
+      "synchronous_commit": "on",
+      "track_io_timing": "on",
+      "track_wal_io_timing": "on"
+    }
+  },
+  "scope": "100 synthetic accounts / 500 native MLS clients / 50 ten-device groups / 500 authenticated WSS; encrypted fsynced native checkpoints, not browser IndexedDB or physical devices; fixture enrollment and login excluded",
+  "gil_profile": {
+    "leaf_samples": [
+      {
+        "frame": "run (asyncio/runners.py:118)",
+        "samples": 110
+      },
+      {
+        "frame": "start (threading.py:994)",
+        "samples": 47
+      },
+      {
+        "frame": "writelines (asyncio/streams.py:349)",
+        "samples": 41
+      },
+      {
+        "frame": "submit (concurrent/futures/thread.py:179)",
+        "samples": 33
+      },
+      {
+        "frame": "_maybe_prepare_gen (psycopg/_cursor_base.py:312)",
+        "samples": 31
+      },
+      {
+        "frame": "notify (threading.py:410)",
+        "samples": 26
+      },
+      {
+        "frame": "send (uvicorn/protocols/http/httptools_impl.py:524)",
+        "samples": 20
+      },
+      {
+        "frame": "<genexpr> (psycopg/_queries.py:300)",
+        "samples": 19
+      },
+      {
+        "frame": "send (uvicorn/protocols/websockets/websockets_sansio_impl.py:506)",
+        "samples": 17
+      },
+      {
+        "frame": "names_to_path (django/db/models/sql/query.py:1757)",
+        "samples": 16
+      },
+      {
+        "frame": "wait (psycopg/connection.py:495)",
+        "samples": 14
+      },
+      {
+        "frame": "setup_joins (django/db/models/sql/query.py:1906)",
+        "samples": 14
+      },
+      {
+        "frame": "__instancecheck__ (<frozen abc>:119)",
+        "samples": 13
+      },
+      {
+        "frame": "match (django/urls/resolvers.py:325)",
+        "samples": 13
+      },
+      {
+        "frame": "__call__ (asgiref/sync.py:557)",
+        "samples": 12
+      },
+      {
+        "frame": "compile (django/db/models/sql/compiler.py:573)",
+        "samples": 11
+      },
+      {
+        "frame": "_select_current_result (psycopg/_cursor_base.py:514)",
+        "samples": 11
+      },
+      {
+        "frame": "__new__ (django/utils/deconstruct.py:17)",
+        "samples": 11
+      },
+      {
+        "frame": "_copy_future_state (asyncio/futures.py:364)",
+        "samples": 11
+      },
+      {
+        "frame": "__call__ (asgiref/sync.py:569)",
+        "samples": 10
+      },
+      {
+        "frame": "get_select_mask (django/db/models/sql/query.py:883)",
+        "samples": 10
+      },
+      {
+        "frame": "__enter__ (threading.py:300)",
+        "samples": 10
+      },
+      {
+        "frame": "__iter__ (django/db/models/query.py:93)",
+        "samples": 10
+      },
+      {
+        "frame": "as_sql (django/db/models/expressions.py:1322)",
+        "samples": 10
+      },
+      {
+        "frame": "fetchmany (psycopg/cursor.py:269)",
+        "samples": 10
+      },
+      {
+        "frame": "send (uvicorn/protocols/http/httptools_impl.py:551)",
+        "samples": 10
+      },
+      {
+        "frame": "iscoroutine (asyncio/coroutines.py:37)",
+        "samples": 9
+      },
+      {
+        "frame": "__getattribute__ (django/utils/functional.py:280)",
+        "samples": 9
+      },
+      {
+        "frame": "ensure_future (asyncio/tasks.py:695)",
+        "samples": 8
+      },
+      {
+        "frame": "isfuture (asyncio/base_futures.py:20)",
+        "samples": 8
+      },
+      {
+        "frame": "_has_coroutine_mark (inspect.py:416)",
+        "samples": 8
+      },
+      {
+        "frame": "from_db (django/db/models/base.py:581)",
+        "samples": 7
+      },
+      {
+        "frame": "get_default_columns (django/db/models/sql/compiler.py:1008)",
+        "samples": 7
+      },
+      {
+        "frame": "submit (concurrent/futures/thread.py:166)",
+        "samples": 7
+      },
+      {
+        "frame": "_restore_context (asgiref/sync.py:50)",
+        "samples": 7
+      },
+      {
+        "frame": "__set__ (django/db/models/fields/related_descriptors.py:92)",
+        "samples": 6
+      },
+      {
+        "frame": "__init__ (uvicorn/protocols/http/httptools_impl.py:62)",
+        "samples": 6
+      },
+      {
+        "frame": "__call__ (asgiref/sync.py:601)",
+        "samples": 6
+      },
+      {
+        "frame": "__getattr__ (asgiref/local.py:60)",
+        "samples": 6
+      },
+      {
+        "frame": "record (metadata_load_instruments.py:54)",
+        "samples": 6
+      }
+    ],
+    "total_samples": 2221,
+    "scope": "One owned API process, GIL-holding Python samples; no locals; diagnostic only, not exact CPU percentages or capacity qualification; raw stacks remain private"
+  },
+  "api_worker_cpu_seconds": [
+    24.06,
+    33.050000000000004,
+    32.910000000000004,
+    32.790000000000006
+  ],
+  "api_cpu_seconds": 122.81000000000002,
+  "api_workers": 4,
+  "notification_worker_cpu_seconds": 3.19,
+  "postgres_container_usage_before": {
+    "cpu": {
+      "usage_usec": 12379522,
+      "user_usec": 9723375,
+      "system_usec": 2656146,
+      "nice_usec": 0,
+      "core_sched.force_idle_usec": 0,
+      "nr_periods": 0,
+      "nr_throttled": 0,
+      "throttled_usec": 0,
+      "nr_bursts": 0,
+      "burst_usec": 0
+    },
+    "memory_current_bytes": 159604736,
+    "memory_peak_bytes": 160620544,
+    "scope": "Owned container cgroup v2, includes every PostgreSQL child and container page cache; peak includes setup"
+  },
+  "postgres_container_usage_after": {
+    "cpu": {
+      "usage_usec": 35954038,
+      "user_usec": 28982878,
+      "system_usec": 6971159,
+      "nice_usec": 0,
+      "core_sched.force_idle_usec": 0,
+      "nr_periods": 0,
+      "nr_throttled": 0,
+      "throttled_usec": 0,
+      "nr_bursts": 0,
+      "burst_usec": 0
+    },
+    "memory_current_bytes": 328081408,
+    "memory_peak_bytes": 334561280,
+    "scope": "Owned container cgroup v2, includes every PostgreSQL child and container page cache; peak includes setup"
+  },
+  "api_worker_peak_rss_kib": [
+    117904,
+    126000,
+    119756,
+    125552
+  ],
+  "api_peak_rss_kib": 489212,
+  "api_memory_scope": "Sum of per-worker lifetime HWM including setup; not simultaneous total RSS peak",
+  "postgres_container_block_io_before": "0B / 120MB",
+  "api_profiles_by_worker": [
+    {
+      "timings": {
+        "asgi_arrival_to_sync_middleware": {
+          "samples": 940,
+          "total_seconds": 56.53213646981749,
+          "mean_ms": 60.140570712571794,
+          "max_ms": 586.1939669994172,
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            10,
+            11,
+            26,
+            22,
+            110,
+            326,
+            319,
+            97,
+            18,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p50_bounds": {
+            "lower_ms": 25,
+            "upper_ms": 50
+          },
+          "p95_bounds": {
+            "lower_ms": 100,
+            "upper_ms": 250
+          }
+        },
+        "db_get_new_connection": {
+          "samples": 1802,
+          "total_seconds": 16.89669696308556,
+          "mean_ms": 9.376635384620178,
+          "max_ms": 112.71718901116401,
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            4,
+            52,
+            114,
+            258,
+            359,
+            449,
+            436,
+            112,
+            15,
+            3,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p50_bounds": {
+            "lower_ms": 5,
+            "upper_ms": 10
+          },
+          "p95_bounds": {
+            "lower_ms": 25,
+            "upper_ms": 50
+          }
+        },
+        "sql_other": {
+          "samples": 6489,
+          "total_seconds": 46.64697689427703,
+          "mean_ms": 7.18862334632101,
+          "max_ms": 114.12041299627163,
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            50,
+            175,
+            526,
+            1379,
+            1362,
+            1494,
+            1240,
+            244,
+            15,
+            4,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p50_bounds": {
+            "lower_ms": 2.5,
+            "upper_ms": 5
+          },
+          "p95_bounds": {
+            "lower_ms": 10,
+            "upper_ms": 25
+          }
+        },
+        "session_resolve": {
+          "samples": 2742,
+          "total_seconds": 52.50389789316978,
+          "mean_ms": 19.148029866218007,
+          "max_ms": 174.7865439974703,
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            10,
+            187,
+            622,
+            1239,
+            580,
+            96,
+            8,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p50_bounds": {
+            "lower_ms": 10,
+            "upper_ms": 25
+          },
+          "p95_bounds": {
+            "lower_ms": 25,
+            "upper_ms": 50
+          }
+        },
+        "sql_locking": {
+          "samples": 1092,
+          "total_seconds": 14.698359215675737,
+          "mean_ms": 13.460035911790968,
+          "max_ms": 657.9458140040515,
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            8,
+            68,
+            154,
+            181,
+            247,
+            305,
+            105,
+            11,
+            11,
+            1,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p50_bounds": {
+            "lower_ms": 5,
+            "upper_ms": 10
+          },
+          "p95_bounds": {
+            "lower_ms": 25,
+            "upper_ms": 50
+          }
+        },
+        "authority_fence": {
+          "samples": 940,
+          "total_seconds": 21.492556730954675,
+          "mean_ms": 22.8644220542071,
+          "max_ms": 169.57999899750575,
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            2,
+            30,
+            145,
+            442,
+            263,
+            54,
+            4,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p50_bounds": {
+            "lower_ms": 10,
+            "upper_ms": 25
+          },
+          "p95_bounds": {
+            "lower_ms": 50,
+            "upper_ms": 100
+          }
+        },
+        "native_public_verify": {
+          "samples": 41,
+          "total_seconds": 0.6346395179716637,
+          "mean_ms": 15.479012633455213,
+          "max_ms": 37.194071992416866,
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            7,
+            9,
+            15,
+            9,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p50_bounds": {
+            "lower_ms": 10,
+            "upper_ms": 25
+          },
+          "p95_bounds": {
+            "lower_ms": 25,
+            "upper_ms": 50
+          }
+        },
+        "db_commit": {
+          "samples": 940,
+          "total_seconds": 6.432991373279947,
+          "mean_ms": 6.843607843914837,
+          "max_ms": 56.53137600165792,
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            10,
+            42,
+            46,
+            180,
+            237,
+            224,
+            177,
+            20,
+            4,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p50_bounds": {
+            "lower_ms": 2.5,
+            "upper_ms": 5
+          },
+          "p95_bounds": {
+            "lower_ms": 10,
+            "upper_ms": 25
+          }
+        },
+        "operational_counters": {
+          "samples": 940,
+          "total_seconds": 7.13579909078544,
+          "mean_ms": 7.591275628495149,
+          "max_ms": 178.58506400079932,
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            23,
+            83,
+            201,
+            210,
+            225,
+            164,
+            25,
+            1,
+            7,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p50_bounds": {
+            "lower_ms": 2.5,
+            "upper_ms": 5
+          },
+          "p95_bounds": {
+            "lower_ms": 10,
+            "upper_ms": 25
+          }
+        },
+        "sync_middleware_total": {
+          "samples": 940,
+          "total_seconds": 197.22670752208796,
+          "mean_ms": 209.8156463000936,
+          "max_ms": 859.4464490015525,
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            11,
+            16,
+            49,
+            653,
+            188,
+            22,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p50_bounds": {
+            "lower_ms": 100,
+            "upper_ms": 250
+          },
+          "p95_bounds": {
+            "lower_ms": 250,
+            "upper_ms": 500
+          }
+        },
+        "asgi_arrival_to_final_body": {
+          "samples": 940,
+          "total_seconds": 279.1707199249504,
+          "mean_ms": 296.99012757973446,
+          "max_ms": 1077.3058490012772,
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            5,
+            13,
+            29,
+            337,
+            482,
+            69,
+            4,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p50_bounds": {
+            "lower_ms": 250,
+            "upper_ms": 500
+          },
+          "p95_bounds": {
+            "lower_ms": 500,
+            "upper_ms": 1000
+          }
+        }
+      },
+      "pool_before": {
+        "default": {
+          "requests_num": 1331,
+          "requests_queued": 9,
+          "connections_num": 6,
+          "connections_ms": 129,
+          "requests_wait_ms": 64,
+          "pool_min": 1,
+          "pool_max": 16,
+          "pool_size": 5,
+          "pool_available": 5,
+          "requests_waiting": 0
+        }
+      },
+      "pool_after": {
+        "default": {
+          "requests_num": 3133,
+          "requests_queued": 40,
+          "connections_num": 17,
+          "connections_ms": 879,
+          "requests_wait_ms": 784,
+          "pool_min": 1,
+          "pool_max": 16,
+          "pool_size": 16,
+          "pool_available": 16,
+          "requests_waiting": 0
+        }
+      },
+      "sampled_call_wall": [],
+      "scope": "HTTP middleware SQL plus ASGI arrival/response; process-wide DB connection/commit/rollback timing includes WebSockets; no WebSocket cursor SQL, SQL text, parameters, paths, headers or identifiers; timings overlap, do not sum phases"
+    },
+    {
+      "timings": {
+        "asgi_arrival_to_sync_middleware": {
+          "samples": 1459,
+          "total_seconds": 67.33780028864567,
+          "mean_ms": 46.15339293258785,
+          "max_ms": 189.53782999597024,
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            7,
+            12,
+            14,
+            49,
+            207,
+            596,
+            516,
+            57,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p50_bounds": {
+            "lower_ms": 25,
+            "upper_ms": 50
+          },
+          "p95_bounds": {
+            "lower_ms": 50,
+            "upper_ms": 100
+          }
+        },
+        "db_get_new_connection": {
+          "samples": 2240,
+          "total_seconds": 26.330538018912193,
+          "mean_ms": 11.754704472728658,
+          "max_ms": 166.21531199780293,
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            3,
+            21,
+            66,
+            229,
+            394,
+            622,
+            727,
+            138,
+            18,
+            22,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p50_bounds": {
+            "lower_ms": 5,
+            "upper_ms": 10
+          },
+          "p95_bounds": {
+            "lower_ms": 25,
+            "upper_ms": 50
+          }
+        },
+        "sql_other": {
+          "samples": 10109,
+          "total_seconds": 92.49684022816655,
+          "mean_ms": 9.14994957247666,
+          "max_ms": 114.12970301171299,
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            16,
+            71,
+            229,
+            1288,
+            2193,
+            2983,
+            2817,
+            478,
+            31,
+            3,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p50_bounds": {
+            "lower_ms": 5,
+            "upper_ms": 10
+          },
+          "p95_bounds": {
+            "lower_ms": 25,
+            "upper_ms": 50
+          }
+        },
+        "session_resolve": {
+          "samples": 3699,
+          "total_seconds": 77.9363102082425,
+          "mean_ms": 21.069562100092593,
+          "max_ms": 179.6483220095979,
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            10,
+            137,
+            633,
+            1860,
+            929,
+            98,
+            32,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p50_bounds": {
+            "lower_ms": 10,
+            "upper_ms": 25
+          },
+          "p95_bounds": {
+            "lower_ms": 25,
+            "upper_ms": 50
+          }
+        },
+        "sql_locking": {
+          "samples": 1689,
+          "total_seconds": 26.571925814525457,
+          "mean_ms": 15.732342104514776,
+          "max_ms": 467.32229299959727,
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            8,
+            25,
+            128,
+            220,
+            407,
+            654,
+            200,
+            28,
+            17,
+            2,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p50_bounds": {
+            "lower_ms": 10,
+            "upper_ms": 25
+          },
+          "p95_bounds": {
+            "lower_ms": 25,
+            "upper_ms": 50
+          }
+        },
+        "authority_fence": {
+          "samples": 1459,
+          "total_seconds": 38.465699387103086,
+          "mean_ms": 26.364427270118632,
+          "max_ms": 174.45969198888633,
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            2,
+            17,
+            111,
+            663,
+            567,
+            90,
+            9,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p50_bounds": {
+            "lower_ms": 10,
+            "upper_ms": 25
+          },
+          "p95_bounds": {
+            "lower_ms": 50,
+            "upper_ms": 100
+          }
+        },
+        "native_public_verify": {
+          "samples": 75,
+          "total_seconds": 2.1246817029459635,
+          "mean_ms": 28.329089372612845,
+          "max_ms": 65.03616798727307,
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            2,
+            5,
+            33,
+            26,
+            9,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p50_bounds": {
+            "lower_ms": 10,
+            "upper_ms": 25
+          },
+          "p95_bounds": {
+            "lower_ms": 50,
+            "upper_ms": 100
+          }
+        },
+        "db_commit": {
+          "samples": 1459,
+          "total_seconds": 12.69102825007576,
+          "mean_ms": 8.698442940422042,
+          "max_ms": 105.39639499620534,
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            4,
+            16,
+            26,
+            170,
+            335,
+            473,
+            370,
+            61,
+            3,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p50_bounds": {
+            "lower_ms": 5,
+            "upper_ms": 10
+          },
+          "p95_bounds": {
+            "lower_ms": 10,
+            "upper_ms": 25
+          }
+        },
+        "operational_counters": {
+          "samples": 1459,
+          "total_seconds": 14.100822600841639,
+          "mean_ms": 9.664717341221136,
+          "max_ms": 229.58751599071547,
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            21,
+            79,
+            200,
+            318,
+            436,
+            342,
+            39,
+            11,
+            13,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p50_bounds": {
+            "lower_ms": 5,
+            "upper_ms": 10
+          },
+          "p95_bounds": {
+            "lower_ms": 10,
+            "upper_ms": 25
+          }
+        },
+        "sync_middleware_total": {
+          "samples": 1459,
+          "total_seconds": 303.62535281150485,
+          "mean_ms": 208.10510816415686,
+          "max_ms": 856.3368129980518,
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            2,
+            11,
+            8,
+            61,
+            1033,
+            324,
+            20,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p50_bounds": {
+            "lower_ms": 100,
+            "upper_ms": 250
+          },
+          "p95_bounds": {
+            "lower_ms": 250,
+            "upper_ms": 500
+          }
+        },
+        "asgi_arrival_to_final_body": {
+          "samples": 1459,
+          "total_seconds": 395.1396823677351,
+          "mean_ms": 270.82911745561006,
+          "max_ms": 901.7136759939604,
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            7,
+            5,
+            35,
+            629,
+            734,
+            48,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p50_bounds": {
+            "lower_ms": 250,
+            "upper_ms": 500
+          },
+          "p95_bounds": {
+            "lower_ms": 250,
+            "upper_ms": 500
+          }
+        }
+      },
+      "pool_before": {
+        "default": {
+          "requests_num": 1061,
+          "requests_queued": 4,
+          "connections_num": 5,
+          "connections_ms": 97,
+          "requests_wait_ms": 28,
+          "pool_min": 1,
+          "pool_max": 16,
+          "pool_size": 4,
+          "pool_available": 4,
+          "requests_waiting": 0
+        }
+      },
+      "pool_after": {
+        "default": {
+          "requests_num": 3301,
+          "requests_queued": 132,
+          "connections_num": 17,
+          "connections_ms": 636,
+          "requests_wait_ms": 4889,
+          "pool_min": 1,
+          "pool_max": 16,
+          "pool_size": 16,
+          "pool_available": 16,
+          "requests_waiting": 0
+        }
+      },
+      "sampled_call_wall": [],
+      "scope": "HTTP middleware SQL plus ASGI arrival/response; process-wide DB connection/commit/rollback timing includes WebSockets; no WebSocket cursor SQL, SQL text, parameters, paths, headers or identifiers; timings overlap, do not sum phases"
+    },
+    {
+      "timings": {
+        "asgi_arrival_to_sync_middleware": {
+          "samples": 1448,
+          "total_seconds": 69.55639126473397,
+          "mean_ms": 48.03618181266158,
+          "max_ms": 254.69791899377014,
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            2,
+            7,
+            11,
+            17,
+            46,
+            199,
+            576,
+            532,
+            57,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p50_bounds": {
+            "lower_ms": 25,
+            "upper_ms": 50
+          },
+          "p95_bounds": {
+            "lower_ms": 50,
+            "upper_ms": 100
+          }
+        },
+        "db_get_new_connection": {
+          "samples": 2252,
+          "total_seconds": 24.429267785832053,
+          "mean_ms": 10.847809851612812,
+          "max_ms": 107.56329901050776,
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            5,
+            34,
+            72,
+            203,
+            414,
+            608,
+            753,
+            135,
+            26,
+            2,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p50_bounds": {
+            "lower_ms": 5,
+            "upper_ms": 10
+          },
+          "p95_bounds": {
+            "lower_ms": 25,
+            "upper_ms": 50
+          }
+        },
+        "sql_other": {
+          "samples": 10062,
+          "total_seconds": 95.42168389505241,
+          "mean_ms": 9.483371486290242,
+          "max_ms": 110.50498999247793,
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            17,
+            66,
+            226,
+            1247,
+            2141,
+            2877,
+            2931,
+            525,
+            28,
+            4,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p50_bounds": {
+            "lower_ms": 5,
+            "upper_ms": 10
+          },
+          "p95_bounds": {
+            "lower_ms": 25,
+            "upper_ms": 50
+          }
+        },
+        "session_resolve": {
+          "samples": 3700,
+          "total_seconds": 75.77363153091574,
+          "mean_ms": 20.47935987322047,
+          "max_ms": 174.57423399901018,
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            13,
+            141,
+            632,
+            1887,
+            904,
+            110,
+            13,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p50_bounds": {
+            "lower_ms": 10,
+            "upper_ms": 25
+          },
+          "p95_bounds": {
+            "lower_ms": 25,
+            "upper_ms": 50
+          }
+        },
+        "sql_locking": {
+          "samples": 1676,
+          "total_seconds": 28.78342883219011,
+          "mean_ms": 17.17388355142608,
+          "max_ms": 402.04453900514636,
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            8,
+            22,
+            99,
+            215,
+            402,
+            665,
+            208,
+            27,
+            23,
+            7,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p50_bounds": {
+            "lower_ms": 10,
+            "upper_ms": 25
+          },
+          "p95_bounds": {
+            "lower_ms": 25,
+            "upper_ms": 50
+          }
+        },
+        "authority_fence": {
+          "samples": 1448,
+          "total_seconds": 38.393372868333245,
+          "mean_ms": 26.514760268185942,
+          "max_ms": 183.94442299904767,
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            2,
+            14,
+            97,
+            679,
+            546,
+            104,
+            6,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p50_bounds": {
+            "lower_ms": 10,
+            "upper_ms": 25
+          },
+          "p95_bounds": {
+            "lower_ms": 50,
+            "upper_ms": 100
+          }
+        },
+        "db_commit": {
+          "samples": 1448,
+          "total_seconds": 12.454078984010266,
+          "mean_ms": 8.600883276250183,
+          "max_ms": 108.10078399663325,
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            4,
+            14,
+            30,
+            160,
+            320,
+            472,
+            398,
+            46,
+            3,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p50_bounds": {
+            "lower_ms": 5,
+            "upper_ms": 10
+          },
+          "p95_bounds": {
+            "lower_ms": 10,
+            "upper_ms": 25
+          }
+        },
+        "operational_counters": {
+          "samples": 1448,
+          "total_seconds": 11.570997565446305,
+          "mean_ms": 7.991020418125902,
+          "max_ms": 47.00771099305712,
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            12,
+            90,
+            203,
+            339,
+            394,
+            358,
+            52,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p50_bounds": {
+            "lower_ms": 5,
+            "upper_ms": 10
+          },
+          "p95_bounds": {
+            "lower_ms": 10,
+            "upper_ms": 25
+          }
+        },
+        "sync_middleware_total": {
+          "samples": 1448,
+          "total_seconds": 306.92203113813594,
+          "mean_ms": 211.96272868655797,
+          "max_ms": 945.7536260015331,
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            13,
+            8,
+            49,
+            1057,
+            289,
+            32,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p50_bounds": {
+            "lower_ms": 100,
+            "upper_ms": 250
+          },
+          "p95_bounds": {
+            "lower_ms": 250,
+            "upper_ms": 500
+          }
+        },
+        "asgi_arrival_to_final_body": {
+          "samples": 1448,
+          "total_seconds": 401.13477132578555,
+          "mean_ms": 277.0267757774762,
+          "max_ms": 1028.879699006211,
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            10,
+            8,
+            36,
+            574,
+            757,
+            62,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p50_bounds": {
+            "lower_ms": 250,
+            "upper_ms": 500
+          },
+          "p95_bounds": {
+            "lower_ms": 250,
+            "upper_ms": 500
+          }
+        },
+        "native_public_verify": {
+          "samples": 85,
+          "total_seconds": 2.36016235894931,
+          "mean_ms": 27.766615987638943,
+          "max_ms": 61.01183300779667,
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            9,
+            33,
+            33,
+            10,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p50_bounds": {
+            "lower_ms": 25,
+            "upper_ms": 50
+          },
+          "p95_bounds": {
+            "lower_ms": 50,
+            "upper_ms": 100
+          }
+        }
+      },
+      "pool_before": {
+        "default": {
+          "requests_num": 806,
+          "requests_queued": 13,
+          "connections_num": 6,
+          "connections_ms": 121,
+          "requests_wait_ms": 148,
+          "pool_min": 1,
+          "pool_max": 16,
+          "pool_size": 5,
+          "pool_available": 5,
+          "requests_waiting": 0
+        }
+      },
+      "pool_after": {
+        "default": {
+          "requests_num": 3058,
+          "requests_queued": 107,
+          "connections_num": 17,
+          "connections_ms": 607,
+          "requests_wait_ms": 2545,
+          "pool_min": 1,
+          "pool_max": 16,
+          "pool_size": 16,
+          "pool_available": 16,
+          "requests_waiting": 0
+        }
+      },
+      "sampled_call_wall": [],
+      "scope": "HTTP middleware SQL plus ASGI arrival/response; process-wide DB connection/commit/rollback timing includes WebSockets; no WebSocket cursor SQL, SQL text, parameters, paths, headers or identifiers; timings overlap, do not sum phases"
+    },
+    {
+      "timings": {
+        "asgi_arrival_to_sync_middleware": {
+          "samples": 1483,
+          "total_seconds": 68.00640973253758,
+          "mean_ms": 45.857322813578946,
+          "max_ms": 260.8810779929627,
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            11,
+            10,
+            8,
+            29,
+            232,
+            646,
+            505,
+            39,
+            3,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p50_bounds": {
+            "lower_ms": 25,
+            "upper_ms": 50
+          },
+          "p95_bounds": {
+            "lower_ms": 50,
+            "upper_ms": 100
+          }
+        },
+        "db_get_new_connection": {
+          "samples": 2186,
+          "total_seconds": 31.6567935271014,
+          "mean_ms": 14.481607285956724,
+          "max_ms": 290.4332619946217,
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            2,
+            25,
+            66,
+            205,
+            378,
+            625,
+            679,
+            134,
+            27,
+            42,
+            3,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p50_bounds": {
+            "lower_ms": 5,
+            "upper_ms": 10
+          },
+          "p95_bounds": {
+            "lower_ms": 25,
+            "upper_ms": 50
+          }
+        },
+        "sql_other": {
+          "samples": 10185,
+          "total_seconds": 93.12444855850481,
+          "mean_ms": 9.143293918360806,
+          "max_ms": 125.7126949931262,
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            14,
+            53,
+            241,
+            1291,
+            2237,
+            3047,
+            2793,
+            477,
+            24,
+            8,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p50_bounds": {
+            "lower_ms": 5,
+            "upper_ms": 10
+          },
+          "p95_bounds": {
+            "lower_ms": 10,
+            "upper_ms": 25
+          }
+        },
+        "session_resolve": {
+          "samples": 3669,
+          "total_seconds": 82.88097604206996,
+          "mean_ms": 22.58952740312618,
+          "max_ms": 303.14236698905006,
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            4,
+            125,
+            648,
+            1822,
+            912,
+            95,
+            59,
+            4,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p50_bounds": {
+            "lower_ms": 10,
+            "upper_ms": 25
+          },
+          "p95_bounds": {
+            "lower_ms": 25,
+            "upper_ms": 50
+          }
+        },
+        "sql_locking": {
+          "samples": 1683,
+          "total_seconds": 24.67429043255106,
+          "mean_ms": 14.660897464379715,
+          "max_ms": 491.8592610047199,
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            4,
+            24,
+            125,
+            271,
+            402,
+            642,
+            178,
+            21,
+            13,
+            3,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p50_bounds": {
+            "lower_ms": 10,
+            "upper_ms": 25
+          },
+          "p95_bounds": {
+            "lower_ms": 25,
+            "upper_ms": 50
+          }
+        },
+        "authority_fence": {
+          "samples": 1483,
+          "total_seconds": 38.407452206723974,
+          "mean_ms": 25.898484293138218,
+          "max_ms": 149.4717860041419,
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            14,
+            104,
+            712,
+            562,
+            83,
+            7,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p50_bounds": {
+            "lower_ms": 10,
+            "upper_ms": 25
+          },
+          "p95_bounds": {
+            "lower_ms": 50,
+            "upper_ms": 100
+          }
+        },
+        "native_public_verify": {
+          "samples": 64,
+          "total_seconds": 1.720454864029307,
+          "mean_ms": 26.88210725045792,
+          "max_ms": 64.51966299209744,
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            2,
+            1,
+            1,
+            31,
+            23,
+            6,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p50_bounds": {
+            "lower_ms": 10,
+            "upper_ms": 25
+          },
+          "p95_bounds": {
+            "lower_ms": 50,
+            "upper_ms": 100
+          }
+        },
+        "db_commit": {
+          "samples": 1483,
+          "total_seconds": 12.860112570793717,
+          "mean_ms": 8.671687505592526,
+          "max_ms": 92.1101669955533,
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            4,
+            13,
+            34,
+            174,
+            347,
+            471,
+            386,
+            51,
+            3,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p50_bounds": {
+            "lower_ms": 5,
+            "upper_ms": 10
+          },
+          "p95_bounds": {
+            "lower_ms": 10,
+            "upper_ms": 25
+          }
+        },
+        "operational_counters": {
+          "samples": 1483,
+          "total_seconds": 17.513537801947678,
+          "mean_ms": 11.809533244738825,
+          "max_ms": 467.3221280099824,
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            9,
+            63,
+            209,
+            341,
+            430,
+            360,
+            44,
+            9,
+            5,
+            13,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p50_bounds": {
+            "lower_ms": 5,
+            "upper_ms": 10
+          },
+          "p95_bounds": {
+            "lower_ms": 10,
+            "upper_ms": 25
+          }
+        },
+        "sync_middleware_total": {
+          "samples": 1483,
+          "total_seconds": 309.5511950111395,
+          "mean_ms": 208.73310519968948,
+          "max_ms": 788.9089770033024,
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            5,
+            9,
+            44,
+            1131,
+            266,
+            28,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p50_bounds": {
+            "lower_ms": 100,
+            "upper_ms": 250
+          },
+          "p95_bounds": {
+            "lower_ms": 250,
+            "upper_ms": 500
+          }
+        },
+        "asgi_arrival_to_final_body": {
+          "samples": 1483,
+          "total_seconds": 401.87203909673553,
+          "mean_ms": 270.98586587777174,
+          "max_ms": 850.4427599982591,
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            3,
+            10,
+            25,
+            677,
+            701,
+            67,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "p50_bounds": {
+            "lower_ms": 250,
+            "upper_ms": 500
+          },
+          "p95_bounds": {
+            "lower_ms": 250,
+            "upper_ms": 500
+          }
+        }
+      },
+      "pool_before": {
+        "default": {
+          "requests_num": 652,
+          "requests_queued": 10,
+          "connections_num": 5,
+          "connections_ms": 96,
+          "requests_wait_ms": 95,
+          "pool_min": 1,
+          "pool_max": 16,
+          "pool_size": 4,
+          "pool_available": 4,
+          "requests_waiting": 0
+        }
+      },
+      "pool_after": {
+        "default": {
+          "requests_num": 2838,
+          "requests_queued": 161,
+          "connections_num": 17,
+          "connections_ms": 650,
+          "requests_wait_ms": 10929,
+          "pool_min": 1,
+          "pool_max": 16,
+          "pool_size": 16,
+          "pool_available": 16,
+          "requests_waiting": 0
+        }
+      },
+      "sampled_call_wall": [],
+      "scope": "HTTP middleware SQL plus ASGI arrival/response; process-wide DB connection/commit/rollback timing includes WebSockets; no WebSocket cursor SQL, SQL text, parameters, paths, headers or identifiers; timings overlap, do not sum phases"
+    }
+  ],
+  "api_profile": {
+    "timings": {
+      "asgi_arrival_to_sync_middleware": {
+        "samples": 5330,
+        "total_seconds": 261.4327377557347,
+        "mean_ms": 49.04929413803653,
+        "max_ms": 586.1939669994172,
+        "histogram_counts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          3,
+          35,
+          44,
+          65,
+          146,
+          748,
+          2144,
+          1872,
+          250,
+          22,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "p50_bounds": {
+          "lower_ms": 25,
+          "upper_ms": 50
+        },
+        "p95_bounds": {
+          "lower_ms": 100,
+          "upper_ms": 250
+        }
+      },
+      "db_get_new_connection": {
+        "samples": 8480,
+        "total_seconds": 99.3132962949312,
+        "mean_ms": 11.711473619685284,
+        "max_ms": 290.4332619946217,
+        "histogram_counts": [
+          0,
+          0,
+          0,
+          0,
+          14,
+          132,
+          318,
+          895,
+          1545,
+          2304,
+          2595,
+          519,
+          86,
+          69,
+          3,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "p50_bounds": {
+          "lower_ms": 5,
+          "upper_ms": 10
+        },
+        "p95_bounds": {
+          "lower_ms": 25,
+          "upper_ms": 50
+        }
+      },
+      "sql_other": {
+        "samples": 36845,
+        "total_seconds": 327.6899495760008,
+        "mean_ms": 8.893742694422603,
+        "max_ms": 125.7126949931262,
+        "histogram_counts": [
+          0,
+          0,
+          0,
+          0,
+          97,
+          365,
+          1222,
+          5205,
+          7933,
+          10401,
+          9781,
+          1724,
+          98,
+          19,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "p50_bounds": {
+          "lower_ms": 5,
+          "upper_ms": 10
+        },
+        "p95_bounds": {
+          "lower_ms": 10,
+          "upper_ms": 25
+        }
+      },
+      "session_resolve": {
+        "samples": 13810,
+        "total_seconds": 289.094815674398,
+        "mean_ms": 20.933730316755828,
+        "max_ms": 303.14236698905006,
+        "histogram_counts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          37,
+          590,
+          2535,
+          6808,
+          3325,
+          399,
+          112,
+          4,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "p50_bounds": {
+          "lower_ms": 10,
+          "upper_ms": 25
+        },
+        "p95_bounds": {
+          "lower_ms": 25,
+          "upper_ms": 50
+        }
+      },
+      "sql_locking": {
+        "samples": 6140,
+        "total_seconds": 94.72800429494237,
+        "mean_ms": 15.428013728817975,
+        "max_ms": 657.9458140040515,
+        "histogram_counts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          28,
+          139,
+          506,
+          887,
+          1458,
+          2266,
+          691,
+          87,
+          64,
+          13,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "p50_bounds": {
+          "lower_ms": 10,
+          "upper_ms": 25
+        },
+        "p95_bounds": {
+          "lower_ms": 25,
+          "upper_ms": 50
+        }
+      },
+      "authority_fence": {
+        "samples": 5330,
+        "total_seconds": 136.75908119311498,
+        "mean_ms": 25.658364201334894,
+        "max_ms": 183.94442299904767,
+        "histogram_counts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          7,
+          75,
+          457,
+          2496,
+          1938,
+          331,
+          26,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "p50_bounds": {
+          "lower_ms": 10,
+          "upper_ms": 25
+        },
+        "p95_bounds": {
+          "lower_ms": 50,
+          "upper_ms": 100
+        }
+      },
+      "native_public_verify": {
+        "samples": 265,
+        "total_seconds": 6.839938443896244,
+        "mean_ms": 25.811088467532997,
+        "max_ms": 65.03616798727307,
+        "histogram_counts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          3,
+          10,
+          24,
+          112,
+          91,
+          25,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "p50_bounds": {
+          "lower_ms": 10,
+          "upper_ms": 25
+        },
+        "p95_bounds": {
+          "lower_ms": 50,
+          "upper_ms": 100
+        }
+      },
+      "db_commit": {
+        "samples": 5330,
+        "total_seconds": 44.43821117815969,
+        "mean_ms": 8.33737545556467,
+        "max_ms": 108.10078399663325,
+        "histogram_counts": [
+          0,
+          0,
+          0,
+          0,
+          22,
+          85,
+          136,
+          684,
+          1239,
+          1640,
+          1331,
+          178,
+          13,
+          2,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "p50_bounds": {
+          "lower_ms": 5,
+          "upper_ms": 10
+        },
+        "p95_bounds": {
+          "lower_ms": 10,
+          "upper_ms": 25
+        }
+      },
+      "operational_counters": {
+        "samples": 5330,
+        "total_seconds": 50.32115705902106,
+        "mean_ms": 9.441117647095885,
+        "max_ms": 467.3221280099824,
+        "histogram_counts": [
+          0,
+          0,
+          0,
+          0,
+          1,
+          65,
+          315,
+          813,
+          1208,
+          1485,
+          1224,
+          160,
+          21,
+          25,
+          13,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "p50_bounds": {
+          "lower_ms": 5,
+          "upper_ms": 10
+        },
+        "p95_bounds": {
+          "lower_ms": 10,
+          "upper_ms": 25
+        }
+      },
+      "sync_middleware_total": {
+        "samples": 5330,
+        "total_seconds": 1117.3252864828683,
+        "mean_ms": 209.62950965907473,
+        "max_ms": 945.7536260015331,
+        "histogram_counts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          3,
+          40,
+          41,
+          203,
+          3874,
+          1067,
+          102,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "p50_bounds": {
+          "lower_ms": 100,
+          "upper_ms": 250
+        },
+        "p95_bounds": {
+          "lower_ms": 250,
+          "upper_ms": 500
+        }
+      },
+      "asgi_arrival_to_final_body": {
+        "samples": 5330,
+        "total_seconds": 1477.3172127152068,
+        "mean_ms": 277.1702087645791,
+        "max_ms": 1077.3058490012772,
+        "histogram_counts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          2,
+          25,
+          36,
+          125,
+          2217,
+          2674,
+          246,
+          5,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "p50_bounds": {
+          "lower_ms": 250,
+          "upper_ms": 500
+        },
+        "p95_bounds": {
+          "lower_ms": 250,
+          "upper_ms": 500
+        }
+      }
+    },
+    "pool_before": {
+      "default": {
+        "requests_num": 3850,
+        "requests_queued": 36,
+        "connections_num": 22,
+        "connections_ms": 443,
+        "requests_wait_ms": 335,
+        "pool_min": 4,
+        "pool_max": 64,
+        "pool_size": 18,
+        "pool_available": 18,
+        "requests_waiting": 0
+      }
+    },
+    "pool_after": {
+      "default": {
+        "requests_num": 12330,
+        "requests_queued": 440,
+        "connections_num": 68,
+        "connections_ms": 2772,
+        "requests_wait_ms": 19147,
+        "pool_min": 4,
+        "pool_max": 64,
+        "pool_size": 64,
+        "pool_available": 64,
+        "requests_waiting": 0
+      }
+    },
+    "scope": "Merged histogram counts across independent API processes; SQL cursor timing HTTP-only; connection/commit and pool statistics include WebSockets; windows include handshakes/teardown; phases overlap"
+  },
+  "postgres_container_block_io_after": "0B / 159MB",
+  "tls_transport": {
+    "upload_tls_bytes": 8565461,
+    "download_tls_bytes": 14647232,
+    "new_connections": 409,
+    "scope": "TLS records including HTTP/WSS headers and payloads; excludes TCP/IP overhead"
+  },
+  "revision": "current",
+  "api_db_pool_override": null,
+  "cpu_profile_diagnostic": false,
+  "working_source_manifest_sha256_at_start": "9d63fa0ea358cdef9e1fc82a70904cd98b95c71195d7384d337aef4859aa57a4",
+  "native_client_sha256": "6242764d9c4f8b407f11d4e2a6af64b3b89079907fa87cd0a51231941c9bbb2e",
+  "same_current_native_client_for_both_apis": true,
+  "exercised_source_sha256_at_start": {
+    "haven/runtime_settings.py": "49cc234f207265c4a7f2932223564a4fb311233b7f22df74844f14955d1822b5",
+    "core/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "core/attachment_lifecycle.py": "2f501c5bfefbb35e589d0ad443505afe4aff04952f5ed72164a233c99e5413ba",
+    "core/auth.py": "1990e818b5a55445d8776f9f1f222c454eeef7fea413781bf5a0dad908f32010",
+    "core/authorization.py": "9f10a6d4f46b12d9004695d410855406f04f8253cf1f475dfa9d7a9c7015b685",
+    "core/cache_serializer.py": "1b2e200e0aaad8638004a8048b8a3c6aa301c5d6ddb0dd92622a98d7899fe06f",
+    "core/consumers.py": "99b3af74615c91418862d05dc77667f4eb618f46a14caccffba124efa6ef1e78",
+    "core/errors.py": "1bbc0a1ecef55020673c5e16a3ff1d33b22ce424186bb15124d6daf5b436bea2",
+    "core/hashers.py": "15bfa552b30162d582aff5917e7a8fe37b6b4da99a7c80967a191badda0d5b25",
+    "core/management/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "core/management/commands/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "core/management/commands/bootstrap_admin.py": "cdaf5e1cc46e1054c14949f6151f1111f524ec054a753c32ed1692c8f5bbb6f9",
+    "core/management/commands/check_endpoint.py": "1607c4fb77d849be5ea915b14738418ad1966a2ccfb3b277b604abec62e5dc92",
+    "core/management/commands/cleanup_expired.py": "90c6d3869d01f0e3109cb2379840c89125321dabe246c1368570297b71009882",
+    "core/management/commands/maintain_privacy.py": "74efe1f640692d12c3044032cf7cc993b27cf31858c8beea1ba841fc2f735536",
+    "core/management/commands/migrate_haven.py": "c0fbc577cc7670bcf86f5a9fe514eddcddb1bf4e22ec9224e8e23333455420f9",
+    "core/management/commands/prepare_db_roles.py": "e53138cf6ac0917f16c9521b1faf54ef5dfd6994cf479f65588fd496d0a51cdf",
+    "core/management/commands/publish_outbox.py": "1d37ca33c990cecaf4bb94eac2fb19d4249d7626d9e754ca973af024ae9aa4ed",
+    "core/management/commands/record_operational_evidence.py": "05003f6fe0c4c57c4a0a759c7baaa5f4ee7ad2bb0fe1379226d85ab26d1ba2e8",
+    "core/management/commands/verify_durability.py": "7eba570e1a3f43eadec62c008c269fb2165c84b5b87d08385a1140c05a0fafec",
+    "core/managers.py": "e1c568848f17446e22ebbcb3913a714193cfc5240773b33f904fcd131fee22a9",
+    "core/middleware.py": "1f9350782b6e14a72369fe32ca150ad5ba09a28805fb2715e389e0e550cb3ca9",
+    "core/migrations/0001_initial.py": "0651caf536bf806988cc5f2da214b561d2d9c34de5ed4343f5bfe2d5f569ae53",
+    "core/migrations/0002_alter_user_managers.py": "1ea37e6b4b77d3949025105b5c3697ac60a2db3f189927bf5c607fcac4b4a7ed",
+    "core/migrations/0003_conversation_genesis_conversation_genesis_signature_and_more.py": "cf9d23d2f55955a5371a68f888aa404a0728c377bad6caca4ed446298f7c5f20",
+    "core/migrations/0004_membership_leave_signature.py": "3b0252a3cf77c23a68c82007c5d95b1fa3594169646f4a02709b59fc124b0ff4",
+    "core/migrations/0005_serverpolicy.py": "bca49c85fdb2db73072b700144ce4357fd432c1e0dca1ebc5b38aa04752cdd68",
+    "core/migrations/0006_encryptedattachment_view_once_attachmentview.py": "541ba0a84a7bd34b737691cabdcaf1f6bf2aefdbc2fbebc7e5d048ef1a4b7d50",
+    "core/migrations/0007_attachmenttombstone.py": "c327dfbb0b1c6ba4b596e1f9b818d944f82c2a94c2d8d38fc41f0be3ebc93849",
+    "core/migrations/0008_minimal_retention.py": "7e9d56f8f81c92545996dea53806175ac634eda45c4cf1928a6c06fabcb8668f",
+    "core/migrations/0009_member_invitations.py": "0258386a528aa20a2224bc497c5ad075f6a92f6ecdca67044253bba3018a568f",
+    "core/migrations/0010_credential_bound_sessions.py": "ddac459e3b706c4597e965d2864b5fb9aa62b1c4a0ecdc1573ccbd942fe36bcb",
+    "core/migrations/0011_storage_and_sync_budgets.py": "29d7adb2722501158f6a74a659226deca9a3d93a1b032cefb9d747f35ef57d88",
+    "core/migrations/0012_conversation_page_index.py": "8608a32edf069f975e343a1ea08a6b3f2552c8be97dbd8abd3eec36e1a33f508",
+    "core/migrations/0013_metadata_minimization.py": "0249afd91de2282650504bbbd23936008ba268151de4ff1c102c168424faed10",
+    "core/migrations/0014_keypackage_privacy_index.py": "86ae3f00d9223ade719b11c195d58226a13f5a174214c42ed7b98074c6312c1d",
+    "core/migrations/0015_pending_enrollment_privacy.py": "adc1cdef7a1787a546737e52996738df66b94b2bb4a5864fc24e390074f3e59b",
+    "core/migrations/0016_session_challenge_context.py": "3f7f5c8db95512fe7420b56b9739eb3650fcac26df3149a08907a90ff2ff2769",
+    "core/migrations/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "core/models.py": "23ae43e853dd0d03fd7d89c3e8d3469cb69a412fd664f7bff909507371170f8c",
+    "core/observability.py": "fcd2e15bc4e3376b619fc14a5e92c24be30cb5c316d0b2c3b33534cb1b1a6b69",
+    "core/privacy.py": "051ab0190176ea340306d28eb096c4cb4b355da14744d8d3590b560d6c11a45d",
+    "core/protocol.py": "564629945ee1378dc8e060b8e0e9c3a4fe46c04a23fe2910665dc284a8982f5e",
+    "core/retention.py": "5a7b298c7895a5ce9a6e0d328ca6e46d04a9c071171424839b76597b03609128",
+    "core/serializers.py": "e56cae57d25ed23ea332269ed139405d56eb39a421d664400c2608fa3597b14d",
+    "core/storage.py": "35731caa09f90b2ed5c6fa21a9c964bb81976c9e5a35c5909b1608b8e1147b73",
+    "core/views.py": "cada47eed7282f8c15a9f6f51046ce1186110644e1660dd8e666c649be026959",
+    "haven/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "haven/asgi.py": "c7d6c01c2f5775ba99c17561941ee05259886df3b043b47959f9d74cca4b41a7",
+    "haven/integration_settings.py": "c95eba0655edc6bf151ac6a9370e231831067f2f97ab891637bbc1db15cb19d3",
+    "haven/settings.py": "2e7fa0a1f05ba074f438b1770746576de0d7c6aef19e5d10e00f0d22cb337ba4",
+    "haven/urls.py": "1dca8616f62de02c96512f8c1fe1e618e251288de2eb74e0a0a72d3eb61c61ae",
+    "manage.py": "34c232ea6d831dd4ad107479aaf0174eeb2485dccefb086e5b843e58f8dd755a",
+    "scripts/benchmark-metadata-isolated.py": "378f607e804415428eeb6fe63869bb080d9144883559f42bfb7e5b4bb6fcc6dd",
+    "scripts/benchmark-metadata-load.py": "900baa0ccb2580b4620b3de866e5803c366f1b82ae07ae900adc1b85f75d6e35",
+    "scripts/metadata-tls-meter.mjs": "6393e5c5ea96d5e0cbfe08df0e0f7a20131542081095170ef2b8d8abf2940dcf",
+    "scripts/metadata-load-media.mjs": "bb50e73e437652612e5fcf7b9be29b8546c4d43678fa8e75abf75868d3fde035",
+    "scripts/metadata_load_instruments.py": "1a36e5f8f0916d5864e92b34e3225be3b871b3ba7b534cdfeeab998531ccb64f",
+    "scripts/metadata_load_profile.py": "b0d6676bb8fde626035cbbd2688e21bdf4ad742908a32c65ecb549e70d9b5223",
+    "packages/crypto-core/src/lib.rs": "865102196f8bdc226a2619d66a9212de48eec8f9118adfa8c476e5115df06717",
+    "packages/crypto-core/examples/protocol_client.rs": "f1403ee762554986a640f82aced0a75987d35808cd6ce9055f1e45efec5ca61f",
+    "packages/crypto-core/Cargo.toml": "161ebe44d353efa8c8ba937bd6ef8e4be4e8a7485b513503977e92a2c576457f",
+    "packages/crypto-core/Cargo.lock": "5f519dd9316c8f88177a2412a3cb17a952dbe33e3e5f8bd33ed738740560caf3",
+    "infrastructure/nginx/nginx.conf": "0c92974d330c24a51de8149bf7757dde7bb6c1557d041135986465448c519b0b"
+  },
+  "source_diff_sha256": "1fff3197ccbd1945ec9e141b368c9052abd3c948f2b2b9e81d59f3e964871b42",
+  "private_artifacts": ".local/metadata-load-b73ba40855d6",
+  "postgres_durability": "fsync=on; synchronous_commit=on; full_page_writes=on; checksums=on; disk-backed disposable Docker volume; timings enabled",
+  "limits": "Unmodified ingress/DB/API rate/connection/storage limits; per-account loopback source; recorded Uvicorn worker count; co-located synthetic driver; no production or physical-device qualification"
+}

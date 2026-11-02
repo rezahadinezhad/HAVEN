@@ -1,0 +1,1 @@
+PASS nonroot API/web images; absent baked .env/key files and runtime installers; production PoF assets excluded.

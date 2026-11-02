@@ -1,0 +1,40 @@
+{
+  "status": "INTERRUPTED_OR_FAILED",
+  "cases": [
+    {
+      "name": "combined",
+      "exit_code": 0,
+      "integrity_status": "PASS",
+      "sender_pipeline_probe_status": "NOT_REQUESTED",
+      "performance_status": "FAIL",
+      "wall_seconds_including_setup": 181.5019816970016
+    },
+    {
+      "name": "baseline-burst",
+      "exit_code": 0,
+      "integrity_status": "PASS",
+      "sender_pipeline_probe_status": "NOT_REQUESTED",
+      "performance_status": "FAIL",
+      "wall_seconds_including_setup": 163.96335741100484
+    },
+    {
+      "name": "current-burst",
+      "exit_code": 0,
+      "integrity_status": "PASS",
+      "sender_pipeline_probe_status": "NOT_REQUESTED",
+      "performance_status": "FAIL",
+      "wall_seconds_including_setup": 182.7203907110088
+    },
+    {
+      "name": "media-burst",
+      "exit_code": 1,
+      "integrity_status": null,
+      "sender_pipeline_probe_status": "NOT_REQUESTED",
+      "performance_status": null,
+      "wall_seconds_including_setup": 131.89470287199947
+    }
+  ],
+  "private_artifacts": ".local/workload-qualification-2379b411a78c",
+  "scope": "Serial synthetic native tests on a shared workstation; no production capacity qualification",
+  "active_case": "media-burst"
+}

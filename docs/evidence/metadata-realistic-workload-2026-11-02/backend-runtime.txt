@@ -1,0 +1,39 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.15, pytest-9.1.1, pluggy-1.7.0
+django: version: 5.2.18, settings: haven.runtime_settings (from option)
+rootdir: /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/api
+configfile: pyproject.toml
+plugins: django-4.14.0, anyio-4.15.1, platformdirs-4.13.5, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 132 items
+
+apps/api/core/tests/test_contracts.py ......                             [  4%]
+apps/api/core/tests/test_credential_sessions.py ......                   [  9%]
+apps/api/core/tests/test_enrollment_identifier_privacy.py .....          [ 12%]
+apps/api/core/tests/test_friend_invitations.py ....                      [ 15%]
+apps/api/core/tests/test_metadata_privacy.py .......                     [ 21%]
+apps/api/core/tests/test_native_privacy_boundaries.py ..                 [ 22%]
+apps/api/core/tests/test_privacy.py .......                              [ 28%]
+apps/api/core/tests/test_regressions.py ......                           [ 32%]
+apps/api/core/tests/test_review_remediation.py .....                     [ 36%]
+apps/api/core/tests/test_security.py ..........                          [ 43%]
+apps/api/core/tests/test_view_once.py ....                               [ 46%]
+apps/api/core/tests/test_authorization_fences.py ...................     [ 61%]
+apps/api/core/tests/test_credential_sessions.py ..                       [ 62%]
+apps/api/core/tests/test_database_runtime.py ....                        [ 65%]
+apps/api/core/tests/test_friend_invitations.py .                         [ 66%]
+apps/api/core/tests/test_metadata_privacy.py .                           [ 67%]
+apps/api/core/tests/test_native_privacy_boundaries.py ..                 [ 68%]
+apps/api/core/tests/test_outbox_batching.py ..                           [ 70%]
+apps/api/core/tests/test_pending_enrollment_privacy.py ....              [ 73%]
+apps/api/core/tests/test_privacy.py .                                    [ 74%]
+apps/api/core/tests/test_review_remediation.py ...                       [ 76%]
+apps/api/core/tests/test_security.py ..                                  [ 78%]
+apps/api/core/tests/test_upload_quota_race.py .                          [ 78%]
+apps/api/core/tests/test_view_once.py .                                  [ 79%]
+apps/api/core/tests/test_websocket.py .......                            [ 84%]
+apps/api/core/tests/test_backup_retention.py ...                         [ 87%]
+apps/api/core/tests/test_optional_hostname.py ..........                 [ 94%]
+apps/api/core/tests/test_runtime_config.py .......                       [100%]
+
+======================== 132 passed in 81.84s (0:01:21) ========================

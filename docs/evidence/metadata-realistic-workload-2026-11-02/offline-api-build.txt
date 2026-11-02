@@ -1,0 +1,66 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.api-offline
+#1 transferring dockerfile: 841B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/python:3.12.15-slim-trixie@sha256:a0f57064cbdcd6285fa45f51237ab0b35ea8ebaed06a1f5973e89e19dfb86704
+#2 ...
+
+#3 [auth] library/python:pull token for registry-1.docker.io
+#3 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/python:3.12.15-slim-trixie@sha256:a0f57064cbdcd6285fa45f51237ab0b35ea8ebaed06a1f5973e89e19dfb86704
+#2 DONE 3.1s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 2B done
+#4 DONE 0.0s
+
+#5 [1/9] FROM docker.io/library/python:3.12.15-slim-trixie@sha256:a0f57064cbdcd6285fa45f51237ab0b35ea8ebaed06a1f5973e89e19dfb86704
+#5 resolve docker.io/library/python:3.12.15-slim-trixie@sha256:a0f57064cbdcd6285fa45f51237ab0b35ea8ebaed06a1f5973e89e19dfb86704 0.0s done
+#5 DONE 0.0s
+
+#6 [internal] load build context
+#6 transferring context: 658.26kB 0.0s done
+#6 DONE 0.0s
+
+#7 [4/9] COPY offline-deps/wheels /wheels
+#7 CACHED
+
+#8 [2/9] WORKDIR /app
+#8 CACHED
+
+#9 [3/9] COPY apps/api/requirements.lock /app/requirements.lock
+#9 CACHED
+
+#10 [5/9] RUN pip install --no-index --find-links=/wheels --require-hashes -r requirements.lock && rm -rf /wheels && useradd --uid 10001 --create-home haven
+#10 CACHED
+
+#11 [6/9] COPY --chown=10001:10001 apps/api /app
+#11 DONE 0.1s
+
+#12 [7/9] COPY --chmod=0555 packages/crypto-core/bin/haven-public-verify-x86_64-linux /usr/local/bin/haven-public-verify
+#12 DONE 0.1s
+
+#13 [8/9] RUN test "$(uname -m)" = x86_64
+#13 DONE 0.1s
+
+#14 [9/9] RUN python -m pip uninstall -y pip
+#14 1.669 Found existing installation: pip 25.0.1
+#14 1.725 Uninstalling pip-25.0.1:
+#14 1.870   Successfully uninstalled pip-25.0.1
+#14 1.882 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+#14 DONE 2.0s
+
+#15 exporting to image
+#15 exporting layers
+#15 exporting layers 0.2s done
+#15 exporting manifest sha256:3df831bd06ebfc5a73c2f6905006d7c2470e0610836e7d70a58c12378c42d0f3 0.0s done
+#15 exporting config sha256:1d66fb6daed50d5e842290b920791e07bfd8cbbff1c34fd129de2de01bcaef9c 0.0s done
+#15 exporting attestation manifest sha256:2c12807b4eff74ee2cebbd630f2287bd0ddf92576999dce69cb6fd02fdbcf7fa 0.0s done
+#15 exporting manifest list sha256:38b5972d20ad0b0df9b66b1c83cffc56493d084c850ee0f86b8b447427d86896 0.0s done
+#15 naming to docker.io/library/haven-api:metadata-realistic-20261102 done
+#15 unpacking to docker.io/library/haven-api:metadata-realistic-20261102
+#15 unpacking to docker.io/library/haven-api:metadata-realistic-20261102 0.2s done
+#15 DONE 0.5s

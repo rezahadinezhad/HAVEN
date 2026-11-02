@@ -1,0 +1,1 @@
+PASS: primary/backup overlays render; only web and ingress active by default; replica db explicitly targeted. No public deployment claimed.

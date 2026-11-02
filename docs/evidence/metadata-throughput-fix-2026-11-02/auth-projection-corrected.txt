@@ -1,0 +1,10 @@
+..........F.........                                                     [100%]
+=================================== FAILURES ===================================
+_ test_cookie_resolution_omits_unneeded_profile_enrollment_and_session_columns _
+core/tests/test_metadata_privacy.py:190: in test_cookie_resolution_omits_unneeded_profile_enrollment_and_session_columns
+    assert '"core_user"."password"' in selected  # Required to validate current credential binding.
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   assert '"core_user"."password"' in 'SELECT s.id,s.auth_hash,s.user_id,s.device_id,\n                      u.id,u.password,u.is_active,u.role,\n                      d.id,d.user_id,d.identity,d.public_key,d.trust_state,d.revoked_at\n              '
+=========================== short test summary info ============================
+FAILED core/tests/test_metadata_privacy.py::test_cookie_resolution_omits_unneeded_profile_enrollment_and_session_columns
+1 failed, 19 passed in 16.71s

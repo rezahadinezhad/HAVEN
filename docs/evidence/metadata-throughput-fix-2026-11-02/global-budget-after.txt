@@ -1,0 +1,16 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.15, pytest-9.1.1, pluggy-1.7.0
+django: version: 5.2.18, settings: haven.runtime_settings (from option)
+rootdir: /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/api
+configfile: pyproject.toml
+plugins: django-4.14.0, anyio-4.15.1, platformdirs-4.13.5, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 27 items
+
+apps/api/core/tests/test_native_privacy_boundaries.py ..                 [  7%]
+apps/api/core/tests/test_review_remediation.py .....                     [ 25%]
+apps/api/core/tests/test_native_privacy_boundaries.py ..                 [ 33%]
+apps/api/core/tests/test_review_remediation.py ...                       [ 44%]
+apps/api/core/tests/test_authorization_fences.py ...............         [100%]
+
+============================= 27 passed in 16.81s ==============================

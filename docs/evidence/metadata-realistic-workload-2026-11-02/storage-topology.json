@@ -1,0 +1,29 @@
+{
+  "scope": "Read-only identification of this shared test workstation; no storage, kernel, partition or mount configuration changed",
+  "root_mount": {
+    "filesystems": [
+      {
+        "target": "/",
+        "fstype": "ext4",
+        "source": "/dev/sda4"
+      }
+    ]
+  },
+  "os_disk_model": "SSD",
+  "kernel_rotation_flag": "1",
+  "write_cache": "write back",
+  "transport_path": "/sys/devices/pci0000:00/0000:00:14.0/usb2/2-2/2-2:1.0/host0/target0:0:0/0:0:0:0",
+  "usb_topology": "/:  Bus 001.Port 001: Dev 001, Class=root_hub, Driver=xhci_hcd/12p, 480M\n    |__ Port 005: Dev 002, If 0, Class=Vendor Specific Class, Driver=[none], 12M\n    |__ Port 010: Dev 003, If 0, Class=Wireless, Driver=btusb, 12M\n    |__ Port 010: Dev 003, If 1, Class=Wireless, Driver=btusb, 12M\n/:  Bus 002.Port 001: Dev 001, Class=root_hub, Driver=xhci_hcd/6p, 10000M\n    |__ Port 002: Dev 002, If 0, Class=Mass Storage, Driver=usb-storage, 10000M\n",
+  "qualification": "UNQUALIFIED_SHARED_WORKSTATION",
+  "interpretation": "Database Docker storage and native client checkpoint files share the root USB SSD. NVMe Windows partitions are not mounted or used. USB driver/topology alone is not a measured device ceiling; PostgreSQL wait samples and checkpoint timing retain actual observations.",
+  "docker_root_directory": "/var/snap/docker/common/var-lib-docker",
+  "docker_storage_mount": {
+    "filesystems": [
+      {
+        "target": "/",
+        "fstype": "ext4",
+        "source": "/dev/sda4"
+      }
+    ]
+  }
+}

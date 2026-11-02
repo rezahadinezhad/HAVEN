@@ -1,0 +1,31 @@
+{
+  "status": "COMPLETED",
+  "cases": [
+    {
+      "name": "author-lane-serial",
+      "exit_code": 0,
+      "integrity_status": "PASS",
+      "sender_pipeline_probe_status": "PASS",
+      "performance_status": "PASS",
+      "wall_seconds_including_setup": 24.122992097007227
+    },
+    {
+      "name": "author-lane-pipelined",
+      "exit_code": 0,
+      "integrity_status": "PASS",
+      "sender_pipeline_probe_status": "PASS",
+      "performance_status": "PASS",
+      "wall_seconds_including_setup": 28.71708108999883
+    },
+    {
+      "name": "smoke",
+      "exit_code": 0,
+      "integrity_status": "PASS",
+      "sender_pipeline_probe_status": "NOT_REQUESTED",
+      "performance_status": "PASS",
+      "wall_seconds_including_setup": 36.27423784999701
+    }
+  ],
+  "private_artifacts": ".local/workload-qualification-7ae6f8bb3b0b",
+  "scope": "Serial synthetic native tests on a shared workstation; no production capacity qualification"
+}

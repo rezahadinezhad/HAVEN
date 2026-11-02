@@ -1,0 +1,15 @@
+{
+  "logical_cpus": 8,
+  "available_logical_cpus": 8,
+  "physical_cores": 4,
+  "cpu_model": "Intel(R) Core(TM) i7-10510U CPU @ 1.80GHz",
+  "root_cgroup_cpu_max": null,
+  "scope": "Shared developer workstation, co-located synthetic clients, database, proxy, sockets and desktop applications; not a dedicated reference-production host. Topology alone does not establish a hard capacity ceiling.",
+  "readable_cgroup_hierarchy_cpu_max": [
+    "max 100000",
+    "max 100000",
+    "max 100000",
+    "max 100000"
+  ],
+  "cpu_quota_scope": "Only readable cgroup-v2 cpu.max files; absence is not proof of an unrestricted host."
+}

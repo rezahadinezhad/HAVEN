@@ -1,0 +1,91 @@
+{
+  "status": "COMPLETED",
+  "cases": [
+    {
+      "name": "smoke",
+      "exit_code": 0,
+      "integrity_status": "PASS",
+      "performance_status": "PASS",
+      "wall_seconds_including_setup": 35.50232568199863
+    },
+    {
+      "name": "legacy-smoke",
+      "exit_code": 0,
+      "integrity_status": "PASS",
+      "performance_status": "COMPLETED",
+      "wall_seconds_including_setup": 186.4088450029958
+    },
+    {
+      "name": "baseline-burst",
+      "exit_code": 0,
+      "integrity_status": "PASS",
+      "performance_status": "FAIL",
+      "wall_seconds_including_setup": 127.77747417900537
+    },
+    {
+      "name": "current-burst",
+      "exit_code": 0,
+      "integrity_status": "PASS",
+      "performance_status": "FAIL",
+      "wall_seconds_including_setup": 182.6140134370071
+    },
+    {
+      "name": "media-burst",
+      "exit_code": 0,
+      "integrity_status": "PASS",
+      "performance_status": "PASS",
+      "wall_seconds_including_setup": 191.74466519799898
+    },
+    {
+      "name": "handoff",
+      "exit_code": 0,
+      "integrity_status": "PASS",
+      "performance_status": "FAIL",
+      "wall_seconds_including_setup": 205.1178456179914
+    },
+    {
+      "name": "intermittent",
+      "exit_code": 0,
+      "integrity_status": "PASS",
+      "performance_status": "PASS",
+      "wall_seconds_including_setup": 374.10948060901137
+    },
+    {
+      "name": "connections",
+      "exit_code": 0,
+      "integrity_status": "PASS",
+      "performance_status": "PASS",
+      "wall_seconds_including_setup": 190.15618148399517
+    },
+    {
+      "name": "group-5",
+      "exit_code": 0,
+      "integrity_status": "PASS",
+      "performance_status": "FAIL",
+      "wall_seconds_including_setup": 179.79011825799535
+    },
+    {
+      "name": "group-10",
+      "exit_code": 0,
+      "integrity_status": "PASS",
+      "performance_status": "FAIL",
+      "wall_seconds_including_setup": 165.4968258739973
+    },
+    {
+      "name": "group-25",
+      "exit_code": 0,
+      "integrity_status": "PASS",
+      "performance_status": "FAIL",
+      "wall_seconds_including_setup": 442.7374686109979
+    },
+    {
+      "name": "endurance",
+      "exit_code": 0,
+      "integrity_status": "PASS",
+      "performance_status": "FAIL",
+      "wall_seconds_including_setup": 5025.330222748002
+    }
+  ],
+  "private_artifacts": ".local/workload-qualification-b2b8bf596486",
+  "scope": "Serial synthetic native tests on a shared workstation; no production capacity qualification"
+}

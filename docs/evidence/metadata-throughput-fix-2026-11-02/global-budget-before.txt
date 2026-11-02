@@ -1,0 +1,22 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.15, pytest-9.1.1, pluggy-1.7.0
+django: version: 5.2.18, settings: haven.runtime_settings (from option)
+rootdir: /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/api
+configfile: pyproject.toml
+plugins: django-4.14.0, anyio-4.15.1, platformdirs-4.13.5, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 4 items / 3 deselected / 1 selected
+
+apps/api/core/tests/test_native_privacy_boundaries.py F                  [100%]
+
+=================================== FAILURES ===================================
+_______ test_slow_message_insert_does_not_hold_the_global_storage_budget _______
+apps/api/core/tests/test_native_privacy_boundaries.py:115: in test_slow_message_insert_does_not_hold_the_global_storage_budget
+    assert second.result(timeout=2) == 201
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+../../.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/concurrent/futures/_base.py:458: in result
+    raise TimeoutError()
+E   TimeoutError
+=========================== short test summary info ============================
+FAILED apps/api/core/tests/test_native_privacy_boundaries.py::test_slow_message_insert_does_not_hold_the_global_storage_budget
+======================= 1 failed, 3 deselected in 5.26s ========================

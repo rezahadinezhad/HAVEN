@@ -1,0 +1,15 @@
+{
+  "status": "COMPLETED",
+  "cases": [
+    {
+      "name": "media-burst",
+      "exit_code": 0,
+      "integrity_status": "PASS",
+      "sender_pipeline_probe_status": "NOT_REQUESTED",
+      "performance_status": "FAIL",
+      "wall_seconds_including_setup": 180.86556549400848
+    }
+  ],
+  "private_artifacts": ".local/workload-qualification-9cd3a4b6156f",
+  "scope": "Serial synthetic native tests on a shared workstation; no production capacity qualification"
+}

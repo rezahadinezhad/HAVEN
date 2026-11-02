@@ -1,0 +1,16 @@
+{
+  "8443": {
+    "status": "available",
+    "crypto_ready": false,
+    "name": "HAVEN",
+    "maintenance": "",
+    "release_status": "BLOCKED"
+  },
+  "8445": {
+    "status": "available",
+    "crypto_ready": true,
+    "name": "HAVEN",
+    "maintenance": "",
+    "release_status": "BLOCKED"
+  }
+}

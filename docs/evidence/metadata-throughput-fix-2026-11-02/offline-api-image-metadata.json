@@ -1,0 +1,14 @@
+{
+  "image_id": "sha256:7c17eda4847bb2a72d60925b3333166db968b61a1496991025960ba692b69b88",
+  "command": [
+    "python",
+    "-m",
+    "haven.server",
+    "--host",
+    "0.0.0.0",
+    "--forwarded-allow-ips",
+    "*"
+  ],
+  "user": "10001:10001",
+  "scope": "New owner-local offline-built API image; no staging/production replacement or container OS scan"
+}

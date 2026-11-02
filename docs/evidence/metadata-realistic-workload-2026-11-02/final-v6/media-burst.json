@@ -1,0 +1,141 @@
+{
+  "status": "FAILED_DIAGNOSTIC_OR_WORKLOAD",
+  "api_profiles_by_worker": [
+    {
+      "timings": {},
+      "pool_before": {
+        "default": {
+          "requests_num": 280,
+          "requests_queued": 7,
+          "connections_num": 4,
+          "connections_ms": 88,
+          "requests_wait_ms": 53,
+          "pool_min": 1,
+          "pool_max": 16,
+          "pool_size": 4,
+          "pool_available": 4,
+          "requests_waiting": 0
+        }
+      },
+      "pool_after": {
+        "default": {
+          "requests_num": 2691,
+          "requests_queued": 63,
+          "connections_num": 16,
+          "connections_ms": 617,
+          "requests_wait_ms": 1964,
+          "pool_min": 1,
+          "pool_max": 16,
+          "pool_size": 16,
+          "pool_available": 16,
+          "requests_waiting": 0
+        }
+      },
+      "sampled_call_wall": [],
+      "scope": "HTTP middleware SQL plus ASGI arrival/response; process-wide DB connection/commit/rollback timing includes WebSockets; no WebSocket cursor SQL, SQL text, parameters, paths, headers or identifiers; timings overlap, do not sum phases"
+    },
+    {
+      "timings": {},
+      "pool_before": {
+        "default": {
+          "requests_num": 184,
+          "requests_queued": 6,
+          "connections_num": 4,
+          "connections_ms": 77,
+          "requests_wait_ms": 45,
+          "pool_min": 1,
+          "pool_max": 16,
+          "pool_size": 4,
+          "pool_available": 4,
+          "requests_waiting": 0
+        }
+      },
+      "pool_after": {
+        "default": {
+          "requests_num": 2410,
+          "requests_queued": 43,
+          "connections_num": 16,
+          "connections_ms": 565,
+          "requests_wait_ms": 920,
+          "pool_min": 1,
+          "pool_max": 16,
+          "pool_size": 16,
+          "pool_available": 16,
+          "requests_waiting": 0
+        }
+      },
+      "sampled_call_wall": [],
+      "scope": "HTTP middleware SQL plus ASGI arrival/response; process-wide DB connection/commit/rollback timing includes WebSockets; no WebSocket cursor SQL, SQL text, parameters, paths, headers or identifiers; timings overlap, do not sum phases"
+    },
+    {
+      "timings": {},
+      "pool_before": {
+        "default": {
+          "requests_num": 336,
+          "requests_queued": 7,
+          "connections_num": 5,
+          "connections_ms": 107,
+          "requests_wait_ms": 34,
+          "pool_min": 1,
+          "pool_max": 16,
+          "pool_size": 5,
+          "pool_available": 5,
+          "requests_waiting": 0
+        }
+      },
+      "pool_after": {
+        "default": {
+          "requests_num": 2982,
+          "requests_queued": 44,
+          "connections_num": 16,
+          "connections_ms": 534,
+          "requests_wait_ms": 958,
+          "pool_min": 1,
+          "pool_max": 16,
+          "pool_size": 16,
+          "pool_available": 16,
+          "requests_waiting": 0
+        }
+      },
+      "sampled_call_wall": [],
+      "scope": "HTTP middleware SQL plus ASGI arrival/response; process-wide DB connection/commit/rollback timing includes WebSockets; no WebSocket cursor SQL, SQL text, parameters, paths, headers or identifiers; timings overlap, do not sum phases"
+    },
+    {
+      "timings": {},
+      "pool_before": {
+        "default": {
+          "requests_num": 508,
+          "requests_queued": 12,
+          "connections_num": 4,
+          "connections_ms": 68,
+          "requests_wait_ms": 56,
+          "pool_min": 1,
+          "pool_max": 16,
+          "pool_size": 4,
+          "pool_available": 4,
+          "requests_waiting": 0
+        }
+      },
+      "pool_after": {
+        "default": {
+          "requests_num": 3302,
+          "requests_queued": 201,
+          "connections_num": 16,
+          "connections_ms": 523,
+          "requests_wait_ms": 147405,
+          "requests_errors": 2,
+          "pool_min": 1,
+          "pool_max": 16,
+          "pool_size": 16,
+          "pool_available": 16,
+          "requests_waiting": 0
+        }
+      },
+      "sampled_call_wall": [],
+      "scope": "HTTP middleware SQL plus ASGI arrival/response; process-wide DB connection/commit/rollback timing includes WebSockets; no WebSocket cursor SQL, SQL text, parameters, paths, headers or identifiers; timings overlap, do not sum phases"
+    }
+  ],
+  "exception_shapes": [],
+  "handled_failure_types": [],
+  "scope": "Partial failed run, no capacity qualification or invented completion count"
+}

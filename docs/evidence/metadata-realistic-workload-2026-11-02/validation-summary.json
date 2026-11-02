@@ -1,0 +1,38 @@
+{
+  "source_commit": "8b26eeaea5a42edcde1cc4596133261e87014267",
+  "backend_base": {
+    "passed": 132,
+    "evidence": "backend-base.txt"
+  },
+  "backend_pooled_runtime": {
+    "passed": 132,
+    "evidence": "backend-runtime.txt"
+  },
+  "real_notification_privacy_regressions": {
+    "passed": 10,
+    "evidence": "outbox-regressions.txt"
+  },
+  "workload_unit_checks": {
+    "passed": 13,
+    "evidence": "workload-unit-v62.txt"
+  },
+  "lint": "PASS",
+  "schema_inventory": "PASS: 191 current / 8 retired, no records read",
+  "model_migration_drift": "PASS: no changes detected",
+  "dependency_audit": "PASS: no known vulnerabilities found",
+  "source_component_binding": "PASS: natural combined/endurance and native binary match review source",
+  "release_gate": {
+    "status": "BLOCKED",
+    "exit_code": 1,
+    "expected": true
+  },
+  "secret_scan": {
+    "raw_exit_code": 1,
+    "findings": 163,
+    "reviewed_non_secret": 163,
+    "confirmed_credentials": 0,
+    "configuration": "default rules; no added exclusions; inline allows ignored"
+  },
+  "publication_path_policy": "PASS",
+  "scope": "Local review evidence only; reference-production, physical/mobile/domestic and independent gates remain unqualified; no deployment"
+}

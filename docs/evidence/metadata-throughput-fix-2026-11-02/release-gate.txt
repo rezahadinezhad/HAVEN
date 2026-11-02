@@ -1,0 +1,3 @@
+Expected exit 1 (gate remains closed)
+BLOCKED: complete acceptance, independent review, physical browsers, public-IP TLS, provider failover and field qualification outstanding.
+Local integrated MLS tests do not authorize high-risk onboarding. See /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/SECURITY_STATUS.md

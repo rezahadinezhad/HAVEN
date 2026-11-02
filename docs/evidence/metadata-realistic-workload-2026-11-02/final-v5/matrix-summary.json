@@ -1,0 +1,50 @@
+{
+  "status": "INTERRUPTED_OR_FAILED",
+  "cases": [
+    {
+      "name": "smoke",
+      "exit_code": 0,
+      "integrity_status": "PASS",
+      "performance_status": "PASS",
+      "wall_seconds_including_setup": 34.95109270099783
+    },
+    {
+      "name": "intermittent",
+      "exit_code": 0,
+      "integrity_status": "PASS",
+      "performance_status": "PASS",
+      "wall_seconds_including_setup": 371.537038673996
+    },
+    {
+      "name": "combined",
+      "exit_code": 0,
+      "integrity_status": "PASS",
+      "performance_status": "FAIL",
+      "wall_seconds_including_setup": 155.5603142320033
+    },
+    {
+      "name": "baseline-burst",
+      "exit_code": 0,
+      "integrity_status": "PASS",
+      "performance_status": "FAIL",
+      "wall_seconds_including_setup": 129.58139476799988
+    },
+    {
+      "name": "current-burst",
+      "exit_code": 0,
+      "integrity_status": "PASS",
+      "performance_status": "FAIL",
+      "wall_seconds_including_setup": 181.7150952200027
+    },
+    {
+      "name": "media-burst",
+      "exit_code": 0,
+      "integrity_status": "PASS",
+      "performance_status": "PASS",
+      "wall_seconds_including_setup": 181.9171248460043
+    }
+  ],
+  "private_artifacts": ".local/workload-qualification-bc1d062f1cbc",
+  "scope": "Serial synthetic native tests on a shared workstation; no production capacity qualification",
+  "active_case": "handoff"
+}

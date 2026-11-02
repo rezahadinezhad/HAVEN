@@ -1,0 +1,115 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.api-offline
+#1 transferring dockerfile:
+#1 transferring dockerfile: 841B 0.2s done
+#1 DONE 0.3s
+
+#2 [internal] load metadata for docker.io/library/python:3.12.15-slim-trixie@sha256:a0f57064cbdcd6285fa45f51237ab0b35ea8ebaed06a1f5973e89e19dfb86704
+#2 ...
+
+#3 [auth] library/python:pull token for registry-1.docker.io
+#3 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/python:3.12.15-slim-trixie@sha256:a0f57064cbdcd6285fa45f51237ab0b35ea8ebaed06a1f5973e89e19dfb86704
+#2 DONE 5.1s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 2B done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 DONE 0.0s
+
+#6 [1/9] FROM docker.io/library/python:3.12.15-slim-trixie@sha256:a0f57064cbdcd6285fa45f51237ab0b35ea8ebaed06a1f5973e89e19dfb86704
+#6 resolve docker.io/library/python:3.12.15-slim-trixie@sha256:a0f57064cbdcd6285fa45f51237ab0b35ea8ebaed06a1f5973e89e19dfb86704 0.1s done
+#6 DONE 0.1s
+
+#5 [internal] load build context
+#5 transferring context: 29.44MB 0.2s done
+#5 DONE 0.2s
+
+#7 [2/9] WORKDIR /app
+#7 CACHED
+
+#8 [3/9] COPY apps/api/requirements.lock /app/requirements.lock
+#8 DONE 0.2s
+
+#9 [4/9] COPY offline-deps/wheels /wheels
+#9 DONE 0.1s
+
+#10 [5/9] RUN pip install --no-index --find-links=/wheels --require-hashes -r requirements.lock && rm -rf /wheels && useradd --uid 10001 --create-home haven
+#10 1.722 Looking in links: /wheels
+#10 1.723 Ignoring tzdata: markers 'sys_platform == "win32"' don't match your environment
+#10 1.735 Processing /wheels/anyio-4.15.1-py3-none-any.whl (from -r requirements.lock (line 3))
+#10 1.749 Processing /wheels/argon2_cffi-25.1.0-py3-none-any.whl (from -r requirements.lock (line 7))
+#10 1.750 Processing /wheels/argon2_cffi_bindings-26.1.0-cp310-abi3-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl (from -r requirements.lock (line 11))
+#10 1.755 Processing /wheels/asgiref-3.13.0-py3-none-any.whl (from -r requirements.lock (line 36))
+#10 1.761 Processing /wheels/cffi-2.1.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (from -r requirements.lock (line 43))
+#10 1.768 Processing /wheels/channels-4.3.2-py3-none-any.whl (from -r requirements.lock (line 98))
+#10 1.775 Processing /wheels/channels_redis-4.3.0-py3-none-any.whl (from -r requirements.lock (line 104))
+#10 1.780 Processing /wheels/click-8.5.0-py3-none-any.whl (from -r requirements.lock (line 108))
+#10 1.785 Processing /wheels/cryptography-50.0.2-cp311-abi3-manylinux_2_34_x86_64.whl (from -r requirements.lock (line 112))
+#10 1.816 Processing /wheels/django-5.2.18-py3-none-any.whl (from -r requirements.lock (line 167))
+#10 1.885 Processing /wheels/djangorestframework-3.18.3-py3-none-any.whl (from -r requirements.lock (line 174))
+#10 1.896 Processing /wheels/h11-0.16.0-py3-none-any.whl (from -r requirements.lock (line 178))
+#10 1.900 Processing /wheels/httptools-0.9.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (from -r requirements.lock (line 182))
+#10 1.906 Processing /wheels/idna-3.20-py3-none-any.whl (from -r requirements.lock (line 237))
+#10 1.909 Processing /wheels/msgpack-1.2.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (from -r requirements.lock (line 241))
+#10 1.914 Processing /wheels/psycopg-3.3.6-py3-none-any.whl (from -r requirements.lock (line 290))
+#10 1.922 Processing /wheels/psycopg_binary-3.3.6-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (from -r requirements.lock (line 294))
+#10 1.951 Processing /wheels/psycopg_pool-3.3.3-py3-none-any.whl (from -r requirements.lock (line 329))
+#10 1.956 Processing /wheels/pycparser-3.12-py3-none-any.whl (from -r requirements.lock (line 333))
+#10 1.959 Processing /wheels/python_dotenv-1.2.4-py3-none-any.whl (from -r requirements.lock (line 337))
+#10 1.964 Processing /wheels/pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (from -r requirements.lock (line 341))
+#10 1.971 Processing /wheels/redis-7.4.1-py3-none-any.whl (from -r requirements.lock (line 382))
+#10 1.978 Processing /wheels/rfc8785-0.1.4-py3-none-any.whl (from -r requirements.lock (line 388))
+#10 1.982 Processing /wheels/sqlparse-0.6.0-py3-none-any.whl (from -r requirements.lock (line 392))
+#10 1.984 Processing /wheels/typing_extensions-4.16.0-py3-none-any.whl (from -r requirements.lock (line 396))
+#10 1.988 Processing /wheels/uvicorn-0.54.0-py3-none-any.whl (from -r requirements.lock (line 409))
+#10 1.993 Processing /wheels/uvloop-0.23.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (from -r requirements.lock (line 413))
+#10 2.022 Processing /wheels/watchfiles-1.3.0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (from -r requirements.lock (line 440))
+#10 2.028 Processing /wheels/websockets-17.3-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (from -r requirements.lock (line 471))
+#10 2.140 Installing collected packages: websockets, uvloop, typing-extensions, sqlparse, rfc8785, redis, pyyaml, python-dotenv, pycparser, psycopg-binary, msgpack, idna, httptools, h11, click, asgiref, uvicorn, psycopg-pool, psycopg, django, cffi, anyio, watchfiles, djangorestframework, cryptography, channels, argon2-cffi-bindings, channels-redis, argon2-cffi
+#10 7.195 Successfully installed anyio-4.15.1 argon2-cffi-25.1.0 argon2-cffi-bindings-26.1.0 asgiref-3.13.0 cffi-2.1.1 channels-4.3.2 channels-redis-4.3.0 click-8.5.0 cryptography-50.0.2 django-5.2.18 djangorestframework-3.18.3 h11-0.16.0 httptools-0.9.0 idna-3.20 msgpack-1.2.3 psycopg-3.3.6 psycopg-binary-3.3.6 psycopg-pool-3.3.3 pycparser-3.12 python-dotenv-1.2.4 pyyaml-6.0.3 redis-7.4.1 rfc8785-0.1.4 sqlparse-0.6.0 typing-extensions-4.16.0 uvicorn-0.54.0 uvloop-0.23.0 watchfiles-1.3.0 websockets-17.3
+#10 7.196 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+#10 DONE 8.7s
+
+#11 [6/9] COPY --chown=10001:10001 apps/api /app
+#11 DONE 0.8s
+
+#12 [7/9] COPY --chmod=0555 packages/crypto-core/bin/haven-public-verify-x86_64-linux /usr/local/bin/haven-public-verify
+#12 DONE 0.7s
+
+#13 [8/9] RUN test "$(uname -m)" = x86_64
+#13 DONE 0.6s
+
+#14 [9/9] RUN python -m pip uninstall -y pip
+#14 1.871 Found existing installation: pip 25.0.1
+#14 1.913 Uninstalling pip-25.0.1:
+#14 2.086   Successfully uninstalled pip-25.0.1
+#14 2.096 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+#14 DONE 2.3s
+
+#15 exporting to image
+#15 exporting layers
+#15 exporting layers 8.9s done
+#15 exporting manifest sha256:3ea3c0e085f6d5f77946dff2e135a3f421ccdeeea07f9c603c736f49fcad941b 0.0s done
+#15 exporting config sha256:71367b0f876ab159d9a1088cf083c09c9683de0d429cc37e8f3705f66460f768 0.0s done
+#15 exporting attestation manifest sha256:74e4aea147e0e93cdf27e429e0162858ec764f4ac41c4cd0a9bb08d448fb8e2c 0.0s done
+#15 exporting manifest list sha256:7c17eda4847bb2a72d60925b3333166db968b61a1496991025960ba692b69b88 0.0s done
+#15 naming to docker.io/library/haven-api:metadata-throughput-20261102 done
+#15 unpacking to docker.io/library/haven-api:metadata-throughput-20261102
+#15 unpacking to docker.io/library/haven-api:metadata-throughput-20261102 2.5s done
+#15 DONE 11.5s
+usage: server.py [-h] [--host HOST] [--port PORT]
+                 [--forwarded-allow-ips FORWARDED_ALLOW_IPS]
+
+Bound the API's process and database budgets before starting Uvicorn.
+
+options:
+  -h, --help            show this help message and exit
+  --host HOST
+  --port PORT
+  --forwarded-allow-ips FORWARDED_ALLOW_IPS
+{"pool_version": "3.3.3", "default_runtime_limits": [4, 16]}

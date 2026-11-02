@@ -1,0 +1,7 @@
+.........                                                                [100%]
+=============================== warnings summary ===============================
+core/tests/test_websocket.py::test_password_change_invalidates_live_websocket
+  /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/api:0: PytestWarning: Error when trying to teardown test databases: OperationalError('database "test_haven" is being accessed by other users\nDETAIL:  There are 2 other sessions using the database.')
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+9 passed, 1 warning in 15.82s

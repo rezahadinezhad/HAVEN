@@ -1,0 +1,14 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.15, pytest-9.1.1, pluggy-1.7.0
+django: version: 5.2.18, settings: haven.runtime_settings (from option)
+rootdir: /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/api
+configfile: pyproject.toml
+plugins: django-4.14.0, anyio-4.15.1, platformdirs-4.13.5, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 10 items
+
+apps/api/core/tests/test_metadata_privacy.py .......                     [ 70%]
+apps/api/core/tests/test_outbox_batching.py ..                           [ 90%]
+apps/api/core/tests/test_metadata_privacy.py .                           [100%]
+
+============================== 10 passed in 6.09s ==============================

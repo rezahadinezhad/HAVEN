@@ -1,0 +1,1 @@
+Initial real pool drill failed at assertion pid()==first. A two-slot pool may legitimately alternate backend PIDs. The corrected drill performs twenty checkouts, verifies at most two physical backends, then verifies idle-backend termination/replacement, live revocation, rollback and bounded exhaustion. No product behavior or durability assertion is relaxed.
