@@ -1,5 +1,9 @@
 # Test report — local engineering qualification
 
+## Dependency qualification — 2026-11-02
+
+Dependency maintenance validation is recorded separately in the [qualification report](docs/security/dependency-maintenance-2026-11-02.md); historical performance and browser results below are not relabeled as tests of the new graph.
+
 ## Metadata load attribution — 2026-11-02
 
 Three new instrument regressions pass with real independent native worker keys/signatures, failure/lifecycle checks and profiler isolation. The smoke run and three full synthetic 500-socket integrations verify every offered message, all nine recipients, five encrypted files and persisted native checkpoint restoration. One-worker current, ten-worker current and ten-worker baseline all miss offered 20/s with zero socket errors; crypto wait falls below 0.1 ms while HTTP and variable disk latency remain dominant. [Methods, exact metrics and limitations](docs/security/metadata-privacy/load-profiling.md). Product API/web/crypto/ingress source is unchanged; prior full product-suite counts below remain historical results, not newly repeated runs.
