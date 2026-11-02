@@ -1,0 +1,105 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.web-offline
+#1 transferring dockerfile: 1.08kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node:26.13.0-trixie-slim@sha256:e4db4c914bf8ad241bd24804fc25d272d89bad97e68cdc8a1414862790a02c39
+#2 ...
+
+#3 [auth] library/node:pull token for registry-1.docker.io
+#3 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node:26.13.0-trixie-slim@sha256:e4db4c914bf8ad241bd24804fc25d272d89bad97e68cdc8a1414862790a02c39
+#2 DONE 6.8s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 188B done
+#4 DONE 0.0s
+
+#5 [build 1/7] FROM docker.io/library/node:26.13.0-trixie-slim@sha256:e4db4c914bf8ad241bd24804fc25d272d89bad97e68cdc8a1414862790a02c39
+#5 resolve docker.io/library/node:26.13.0-trixie-slim@sha256:e4db4c914bf8ad241bd24804fc25d272d89bad97e68cdc8a1414862790a02c39 0.0s done
+#5 DONE 0.0s
+
+#6 [internal] load build context
+#6 transferring context: 133.68MB 1.3s done
+#6 DONE 1.3s
+
+#7 [build 2/7] WORKDIR /app
+#7 CACHED
+
+#8 [build 3/7] COPY apps/web/package.json apps/web/package-lock.json ./
+#8 DONE 1.2s
+
+#9 [build 4/7] COPY offline-deps/npm-cache /npm-cache
+#9 DONE 0.5s
+
+#10 [build 5/7] RUN npm ci --offline --ignore-scripts --cache=/npm-cache && rm -rf /npm-cache
+#10 6.520
+#10 6.520 added 96 packages, and audited 97 packages in 6s
+#10 6.520
+#10 6.521 15 packages are looking for funding
+#10 6.521   run `npm fund` for details
+#10 6.522
+#10 6.522 found 0 vulnerabilities
+#10 DONE 7.8s
+
+#11 [build 6/7] COPY apps/web .
+#11 DONE 0.3s
+
+#12 [build 7/7] RUN rm -f public/pof.html public/pof.js && npm run build
+#12 0.462
+#12 0.462 > haven-web@0.2.0 build
+#12 0.462 > node scripts/patch-next-announcer.mjs && next build && node scripts/build-offline-shell.mjs
+#12 0.462
+#12 0.502 Next 16.4.3 accessibility announcer uses external CSS; CSP remains strict.
+#12 0.912 ▲ Next.js 16.4.3 (Turbopack)
+#12 0.969 ✓ Running next.config.ts took 56ms
+#12 0.987 - Experiments (use with caution):
+#12 0.988   · cpus: 2
+#12 0.988
+#12 1.018   Creating an optimized production build ...
+#12 6.286 ✓ Compiled successfully in 5.3s
+#12 6.288   Running TypeScript ...
+#12 7.586   Finished TypeScript in 1298ms ...
+#12 7.588   Collecting page data using 2 workers ...
+#12 8.219   Generating static pages using 2 workers (0/3) ...
+#12 8.345 ✓ Generating static pages using 2 workers (3/3) in 126ms
+#12 8.349   Finalizing page optimization ...
+#12 9.360
+#12 9.363 Route (app)
+#12 9.363 ┌ ƒ /
+#12 9.363 └ ○ /_not-found
+#12 9.363
+#12 9.363
+#12 9.363 ƒ Proxy (Middleware)
+#12 9.363
+#12 9.363 ○  (Static)   prerendered as static content
+#12 9.363 ƒ  (Dynamic)  server-rendered on demand
+#12 9.364
+#12 9.508 Prepared 19 local offline shell assets
+#12 DONE 9.6s
+
+#13 [stage-1 3/6] COPY --from=build --chown=node:node /app/.next/standalone ./
+#13 DONE 2.5s
+
+#14 [stage-1 4/6] COPY --from=build --chown=node:node /app/.next/static ./.next/static
+#14 DONE 2.5s
+
+#15 [stage-1 5/6] COPY --from=build --chown=node:node /app/public ./public
+#15 DONE 1.4s
+
+#16 [stage-1 6/6] RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/corepack /opt/yarn-* /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack /usr/local/bin/yarn /usr/local/bin/yarnpkg
+#16 DONE 5.3s
+
+#17 exporting to image
+#17 exporting layers
+#17 exporting layers 4.2s done
+#17 exporting manifest sha256:5fb0893911c7bec0e5fd6e9aae11f31913d8dfbfeaf763a3b71ef7dfce4a6aec 0.0s done
+#17 exporting config sha256:e4fddea1f424bda56f3379b414a7caf088670861cb95fe863c37859937fceb50 0.0s done
+#17 exporting attestation manifest sha256:349fd64e62a2f88459c0df10b22c67e3d5ff34f31e07065cb267c5f7b143855a 0.0s done
+#17 exporting manifest list sha256:d266a0c49268ad26ca093855b3e2dac62344cfcf645a4e939966da2a44ac1853 0.0s done
+#17 naming to docker.io/library/haven-web:followup done
+#17 unpacking to docker.io/library/haven-web:followup
+#17 unpacking to docker.io/library/haven-web:followup 0.5s done
+#17 DONE 4.7s

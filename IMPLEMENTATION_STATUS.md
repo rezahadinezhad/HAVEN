@@ -2,7 +2,7 @@
 
 ## Follow-up dependency qualification — 2026-11-03
 
-Follow-up runtime/dependency changes and old/new encrypted-vault regression coverage are implemented for review. The source gate remains closed. [Decisions and evidence](docs/security/dependency-followup-2026-11-03.md).
+Follow-up runtime/dependency changes and old/new encrypted-vault regression coverage are implemented and pass local qualification. The source gate remains closed. [Decisions and evidence](docs/security/dependency-followup-2026-11-03.md).
 
 ## Dependency qualification — 2026-11-02
 

@@ -1,0 +1,1 @@
+PASS: actual 1 MiB attachment encryption/decryption and expected plaintext digest

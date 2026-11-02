@@ -1,0 +1,2 @@
+Production Python: 3.14.9
+Runtime dependencies: 5.2.18 8.1.0 3.3.3

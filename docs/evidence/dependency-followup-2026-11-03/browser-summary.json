@@ -1,0 +1,1554 @@
+{
+  "chromium": {
+    "stats": {
+      "startTime": "2026-11-02T20:39:17.772Z",
+      "duration": 320367.472,
+      "expected": 40,
+      "skipped": 2,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "tests": [
+      {
+        "file": "chat-experience.spec.ts",
+        "title": "conversation UX: encrypted messages, keyboard/IME, drafts, replies, scrolling, media, mobile and RTL",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 43874
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "crypto.spec.ts",
+        "title": "real OpenMLS WASM: two-way, persisted reload, reordering, add/remove, tamper and replay",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 1082
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "crypto.spec.ts",
+        "title": "vault rejects wrong secret and modified ciphertext",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 890
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "crypto.spec.ts",
+        "title": "native Rust snapshot and MLS ciphertext interoperate with browser WASM",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 269
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "design.spec.ts",
+        "title": "redesigned real account: responsive navigation, setup, themes, RTL, reduced motion and local assets",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 3254
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "design.spec.ts",
+        "title": "CSP-safe accessible announcer and blocked arbitrary inline scripts/styles",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 447
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "device-unlock-ui.spec.ts",
+        "title": "opt-in hostname: real vault setup, PRF enrollment, reload unlock and removal",
+        "ok": true,
+        "tests": [
+          {
+            "status": "skipped",
+            "expected": "skipped",
+            "skips": [
+              "Trusted hostname QA uses Chromium virtual authenticator"
+            ],
+            "results": [
+              {
+                "status": "skipped",
+                "duration_ms": 2
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "device-unlock.spec.ts",
+        "title": "device verified PRF wraps the passphrase locally, survives reload, and can be removed",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 230
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "device-unlock.spec.ts",
+        "title": "no PRF means no stored unlock record",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 171
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "device-unlock.spec.ts",
+        "title": "user verification failure cannot enroll a device unlock",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 209
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "device-unlock.spec.ts",
+        "title": "copied encrypted record cannot unlock another account",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 218
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "device-unlock.spec.ts",
+        "title": "direct IP origin never offers WebAuthn unlock",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 199
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "enrollment-privacy.spec.ts",
+        "title": "opaque enrollment context keeps strict device/domain/key checks before actual worker signing",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 1590
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "first-chat-approval.spec.ts",
+        "title": "guide preserves pending browser keys; administrator invitation controls and normal crypto gate remain effective",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 7026
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "first-chat-retry.spec.ts",
+        "title": "direct-chat setup recovers an accepted request after a lost response and reload; concurrent retries reuse one chat",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 2873
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "first-chat.spec.ts",
+        "title": "ordinary members: guided setup, private invitation, explicit mutual verification, chat and unlock",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 9985
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "first-chat.spec.ts",
+        "title": "friend links reject foreign origins, mismatched fingerprints, changed pins; responsive RTL guide",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 65932
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "integration.spec.ts",
+        "title": "browser MLS \u2192 Django/PostgreSQL: verified group, bidirectional delivery, durable retry, media, removal and reload",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 15229
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "messenger-ui.spec.ts",
+        "title": "real UI: vault enrollment, fingerprint verification, MLS group, text, offline shell and queued send",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 63945
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "metadata-privacy.spec.ts",
+        "title": "padded OpenMLS messages keep lengths coarse across browser reload and rekey",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 404
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "passphrase.spec.ts",
+        "title": "generator uses exactly 32 CSPRNG bytes, lossless base64url and fails closed without secure randomness",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 288
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "passphrase.spec.ts",
+        "title": "new vault: generate, reveal/copy, regenerate/manual reset, save confirmation and real reload/unlock without network disclosure",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 4204
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "passphrase.spec.ts",
+        "title": "generator failure and clipboard denial remain usable; cancellation discards unsaved state; RTL and source gate",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 2309
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "privacy.spec.ts",
+        "title": "retired server ciphertext: persisted browser MLS state reloads and continues across rekey",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 5467
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "provider-upgrade.spec.ts",
+        "title": "upstream provider backport exchanges MLS with previous browser build and opens previous snapshots",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 538
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "provider-upgrade.spec.ts",
+        "title": "rebuilt native Rust provider snapshot interoperates with rebuilt WASM",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 392
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "restart.spec.ts",
+        "title": "actual API SIGKILL after durable acceptance: browser reload retries the exact ciphertext once",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 5844
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "review-remediation.spec.ts",
+        "title": "paged encrypted history: >16 MB, incremental writes, atomic failure, tamper rejection and reload",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 3823
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "review-remediation.spec.ts",
+        "title": "real server and MLS: quarantine invalid application content, reload, idle sync, reject bad ciphertext",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 3225
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "review-remediation.spec.ts",
+        "title": "legacy vault migrates without restoring ratchets; history updates remove old encrypted records",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 1139
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "rollback-gate.spec.ts",
+        "title": "characterize snapshot rollback: integration must not silently trust restored ratchets",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 314
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "session-hardening.spec.ts",
+        "title": "real vault: pagehide, suspended inactivity, offline access and confirmed remote logout",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 16953
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "showcase.spec.ts",
+        "title": "public showcase: real encrypted conversation, responsive layout and review notice",
+        "ok": true,
+        "tests": [
+          {
+            "status": "skipped",
+            "expected": "skipped",
+            "skips": [
+              "Opt-in documentation capture"
+            ],
+            "results": [
+              {
+                "status": "skipped",
+                "duration_ms": 1
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "sodium-upgrade.spec.ts",
+        "title": "sodium upgrade opens old encrypted checkpoints and history; old worker opens new records",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 2061
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "standby-origin.spec.ts",
+        "title": "prepared distinct IP origins: verified private TLS, fail-closed mismatch, fenced database promotion and continuing MLS messages",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 22254
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "ui.spec.ts",
+        "title": "trusted TLS, login, invitation and operator account flows, bilingual mobile layout",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 2067
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "ui.spec.ts",
+        "title": "untrusted browser rejects the IP certificate",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 1344
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "ui.spec.ts",
+        "title": "expired IP leaf is rejected even with the correct trusted test root",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 410
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "vault-storage.spec.ts",
+        "title": "vault key rotation reencrypts every history record and never reuses records sealed with an old secret",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 1006
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "vault-storage.spec.ts",
+        "title": "API conversation helper follows all continuation headers and preserves the array contract",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 318
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "vault-storage.spec.ts",
+        "title": "locking while a save awaits storage or hashing cannot recreate a secret-bearing worker",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 603
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "view-once.spec.ts",
+        "title": "view-once real UI: encrypted photo/video, account-wide consume, independent group recipients, no cache/export/reopen",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 26185
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "firefox": {
+    "stats": {
+      "startTime": "2026-11-02T20:55:34.178Z",
+      "duration": 383974.338,
+      "expected": 36,
+      "skipped": 6,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "tests": [
+      {
+        "file": "chat-experience.spec.ts",
+        "title": "conversation UX: encrypted messages, keyboard/IME, drafts, replies, scrolling, media, mobile and RTL",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 45955
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "crypto.spec.ts",
+        "title": "real OpenMLS WASM: two-way, persisted reload, reordering, add/remove, tamper and replay",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 3501
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "crypto.spec.ts",
+        "title": "vault rejects wrong secret and modified ciphertext",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 3504
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "crypto.spec.ts",
+        "title": "native Rust snapshot and MLS ciphertext interoperate with browser WASM",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 2677
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "design.spec.ts",
+        "title": "redesigned real account: responsive navigation, setup, themes, RTL, reduced motion and local assets",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 5803
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "design.spec.ts",
+        "title": "CSP-safe accessible announcer and blocked arbitrary inline scripts/styles",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 2780
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "device-unlock-ui.spec.ts",
+        "title": "opt-in hostname: real vault setup, PRF enrollment, reload unlock and removal",
+        "ok": true,
+        "tests": [
+          {
+            "status": "skipped",
+            "expected": "skipped",
+            "skips": [
+              "Trusted hostname QA uses Chromium virtual authenticator"
+            ],
+            "results": [
+              {
+                "status": "skipped",
+                "duration_ms": 1
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "device-unlock.spec.ts",
+        "title": "device verified PRF wraps the passphrase locally, survives reload, and can be removed",
+        "ok": true,
+        "tests": [
+          {
+            "status": "skipped",
+            "expected": "skipped",
+            "skips": [
+              "Chrome CDP virtual authenticator test"
+            ],
+            "results": [
+              {
+                "status": "skipped",
+                "duration_ms": 1
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "device-unlock.spec.ts",
+        "title": "no PRF means no stored unlock record",
+        "ok": true,
+        "tests": [
+          {
+            "status": "skipped",
+            "expected": "skipped",
+            "skips": [
+              "Chrome CDP virtual authenticator test"
+            ],
+            "results": [
+              {
+                "status": "skipped",
+                "duration_ms": 1
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "device-unlock.spec.ts",
+        "title": "user verification failure cannot enroll a device unlock",
+        "ok": true,
+        "tests": [
+          {
+            "status": "skipped",
+            "expected": "skipped",
+            "skips": [
+              "Chrome CDP virtual authenticator test"
+            ],
+            "results": [
+              {
+                "status": "skipped",
+                "duration_ms": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "device-unlock.spec.ts",
+        "title": "copied encrypted record cannot unlock another account",
+        "ok": true,
+        "tests": [
+          {
+            "status": "skipped",
+            "expected": "skipped",
+            "skips": [
+              "Chrome CDP virtual authenticator test"
+            ],
+            "results": [
+              {
+                "status": "skipped",
+                "duration_ms": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "device-unlock.spec.ts",
+        "title": "direct IP origin never offers WebAuthn unlock",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 2657
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "enrollment-privacy.spec.ts",
+        "title": "opaque enrollment context keeps strict device/domain/key checks before actual worker signing",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 3681
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "first-chat-approval.spec.ts",
+        "title": "guide preserves pending browser keys; administrator invitation controls and normal crypto gate remain effective",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 11390
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "first-chat-retry.spec.ts",
+        "title": "direct-chat setup recovers an accepted request after a lost response and reload; concurrent retries reuse one chat",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 6170
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "first-chat.spec.ts",
+        "title": "ordinary members: guided setup, private invitation, explicit mutual verification, chat and unlock",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 14329
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "first-chat.spec.ts",
+        "title": "friend links reject foreign origins, mismatched fingerprints, changed pins; responsive RTL guide",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 11610
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "integration.spec.ts",
+        "title": "browser MLS \u2192 Django/PostgreSQL: verified group, bidirectional delivery, durable retry, media, removal and reload",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 28218
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "messenger-ui.spec.ts",
+        "title": "real UI: vault enrollment, fingerprint verification, MLS group, text, offline shell and queued send",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 70330
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "metadata-privacy.spec.ts",
+        "title": "padded OpenMLS messages keep lengths coarse across browser reload and rekey",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 3298
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "passphrase.spec.ts",
+        "title": "generator uses exactly 32 CSPRNG bytes, lossless base64url and fails closed without secure randomness",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 2741
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "passphrase.spec.ts",
+        "title": "new vault: generate, reveal/copy, regenerate/manual reset, save confirmation and real reload/unlock without network disclosure",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 7447
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "passphrase.spec.ts",
+        "title": "generator failure and clipboard denial remain usable; cancellation discards unsaved state; RTL and source gate",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 5109
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "privacy.spec.ts",
+        "title": "retired server ciphertext: persisted browser MLS state reloads and continues across rekey",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 9277
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "provider-upgrade.spec.ts",
+        "title": "upstream provider backport exchanges MLS with previous browser build and opens previous snapshots",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 2771
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "provider-upgrade.spec.ts",
+        "title": "rebuilt native Rust provider snapshot interoperates with rebuilt WASM",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 2752
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "restart.spec.ts",
+        "title": "actual API SIGKILL after durable acceptance: browser reload retries the exact ciphertext once",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 10514
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "review-remediation.spec.ts",
+        "title": "paged encrypted history: >16 MB, incremental writes, atomic failure, tamper rejection and reload",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 7757
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "review-remediation.spec.ts",
+        "title": "real server and MLS: quarantine invalid application content, reload, idle sync, reject bad ciphertext",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 6364
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "review-remediation.spec.ts",
+        "title": "legacy vault migrates without restoring ratchets; history updates remove old encrypted records",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 3861
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "rollback-gate.spec.ts",
+        "title": "characterize snapshot rollback: integration must not silently trust restored ratchets",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 2765
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "session-hardening.spec.ts",
+        "title": "real vault: pagehide, suspended inactivity, offline access and confirmed remote logout",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 19725
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "showcase.spec.ts",
+        "title": "public showcase: real encrypted conversation, responsive layout and review notice",
+        "ok": true,
+        "tests": [
+          {
+            "status": "skipped",
+            "expected": "skipped",
+            "skips": [
+              "Opt-in documentation capture"
+            ],
+            "results": [
+              {
+                "status": "skipped",
+                "duration_ms": 1
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "sodium-upgrade.spec.ts",
+        "title": "sodium upgrade opens old encrypted checkpoints and history; old worker opens new records",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 4905
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "standby-origin.spec.ts",
+        "title": "prepared distinct IP origins: verified private TLS, fail-closed mismatch, fenced database promotion and continuing MLS messages",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 28388
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "ui.spec.ts",
+        "title": "trusted TLS, login, invitation and operator account flows, bilingual mobile layout",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 5441
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "ui.spec.ts",
+        "title": "untrusted browser rejects the IP certificate",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 3675
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "ui.spec.ts",
+        "title": "expired IP leaf is rejected even with the correct trusted test root",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 3076
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "vault-storage.spec.ts",
+        "title": "vault key rotation reencrypts every history record and never reuses records sealed with an old secret",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 3625
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "vault-storage.spec.ts",
+        "title": "API conversation helper follows all continuation headers and preserves the array contract",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 2814
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "vault-storage.spec.ts",
+        "title": "locking while a save awaits storage or hashing cannot recreate a secret-bearing worker",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 2957
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "file": "view-once.spec.ts",
+        "title": "view-once real UI: encrypted photo/video, account-wide consume, independent group recipients, no cache/export/reopen",
+        "ok": true,
+        "tests": [
+          {
+            "status": "expected",
+            "expected": "passed",
+            "skips": [],
+            "results": [
+              {
+                "status": "passed",
+                "duration_ms": 29846
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
