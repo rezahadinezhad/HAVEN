@@ -116,3 +116,18 @@ jobs:
           persist-credentials: false
       - name: Verify and build using the pinned Node runtime
         run: docker build --file apps/web/Dockerfile --tag haven-web:dependency-ci .
+      - name: Start the web image with production restrictions
+        run: |
+          set -euo pipefail
+          job_container=$(docker run --detach --network none --read-only --cap-drop ALL \
+            --security-opt no-new-privileges:true --ulimit core=0:0 \
+            --tmpfs /tmp:rw,size=64m,mode=1777 haven-web:dependency-ci)
+          trap 'docker rm --force "$job_container" > /dev/null' EXIT
+          for attempt in $(seq 1 20); do
+            if docker exec "$job_container" node -e 'Promise.all([fetch("http://127.0.0.1:3100/"), fetch("http://127.0.0.1:3100/pof.html")]).then(([home, harness]) => process.exit(home.status === 200 && harness.status === 404 ? 0 : 1)).catch(() => process.exit(1))'; then
+              exit 0
+            fi
+            sleep 1
+          done
+          docker logs "$job_container"
+          exit 1
