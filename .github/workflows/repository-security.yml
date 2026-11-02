@@ -107,6 +107,31 @@ jobs:
           .venv/bin/python manage.py makemigrations --check --dry-run
           DJANGO_SETTINGS_MODULE=haven.runtime_settings .venv/bin/pytest -q
           .venv/bin/pytest -q
+      - name: Test both API configurations on the exact production Python image
+        env:
+          POSTGRES_PASSWORD: disposable-ci-database
+          HAVEN_SECRET_KEY: disposable-ci-only-key-with-at-least-forty-eight-characters
+        run: |
+          set -euo pipefail
+          runtime_image=$(sed -n '1s/^FROM //p' apps/api/Dockerfile)
+          docker run --rm --network host --cap-drop ALL --security-opt no-new-privileges:true \
+            -e POSTGRES_PASSWORD -e HAVEN_SECRET_KEY -e PYTHONDONTWRITEBYTECODE=1 \
+            -e UV_PROJECT_ENVIRONMENT=/tmp/haven-test-env -e UV_PYTHON_DOWNLOADS=never \
+            -v "$PWD:/workspace:ro" -v "$(command -v uv):/usr/local/bin/uv:ro" \
+            -w /workspace "$runtime_image" sh -ec '
+              python --version
+              uv sync --project apps/api --frozen --python /usr/local/bin/python
+              cd apps/api
+              DJANGO_SETTINGS_MODULE=haven.runtime_settings /tmp/haven-test-env/bin/pytest -q -p no:cacheprovider
+              /tmp/haven-test-env/bin/pytest -q -p no:cacheprovider
+            '
+      - name: Build and verify the production API image
+        run: |
+          set -euo pipefail
+          docker build --file apps/api/Dockerfile --tag haven-api:runtime-ci .
+          docker run --rm --network none --read-only --cap-drop ALL \
+            --security-opt no-new-privileges:true --entrypoint python haven-api:runtime-ci \
+            -c 'import sys, importlib.util; from importlib.metadata import version; assert sys.version_info[:3] == (3, 14, 9); assert importlib.util.find_spec("pytest") is None; print("Production Python:", sys.version.split()[0]); print("Runtime dependencies:", version("Django"), version("redis"), version("psycopg-pool"))'
   frontend-regressions:
     runs-on: ubuntu-latest
     timeout-minutes: 15

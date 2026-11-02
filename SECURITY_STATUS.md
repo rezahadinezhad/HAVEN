@@ -1,5 +1,9 @@
 # Security status
 
+## Follow-up dependency qualification — 2026-11-03
+
+The follow-up batch qualifies supported Python 3.14 production images and updated browser storage/crypto dependencies while retaining TypeScript-compatible contract generation. All independent review, OS triage and production gates remain in force. [Decisions and evidence](docs/security/dependency-followup-2026-11-03.md).
+
 ## Dependency qualification — 2026-11-02
 
 Fourteen proposals pass local backend/native/browser qualification; Python 3.15 is excluded by the declared runtime/framework support. [Dependency decisions and evidence](docs/security/dependency-maintenance-2026-11-02.md). The production gate and independent-review requirements remain unchanged.

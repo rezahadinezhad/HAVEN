@@ -1,5 +1,9 @@
 # Changelog
 
+## Follow-up dependency qualification — 2026-11-03
+
+Qualify supported Python 3.14.9 production images, matching React DOM types, pytest 9.2, idb 8.0.4 and libsodium wrappers 0.8.4. Retain the compatible OpenAPI generator. Add actual old/new vault-worker compatibility coverage and exact production-Python backend CI. [Decisions and evidence](docs/security/dependency-followup-2026-11-03.md).
+
 ## Dependency qualification — 2026-11-02
 
 Qualify 14 dependency/toolchain proposals together, repair sha2 state-fingerprint encoding while retaining its exact SHA-256 representation, and retain the supported Python runtime. Refresh locked graphs, native/WASM artifacts and Node online/offline images. Add functional dependency CI and narrowly verified public-checksum scanner exceptions with negative probes. [Decisions and validation](docs/security/dependency-maintenance-2026-11-02.md).

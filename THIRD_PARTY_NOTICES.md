@@ -39,3 +39,7 @@ Throughput-runtime continuation (2026-11-02): enable the existing psycopg pool e
 ## Dependency qualification, 2026-11-02
 
 The reviewed graph updates canonicalize to 5.1.0 (Apache-2.0), direct base64 to 0.23.1 (MIT/Apache-2.0), direct sha2 to 0.11.1 (MIT/Apache-2.0), redis-py to 8.1.0 (MIT), and the recorded development tools. TypeScript 7 includes platform-specific development compiler binaries; npm lockfile integrity and their upstream notices must be retained in build distributions. Node online/offline images now use digest-pinned 26.13.0; historical OS scan results above describe earlier images and do not qualify the new image. Python remains 3.12.15, and vendored OpenMLS provider/credential source is unchanged. See the dependency-maintenance report for compatibility and scan scope.
+
+## Follow-up dependency qualification, 2026-11-03
+
+Production Python images now use the reviewed 3.14.9 digest; development remains on supported 3.12.15. libsodium-wrappers-sumo/libsodium-sumo 0.8.4 (ISC) report engine 1.0.22 and provide their own TypeScript definitions, replacing the separate legacy @types packages. idb 8.0.4 (ISC), pytest 9.2.0 (MIT), and React DOM types 19.3.0 (MIT) retain upstream notices. Regenerated browser-worker legal comments remain bundled. OpenAPI TypeScript stays 6.7.6 with its existing override. Previous OS scan counts and native/WASM evidence are historical and do not qualify the changed image/worker. See the follow-up report.
