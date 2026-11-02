@@ -257,8 +257,9 @@ class Client:
 
 
 class Group:
-    def __init__(self, clients):
+    def __init__(self, clients, kind="group"):
         self.clients, self.owner = clients, clients[0]
+        self.recipient_pool = None
         self.id, self.gid = str(uuid.uuid4()), uuid.uuid4().hex
         self.epoch, self.seq, self.messages = 0, 0, 0
         self.state_hash = native(self.owner, "create", group_id=self.gid)["state_hash"]
@@ -266,7 +267,7 @@ class Group:
         genesis = {
             "domain": "haven/genesis/v1",
             "id": self.id,
-            "kind": "group",
+            "kind": kind,
             "group_id": self.gid,
             "members": self.roster,
         }
@@ -277,7 +278,7 @@ class Group:
             "POST",
             {
                 "id": self.id,
-                "kind": "group",
+                "kind": kind,
                 "group_id": self.gid,
                 "header": genesis,
                 "signature": signature,
@@ -285,7 +286,12 @@ class Group:
             expected=(201,),
         )
         joined = [self.owner]
-        for client in clients[1:]:
+        for member_index, client in enumerate(clients[1:]):
+            if member_index and member_index % 25 == 0:
+                # Fixture preparation respects existing per-owner claim/control
+                # limits. This is outside the measurement handshake and does
+                # not change or retry away workload-time rate-limit failures.
+                time.sleep(61)
             kp = native(client, "package")["key_package"]
             client.request(
                 "crypto/key-packages", "POST", {"package": kp}, expected=(201,)
@@ -384,7 +390,8 @@ class Group:
     def deliver(self, body, plaintext=None):
         started = time.monotonic()
         previous, seq = body["header"]["previous_hash"], self.seq
-        for recipient in self.clients[1:]:
+
+        def deliver_recipient(recipient):
             page = recipient.request(
                 f"conversations/{self.id}/messages?after_seq={seq - 1}"
             )
@@ -420,6 +427,20 @@ class Group:
             if plaintext is not None:
                 with metrics_lock:
                     metrics["delivered"] += 1
+
+        if self.recipient_pool is None:
+            for recipient in self.clients[1:]:
+                deliver_recipient(recipient)
+        else:
+            # Independent clients receive concurrently. Keep the group lane
+            # blocked until every recipient durably checkpoints and ACKs, so
+            # each client's MLS state and the group's next event stay ordered.
+            futures = [
+                self.recipient_pool.submit(deliver_recipient, client)
+                for client in self.clients[1:]
+            ]
+            for future in futures:
+                future.result(timeout=120)
         timings.record("nine_recipient_delivery_total", time.monotonic() - started)
 
     def send(self, scheduled, submitted):
@@ -597,8 +618,9 @@ def media_fixture(command):
     return json.loads(result.stdout)
 
 
-def transfer_file(group, barrier):
-    uploader, recipient = group.clients[1], group.clients[5]
+def transfer_file(group, barrier, uploader=None, recipient=None):
+    uploader = uploader or group.clients[1]
+    recipient = recipient or group.clients[min(5, len(group.clients) - 1)]
     aid = str(uuid.uuid4())
     encrypted = media_fixture({"op": "encrypt", "cid": group.id, "id": aid})
     barrier.wait(timeout=60)
@@ -666,211 +688,239 @@ def summarize(samples):
     }
 
 
-try:
-    clients, groups = [], []
-    # Provision only synthetic approved fixtures. Enrollment/login costs are not measured.
-    password = (
-        m.User.objects.make_random_password()
-        if hasattr(m.User.objects, "make_random_password")
-        else secrets.token_urlsafe(32)
-    )
-    from django.contrib.auth.hashers import make_password
+def run_legacy():
+    try:
+        clients, groups = [], []
+        # Provision only synthetic approved fixtures. Enrollment/login costs are not measured.
+        password = (
+            m.User.objects.make_random_password()
+            if hasattr(m.User.objects, "make_random_password")
+            else secrets.token_urlsafe(32)
+        )
+        from django.contrib.auth.hashers import make_password
 
-    encoded = make_password(password)
-    for n in range(100):
-        user = m.User.objects.create(
-            username="load_" + uuid.uuid4().hex,
-            display_name="Synthetic load",
-            password=encoded,
-            device_bootstrapped=True,
-        )
-        devices = [Client(user, n) for _ in range(5)]
-        for device in devices[1:]:
-            signature = native(
-                devices[0],
-                "sign",
-                payload=b64(
-                    f"haven/enrollment/v1:{user.pk}:{device.id}:{device.public_key}:{device.device.challenge}".encode()
-                ),
-            )["signature"]
-            m.Device.objects.filter(pk=device.id).update(
-                approved_by=devices[0].device,
-                approval_signature=base64.b64decode(signature),
+        encoded = make_password(password)
+        for n in range(100):
+            user = m.User.objects.create(
+                username="load_" + uuid.uuid4().hex,
+                display_name="Synthetic load",
+                password=encoded,
+                device_bootstrapped=True,
             )
-        clients.extend(devices)
-    for client in clients:
-        client.csrf = client.request("auth/csrf")["csrf"]
-    for n in range(0, len(clients), 10):
-        groups.append(Group(clients[n : n + 10]))
-        (PRIVATE / "fixture-progress.json").write_text(
-            json.dumps({"groups": len(groups), "target": 50})
-        )
-    ready = threading.Event()
-    ws_thread = threading.Thread(
-        target=lambda: asyncio.run(sockets(clients, ready)), daemon=True
-    )
-    ws_thread.start()
-    if not ready.wait(90) or metrics["ws_peak"] != 500 or metrics["ws_errors"]:
-        raise RuntimeError("500 authenticated WSS sessions were not established")
-    print("READY", flush=True)
-    if sys.stdin.readline().strip() != "GO":
-        raise RuntimeError("Measurement handshake rejected")
-    with metrics_lock:
-        metrics.update(
-            http_requests=0,
-            retry_429=0,
-            accepted=0,
-            delivered=0,
-            updates=0,
-            heartbeats=0,
-            transport_retries=0,
-            notification_hints=0,
-        )
-    before = stats()
-    crypto_before = crypto.usage()
-    driver_before = process_usage(os.getpid())
-    sampler = WaitSampler(settings.DATABASES["default"])
-    sampler.start()
-    timings.reset()
-    measuring.set()
-    start = time.monotonic()
-    duration = int(os.environ.get("HAVEN_LOAD_SECONDS", "120"))
-    rate = float(os.environ.get("HAVEN_LOAD_RATE", "20"))
-    pending = deque()
-    offered, backpressure_stop, stop_reason = 0, False, None
-    # Each conversation has its own ordered lane. A slow conversation cannot
-    # block scheduling unrelated groups; oldest unfinished work still has the
-    # original strict ten-second bound. No generated message is discarded.
-    with ExitStack() as stack:
-        file_pool = stack.enter_context(ThreadPoolExecutor(max_workers=5))
-        lanes = [stack.enter_context(ThreadPoolExecutor(max_workers=1)) for _ in groups]
-        barrier = threading.Barrier(5)
-        files = [
-            file_pool.submit(transfer_file, group, barrier) for group in groups[:5]
-        ]
-        for index in range(int(duration * rate)):
-            scheduled = start + index / rate
-            time.sleep(max(0, scheduled - time.monotonic()))
-            while pending and pending[0][1].done():
-                pending.popleft()[1].result(timeout=0)
-            backlog_expired = bool(pending and time.monotonic() - pending[0][0] > 10)
-            if (
-                backlog_expired
-                or time.monotonic() - scheduled > 10
-                or metrics.get("ws_unrecoverable", 0)
-                or (metrics["ws_errors"] and not RESILIENCE)
-            ):
-                backpressure_stop = True
-                stop_reason = (
-                    "oldest_unfinished_over_ten_seconds"
-                    if backlog_expired
-                    else "scheduler_lag_or_socket_failure"
+            devices = [Client(user, n) for _ in range(5)]
+            for device in devices[1:]:
+                signature = native(
+                    devices[0],
+                    "sign",
+                    payload=b64(
+                        f"haven/enrollment/v1:{user.pk}:{device.id}:{device.public_key}:{device.device.challenge}".encode()
+                    ),
+                )["signature"]
+                m.Device.objects.filter(pk=device.id).update(
+                    approved_by=devices[0].device,
+                    approval_signature=base64.b64decode(signature),
                 )
-                break  # Stop offering new work; drain every generated message.
-            timings.record(
-                "scheduler_lag_before_group_wait", time.monotonic() - scheduled
+            clients.extend(devices)
+        for client in clients:
+            client.csrf = client.request("auth/csrf")["csrf"]
+        for n in range(0, len(clients), 10):
+            groups.append(Group(clients[n : n + 10]))
+            (PRIVATE / "fixture-progress.json").write_text(
+                json.dumps({"groups": len(groups), "target": 50})
             )
-            group = groups[index % len(groups)]
-            submitted = time.monotonic()
-            timings.record("scheduler_lag_at_submission", submitted - scheduled)
-            future = lanes[index % len(groups)].submit(group.send, scheduled, submitted)
-            pending.append((scheduled, future))
-            offered += 1
-            if index % max(1, int(rate * 30)) == 0:
-                (PRIVATE / "progress.json").write_text(
-                    json.dumps({"elapsed_seconds": time.monotonic() - start, **metrics})
-                )
-        for _, future in pending:
-            future.result(timeout=120)
-        file_ms = [future.result(timeout=120) for future in files]
-    elapsed = time.monotonic() - start
-    timings.enabled.clear()
-    wait_profile = sampler.finish()
-    crypto_after = crypto.usage()
-    driver_after = process_usage(os.getpid())
-    generator_usage = {
-        "driver_cpu_seconds": driver_after["cpu_seconds"]
-        - driver_before["cpu_seconds"],
-        "driver_peak_rss_kib": driver_after["peak_rss_kib"],
-        "crypto_workers": len(crypto.workers),
-        "crypto_worker_cpu_seconds": [
-            a["cpu_seconds"] - b["cpu_seconds"]
-            for a, b in zip(crypto_after, crypto_before)
-        ],
-        "crypto_worker_peak_rss_kib": [a["peak_rss_kib"] for a in crypto_after],
-    }
-    stop.set()
-    ws_thread.join(timeout=35)
-    if ws_thread.is_alive():
-        raise RuntimeError("WSS soak failed")
-    time.sleep(1.2)
-    after = stats()
-    # Read an actual encrypted durable snapshot and restore the native provider.
-    restored_client, restored_group = clients[-1], groups[-1]
-    sealed = (PRIVATE / (restored_client.id + ".checkpoint")).read_bytes()
-    aad = f"haven-load-checkpoint/v1:{restored_client.id}:{restored_group.id}".encode()
-    checkpoint = json.loads(
-        AESGCM((PRIVATE / "checkpoint.key").read_bytes()).decrypt(
-            sealed[:12], sealed[12:], aad
+        ready = threading.Event()
+        ws_thread = threading.Thread(
+            target=lambda: asyncio.run(sockets(clients, ready)), daemon=True
         )
-    )
-    if (
-        checkpoint["seq"] != restored_group.seq
-        or checkpoint["head"] != restored_group.head
-    ):
-        raise RuntimeError("Restored checkpoint chain mismatch")
-    crypto.exchange(
-        restored_client.shard,
-        {
-            "client": restored_client.id,
-            "op": "restore",
-            "state": checkpoint["state"],
-            "group_id": restored_group.gid,
-        },
-    )
-    restored_group.check_roster(
-        native(restored_client, "inspect", group_id=restored_group.gid)
-    )
-    if (
-        metrics["accepted"] != offered
-        or metrics["delivered"] != 9 * metrics["accepted"]
-    ):
-        raise RuntimeError("Delivery cardinality mismatch")
-    print(
-        json.dumps(
+        ws_thread.start()
+        if not ready.wait(90) or metrics["ws_peak"] != 500 or metrics["ws_errors"]:
+            raise RuntimeError("500 authenticated WSS sessions were not established")
+        print("READY", flush=True)
+        if sys.stdin.readline().strip() != "GO":
+            raise RuntimeError("Measurement handshake rejected")
+        with metrics_lock:
+            metrics.update(
+                http_requests=0,
+                retry_429=0,
+                accepted=0,
+                delivered=0,
+                updates=0,
+                heartbeats=0,
+                transport_retries=0,
+                notification_hints=0,
+            )
+        before = stats()
+        crypto_before = crypto.usage()
+        driver_before = process_usage(os.getpid())
+        sampler = WaitSampler(settings.DATABASES["default"])
+        sampler.start()
+        timings.reset()
+        measuring.set()
+        start = time.monotonic()
+        duration = int(os.environ.get("HAVEN_LOAD_SECONDS", "120"))
+        rate = float(os.environ.get("HAVEN_LOAD_RATE", "20"))
+        pending = deque()
+        offered, backpressure_stop, stop_reason = 0, False, None
+        # Each conversation has its own ordered lane. A slow conversation cannot
+        # block scheduling unrelated groups; oldest unfinished work still has the
+        # original strict ten-second bound. No generated message is discarded.
+        with ExitStack() as stack:
+            file_pool = stack.enter_context(ThreadPoolExecutor(max_workers=5))
+            recipient_workers = int(
+                os.environ.get("HAVEN_LOAD_RECIPIENT_WORKERS", "100")
+            )
+            recipient_pool = (
+                stack.enter_context(ThreadPoolExecutor(max_workers=recipient_workers))
+                if recipient_workers
+                else None
+            )
+            for group in groups:
+                group.recipient_pool = recipient_pool
+            lanes = [
+                stack.enter_context(ThreadPoolExecutor(max_workers=1)) for _ in groups
+            ]
+            barrier = threading.Barrier(5)
+            files = [
+                file_pool.submit(transfer_file, group, barrier) for group in groups[:5]
+            ]
+            for index in range(int(duration * rate)):
+                scheduled = start + index / rate
+                time.sleep(max(0, scheduled - time.monotonic()))
+                while pending and pending[0][1].done():
+                    pending.popleft()[1].result(timeout=0)
+                backlog_expired = bool(
+                    pending and time.monotonic() - pending[0][0] > 10
+                )
+                if (
+                    backlog_expired
+                    or time.monotonic() - scheduled > 10
+                    or metrics.get("ws_unrecoverable", 0)
+                    or (metrics["ws_errors"] and not RESILIENCE)
+                ):
+                    backpressure_stop = True
+                    stop_reason = (
+                        "oldest_unfinished_over_ten_seconds"
+                        if backlog_expired
+                        else "scheduler_lag_or_socket_failure"
+                    )
+                    break  # Stop offering new work; drain every generated message.
+                timings.record(
+                    "scheduler_lag_before_group_wait", time.monotonic() - scheduled
+                )
+                group = groups[index % len(groups)]
+                submitted = time.monotonic()
+                timings.record("scheduler_lag_at_submission", submitted - scheduled)
+                future = lanes[index % len(groups)].submit(
+                    group.send, scheduled, submitted
+                )
+                pending.append((scheduled, future))
+                offered += 1
+                if index % max(1, int(rate * 30)) == 0:
+                    (PRIVATE / "progress.json").write_text(
+                        json.dumps(
+                            {"elapsed_seconds": time.monotonic() - start, **metrics}
+                        )
+                    )
+            for _, future in pending:
+                future.result(timeout=120)
+            file_ms = [future.result(timeout=120) for future in files]
+        elapsed = time.monotonic() - start
+        timings.enabled.clear()
+        wait_profile = sampler.finish()
+        crypto_after = crypto.usage()
+        driver_after = process_usage(os.getpid())
+        generator_usage = {
+            "driver_cpu_seconds": driver_after["cpu_seconds"]
+            - driver_before["cpu_seconds"],
+            "driver_peak_rss_kib": driver_after["peak_rss_kib"],
+            "crypto_workers": len(crypto.workers),
+            "recipient_workers": recipient_workers,
+            "crypto_worker_cpu_seconds": [
+                a["cpu_seconds"] - b["cpu_seconds"]
+                for a, b in zip(crypto_after, crypto_before)
+            ],
+            "crypto_worker_peak_rss_kib": [a["peak_rss_kib"] for a in crypto_after],
+        }
+        stop.set()
+        ws_thread.join(timeout=35)
+        if ws_thread.is_alive():
+            raise RuntimeError("WSS soak failed")
+        time.sleep(1.2)
+        after = stats()
+        # Read an actual encrypted durable snapshot and restore the native provider.
+        restored_client, restored_group = clients[-1], groups[-1]
+        sealed = (PRIVATE / (restored_client.id + ".checkpoint")).read_bytes()
+        aad = f"haven-load-checkpoint/v1:{restored_client.id}:{restored_group.id}".encode()
+        checkpoint = json.loads(
+            AESGCM((PRIVATE / "checkpoint.key").read_bytes()).decrypt(
+                sealed[:12], sealed[12:], aad
+            )
+        )
+        if (
+            checkpoint["seq"] != restored_group.seq
+            or checkpoint["head"] != restored_group.head
+        ):
+            raise RuntimeError("Restored checkpoint chain mismatch")
+        crypto.exchange(
+            restored_client.shard,
             {
-                "metrics": metrics,
-                "generator_timings": timings.snapshot(),
-                "generator_usage": generator_usage,
-                "postgres_wait_sampling": wait_profile,
-                "instrumentation_scope": "Constant-space aggregate histograms; phase times overlap across concurrent work; CPU separate for driver/crypto/API; no request or SQL text",
-                "resilience_mode": RESILIENCE,
-                "websocket_reconnect": summarize(reconnect_latencies),
-                "zero_socket_error_gate": "FAIL" if metrics["ws_errors"] else "PASS",
-                "offered_messages": offered,
-                "target_status": "NOT_SUSTAINED" if backpressure_stop else "COMPLETED",
-                "websocket_status": "FAILED" if metrics["ws_errors"] else "PASS",
-                "backpressure_stop_seconds": 10,
-                "backpressure_stop_reason": stop_reason,
-                "scheduler": "50 independent ordered conversation lanes; oldest unfinished work and dispatcher lag both bounded to ten seconds",
-                "rekey_every_application_messages_per_group": int(
-                    os.environ.get("HAVEN_LOAD_REKEY_EVERY", "100")
-                ),
-                "encrypted_native_checkpoint_restore": "PASS",
-                "configured_seconds": duration,
-                "configured_messages_per_second": rate,
-                "five_concurrent_encrypted_1mib_files": summarize(file_ms),
-                "elapsed_seconds": elapsed,
-                "achieved_messages_per_second": metrics["accepted"] / elapsed,
-                "send_scheduled_to_accepted": summarize(send_latencies),
-                "scheduled_to_all_nine_durable_acks": summarize(delivery_latencies),
-                "postgres_before": before,
-                "postgres_after": after,
-                "scope": "100 synthetic accounts / 500 native MLS clients / 50 ten-device groups / 500 authenticated WSS; encrypted fsynced native checkpoints, not browser IndexedDB or physical devices; fixture enrollment and login excluded",
-            }
-        ),
-        flush=True,
-    )
-finally:
-    stop.set()
-    crypto.close()
+                "client": restored_client.id,
+                "op": "restore",
+                "state": checkpoint["state"],
+                "group_id": restored_group.gid,
+            },
+        )
+        restored_group.check_roster(
+            native(restored_client, "inspect", group_id=restored_group.gid)
+        )
+        if (
+            metrics["accepted"] != offered
+            or metrics["delivered"] != 9 * metrics["accepted"]
+        ):
+            raise RuntimeError("Delivery cardinality mismatch")
+        print(
+            json.dumps(
+                {
+                    "metrics": metrics,
+                    "generator_timings": timings.snapshot(),
+                    "generator_usage": generator_usage,
+                    "postgres_wait_sampling": wait_profile,
+                    "instrumentation_scope": "Constant-space aggregate histograms; phase times overlap across concurrent work; CPU separate for driver/crypto/API; no request or SQL text",
+                    "resilience_mode": RESILIENCE,
+                    "websocket_reconnect": summarize(reconnect_latencies),
+                    "zero_socket_error_gate": "FAIL"
+                    if metrics["ws_errors"]
+                    else "PASS",
+                    "offered_messages": offered,
+                    "target_status": "NOT_SUSTAINED"
+                    if backpressure_stop
+                    else "COMPLETED",
+                    "websocket_status": "FAILED" if metrics["ws_errors"] else "PASS",
+                    "backpressure_stop_seconds": 10,
+                    "backpressure_stop_reason": stop_reason,
+                    "scheduler": "50 independent ordered conversation lanes; oldest unfinished work and dispatcher lag both bounded to ten seconds",
+                    "rekey_every_application_messages_per_group": int(
+                        os.environ.get("HAVEN_LOAD_REKEY_EVERY", "100")
+                    ),
+                    "encrypted_native_checkpoint_restore": "PASS",
+                    "configured_seconds": duration,
+                    "configured_messages_per_second": rate,
+                    "five_concurrent_encrypted_1mib_files": summarize(file_ms),
+                    "elapsed_seconds": elapsed,
+                    "achieved_messages_per_second": metrics["accepted"] / elapsed,
+                    "send_scheduled_to_accepted": summarize(send_latencies),
+                    "scheduled_to_all_nine_durable_acks": summarize(delivery_latencies),
+                    "postgres_before": before,
+                    "postgres_after": after,
+                    "scope": "100 synthetic accounts / 500 native MLS clients / 50 ten-device groups / 500 authenticated WSS; encrypted fsynced native checkpoints, not browser IndexedDB or physical devices; fixture enrollment and login excluded",
+                }
+            ),
+            flush=True,
+        )
+    finally:
+        stop.set()
+        crypto.close()
+
+
+if __name__ == "__main__":
+    run_legacy()

@@ -94,6 +94,21 @@ def trusted_device(request):
 
 def membership(request, cid, lock=False, control=False):
     device = trusted_device(request)
+    if not lock:
+        # Reads and account-fenced ACKs can load membership/conversation in one
+        # statement. Other writes retain lock-then-recheck below: a locking
+        # join could otherwise use a stale member snapshot after waiting.
+        member = get_object_or_404(
+            m.Membership.objects.select_related("conversation"),
+            conversation_id=cid,
+            device=device,
+            removed_at_epoch=None,
+        )
+        member.device = device
+        conv = member.conversation
+        if conv.status != "active" and request.method not in ("GET", "HEAD") and not control:
+            raise PermissionDenied("Conversation requires rekey")
+        return conv, member
     conv = get_object_or_404(
         m.Conversation.objects.select_for_update() if lock else m.Conversation.objects, pk=cid
     )
@@ -191,6 +206,11 @@ class View(APIView):
             )
 
     def dispatch(self, request, *args, **kwargs):
+        # These handlers do not write durable state. Revalidation remains in
+        # initial(); READ COMMITTED already took a fresh snapshot per SELECT.
+        # Reads needing row locks (view-once chunks) keep their own atomic block.
+        if request.method in ("GET", "HEAD", "OPTIONS"):
+            return super().dispatch(request, *args, **kwargs)
         with transaction.atomic():
             response = super().dispatch(request, *args, **kwargs)
             # DRF handles API exceptions internally. Its error response must not
@@ -249,7 +269,7 @@ class Login(Public):
 
 
 class Redeem(Public):
-    @transaction.atomic
+    @transaction.atomic(savepoint=False)
     def post(self, request):
         rate(request, "redeem.total", 300, identity="service")
         d = data(request, s.Redeem)
@@ -312,7 +332,7 @@ class Logout(View):
 
 
 class ChangePassword(View):
-    @transaction.atomic
+    @transaction.atomic(savepoint=False)
     def post(self, request):
         rate(request, "password", 3)
         d = data(request, s.Password)
@@ -422,7 +442,7 @@ class FriendInvitations(View):
 
 
 class FriendRevokeInvitation(View):
-    @transaction.atomic
+    @transaction.atomic(savepoint=False)
     def post(self, request, iid):
         invite = get_object_or_404(m.Invitation, pk=iid, creator=request.user)
         if m.Invitation.objects.filter(pk=invite.pk, revoked_at=None).update(revoked_at=timezone.now()):
@@ -449,7 +469,7 @@ class Users(View):
         admin(request)
         return Response([user_json(u) for u in m.User.objects.order_by("date_joined")[:200]])
 
-    @transaction.atomic
+    @transaction.atomic(savepoint=False)
     def patch(self, request, uid):
         admin(request, super_only=True)
         d = data(request, s.UserPatch)
@@ -679,7 +699,7 @@ class EnrollmentRequest(View):
 
 
 class EnrollmentApprove(View):
-    @transaction.atomic
+    @transaction.atomic(savepoint=False)
     def post(self, request):
         signer = trusted_device(request)
         d = data(request, s.Approval)
@@ -700,7 +720,7 @@ class EnrollmentApprove(View):
 
 
 class EnrollmentComplete(View):
-    @transaction.atomic
+    @transaction.atomic(savepoint=False)
     def post(self, request):
         crypto_gate()
         d = data(request, s.Approval)
@@ -738,7 +758,7 @@ class EnrollmentComplete(View):
 
 
 class RevokeDevice(View):
-    @transaction.atomic
+    @transaction.atomic(savepoint=False)
     def post(self, request, did):
         trusted_device(request)
         device = get_object_or_404(m.Device, pk=did, user=request.user)
@@ -875,7 +895,7 @@ class Conversations(View):
             response["X-Haven-Next-Cursor"] = cursor
         return response
 
-    @transaction.atomic
+    @transaction.atomic(savepoint=False)
     def post(self, request):
         device = trusted_device(request)
         rate(request, "conversation", 10)
@@ -1026,9 +1046,6 @@ def save_envelope(request, c, member, d, kind, transition=None):
     charged = len(d["ciphertext"]) + len(p.canonical(expected)) + len(d["signature"]) + 4096
     if transition:
         charged += len(p.canonical(transition)) + len(d.get("welcome", b""))
-    reserve(
-        request.user.pk, charged, pending=len(d["ciphertext"]) if kind == "application" else 0, envelopes=1
-    )
     c.last_seq += 1
     c.head_hash = p.chain_hash(expected, d["signature"])
     c.save(update_fields=["last_seq", "head_hash"])
@@ -1046,6 +1063,13 @@ def save_envelope(request, c, member, d, kind, transition=None):
         chain_hash=c.head_hash,
     )
     m.NotificationOutbox.objects.create(envelope=env)
+    # All writes remain invisible until the outer transaction commits. Take
+    # the shared service-budget lock after the independent inserts, so a slow
+    # insert cannot hold up every unrelated sender. Rejection rolls back the
+    # envelope, conversation head and outbox along with the charge.
+    reserve(
+        request.user.pk, charged, pending=len(d["ciphertext"]) if kind == "application" else 0, envelopes=1
+    )
     return env
 
 
@@ -1084,7 +1108,7 @@ class Messages(View):
             }
         )
 
-    @transaction.atomic
+    @transaction.atomic(savepoint=False)
     def post(self, request, cid):
         rate(request, "send", 120)
         d = data(request, s.Envelope)
@@ -1121,7 +1145,7 @@ class Proofs(View):
 
 
 class MembersPropose(View):
-    @transaction.atomic
+    @transaction.atomic(savepoint=False)
     def post(self, request, cid):
         d = data(request, s.Leave)
         c, member = membership(request, cid, lock=True, control=True)
@@ -1160,7 +1184,7 @@ class CryptoEvents(Messages):
         uid = m.Device.objects.filter(pk=d.get("device_id")).values_list("user_id", flat=True).first()
         return (uid,) if uid else ()
 
-    @transaction.atomic
+    @transaction.atomic(savepoint=False)
     def post(self, request, cid):
         rate(request, "membership", 30)
         d = data(request, s.Control)
@@ -1291,19 +1315,30 @@ class Acks(View):
             }
         )
 
-    @transaction.atomic
+    @transaction.atomic(savepoint=False)
     def post(self, request, cid):
         d = data(request, s.Ack)
-        c, member = membership(request, cid, lock=True, control=True)
+        # The outer actor-account fence excludes credential/device changes and
+        # targeted membership removal. Sequence heads only advance. No other
+        # writer locks a cursor before this account fence, and retirement only
+        # reads committed cursors. Keep the conversation lock to the final
+        # atomic receipt-version UPDATE, instead of serializing nine complete
+        # recipient transactions behind one conversation row.
+        c, member = membership(request, cid, control=True)
         if d["seq"] > c.last_seq:
             raise ValidationError("Future cursor")
-        cursor, _ = m.DeliveryCursor.objects.get_or_create(device=member.device, conversation=c)
-        if d["seq"] > cursor.last_acked_seq:
-            cursor.last_acked_seq = d["seq"]
-            cursor.save(update_fields=["last_acked_seq"])
+        cursors = m.DeliveryCursor.objects.filter(device=member.device, conversation=c)
+        last_acked = cursors.values_list("last_acked_seq", flat=True).first()
+        if last_acked is None:
+            cursor, _ = m.DeliveryCursor.objects.get_or_create(device=member.device, conversation=c)
+            last_acked = cursor.last_acked_seq
+        if d["seq"] > last_acked:
+            if cursors.update(last_acked_seq=d["seq"]) != 1:
+                raise ValidationError("Delivery cursor changed; retry synchronization")
+            last_acked = d["seq"]
             m.Conversation.objects.filter(pk=c.pk).update(receipt_version=F("receipt_version") + 1)
         # Bounded updates: receipts are derived from durable per-device cursor, not human reading.
-        return Response({"seq": cursor.last_acked_seq, "state": "recipient_synced"})
+        return Response({"seq": last_acked, "state": "recipient_synced"})
 
 
 class Sync(View):
@@ -1322,7 +1357,7 @@ class Sync(View):
 
 
 class Attachments(View):
-    @transaction.atomic
+    @transaction.atomic(savepoint=False)
     def post(self, request):
         d = data(request, s.AttachmentInit)
         # Quota is per account across all conversations and devices. Serialize
@@ -1461,7 +1496,7 @@ class Chunk(View):
 
 
 class CompleteAttachment(View):
-    @transaction.atomic
+    @transaction.atomic(savepoint=False)
     def post(self, request, aid):
         a = attachment(request, aid, True)
         a = m.EncryptedAttachment.objects.select_for_update().get(pk=a.pk)
@@ -1475,7 +1510,7 @@ class CompleteAttachment(View):
 
 
 class DeleteAttachment(View):
-    @transaction.atomic
+    @transaction.atomic(savepoint=False)
     def delete(self, request, aid):
         a = attachment(request, aid, True)
         a = m.EncryptedAttachment.objects.select_for_update().get(pk=a.pk)
@@ -1497,7 +1532,7 @@ class ViewOnceAttachment(View):
         view = get_object_or_404(m.AttachmentView, attachment=a, user=request.user)
         return Response({"state": "opened" if view.consumed else "available"})
 
-    @transaction.atomic
+    @transaction.atomic(savepoint=False)
     def post(self, request, aid):
         d = data(request, s.AttachmentViewToken)
         a = attachment(request, aid)
@@ -1531,7 +1566,7 @@ class ViewOnceAttachment(View):
 
 
 class CloseViewOnceAttachment(View):
-    @transaction.atomic
+    @transaction.atomic(savepoint=False)
     def post(self, request, aid):
         d = data(request, s.AttachmentViewToken)
         a = attachment(request, aid)
@@ -1553,7 +1588,7 @@ class CloseViewOnceAttachment(View):
 
 
 class RecoveryKey(View):
-    @transaction.atomic
+    @transaction.atomic(savepoint=False)
     def post(self, request):
         trusted_device(request)
         d = data(request, s.RecoveryKey)
@@ -1583,7 +1618,7 @@ class RecoveryStart(Public):
 
 
 class RecoveryReset(Public):
-    @transaction.atomic
+    @transaction.atomic(savepoint=False)
     def post(self, request):
         crypto_gate()
         rate(request, "recovery.reset.total", 120, identity="service")
@@ -1666,7 +1701,7 @@ class AdminDevices(View):
             )
         )
 
-    @transaction.atomic
+    @transaction.atomic(savepoint=False)
     def post(self, request, did):
         admin(request)
         rate(request, "admin.device_revoke", 20)
@@ -1683,7 +1718,7 @@ class AdminDevices(View):
 
 
 class DisableAccount(View):
-    @transaction.atomic
+    @transaction.atomic(savepoint=False)
     def post(self, request):
         trusted_device(request)
         rate(request, "account.disable", 3)

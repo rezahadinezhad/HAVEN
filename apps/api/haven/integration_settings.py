@@ -1,6 +1,6 @@
 """Loopback-only integration environment. Does not disable authentication, TLS or cryptography."""
 
-from .settings import *  # noqa: F403
+from .runtime_settings import *  # noqa: F403
 from .settings import ALLOWED_HOSTS, ORIGINS
 
 from urllib.parse import urlsplit

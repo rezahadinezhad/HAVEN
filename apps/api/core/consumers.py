@@ -3,22 +3,35 @@ import asyncio
 from .observability import websocket_lease
 import time
 import uuid
+from concurrent.futures import ThreadPoolExecutor
+from functools import partial
 from urllib.parse import urlsplit
 from http.cookies import SimpleCookie
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from channels.db import database_sync_to_async
 from django.conf import settings
+from django.db import DatabaseError
+from channels.exceptions import StopConsumer
 from .middleware import resolve_session
 from .models import Membership
 
+# These functions create/use/close their ORM connections in the worker and
+# return primitives only. They need not share asgiref's single thread across
+# every socket. Bound concurrency; keep Channels' cleanup and live checks.
+socket_database = partial(
+    database_sync_to_async,
+    thread_sensitive=False,
+    executor=ThreadPoolExecutor(max_workers=8, thread_name_prefix="haven-ws-db"),
+)
 
-@database_sync_to_async
+
+@socket_database
 def session_user(token):
     s = resolve_session(token)
     return str(s.user_id) if s else None
 
 
-@database_sync_to_async
+@socket_database
 def typing_recipients(token, cid):
     session = resolve_session(token)
     if (
@@ -39,6 +52,16 @@ def typing_recipients(token, cid):
 
 
 class SyncConsumer(AsyncJsonWebsocketConsumer):
+    async def database(self, function, *args):
+        try:
+            return await function(*args)
+        except DatabaseError:
+            # Availability failure is not proof of revocation. Fail closed,
+            # discard this socket's transient links, and permit verified retry.
+            await self.close(code=1013)
+            await self.disconnect(1013)
+            raise StopConsumer() from None
+
     async def connect(self):
         headers = dict(self.scope["headers"])
         try:
@@ -64,7 +87,7 @@ class SyncConsumer(AsyncJsonWebsocketConsumer):
         self.frame_window = time.monotonic()
         self.frame_count = 0
         self.token = token
-        self.uid = await session_user(token)
+        self.uid = await self.database(session_user, token)
         if self.uid is None:
             await self.close(code=4401)
             return
@@ -102,7 +125,7 @@ class SyncConsumer(AsyncJsonWebsocketConsumer):
             await self.close(code=1008)
             return
         # Check revocation on every incoming frame; notifications also recheck before sending.
-        if not await session_user(self.token):
+        if not await self.database(session_user, self.token):
             await self.close(code=4401)
             return
         try:
@@ -122,7 +145,7 @@ class SyncConsumer(AsyncJsonWebsocketConsumer):
             except (ValueError, TypeError, KeyError):
                 await self.close(code=1008)
                 return
-            recipients = await typing_recipients(self.token, cid)
+            recipients = await self.database(typing_recipients, self.token, cid)
             if recipients is None:
                 await self.close(code=4403)
                 return
@@ -146,7 +169,7 @@ class SyncConsumer(AsyncJsonWebsocketConsumer):
             )
 
     async def typing_hint(self, event):
-        recipients = await typing_recipients(self.token, event["conversation_id"])
+        recipients = await self.database(typing_recipients, self.token, event["conversation_id"])
         if recipients is not None:
             await self.send_json(
                 {
@@ -159,7 +182,7 @@ class SyncConsumer(AsyncJsonWebsocketConsumer):
             )
 
     async def sync_hint(self, event):
-        if not await session_user(self.token):
+        if not await self.database(session_user, self.token):
             await self.close(code=4401)
             return
         await self.send_json({"v": 1, "kind": "sync.required"})

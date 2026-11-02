@@ -13,6 +13,239 @@ from .test_view_once import group as group, uploaded
 pytestmark = pytest.mark.django_db(transaction=True)
 
 
+def test_message_read_keeps_live_authority_without_a_write_transaction(group):
+    from django.db import connection
+    from django.test.utils import CaptureQueriesContext
+
+    _, _, client, _, _, _, _, _, conv = group
+    with CaptureQueriesContext(connection) as captured:
+        response = client.get(f"/api/v1/conversations/{conv.pk}/messages", secure=True)
+    assert response.status_code == 200
+    assert "messages" in response.json()
+    statements = [query["sql"].strip().upper() for query in captured]
+    assert not any(
+        query.startswith(("BEGIN", "COMMIT", "INSERT", "UPDATE", "DELETE")) for query in statements
+    )
+    assert any("CORE_SESSION" in query for query in statements)
+
+
+def test_existing_cursor_ack_keeps_outer_commit_without_redundant_savepoints(group):
+    from django.db import connection
+    from django.test.utils import CaptureQueriesContext
+
+    _, _, client, device, _, _, _, _, conv = group
+    m.Conversation.objects.filter(pk=conv.pk).update(last_seq=1)
+    m.DeliveryCursor.objects.create(device=device, conversation=conv, last_acked_seq=0)
+    with CaptureQueriesContext(connection) as captured:
+        response = post(client, f"conversations/{conv.pk}/acks", {"seq": 1})
+    assert response.status_code == 200
+    statements = [query["sql"].strip().upper() for query in captured]
+    assert "BEGIN" in statements and "COMMIT" in statements
+    assert not any(query.startswith(("SAVEPOINT", "RELEASE SAVEPOINT")) for query in statements)
+    assert m.DeliveryCursor.objects.get(device=device, conversation=conv).last_acked_seq == 1
+
+
+def test_slow_ack_cursor_read_does_not_lock_out_another_recipient(group, monkeypatch):
+    from django.db.models.query import QuerySet
+
+    _, _, first_client, first_device, _, _, second_client, second_device, conv = group
+    m.Conversation.objects.filter(pk=conv.pk).update(last_seq=2)
+    for device in (first_device, second_device):
+        m.DeliveryCursor.objects.create(device=device, conversation=conv)
+    reached, release = Event(), Event()
+    actual = QuerySet.first
+
+    def delayed(query):
+        if query.model is m.DeliveryCursor and first_device.pk in query.query.sql_with_params()[1]:
+            reached.set()
+            assert release.wait(10)
+        return actual(query)
+
+    monkeypatch.setattr(QuerySet, "first", delayed)
+
+    def ack(client):
+        close_old_connections()
+        try:
+            return post(client, f"conversations/{conv.pk}/acks", {"seq": 2}).status_code
+        finally:
+            close_old_connections()
+
+    with ThreadPoolExecutor(max_workers=2) as threads:
+        first = threads.submit(ack, first_client)
+        try:
+            assert reached.wait(5)
+            assert threads.submit(ack, second_client).result(timeout=2) == 200
+        finally:
+            release.set()
+        assert first.result(timeout=5) == 200
+    assert m.Conversation.objects.get(pk=conv.pk).receipt_version == 2
+    assert m.DeliveryCursor.objects.filter(conversation=conv, last_acked_seq=2).count() == 2
+
+
+def test_uncommitted_ack_never_authorizes_ciphertext_retirement(group, monkeypatch):
+    from datetime import timedelta
+    import uuid
+    from django.db.models.query import QuerySet
+    from django.utils import timezone
+    from core.retention import retire_delivered
+
+    _, owner, client, device, _, _, _, _, conv = group
+    m.Conversation.objects.filter(pk=conv.pk).update(last_seq=1)
+    # Opaque durable ciphertext fixture: this checks transaction visibility,
+    # not MLS. Real signature/MLS checks are exercised by the native suite.
+    envelope = m.MessageEnvelope.objects.create(
+        conversation=conv,
+        sender_device=owner,
+        server_seq=1,
+        client_message_id=uuid.uuid4(),
+        group_epoch=0,
+        ciphertext=b"synthetic opaque ciphertext",
+        request_digest="d" * 64,
+    )
+    m.MessageEnvelope.objects.filter(pk=envelope.pk).update(received_at=timezone.now() - timedelta(days=2))
+    for member in m.Membership.objects.filter(conversation=conv):
+        m.DeliveryCursor.objects.create(
+            device_id=member.device_id,
+            conversation=conv,
+            last_acked_seq=0 if member.device_id == device.pk else 1,
+        )
+    updated, release = Event(), Event()
+    actual = QuerySet.update
+
+    def paused(query, **values):
+        result = actual(query, **values)
+        if query.model is m.DeliveryCursor:
+            updated.set()
+            assert release.wait(10)
+        return result
+
+    monkeypatch.setattr(QuerySet, "update", paused)
+
+    def work(ack):
+        close_old_connections()
+        try:
+            return (
+                post(client, f"conversations/{conv.pk}/acks", {"seq": 1}).status_code
+                if ack
+                else retire_delivered(timezone.now())
+            )
+        finally:
+            close_old_connections()
+
+    with ThreadPoolExecutor(max_workers=2) as threads:
+        pending = threads.submit(work, True)
+        try:
+            assert updated.wait(5)
+            assert threads.submit(work, False).result(timeout=2) == 0
+            assert bytes(m.MessageEnvelope.objects.get(pk=envelope.pk).ciphertext)
+        finally:
+            release.set()
+        assert pending.result(timeout=5) == 200
+    assert retire_delivered(timezone.now()) == 1
+    assert not bytes(m.MessageEnvelope.objects.get(pk=envelope.pk).ciphertext)
+
+
+def test_ack_waits_for_membership_removal_account_fence_then_rechecks(group):
+    from django.db import connection, transaction
+
+    _, owner, client, device, _, _, _, _, conv = group
+    changed, release, waiting = Event(), Event(), Event()
+
+    def remove():
+        close_old_connections()
+        try:
+            with transaction.atomic():
+                # Same account-before-conversation protocol as CryptoEvents.
+                list(
+                    m.User.objects.select_for_update()
+                    .filter(pk__in=[owner.user_id, device.user_id])
+                    .order_by("pk")
+                )
+                m.Conversation.objects.select_for_update().get(pk=conv.pk)
+                m.Membership.objects.filter(conversation=conv, device=device).update(removed_at_epoch=1)
+                changed.set()
+                assert release.wait(10)
+        finally:
+            close_old_connections()
+
+    def ack():
+        close_old_connections()
+
+        def observe(execute, sql, params, many, context):
+            if '"core_user"' in sql and "FOR UPDATE" in sql:
+                waiting.set()
+            return execute(sql, params, many, context)
+
+        try:
+            with connection.execute_wrapper(observe):
+                return post(client, f"conversations/{conv.pk}/acks", {"seq": 0}).status_code
+        finally:
+            close_old_connections()
+
+    with ThreadPoolExecutor(max_workers=2) as threads:
+        removal = threads.submit(remove)
+        try:
+            assert changed.wait(5)
+            pending = threads.submit(ack)
+            assert waiting.wait(5) and not pending.done()
+        finally:
+            release.set()
+        removal.result(timeout=5)
+        assert pending.result(timeout=5) == 404
+    assert not m.DeliveryCursor.objects.filter(conversation=conv, device=device).exists()
+    assert m.Conversation.objects.get(pk=conv.pk).receipt_version == 0
+
+
+def test_concurrent_same_device_acks_remain_monotonic(group, monkeypatch):
+    from copy import deepcopy
+    from threading import Barrier
+
+    _, _, client, device, _, _, _, _, conv = group
+    m.Conversation.objects.filter(pk=conv.pk).update(last_seq=10)
+    m.DeliveryCursor.objects.create(device=device, conversation=conv)
+    other = type(client)(enforce_csrf_checks=True)
+    other.defaults = dict(client.defaults)
+    other.cookies = deepcopy(client.cookies)
+    barrier = Barrier(2)
+    actual = CookieAuthentication.authenticate
+
+    def simultaneous(self, request):
+        result = actual(self, request)
+        if request.method == "POST" and request.path.endswith("/acks"):
+            barrier.wait(timeout=5)
+        return result
+
+    monkeypatch.setattr(CookieAuthentication, "authenticate", simultaneous)
+
+    def ack(item):
+        actor, seq = item
+        close_old_connections()
+        try:
+            return post(actor, f"conversations/{conv.pk}/acks", {"seq": seq}).status_code
+        finally:
+            close_old_connections()
+
+    with ThreadPoolExecutor(max_workers=2) as threads:
+        assert list(threads.map(ack, [(client, 10), (other, 5)])) == [200, 200]
+    assert m.DeliveryCursor.objects.get(conversation=conv, device=device).last_acked_seq == 10
+
+
+def test_database_unavailable_during_cookie_auth_is_generic_and_fail_closed(group, monkeypatch):
+    from django.db import OperationalError
+    from core import middleware
+
+    _, _, client, _, _, _, _, _, conv = group
+
+    def unavailable(*args):
+        raise OperationalError("synthetic database diagnostic canary")
+
+    monkeypatch.setattr(middleware, "resolve_session", unavailable)
+    response = client.get(f"/api/v1/conversations/{conv.pk}/messages", secure=True)
+    assert response.status_code == 503
+    assert response.json() == {"error": "Service temporarily unavailable"}
+    assert response["Cache-Control"] == "no-store"
+
+
 def paused_request(monkeypatch, client, path, body, revoke, method="POST"):
     """Pause after real middleware authentication, before the view can authorize."""
     reached, proceed = Event(), Event()

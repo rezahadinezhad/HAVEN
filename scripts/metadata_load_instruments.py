@@ -80,6 +80,7 @@ class Timings:
                     "total_seconds": total / 1000,
                     "mean_ms": total / count,
                     "max_ms": maximum,
+                    "histogram_counts": buckets.copy(),
                     "p50_bounds": quantile(0.5),
                     "p95_bounds": quantile(0.95),
                 }
@@ -221,3 +222,29 @@ class WaitSampler:
             "classes": self.classes,
             "scope": "Sample counts of backends, not exact query wait durations; idle ClientRead is not blocking work; CPU_or_runnable is not measured CPU; sampler connection excluded",
         }
+
+
+def merge_profiles(profiles):
+    """Merge actual bucket counts, never average worker percentiles."""
+    timings = Timings()
+    pools = {"pool_before": {}, "pool_after": {}}
+    for profile in profiles:
+        for phase, row in profile["timings"].items():
+            target = timings.rows.setdefault(
+                phase, [0, 0.0, 0.0, [0] * (len(BOUNDS_MS) + 1)]
+            )
+            target[0] += row["samples"]
+            target[1] += row["total_seconds"] * 1000
+            target[2] = max(target[2], row["max_ms"])
+            assert len(row["histogram_counts"]) == len(target[3])
+            target[3] = [a + b for a, b in zip(target[3], row["histogram_counts"])]
+        for when in pools:
+            for alias, stats in profile.get(when, {}).items():
+                combined = pools[when].setdefault(alias, {})
+                for name, value in stats.items():
+                    combined[name] = combined.get(name, 0) + value
+    return {
+        "timings": timings.snapshot(),
+        **pools,
+        "scope": "Merged histogram counts across independent API processes; SQL cursor timing HTTP-only; connection/commit and pool statistics include WebSockets; windows include handshakes/teardown; phases overlap",
+    }

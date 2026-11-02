@@ -33,3 +33,5 @@ Original HAVEN code and project-authored documentation are distributed under the
 ## Review remediation, 2026-11-01
 
 Contract generation now uses development-only openapi-typescript 6.7.6 (MIT), with its compatible undici fetch dependency pinned to 6.29.1 (MIT). The regenerated OpenAPI types and API client pass TypeScript checks; full npm audits include this tooling. This replaces the previously recorded Redocly/minimatch dependency path. Exact graph, notices and hashes remain in the npm lockfile/distributed dependencies. Cryptographic providers and their licenses are unchanged.
+
+Throughput-runtime continuation (2026-11-02): enable the existing psycopg pool extra and lock psycopg-pool 3.3.3 (LGPL-3.0-only, as declared by its installed distribution). Retain its packaged license/notice files. Django/Channels/Uvicorn versions are unchanged. Temporary a2wsgi 1.10.10 and Gunicorn 26.2.0 were used only for isolated HTTP experiments and removed from the restored locked API environment; neither is an application dependency.

@@ -10,4 +10,4 @@ RUN test "$(uname -m)" = x86_64
 RUN python -m pip uninstall -y pip
 USER 10001:10001
 EXPOSE 8100
-CMD ["uvicorn", "haven.asgi:application", "--host", "0.0.0.0", "--port", "8100", "--no-access-log", "--proxy-headers", "--forwarded-allow-ips", "*", "--ws-max-size", "2048"]
+CMD ["python", "-m", "haven.server", "--host", "0.0.0.0", "--forwarded-allow-ips", "*"]

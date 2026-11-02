@@ -33,12 +33,14 @@ def reserve(uid, size, pending=0, envelopes=0, conversations=0):
             raise Throttled(
                 detail="Storage budget reached. Delivery remains durable; contact the operator.", wait=300
             )
-    for row in rows:
-        row.used_bytes += size
-        row.pending_bytes += pending
-        row.envelope_count += envelopes
-        row.conversation_count += conversations
-        row.save()
+    # Both rows are locked and checked above. They receive identical deltas;
+    # one statement shortens the globally shared service-row critical section.
+    StorageUsage.objects.filter(key__in=keys).update(
+        used_bytes=F("used_bytes") + size,
+        pending_bytes=F("pending_bytes") + pending,
+        envelope_count=F("envelope_count") + envelopes,
+        conversation_count=F("conversation_count") + conversations,
+    )
 
 
 def release_ciphertexts(charges):

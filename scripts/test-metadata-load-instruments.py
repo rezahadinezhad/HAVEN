@@ -11,12 +11,28 @@ import unittest
 
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
 
-from metadata_load_instruments import CryptoPool, Timings
+from metadata_load_instruments import CryptoPool, Timings, merge_profiles
 
 ROOT = Path(__file__).resolve().parent.parent
 
 
 class InstrumentTests(unittest.TestCase):
+    def test_worker_histograms_merge_counts_not_averaged_percentiles(self):
+        fast, slow = Timings(), Timings()
+        fast.reset()
+        slow.reset()
+        for _ in range(19):
+            fast.record("phase", 0.001)
+        slow.record("phase", 1)
+        merged = merge_profiles(
+            [{"timings": fast.snapshot()}, {"timings": slow.snapshot()}]
+        )
+        row = merged["timings"]["phase"]
+        self.assertEqual(row["samples"], 20)
+        self.assertAlmostEqual(row["total_seconds"], 1.019)
+        self.assertEqual(row["p95_bounds"]["upper_ms"], 1)
+        self.assertEqual(row["max_ms"], 1000)
+
     def test_histogram_reset_disabled_collection_and_bounds(self):
         timings = Timings()
         timings.record("phase", 1)

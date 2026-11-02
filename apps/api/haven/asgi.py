@@ -1,6 +1,6 @@
 import os
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "haven.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "haven.runtime_settings")
 from django.core.asgi import get_asgi_application
 
 django_app = get_asgi_application()

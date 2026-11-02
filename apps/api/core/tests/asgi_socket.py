@@ -1,12 +1,11 @@
 """WebSocket ASGI events over asgiref's standard in-process test transport.
 
 HAVEN runs Uvicorn. These tests need no Daphne/Twisted server or live-server
-fixture. Keep Django test connections alive across async event dispatch, as
-Channels' test helpers do; production connection handling is unchanged.
+fixture. Authenticated socket tests use committed transactional fixtures;
+real Channels connection cleanup stays enabled, including bounded DB workers.
 """
 
 import json
-from unittest.mock import patch
 from asgiref.testing import ApplicationCommunicator
 
 
@@ -22,14 +21,6 @@ class WebsocketProbe(ApplicationCommunicator):
                 "subprotocols": [],
             },
         )
-
-    async def send_input(self, message):
-        with patch("channels.db.close_old_connections"):
-            await super().send_input(message)
-
-    async def receive_output(self, timeout=1):
-        with patch("channels.db.close_old_connections"):
-            return await super().receive_output(timeout)
 
     async def connect(self):
         await self.send_input({"type": "websocket.connect"})

@@ -1,5 +1,11 @@
 # HAVEN metadata privacy — completion and qualification report
 
+## Later runtime and workload continuation
+
+The original performance sections below retain their historical five-device stress population and results. [ADR 0015](../../adr/0015-bounded-api-runtime-and-storage-locks.md) and the [runtime investigation](throughput-fixes.md) add reproduced executor, query, storage-budget and ACK contention fixes. A revised notification publisher batches only coarse hints, reuses its owned Redis loop and preserves whole-batch retry. Both backend settings now pass 132 tests; earlier browser checks retain their exact pre-notification source scope.
+
+The [workload plan](workload-plan.md) corrects the ordinary population to 100 people, two trusted identities each and 120 initially online devices, with independent asynchronous recipients. It separates a 20/s burst from steady endurance and distinguishes socket count from cryptographic fan-out. Local mixed and five-file burst cases pass; initial handoff, group stress and 82-minute endurance failures are retained. Inspect the [revised case outcomes](../../evidence/metadata-realistic-workload-2026-11-02/README.md) for completion and qualification scope. These observations do not qualify reference-production, physical devices or domestic networking.
+
 Continuation of the [original hardening report](report.md), baseline `0240706` (PR #18), with previously merged hardening at `71b2ba0`. New work is on `codex/metadata-privacy-completion`. **Production remains BLOCKED; `CRYPTO_READY=False`.** No production/staging data, deployment, backup, or key custody was changed. Local evidence is not independent certification or Iranian field qualification.
 
 ## 1. Executive summary
@@ -80,3 +86,5 @@ Independent review needs a genuinely separate reviewer; physical/domestic qualif
 ## 12. Verification checklist
 
 [requirements.csv](requirements.csv) maps each original directive phase/deliverable to scope, evidence and PASS/PARTIAL/BLOCKED/NOT IMPLEMENTED status. Inventory/flows/threat model, implemented minimization, transaction/replay boundaries, migrations, tests, before/after evidence, performance limitations, runbooks, bilingual notice and release gating are individually inspectable. The review branch has separate descriptive source and evidence commits, with a refreshed source manifest and evidence digests. Production qualification is not inferred from completion of the source-hardening work.
+
+The final [realistic results](workload-results.md) include a passing natural combined 20/s burst and a complete 7,200-second 2/s soak: 14,400 applications, 60,414 durable recipient copies, 108 MLS updates and 200 restored native checkpoints. Failed stress, latency and availability attempts remain indexed. These are local native cases, with reference-production and external release gates unqualified.

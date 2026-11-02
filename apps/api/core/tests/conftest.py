@@ -58,10 +58,12 @@ def migration_database(transactional_db):
     ) as admin:
         admin.execute(sql.SQL("CREATE DATABASE {}").format(sql.Identifier(name)))
         connection.close()
+        connection.close_pool()
         config["NAME"] = name
         try:
             yield
         finally:
             connection.close()
+            connection.close_pool()
             config["NAME"] = original
             admin.execute(sql.SQL("DROP DATABASE {} WITH (FORCE)").format(sql.Identifier(name)))

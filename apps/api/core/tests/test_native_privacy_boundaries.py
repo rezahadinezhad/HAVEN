@@ -54,6 +54,102 @@ def sign(native, device, header):
     return native(device, "sign", payload=base64.b64encode(p.canonical(header)).decode())["signature"]
 
 
+@pytest.mark.django_db(transaction=True)
+def test_slow_message_insert_does_not_hold_the_global_storage_budget(settings, native, monkeypatch):
+    from concurrent.futures import ThreadPoolExecutor
+    from threading import Event
+    from django.db import close_old_connections
+
+    settings.CRYPTO_READY = True
+    operations = []
+    for _ in range(2):
+        client, device = bound_client()
+        initialize(native, device)
+        cid, gid = str(uuid.uuid4()), uuid.uuid4().hex
+        native(device, "create", group_id=gid)
+        genesis = {
+            "domain": "haven/genesis/v1",
+            "id": cid,
+            "kind": "group",
+            "group_id": gid,
+            "members": [{**p.certificate(device), "role": "owner"}],
+        }
+        assert (
+            post(
+                client,
+                "conversations",
+                {
+                    "id": cid,
+                    "kind": "group",
+                    "group_id": gid,
+                    "header": genesis,
+                    "signature": sign(native, device, genesis),
+                },
+            ).status_code
+            == 201
+        )
+        conv = m.Conversation.objects.get(pk=cid)
+        wire = native(device, "encrypt", group_id=gid, plaintext="Synthetic storage-lock test")["ciphertext"]
+        mid = str(uuid.uuid4())
+        header = {
+            "domain": "haven/envelope/v1",
+            "v": 1,
+            "conversation_id": cid,
+            "group_id": gid,
+            "sender_device": str(device.pk),
+            "client_message_id": mid,
+            "epoch": 0,
+            "seq": 1,
+            "previous_hash": conv.head_hash,
+            "ciphertext_hash": p.fingerprint(base64.b64decode(wire)),
+            "transition": None,
+        }
+        operations.append(
+            (
+                client,
+                cid,
+                {
+                    "v": 1,
+                    "client_message_id": mid,
+                    "epoch": 0,
+                    "ciphertext": wire,
+                    "header": header,
+                    "signature": sign(native, device, header),
+                },
+            )
+        )
+    entered, release = Event(), Event()
+    actual = m.NotificationOutbox.objects.create
+
+    def delayed(**kwargs):
+        if str(kwargs["envelope"].conversation_id) == operations[0][1]:
+            entered.set()
+            assert release.wait(10)
+        return actual(**kwargs)
+
+    monkeypatch.setattr(m.NotificationOutbox.objects, "create", delayed)
+
+    def send(operation):
+        client, cid, body = operation
+        close_old_connections()
+        try:
+            return post(client, f"conversations/{cid}/messages", body).status_code
+        finally:
+            close_old_connections()
+
+    with ThreadPoolExecutor(max_workers=2) as threads:
+        first = threads.submit(send, operations[0])
+        try:
+            assert entered.wait(5)
+            second = threads.submit(send, operations[1])
+            assert second.result(timeout=2) == 201
+        finally:
+            release.set()
+        assert first.result(timeout=5) == 201
+    assert m.MessageEnvelope.objects.count() == m.NotificationOutbox.objects.count() == 2
+    assert m.StorageUsage.objects.get(key="service").envelope_count == 2
+
+
 def test_real_mls_rejections_preserve_budget_history_outbox_and_exact_retry(settings, native):
     settings.CRYPTO_READY = True
     client, device = bound_client()
