@@ -1,0 +1,7 @@
+{
+  "fresh_os_image_scan": "UNQUALIFIED",
+  "new_database_attempt": "GHCR download failed with unexpected EOF",
+  "previous_stale_scan_results_not_reassigned": true,
+  "runtime_deployments": false,
+  "normal_crypto_ready": false
+}

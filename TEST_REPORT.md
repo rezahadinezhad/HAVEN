@@ -1,5 +1,9 @@
 # Test report — local engineering qualification
 
+## Follow-up dependency qualification — 2026-11-03
+
+Follow-up qualification covers PRs #20–#25, including real old/new vault encryption compatibility and both supported Python environments. All four Python/database combinations pass 132 tests each; Chromium passes 40 (two skips) and Firefox 36 (six skips). Final scope and retained initial warnings are in the linked report; earlier tests are not relabeled. [Decisions and evidence](docs/security/dependency-followup-2026-11-03.md).
+
 ## Dependency qualification — 2026-11-02
 
 Updated graph: 132 API tests per database configuration, six native tests, 205 upstream vectors, 39 unique Chromium cases and 35 Firefox cases pass. Initial fixture failures and conditional skips remain disclosed. Dependency maintenance validation is recorded separately in the [qualification report](docs/security/dependency-maintenance-2026-11-02.md); historical performance and browser results below are not relabeled as tests of the new graph.

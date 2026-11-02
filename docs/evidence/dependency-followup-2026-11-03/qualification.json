@@ -1,0 +1,32 @@
+{
+  "review_base_commit": "b2fff7bad96b4ed365ee52464fbd24d67c4a372a",
+  "file_count": 167,
+  "file_manifest_sha256": "d4f87382d75d4f7dd26b9f924c44eb0c695f05cabe07d240448d7151c90764d1",
+  "vault_worker_sha256": "64cf7463b3bdb1558d76de01045e192d3bdaad1fd14fa10c7f3a0a4116de614a",
+  "previous_vault_worker_sha256": "52a68a86b910ad4cf2fac0309fbae7928440f6fecf6a6b1d9de6b0ba3fce4b43",
+  "previous_worker_origin": "Exact worker copied from reviewed main b2fff7b before dependency changes",
+  "libsodium_wrapper": "0.8.4",
+  "libsodium_engine": "1.0.22",
+  "runtime_python": "3.14.9",
+  "development_python": "3.12.15",
+  "pytest": "9.2.0",
+  "images": {
+    "api": {
+      "tag": "haven-api:q314",
+      "id": "sha256:9e93edee7a2aa01b3486d2cd16cd930588fbe7df20f5d2cd980382803d2d3888",
+      "user": "10001:10001",
+      "build_network": "none"
+    },
+    "web": {
+      "tag": "haven-web:followup",
+      "id": "sha256:d266a0c49268ad26ca093855b3e2dac62344cfcf645a4e939966da2a44ac1853",
+      "user": "node",
+      "build_network": "none"
+    }
+  },
+  "performance_requalification": false,
+  "production_deployment": false,
+  "qualified_source_commit": "a7e200c00e520afabc314c01e16f121481d55ae2",
+  "rate_test_repair_supplement": "rate-test-repair.json",
+  "scope_note": "Initial full local/browser/image qualification; subsequent test-only clock repair is explicitly recorded in the supplement and verified by final CI."
+}

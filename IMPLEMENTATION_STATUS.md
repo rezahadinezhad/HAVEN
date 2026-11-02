@@ -1,5 +1,9 @@
 # Implementation status
 
+## Follow-up dependency qualification — 2026-11-03
+
+Follow-up runtime/dependency changes and old/new encrypted-vault regression coverage are implemented and pass local qualification. The source gate remains closed. [Decisions and evidence](docs/security/dependency-followup-2026-11-03.md).
+
 ## Dependency qualification — 2026-11-02
 
 Reviewed update graph, canonical-signature compatibility, sha2 fingerprint conversion, pinned Node 26 online/offline images and additional functional CI are implemented and pass local qualification. [Qualification and final disposition](docs/security/dependency-maintenance-2026-11-02.md).

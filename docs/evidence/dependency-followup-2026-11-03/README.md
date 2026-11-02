@@ -1,0 +1,9 @@
+# Follow-up dependency qualification — 2026-11-03
+
+[Per-proposal decisions and scope](../../security/dependency-followup-2026-11-03.md). This batch covers PRs #20–#25. Five updates qualify locally; OpenAPI TypeScript 7.13.0 is declined because its TypeScript 5 peer conflicts with the qualified TypeScript 7 compiler. No forced peer resolution is used.
+
+The exact proposed Python 3.14.9 image and supported development Python 3.12.15 each pass 132 tests under default and pooled settings. Chromium passes 40 with two expected skips; Firefox passes 36 with six expected skips. Both run the actual old/new encrypted-checkpoint and history-record test. Browser summaries include per-case statuses and skip reasons.
+
+`qualification.json` and `qualified-source.sha256` bind tested application code, worker digests and network-disabled images. Private previous-worker fixtures, generated keys, full browser state, test accounts and raw encrypted/plaintext fixture payloads stay in protected .local storage. Public text logs normalize trailing whitespace only. Initial Python async-fixture warnings and the OpenAPI peer failure remain disclosed alongside final passing runs. No Rust/native artifact change or prior load-test requalification is claimed. Production and independent-assurance gates stay closed. A new OS scanner database download failed; earlier cached scan counts are not transferred to these images.
+
+The initial PR CI also exposed a fixed-minute-boundary assumption in an existing rate-limit test (131 passed, one failed); the independent push run passed. Production policy is unchanged. `rate-test-repair.json` records the sole application/test-file digest changed after the initial binding. Focused repaired tests pass on both Python versions and settings, and final CI reruns all four complete backend combinations. The initial manifest still describes its original runs/images; use the explicit repair supplement when verifying the latest test source.

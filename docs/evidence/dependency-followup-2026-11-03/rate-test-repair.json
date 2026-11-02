@@ -1,0 +1,14 @@
+{
+  "initial_qualification_commit": "a7e200c",
+  "failed_ci_commit": "09931c6d4cefda9fad494f3159cedad726f0547d",
+  "failed_ci_job": 125551086305,
+  "failed_test": "core/tests/test_security.py::test_rate_and_schema",
+  "failure": "Expected throttling (429), received invalid credentials (400); one run failed while the independent push run passed",
+  "diagnosis": "Original test implicitly assumed all login attempts stay within one wall-clock minute. Production limiter uses fixed one-minute buckets.",
+  "repair": "Control only the view clock, preserving actual Redis counters, private rate labels, password work and assertions; additionally assert reset and re-enforcement in the next minute.",
+  "runtime_policy_changed": false,
+  "changed_file": "apps/api/core/tests/test_security.py",
+  "initial_file_sha256": "80090fe3a319f38239caf729437f12b3092ed40d26add52c1a0ccd61fa9f7aeb",
+  "repaired_file_sha256": "13a3fffb195297096eac951d13aeac60e7c8483987a790889b6c285c641eaaca",
+  "qualification_manifest_scope": "Initial full runs and images remain bound to their original manifest. This supplement records the subsequent test-only repair; final CI reruns all four Python/database combinations."
+}
