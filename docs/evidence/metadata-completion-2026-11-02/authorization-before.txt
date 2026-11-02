@@ -1,0 +1,21 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+_____________ test_device_revoked_after_authentication_cannot_ack ______________
+core/tests/test_authorization_fences.py:58: in test_device_revoked_after_authentication_cannot_ack
+    assert response.status_code == 403
+E   assert 200 == 403
+E    +  where 200 = <Response status_code=200, "application/json">.status_code
+________ test_revocation_after_authentication_cannot_consume_view_once _________
+core/tests/test_authorization_fences.py:70: in test_revocation_after_authentication_cannot_consume_view_once
+    response = paused_request(
+core/tests/test_authorization_fences.py:41: in paused_request
+    assert reached.wait(10)
+E   assert False
+E    +  where False = wait(10)
+E    +    where wait = <threading.Event at 0x7edf12645ac0: unset>.wait
+------------------------------ Captured log call -------------------------------
+WARNING  django.request:log.py:253 Not Found: /api/v1/attachments/91b0f0e4-1dd6-4982-b3a5-dd16dbe398f5/view
+=========================== short test summary info ============================
+FAILED core/tests/test_authorization_fences.py::test_device_revoked_after_authentication_cannot_ack
+FAILED core/tests/test_authorization_fences.py::test_revocation_after_authentication_cannot_consume_view_once
+2 failed in 13.06s

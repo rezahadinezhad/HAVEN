@@ -1,0 +1,10 @@
+
+Running 2 tests using 1 worker
+
+(node:768607) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/2] tests/metadata-privacy.spec.ts:3:5 › padded OpenMLS messages keep lengths coarse across browser reload and rekey
+[2/2] tests/privacy.spec.ts:21:5 › retired server ciphertext: persisted browser MLS state reloads and continues across rekey
+  2 passed (9.4s)

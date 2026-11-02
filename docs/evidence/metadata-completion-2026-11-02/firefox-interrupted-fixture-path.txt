@@ -1,0 +1,60 @@
+
+> haven-web@0.2.0 test
+> playwright test --reporter=list
+
+
+Running 41 tests using 1 worker
+
+(node:2130681) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   1 tests/chat-experience.spec.ts:11:5 › conversation UX: encrypted messages, keyboard/IME, drafts, replies, scrolling, media, mobile and RTL (24.0s)
+
+
+  1) tests/chat-experience.spec.ts:11:5 › conversation UX: encrypted messages, keyboard/IME, drafts, replies, scrolling, media, mobile and RTL
+
+    Test was interrupted.
+
+    Error: ENOTEMPTY, Directory not empty: /tmp/haven-firefox-test-tg6VSV '/tmp/haven-firefox-test-tg6VSV'
+
+       at fixtures.ts:96
+
+      94 |       browser.newContext = original;
+      95 |       for (const context of contexts) await context.close();
+    > 96 |       for (const dir of dirs) fs.rmSync(dir, { recursive: true, force: true });
+         |                                  ^
+      97 |     }
+      98 |   },
+      99 | });
+        at Object.browser (/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/fixtures.ts:96:34)
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('.message-log')
+    - Expected substring  - 1
+    + Received string     + 2
+
+    - Actually, I’ll bring tea 🍵
+    + TodayHey Maya! Shall we meet at the garden tomorrow? 🌿ReplyCopy textSend a heartEditDelete07:07 AMMayaThat sounds lovely. I’ll bring the coffee ☕ReplyCopy textSend a heart07:07 AMPlanning note 1: Let’s take the path by the water. We can find a quiet spot and catch up before heading home.ReplyCopy textSend a heart07:07 AMPlanning note 2: Let’s take the path by the water. We can find a quiet spot and catch up before heading home.ReplyCopy textSend a heart07:07 AMPlanning note 3: Let’s take the path by the water. We can find a quiet spot and catch up before heading home.ReplyCopy textSend a heart07:07 AMPlanning note 4: Let’s take the path by the water. We can find a quiet spot and catch up before heading home.ReplyCopy textSend a heart07:07 AMPlanning note 5: Let’s take the path by the water. We can find a quiet spot and catch up before heading home.ReplyCopy textSend a heart07:07 AMPlanning note 6: Let’s take the path by the water. We can find a quiet spot and catch up before heading home.ReplyCopy textSend a heart07:07 AMPlanning note 7: Let’s take the path by the water. We can find a quiet spot and catch up before heading home.ReplyCopy textSend a heart07:07 AMPlanning note 8: Let’s take the path by the water. We can find a quiet spot and catch up before heading home.ReplyCopy textSend a heart07:07 AMPlanning note 9: Let’s take the path by the water. We can find a quiet spot and catch up before heading home.ReplyCopy textSend a heart07:07 AMPlanning note 10: Let’s take the path by the water. We can find a quiet spot and catch up before heading home.ReplyCopy textSend a heart07:07 AMPlanning note 11: Let’s take the path by the water. We can find a quiet spot and catch up before heading home.ReplyCopy textSend a heart07:07 AMPlanning note 12: Let’s take the path by the water. We can find a quiet spot and catch up before heading home.ReplyCopy textSend a heart07:07 AMPlanning note 13: Let’s take the path by the water. We can find a quiet spot and catch up before heading home.ReplyCopy textSend a heart07:07 AMPlanning note 14: Let’s take the path by the water. We can find a quiet spot and catch up before heading home.ReplyCopy textSend a heart07:07 AMPlanning note 15: Let’s take the path by the water. We can find a quiet spot and catch up before heading home.ReplyCopy textSend a heart07:07 AMPlanning note 16: Let’s take the path by the water. We can find a quiet spot and catch up before heading home.ReplyCopy textSend a heart07:07 AMFirst line
+    + Second lineReplyCopy textSend a heart07:07 AM
+
+    Call log:
+      - Expect "toContainText" locator('.message-log') with timeout 20000ms
+      - waiting for locator('.message-log')
+        7 × locator resolved to <div role="log" aria-live="polite" class="message-log" aria-relevant="additions text" aria-label="Messages in this conversation">…</div>
+          - unexpected value "TodayHey Maya! Shall we meet at the garden tomorrow? 🌿ReplyCopy textSend a heartEditDelete07:07 AMMayaThat sounds lovely. I’ll bring the coffee ☕ReplyCopy textSend a heart07:07 AMPlanning note 1: Let’s take the path by the water. We can find a quiet spot and catch up before heading home.ReplyCopy textSend a heart07:07 AMPlanning note 2: Let’s take the path by the water. We can find a quiet spot and catch up before heading home.ReplyCopy textSend a heart07:07 AMPlanning note 3: Let’s take the path by the water. We can find a quiet spot and catch up before heading home.ReplyCopy textSend a heart07:07 AMPlanning note 4: Let’s take the path by the water. We can find a quiet spot and catch up before heading home.ReplyCopy textSend a heart07:07 AMPlanning note 5: Let’s take the path by the water. We can find a quiet spot and catch up before heading home.ReplyCopy textSend a heart07:07 AMPlanning note 6: Let’s take the path by the water. We can find a quiet spot and catch up before heading home.ReplyCopy textSend a heart07:07 AMPlanning note 7: Let’s take the path by the water. We can find a quiet spot and catch up before heading home.ReplyCopy textSend a heart07:07 AMPlanning note 8: Let’s take the path by the water. We can find a quiet spot and catch up before heading home.ReplyCopy textSend a heart07:07 AMPlanning note 9: Let’s take the path by the water. We can find a quiet spot and catch up before heading home.ReplyCopy textSend a heart07:07 AMPlanning note 10: Let’s take the path by the water. We can find a quiet spot and catch up before heading home.ReplyCopy textSend a heart07:07 AMPlanning note 11: Let’s take the path by the water. We can find a quiet spot and catch up before heading home.ReplyCopy textSend a heart07:07 AMPlanning note 12: Let’s take the path by the water. We can find a quiet spot and catch up before heading home.ReplyCopy textSend a heart07:07 AMPlanning note 13: Let’s take the path by the water. We can find a quiet spot and catch up before heading home.ReplyCopy textSend a heart07:07 AMPlanning note 14: Let’s take the path by the water. We can find a quiet spot and catch up before heading home.ReplyCopy textSend a heart07:07 AMPlanning note 15: Let’s take the path by the water. We can find a quiet spot and catch up before heading home.ReplyCopy textSend a heart07:07 AMPlanning note 16: Let’s take the path by the water. We can find a quiet spot and catch up before heading home.ReplyCopy textSend a heart07:07 AMFirst line
+    Second lineReplyCopy textSend a heart07:07 AM"
+      - Target page, context or browser has been closed
+
+
+      196 |     await input.fill("Actually, I’ll bring tea 🍵");
+      197 |     await input.press("Enter");
+    > 198 |     await expect(b.locator(".message-log")).toContainText(
+          |                                             ^
+      199 |       "Actually, I’ll bring tea 🍵",
+      200 |       { timeout: 20000 },
+      201 |     );
+        at /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/chat-experience.spec.ts:198:45
+
+  1 interrupted
+    tests/chat-experience.spec.ts:11:5 › conversation UX: encrypted messages, keyboard/IME, drafts, replies, scrolling, media, mobile and RTL
+  40 did not run

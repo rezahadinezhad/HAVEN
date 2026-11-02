@@ -1,0 +1,400 @@
+
+> haven-web@0.2.0 test
+> playwright test --reporter=list
+
+
+Running 40 tests using 1 worker
+
+(node:1042983) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   1 tests/chat-experience.spec.ts:11:5 › conversation UX: encrypted messages, keyboard/IME, drafts, replies, scrolling, media, mobile and RTL (8.9s)
+(node:1044888) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   2 tests/crypto.spec.ts:3:5 › real OpenMLS WASM: two-way, persisted reload, reordering, add/remove, tamper and replay (7.5s)
+  ✓   3 tests/crypto.spec.ts:246:5 › vault rejects wrong secret and modified ciphertext (6.7s)
+  ✓   4 tests/crypto.spec.ts:286:5 › native Rust snapshot and MLS ciphertext interoperate with browser WASM (5.0s)
+  ✓   5 tests/design.spec.ts:11:5 › redesigned real account: responsive navigation, setup, themes, RTL, reduced motion and local assets (10.7s)
+  ✓   6 tests/design.spec.ts:205:5 › CSP-safe accessible announcer and blocked arbitrary inline scripts/styles (9.1s)
+  -   7 tests/device-unlock-ui.spec.ts:8:5 › opt-in hostname: real vault setup, PRF enrollment, reload unlock and removal
+  -   8 tests/device-unlock.spec.ts:72:5 › device verified PRF wraps the passphrase locally, survives reload, and can be removed
+  -   9 tests/device-unlock.spec.ts:121:5 › no PRF means no stored unlock record
+  -  10 tests/device-unlock.spec.ts:149:5 › user verification failure cannot enroll a device unlock
+  -  11 tests/device-unlock.spec.ts:179:5 › copied encrypted record cannot unlock another account
+  ✓  12 tests/device-unlock.spec.ts:227:5 › direct IP origin never offers WebAuthn unlock (10.6s)
+  ✘  13 tests/first-chat-approval.spec.ts:10:5 › guide preserves pending browser keys; administrator invitation controls and normal crypto gate remain effective (18.0s)
+(node:1055664) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  14 tests/first-chat-retry.spec.ts:10:5 › direct-chat setup recovers an accepted request after a lost response and reload; concurrent retries reuse one chat (11.7s)
+(node:1057868) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  15 tests/first-chat.spec.ts:12:5 › ordinary members: guided setup, private invitation, explicit mutual verification, chat and unlock (13.4s)
+(node:1059713) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  16 tests/first-chat.spec.ts:255:5 › friend links reject foreign origins, mismatched fingerprints, changed pins; responsive RTL guide (6.9s)
+(node:1060736) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  17 tests/integration.spec.ts:7:5 › browser MLS → Django/PostgreSQL: verified group, bidirectional delivery, durable retry, media, removal and reload (9.1s)
+(node:1062450) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  18 tests/messenger-ui.spec.ts:8:5 › real UI: vault enrollment, fingerprint verification, MLS group, text, offline shell and queued send (11.3s)
+(node:1063432) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  19 tests/metadata-privacy.spec.ts:3:5 › padded OpenMLS messages keep lengths coarse across browser reload and rekey (3.3s)
+  ✓  20 tests/passphrase.spec.ts:35:5 › generator uses exactly 32 CSPRNG bytes, lossless base64url and fails closed without secure randomness (3.1s)
+  ✘  21 tests/passphrase.spec.ts:126:5 › new vault: generate, reveal/copy, regenerate/manual reset, save confirmation and real reload/unlock without network disclosure (10.6s)
+(node:1064789) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  22 tests/passphrase.spec.ts:355:5 › generator failure and clipboard denial remain usable; cancellation discards unsaved state; RTL and source gate (6.0s)
+QA bootstrap respects the account limiter; waiting its 60-second retry window.
+  ✘  23 tests/privacy.spec.ts:21:5 › retired server ciphertext: persisted browser MLS state reloads and continues across rekey (1.1m)
+(node:1067272) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  24 tests/provider-upgrade.spec.ts:28:5 › upstream provider backport exchanges MLS with previous browser build and opens previous snapshots (3.1s)
+  ✓  25 tests/provider-upgrade.spec.ts:119:5 › rebuilt native Rust provider snapshot interoperates with rebuilt WASM (2.6s)
+  ✘  26 tests/restart.spec.ts:71:5 › actual API SIGKILL after durable acceptance: browser reload retries the exact ciphertext once (6.9s)
+(node:1068751) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  27 tests/review-remediation.spec.ts:8:5 › paged encrypted history: >16 MB, incremental writes, atomic failure, tamper rejection and reload (7.6s)
+  ✘  28 tests/review-remediation.spec.ts:150:5 › real server and MLS: quarantine invalid application content, reload, idle sync, reject bad ciphertext (4.8s)
+(node:1069960) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  29 tests/review-remediation.spec.ts:358:5 › legacy vault migrates without restoring ratchets; history updates remove old encrypted records (4.4s)
+  ✓  30 tests/rollback-gate.spec.ts:5:5 › characterize snapshot rollback: integration must not silently trust restored ratchets (2.6s)
+  ✘  31 tests/session-hardening.spec.ts:6:5 › real vault: pagehide, suspended inactivity, offline access and confirmed remote logout (9.2s)
+(node:1071214) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  -  32 tests/showcase.spec.ts:7:5 › public showcase: real encrypted conversation, responsive layout and review notice
+  ✘  33 tests/standby-origin.spec.ts:81:5 › prepared distinct IP origins: verified private TLS, fail-closed mismatch, fenced database promotion and continuing MLS messages (18.5s)
+(node:1074211) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  34 tests/ui.spec.ts:8:5 › trusted TLS, login, invitation and operator account flows, bilingual mobile layout (5.5s)
+  ✓  35 tests/ui.spec.ts:87:5 › untrusted browser rejects the IP certificate (905ms)
+  ✓  36 tests/ui.spec.ts:105:5 › expired IP leaf is rejected even with the correct trusted test root (2.9s)
+  ✓  37 tests/vault-storage.spec.ts:3:5 › vault key rotation reencrypts every history record and never reuses records sealed with an old secret (3.7s)
+  ✓  38 tests/vault-storage.spec.ts:68:5 › API conversation helper follows all continuation headers and preserves the array contract (2.7s)
+  ✓  39 tests/vault-storage.spec.ts:110:5 › locking while a save awaits storage or hashing cannot recreate a secret-bearing worker (3.3s)
+View-once: creating three accounts and a second approved recipient device
+  ✘  40 tests/view-once.spec.ts:8:5 › view-once real UI: encrypted photo/video, account-wide consume, independent group recipients, no cache/export/reopen (7.2s)
+
+
+  1) tests/chat-experience.spec.ts:11:5 › conversation UX: encrypted messages, keyboard/IME, drafts, replies, scrolling, media, mobile and RTL
+
+    Error: page.evaluate: Session challenge binding failed
+    connect@https://127.0.0.1:8445/__integration__/client.js:65802:15
+    async*create@https://127.0.0.1:8445/__integration__/client.js:65782:24
+    async*@debugger eval code line 370 > eval:14:33
+    async*evaluate@debugger eval code:372:16
+    @debugger eval code:1:44
+    @debugger eval code:1:62
+
+        at connect@https://127.0.0.1:8445/__integration__/client.js:65802:15
+        at async*create@https://127.0.0.1:8445/__integration__/client.js:65782:24
+        at async*@debugger eval code line 370 > eval:14:33
+        at async*evaluate@debugger eval code:372:16
+        at @debugger eval code:1:44
+        at @debugger eval code:1:62
+        at /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/chat-experience.spec.ts:63:32
+
+    Error Context: test-results/chat-experience-conversati-44f8d-olling-media-mobile-and-RTL/error-context.md
+
+  2) tests/first-chat-approval.spec.ts:10:5 › guide preserves pending browser keys; administrator invitation controls and normal crypto gate remain effective
+
+    Error: page.evaluate: Session challenge binding failed
+    connect@https://127.0.0.1:8445/__integration__/client.js:65802:15
+    async*create@https://127.0.0.1:8445/__integration__/client.js:65782:24
+    async*@debugger eval code line 370 > eval:10:45
+    async*evaluate@debugger eval code:372:16
+    @debugger eval code:1:44
+    @debugger eval code:1:62
+
+        at connect@https://127.0.0.1:8445/__integration__/client.js:65802:15
+        at async*create@https://127.0.0.1:8445/__integration__/client.js:65782:24
+        at async*@debugger eval code line 370 > eval:10:45
+        at async*evaluate@debugger eval code:372:16
+        at @debugger eval code:1:44
+        at @debugger eval code:1:62
+        at /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/first-chat-approval.spec.ts:43:17
+
+    Error Context: test-results/first-chat-approval-guide--0e877-rypto-gate-remain-effective/error-context.md
+
+  3) tests/first-chat-retry.spec.ts:10:5 › direct-chat setup recovers an accepted request after a lost response and reload; concurrent retries reuse one chat
+
+    Error: page.evaluate: Session challenge binding failed
+    connect@https://127.0.0.1:8445/__integration__/client.js:65802:15
+    async*create@https://127.0.0.1:8445/__integration__/client.js:65782:24
+    async*@debugger eval code line 370 > eval:12:45
+    async*evaluate@debugger eval code:372:16
+    @debugger eval code:1:44
+    @debugger eval code:1:62
+
+        at connect@https://127.0.0.1:8445/__integration__/client.js:65802:15
+        at async*create@https://127.0.0.1:8445/__integration__/client.js:65782:24
+        at async*@debugger eval code line 370 > eval:12:45
+        at async*evaluate@debugger eval code:372:16
+        at @debugger eval code:1:44
+        at @debugger eval code:1:62
+        at /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/first-chat-retry.spec.ts:25:27
+
+    Error Context: test-results/first-chat-retry-direct-ch-ffc3b-rent-retries-reuse-one-chat/error-context.md
+
+  4) tests/first-chat.spec.ts:12:5 › ordinary members: guided setup, private invitation, explicit mutual verification, chat and unlock
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByText('This browser is ready', { exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByText('This browser is ready', { exact: true }) with timeout 5000ms
+      - waiting for getByText('This browser is ready', { exact: true })
+
+
+      70 |     await expect(
+      71 |       a.getByText("This browser is ready", { exact: true }),
+    > 72 |     ).toBeVisible();
+         |       ^
+      73 |     await expect(
+      74 |       a.getByText("Signup invitations left today: 3", { exact: true }),
+      75 |     ).toBeVisible();
+        at /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/first-chat.spec.ts:72:7
+
+    Error Context: test-results/first-chat-ordinary-member-740e0-erification-chat-and-unlock/error-context.md
+
+  5) tests/first-chat.spec.ts:255:5 › friend links reject foreign origins, mismatched fingerprints, changed pins; responsive RTL guide
+
+    Error: page.evaluate: Session challenge binding failed
+    connect@https://127.0.0.1:8445/__integration__/client.js:65802:15
+    async*create@https://127.0.0.1:8445/__integration__/client.js:65782:24
+    async*@debugger eval code line 370 > eval:32:39
+    async*evaluate@debugger eval code:372:16
+    @debugger eval code:1:44
+    @debugger eval code:1:62
+
+        at connect@https://127.0.0.1:8445/__integration__/client.js:65802:15
+        at async*create@https://127.0.0.1:8445/__integration__/client.js:65782:24
+        at async*@debugger eval code line 370 > eval:32:39
+        at async*evaluate@debugger eval code:372:16
+        at @debugger eval code:1:44
+        at @debugger eval code:1:62
+        at /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/first-chat.spec.ts:266:30
+
+    Error Context: test-results/first-chat-friend-links-re-d0f2d-d-pins-responsive-RTL-guide/error-context.md
+
+  6) tests/integration.spec.ts:7:5 › browser MLS → Django/PostgreSQL: verified group, bidirectional delivery, durable retry, media, removal and reload
+
+    Error: page.evaluate: Session challenge binding failed
+    connect@https://127.0.0.1:8445/__integration__/client.js:65802:15
+    async*create@https://127.0.0.1:8445/__integration__/client.js:65782:24
+    async*@debugger eval code line 370 > eval:5:29
+    evaluate@debugger eval code:372:16
+    @debugger eval code:1:44
+    @debugger eval code:1:62
+
+        at connect@https://127.0.0.1:8445/__integration__/client.js:65802:15
+        at async*create@https://127.0.0.1:8445/__integration__/client.js:65782:24
+        at async*@debugger eval code line 370 > eval:5:29
+        at evaluate@debugger eval code:372:16
+        at @debugger eval code:1:44
+        at @debugger eval code:1:62
+        at /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/integration.spec.ts:50:13
+
+    Error Context: test-results/integration-browser-MLS-→--f7a60-ry-media-removal-and-reload/error-context.md
+
+  7) tests/messenger-ui.spec.ts:8:5 › real UI: vault enrollment, fingerprint verification, MLS group, text, offline shell and queued send
+
+    Error: expect(locator).toHaveCount(expected) failed
+
+    Locator:  locator('.device-row')
+    Expected: 1
+    Received: 0
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveCount" locator('.device-row') with timeout 5000ms
+      - waiting for locator('.device-row')
+        14 × locator resolved to 0 elements
+           - unexpected value "0"
+
+
+      51 |       .getByRole("button", { name: "Create device vault", exact: true })
+      52 |       .click();
+    > 53 |     await expect(p.locator(".device-row")).toHaveCount(1);
+         |                                            ^
+      54 |     devices.push(
+      55 |       await p.evaluate(async () => {
+      56 |         const r = await fetch("/api/v1/devices");
+        at /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/messenger-ui.spec.ts:53:44
+
+    Error Context: test-results/messenger-ui-real-UI-vault-fd132-fline-shell-and-queued-send/error-context.md
+
+  8) tests/passphrase.spec.ts:126:5 › new vault: generate, reveal/copy, regenerate/manual reset, save confirmation and real reload/unlock without network disclosure
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByText('This browser is ready', { exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByText('This browser is ready', { exact: true }) with timeout 5000ms
+      - waiting for getByText('This browser is ready', { exact: true })
+
+
+      267 |     await expect(
+      268 |       page.getByText("This browser is ready", { exact: true }),
+    > 269 |     ).toBeVisible();
+          |       ^
+      270 |     const device = await page.evaluate(
+      271 |       async () => (await (await fetch("/api/v1/devices")).json())[0],
+      272 |     );
+        at /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/passphrase.spec.ts:269:7
+
+    Error Context: test-results/passphrase-new-vault-gener-c699b--without-network-disclosure/error-context.md
+
+  9) tests/privacy.spec.ts:21:5 › retired server ciphertext: persisted browser MLS state reloads and continues across rekey
+
+    Error: page.evaluate: Session challenge binding failed
+    connect@https://127.0.0.1:8445/__integration__/client.js:65802:15
+    async*create@https://127.0.0.1:8445/__integration__/client.js:65782:24
+    async*@debugger eval code line 370 > eval:11:33
+    async*evaluate@debugger eval code:372:16
+    @debugger eval code:1:44
+    @debugger eval code:1:62
+
+        at connect@https://127.0.0.1:8445/__integration__/client.js:65802:15
+        at async*create@https://127.0.0.1:8445/__integration__/client.js:65782:24
+        at async*@debugger eval code line 370 > eval:11:33
+        at async*evaluate@debugger eval code:372:16
+        at @debugger eval code:1:44
+        at @debugger eval code:1:62
+        at /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/privacy.spec.ts:45:20
+
+    Error Context: test-results/privacy-retired-server-cip-26872--and-continues-across-rekey/error-context.md
+
+  10) tests/restart.spec.ts:71:5 › actual API SIGKILL after durable acceptance: browser reload retries the exact ciphertext once
+
+    Error: page.evaluate: Session challenge binding failed
+    connect@https://127.0.0.1:8446/__integration__/client.js:65802:15
+    async*create@https://127.0.0.1:8446/__integration__/client.js:65782:24
+    async*@debugger eval code line 370 > eval:11:31
+    async*evaluate@debugger eval code:372:16
+    @debugger eval code:1:44
+    @debugger eval code:1:62
+
+        at connect@https://127.0.0.1:8446/__integration__/client.js:65802:15
+        at async*create@https://127.0.0.1:8446/__integration__/client.js:65782:24
+        at async*@debugger eval code line 370 > eval:11:31
+        at async*evaluate@debugger eval code:372:16
+        at @debugger eval code:1:44
+        at @debugger eval code:1:62
+        at /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/restart.spec.ts:107:15
+
+    Error Context: test-results/restart-actual-API-SIGKILL-25999-s-the-exact-ciphertext-once/error-context.md
+
+  11) tests/review-remediation.spec.ts:150:5 › real server and MLS: quarantine invalid application content, reload, idle sync, reject bad ciphertext
+
+    Error: page.evaluate: Session challenge binding failed
+    connect@https://127.0.0.1:8445/__integration__/client.js:65802:15
+    async*create@https://127.0.0.1:8445/__integration__/client.js:65782:24
+    async*@debugger eval code line 370 > eval:14:31
+    async*evaluate@debugger eval code:372:16
+    @debugger eval code:1:44
+    @debugger eval code:1:62
+
+        at connect@https://127.0.0.1:8445/__integration__/client.js:65802:15
+        at async*create@https://127.0.0.1:8445/__integration__/client.js:65782:24
+        at async*@debugger eval code line 370 > eval:14:31
+        at async*evaluate@debugger eval code:372:16
+        at @debugger eval code:1:44
+        at @debugger eval code:1:62
+        at /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/review-remediation.spec.ts:172:18
+
+    Error Context: test-results/review-remediation-real-se-f80f4--sync-reject-bad-ciphertext/error-context.md
+
+  12) tests/session-hardening.spec.ts:6:5 › real vault: pagehide, suspended inactivity, offline access and confirmed remote logout
+
+    Error: expect(locator).toHaveText(expected) failed
+
+    Locator:  locator('.sidebar .vault-shortcut')
+    Expected: "Lock vault"
+    Received: "Open your vault"
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveText" locator('.sidebar .vault-shortcut') with timeout 5000ms
+      - waiting for locator('.sidebar .vault-shortcut')
+        14 × locator resolved to <button class="quiet vault-shortcut">…</button>
+           - unexpected value "Open your vault"
+
+
+      41 |     await page.getByRole("button", { name: "Set up and continue" }).click();
+      42 |     const shortcut = page.locator(".sidebar .vault-shortcut");
+    > 43 |     await expect(shortcut).toHaveText("Lock vault");
+         |                            ^
+      44 |     const devices = await page.evaluate(async () =>
+      45 |       (await (await fetch("/api/v1/devices")).json()).map((d: any) => d.id),
+      46 |     );
+        at /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/session-hardening.spec.ts:43:28
+
+    Error Context: test-results/session-hardening-real-vau-56270-and-confirmed-remote-logout/error-context.md
+
+  13) tests/standby-origin.spec.ts:81:5 › prepared distinct IP origins: verified private TLS, fail-closed mismatch, fenced database promotion and continuing MLS messages
+
+    Error: page.evaluate: Session challenge binding failed
+    connect@https://127.0.0.1:8448/__integration__/client.js:65802:15
+    async*create@https://127.0.0.1:8448/__integration__/client.js:65782:24
+    async*@debugger eval code line 370 > eval:12:31
+    async*evaluate@debugger eval code:372:16
+    @debugger eval code:1:44
+    @debugger eval code:1:62
+
+        at connect@https://127.0.0.1:8448/__integration__/client.js:65802:15
+        at async*create@https://127.0.0.1:8448/__integration__/client.js:65782:24
+        at async*@debugger eval code line 370 > eval:12:31
+        at async*evaluate@debugger eval code:372:16
+        at @debugger eval code:1:44
+        at @debugger eval code:1:62
+        at /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/standby-origin.spec.ts:256:15
+
+    Error Context: test-results/standby-origin-prepared-di-bd0a8-and-continuing-MLS-messages/error-context.md
+
+  14) tests/view-once.spec.ts:8:5 › view-once real UI: encrypted photo/video, account-wide consume, independent group recipients, no cache/export/reopen
+
+    Error: page.evaluate: Session challenge binding failed
+    connect@https://127.0.0.1:8445/__integration__/client.js:65802:15
+    async*create@https://127.0.0.1:8445/__integration__/client.js:65782:24
+    async*@debugger eval code line 370 > eval:12:31
+    async*evaluate@debugger eval code:372:16
+    @debugger eval code:1:44
+    @debugger eval code:1:62
+
+        at connect@https://127.0.0.1:8445/__integration__/client.js:65802:15
+        at async*create@https://127.0.0.1:8445/__integration__/client.js:65782:24
+        at async*@debugger eval code line 370 > eval:12:31
+        at async*evaluate@debugger eval code:372:16
+        at @debugger eval code:1:44
+        at @debugger eval code:1:62
+        at /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/view-once.spec.ts:34:18
+
+    Error Context: test-results/view-once-view-once-real-U-50c7a-ents-no-cache-export-reopen/error-context.md
+
+  14 failed
+    tests/chat-experience.spec.ts:11:5 › conversation UX: encrypted messages, keyboard/IME, drafts, replies, scrolling, media, mobile and RTL
+    tests/first-chat-approval.spec.ts:10:5 › guide preserves pending browser keys; administrator invitation controls and normal crypto gate remain effective
+    tests/first-chat-retry.spec.ts:10:5 › direct-chat setup recovers an accepted request after a lost response and reload; concurrent retries reuse one chat
+    tests/first-chat.spec.ts:12:5 › ordinary members: guided setup, private invitation, explicit mutual verification, chat and unlock
+    tests/first-chat.spec.ts:255:5 › friend links reject foreign origins, mismatched fingerprints, changed pins; responsive RTL guide
+    tests/integration.spec.ts:7:5 › browser MLS → Django/PostgreSQL: verified group, bidirectional delivery, durable retry, media, removal and reload
+    tests/messenger-ui.spec.ts:8:5 › real UI: vault enrollment, fingerprint verification, MLS group, text, offline shell and queued send
+    tests/passphrase.spec.ts:126:5 › new vault: generate, reveal/copy, regenerate/manual reset, save confirmation and real reload/unlock without network disclosure
+    tests/privacy.spec.ts:21:5 › retired server ciphertext: persisted browser MLS state reloads and continues across rekey
+    tests/restart.spec.ts:71:5 › actual API SIGKILL after durable acceptance: browser reload retries the exact ciphertext once
+    tests/review-remediation.spec.ts:150:5 › real server and MLS: quarantine invalid application content, reload, idle sync, reject bad ciphertext
+    tests/session-hardening.spec.ts:6:5 › real vault: pagehide, suspended inactivity, offline access and confirmed remote logout
+    tests/standby-origin.spec.ts:81:5 › prepared distinct IP origins: verified private TLS, fail-closed mismatch, fenced database promotion and continuing MLS messages
+    tests/view-once.spec.ts:8:5 › view-once real UI: encrypted photo/video, account-wide consume, independent group recipients, no cache/export/reopen
+  6 skipped
+  20 passed (5.5m)

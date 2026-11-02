@@ -1,0 +1,562 @@
+{
+  "scope": "Derived from retained raw local aggregate evidence; same native client for both APIs; shared host; no causal speedup or production SLA; counters include isolated catalogs/background activity; TLS excludes TCP/IP",
+  "runs": {
+    "paired-baseline-final": {
+      "metrics": {
+        "http_requests": 2430,
+        "retry_429": 0,
+        "accepted": 120,
+        "delivered": 1080,
+        "updates": 0,
+        "ws_connected": 0,
+        "ws_peak": 500,
+        "ws_errors": 0,
+        "heartbeats": 3000,
+        "transport_retries": 1200,
+        "notification_hints": 1190
+      },
+      "elapsed_seconds": 120.0632458320033,
+      "achieved_messages_per_second": 0.9994732290338727,
+      "target_status": "COMPLETED",
+      "zero_socket_error_gate": "PASS",
+      "send_scheduled_to_accepted": {
+        "samples": 120,
+        "median_ms": 133.45982000464574,
+        "p95_ms": 458.5130850027781,
+        "max_ms": 1194.3508609983837
+      },
+      "scheduled_to_all_nine_durable_acks": {
+        "samples": 120,
+        "median_ms": 1125.4890620039077,
+        "p95_ms": 2686.44101999962,
+        "max_ms": 4708.660142001463
+      },
+      "api_cpu_seconds": 87.89999999999999,
+      "notification_worker_cpu_seconds": 1.0000000000000004,
+      "api_peak_rss_kib": 158404,
+      "tls_transport": {
+        "upload_tls_bytes": 8546439,
+        "download_tls_bytes": 12598701,
+        "new_connections": 1200,
+        "scope": "TLS records including HTTP/WSS headers and payloads; excludes TCP/IP overhead"
+      },
+      "five_concurrent_encrypted_1mib_files": {
+        "samples": 5,
+        "median_ms": 816.5344849985559,
+        "p95_ms": 826.9479930022499,
+        "max_ms": 864.236184002948
+      },
+      "encrypted_native_checkpoint_restore": "PASS",
+      "websocket_reconnect": {
+        "samples": 0
+      },
+      "postgres_delta": {
+        "wal_lsn_bytes": 7013560,
+        "database_bytes": 5873664,
+        "wal": {
+          "wal_records": 16009,
+          "wal_fpi": 29,
+          "wal_bytes": 6957352,
+          "wal_buffers_full": 0,
+          "wal_write": 1558,
+          "wal_sync": 1554,
+          "wal_write_time": 40.778999999999996,
+          "wal_sync_time": 9451.114
+        },
+        "db": {
+          "xact_commit": 25656,
+          "xact_rollback": 0,
+          "blks_read": 38,
+          "blks_hit": 7871616,
+          "tup_returned": 6033671,
+          "tup_fetched": 5035262,
+          "tup_inserted": 2992,
+          "tup_updated": 2963,
+          "tup_deleted": 78,
+          "deadlocks": 0,
+          "temp_bytes": 0
+        }
+      },
+      "postgres_io_delta": {
+        "reads": 38,
+        "read_time": 8.222999999999999,
+        "writes": 59,
+        "write_time": 2.404,
+        "writebacks": 32,
+        "writeback_time": 1.690999999999999,
+        "hits": 8037523,
+        "evictions": 0,
+        "fsyncs": 0,
+        "fsync_time": 0.0,
+        "extends": 717,
+        "extend_time": 5.395
+      }
+    },
+    "paired-current-final": {
+      "metrics": {
+        "http_requests": 2430,
+        "retry_429": 0,
+        "accepted": 120,
+        "delivered": 1080,
+        "updates": 0,
+        "ws_connected": 0,
+        "ws_peak": 500,
+        "ws_errors": 0,
+        "heartbeats": 2958,
+        "transport_retries": 1200,
+        "notification_hints": 1190
+      },
+      "elapsed_seconds": 120.9566595550059,
+      "achieved_messages_per_second": 0.992090889757328,
+      "target_status": "COMPLETED",
+      "zero_socket_error_gate": "PASS",
+      "send_scheduled_to_accepted": {
+        "samples": 120,
+        "median_ms": 139.05347300169524,
+        "p95_ms": 220.5458790049306,
+        "max_ms": 375.2952290014946
+      },
+      "scheduled_to_all_nine_durable_acks": {
+        "samples": 120,
+        "median_ms": 1217.0880000048783,
+        "p95_ms": 1717.154082005436,
+        "max_ms": 2151.0376220030594
+      },
+      "api_cpu_seconds": 103.53999999999999,
+      "notification_worker_cpu_seconds": 1.1099999999999999,
+      "api_peak_rss_kib": 158984,
+      "tls_transport": {
+        "upload_tls_bytes": 8545991,
+        "download_tls_bytes": 12545031,
+        "new_connections": 1200,
+        "scope": "TLS records including HTTP/WSS headers and payloads; excludes TCP/IP overhead"
+      },
+      "five_concurrent_encrypted_1mib_files": {
+        "samples": 5,
+        "median_ms": 867.6724980032304,
+        "p95_ms": 893.9623709957232,
+        "max_ms": 894.4318690046202
+      },
+      "encrypted_native_checkpoint_restore": "PASS",
+      "websocket_reconnect": {
+        "samples": 0
+      },
+      "postgres_delta": {
+        "wal_lsn_bytes": 7160480,
+        "database_bytes": 5865472,
+        "wal": {
+          "wal_records": 17430,
+          "wal_fpi": 44,
+          "wal_bytes": 7112274,
+          "wal_buffers_full": 0,
+          "wal_write": 1576,
+          "wal_sync": 1572,
+          "wal_write_time": 40.977999999999994,
+          "wal_sync_time": 1442.3410000000003
+        },
+        "db": {
+          "xact_commit": 22390,
+          "xact_rollback": 0,
+          "blks_read": 34,
+          "blks_hit": 7645162,
+          "tup_returned": 6279658,
+          "tup_fetched": 4898829,
+          "tup_inserted": 2991,
+          "tup_updated": 2961,
+          "tup_deleted": 77,
+          "deadlocks": 0,
+          "temp_bytes": 0
+        }
+      },
+      "postgres_io_delta": {
+        "reads": 34,
+        "read_time": 0.520999999999999,
+        "writes": 145,
+        "write_time": 4.101,
+        "writebacks": 128,
+        "writeback_time": 7.009999999999998,
+        "hits": 7811087,
+        "evictions": 0,
+        "fsyncs": 0,
+        "fsync_time": 0.0,
+        "extends": 716,
+        "extend_time": 5.904000000000002
+      },
+      "exercised_source_mismatches": []
+    },
+    "stress-baseline-final": {
+      "metrics": {
+        "http_requests": 1330,
+        "retry_429": 0,
+        "accepted": 65,
+        "delivered": 585,
+        "updates": 0,
+        "ws_connected": 0,
+        "ws_peak": 500,
+        "ws_errors": 0,
+        "heartbeats": 72,
+        "transport_retries": 472,
+        "notification_hints": 325
+      },
+      "elapsed_seconds": 18.09130246299901,
+      "achieved_messages_per_second": 3.5928866997243767,
+      "target_status": "NOT_SUSTAINED",
+      "zero_socket_error_gate": null,
+      "send_scheduled_to_accepted": {
+        "samples": 65,
+        "median_ms": 1749.5617309978115,
+        "p95_ms": 11035.142808003002,
+        "max_ms": 11572.590937001223
+      },
+      "scheduled_to_all_nine_durable_acks": {
+        "samples": 65,
+        "median_ms": 13109.312968997983,
+        "p95_ms": 15223.457742999017,
+        "max_ms": 15351.423200998397
+      },
+      "api_cpu_seconds": 35.3,
+      "notification_worker_cpu_seconds": 0.5699999999999998,
+      "api_peak_rss_kib": 175204,
+      "tls_transport": {
+        "upload_tls_bytes": 6693648,
+        "download_tls_bytes": 8673171,
+        "new_connections": 472,
+        "scope": "TLS records including HTTP/WSS headers and payloads; excludes TCP/IP overhead"
+      },
+      "five_concurrent_encrypted_1mib_files": {
+        "samples": 5,
+        "median_ms": 1773.8565190011286,
+        "p95_ms": 1841.1955060000764,
+        "max_ms": 2970.5274070001906
+      },
+      "encrypted_native_checkpoint_restore": "PASS",
+      "websocket_reconnect": null,
+      "postgres_delta": {
+        "wal_lsn_bytes": 6178560,
+        "database_bytes": 5775360,
+        "wal": {
+          "wal_records": 10718,
+          "wal_fpi": 1,
+          "wal_bytes": 6142835,
+          "wal_buffers_full": 0,
+          "wal_write": 729,
+          "wal_sync": 726,
+          "wal_write_time": 26.025000000000006,
+          "wal_sync_time": 1386.5889999999995
+        },
+        "db": {
+          "xact_commit": 8675,
+          "xact_rollback": 0,
+          "blks_read": 31,
+          "blks_hit": 2501072,
+          "tup_returned": 1824916,
+          "tup_fetched": 1570413,
+          "tup_inserted": 2775,
+          "tup_updated": 1565,
+          "tup_deleted": 0,
+          "deadlocks": 0,
+          "temp_bytes": 0
+        }
+      },
+      "postgres_io_delta": {
+        "reads": 31,
+        "read_time": 0.39700000000000024,
+        "writes": 0,
+        "write_time": 0.0,
+        "writebacks": 0,
+        "writeback_time": 0.0,
+        "hits": 2546380,
+        "evictions": 0,
+        "fsyncs": 0,
+        "fsync_time": 0.0,
+        "extends": 705,
+        "extend_time": 5.167999999999999
+      }
+    },
+    "stress-current-final": {
+      "metrics": {
+        "http_requests": 1070,
+        "retry_429": 0,
+        "accepted": 52,
+        "delivered": 468,
+        "updates": 0,
+        "ws_connected": 0,
+        "ws_peak": 500,
+        "ws_errors": 0,
+        "heartbeats": 127,
+        "transport_retries": 484,
+        "notification_hints": 258
+      },
+      "elapsed_seconds": 16.553945471001498,
+      "achieved_messages_per_second": 3.1412450941735552,
+      "target_status": "NOT_SUSTAINED",
+      "zero_socket_error_gate": null,
+      "send_scheduled_to_accepted": {
+        "samples": 52,
+        "median_ms": 1432.3426080009085,
+        "p95_ms": 1854.5535110024503,
+        "max_ms": 12450.383062001492
+      },
+      "scheduled_to_all_nine_durable_acks": {
+        "samples": 52,
+        "median_ms": 13598.88880699873,
+        "p95_ms": 13915.684943007363,
+        "max_ms": 14001.31551099912
+      },
+      "api_cpu_seconds": 31.210000000000008,
+      "notification_worker_cpu_seconds": 0.4500000000000002,
+      "api_peak_rss_kib": 182596,
+      "tls_transport": {
+        "upload_tls_bytes": 6580919,
+        "download_tls_bytes": 8277665,
+        "new_connections": 484,
+        "scope": "TLS records including HTTP/WSS headers and payloads; excludes TCP/IP overhead"
+      },
+      "five_concurrent_encrypted_1mib_files": {
+        "samples": 5,
+        "median_ms": 2752.5987750050263,
+        "p95_ms": 3117.611282003054,
+        "max_ms": 3253.9367909994326
+      },
+      "encrypted_native_checkpoint_restore": "PASS",
+      "websocket_reconnect": null,
+      "postgres_delta": {
+        "wal_lsn_bytes": 6050312,
+        "database_bytes": 5668864,
+        "wal": {
+          "wal_records": 9963,
+          "wal_fpi": 2,
+          "wal_bytes": 6021604,
+          "wal_buffers_full": 0,
+          "wal_write": 605,
+          "wal_sync": 603,
+          "wal_write_time": 20.65700000000001,
+          "wal_sync_time": 523.0029999999997
+        },
+        "db": {
+          "xact_commit": 5810,
+          "xact_rollback": 0,
+          "blks_read": 28,
+          "blks_hit": 2062536,
+          "tup_returned": 1684199,
+          "tup_fetched": 1292711,
+          "tup_inserted": 2749,
+          "tup_updated": 1253,
+          "tup_deleted": 0,
+          "deadlocks": 0,
+          "temp_bytes": 0
+        }
+      },
+      "postgres_io_delta": {
+        "reads": 28,
+        "read_time": 0.4850000000000003,
+        "writes": 0,
+        "write_time": 0.0,
+        "writebacks": 0,
+        "writeback_time": 0.0,
+        "hits": 2102006,
+        "evictions": 0,
+        "fsyncs": 0,
+        "fsync_time": 0.0,
+        "extends": 692,
+        "extend_time": 4.860999999999999
+      },
+      "exercised_source_mismatches": [
+        "core/models.py",
+        "core/views.py",
+        "scripts/benchmark-metadata-isolated.py",
+        "scripts/benchmark-metadata-load.py"
+      ]
+    },
+    "soak-strict-failed": {
+      "metrics": {
+        "http_requests": 13430,
+        "retry_429": 0,
+        "accepted": 670,
+        "delivered": 6030,
+        "updates": 0,
+        "ws_connected": 0,
+        "ws_peak": 500,
+        "ws_errors": 6,
+        "heartbeats": 15616,
+        "transport_retries": 6700,
+        "notification_hints": 6274,
+        "ws_error_classes": {
+          "ConnectionClosedError:1011": 6
+        }
+      },
+      "elapsed_seconds": 671.067169326001,
+      "achieved_messages_per_second": 0.9984097429068496,
+      "target_status": "NOT_SUSTAINED",
+      "zero_socket_error_gate": null,
+      "send_scheduled_to_accepted": {
+        "samples": 670,
+        "median_ms": 143.21342400216963,
+        "p95_ms": 656.1113830030081,
+        "max_ms": 1972.449888002302
+      },
+      "scheduled_to_all_nine_durable_acks": {
+        "samples": 670,
+        "median_ms": 1223.3919389982475,
+        "p95_ms": 3918.9925200043945,
+        "max_ms": 8250.825000002806
+      },
+      "api_cpu_seconds": 550.11,
+      "notification_worker_cpu_seconds": 6.25,
+      "api_peak_rss_kib": 156808,
+      "tls_transport": {
+        "upload_tls_bytes": 23518707,
+        "download_tls_bytes": 45629427,
+        "new_connections": 6700,
+        "scope": "TLS records including HTTP/WSS headers and payloads; excludes TCP/IP overhead"
+      },
+      "five_concurrent_encrypted_1mib_files": {
+        "samples": 5,
+        "median_ms": 732.5611979977111,
+        "p95_ms": 769.1238739935216,
+        "max_ms": 771.8767160040443
+      },
+      "encrypted_native_checkpoint_restore": "PASS",
+      "websocket_reconnect": null,
+      "postgres_delta": {
+        "wal_lsn_bytes": 14002032,
+        "database_bytes": 7069696,
+        "wal": {
+          "wal_records": 68568,
+          "wal_fpi": 301,
+          "wal_bytes": 13838463,
+          "wal_buffers_full": 0,
+          "wal_write": 8551,
+          "wal_sync": 8542,
+          "wal_write_time": 250.935,
+          "wal_sync_time": 28966.292
+        },
+        "db": {
+          "xact_commit": 121257,
+          "xact_rollback": 0,
+          "blks_read": 34,
+          "blks_hit": 41432472,
+          "tup_returned": 34285933,
+          "tup_fetched": 26612009,
+          "tup_inserted": 4464,
+          "tup_updated": 16478,
+          "tup_deleted": 440,
+          "deadlocks": 0,
+          "temp_bytes": 0
+        }
+      },
+      "postgres_io_delta": {
+        "reads": 34,
+        "read_time": 0.4109999999999996,
+        "writes": 1978,
+        "write_time": 45.152,
+        "writebacks": 1978,
+        "writeback_time": 67.797,
+        "hits": 42328286,
+        "evictions": 0,
+        "fsyncs": 283,
+        "fsync_time": 34.129,
+        "extends": 875,
+        "extend_time": 13.286000000000003
+      },
+      "exercised_source_mismatches": [
+        "core/models.py",
+        "core/views.py",
+        "scripts/benchmark-metadata-isolated.py",
+        "scripts/benchmark-metadata-load.py"
+      ]
+    },
+    "soak-resilience-final": {
+      "metrics": {
+        "http_requests": 145030,
+        "retry_429": 0,
+        "accepted": 7200,
+        "delivered": 64800,
+        "updates": 50,
+        "ws_connected": 0,
+        "ws_peak": 500,
+        "ws_errors": 0,
+        "heartbeats": 177573,
+        "transport_retries": 72000,
+        "notification_hints": 72490
+      },
+      "elapsed_seconds": 7200.253096348999,
+      "achieved_messages_per_second": 0.9999648489649444,
+      "target_status": "COMPLETED",
+      "zero_socket_error_gate": "PASS",
+      "send_scheduled_to_accepted": {
+        "samples": 7200,
+        "median_ms": 128.9250859990716,
+        "p95_ms": 339.2913809948368,
+        "max_ms": 2803.956024996296
+      },
+      "scheduled_to_all_nine_durable_acks": {
+        "samples": 7200,
+        "median_ms": 1166.0131869939505,
+        "p95_ms": 2206.2465700000757,
+        "max_ms": 12453.912926001067
+      },
+      "api_cpu_seconds": 5039.05,
+      "notification_worker_cpu_seconds": 59.870000000000005,
+      "api_peak_rss_kib": 148692,
+      "tls_transport": {
+        "upload_tls_bytes": 201957653,
+        "download_tls_bytes": 443951233,
+        "new_connections": 72000,
+        "scope": "TLS records including HTTP/WSS headers and payloads; excludes TCP/IP overhead"
+      },
+      "five_concurrent_encrypted_1mib_files": {
+        "samples": 5,
+        "median_ms": 660.973758000182,
+        "p95_ms": 670.7367779963533,
+        "max_ms": 681.8802300040261
+      },
+      "encrypted_native_checkpoint_restore": "PASS",
+      "websocket_reconnect": {
+        "samples": 0
+      },
+      "postgres_delta": {
+        "wal_lsn_bytes": 118549816,
+        "database_bytes": 20602880,
+        "wal": {
+          "wal_records": 658518,
+          "wal_fpi": 7959,
+          "wal_bytes": 116950494,
+          "wal_buffers_full": 0,
+          "wal_write": 89737,
+          "wal_sync": 89673,
+          "wal_write_time": 2186.24,
+          "wal_sync_time": 275330.653
+        },
+        "db": {
+          "xact_commit": 1335021,
+          "xact_rollback": 0,
+          "blks_read": 34,
+          "blks_hit": 455683116,
+          "tup_returned": 383441262,
+          "tup_fetched": 293306202,
+          "tup_inserted": 19961,
+          "tup_updated": 177176,
+          "tup_deleted": 2673,
+          "deadlocks": 0,
+          "temp_bytes": 0
+        }
+      },
+      "postgres_io_delta": {
+        "reads": 34,
+        "read_time": 0.43599999999999994,
+        "writes": 11460,
+        "write_time": 431.132,
+        "writebacks": 11460,
+        "writeback_time": 3897.5400000000004,
+        "hits": 465584545,
+        "evictions": 0,
+        "fsyncs": 921,
+        "fsync_time": 2821.3950000000004,
+        "extends": 2561,
+        "extend_time": 49.342000000000006
+      },
+      "exercised_source_mismatches": []
+    }
+  }
+}

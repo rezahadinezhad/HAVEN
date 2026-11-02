@@ -1,0 +1,10 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_______ test_add_waits_for_target_revocation_before_granting_membership ________
+core/tests/test_native_privacy_boundaries.py:309: in test_add_waits_for_target_revocation_before_granting_membership
+    assert blocked, "membership grant did not wait for the target account authority fence"
+E   AssertionError: membership grant did not wait for the target account authority fence
+E   assert False
+=========================== short test summary info ============================
+FAILED core/tests/test_native_privacy_boundaries.py::test_add_waits_for_target_revocation_before_granting_membership
+1 failed, 2 deselected in 2.41s

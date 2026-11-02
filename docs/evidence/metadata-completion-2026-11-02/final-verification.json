@@ -1,0 +1,36 @@
+{
+  "source_commit": "8ddc3d13919c6ebaf15929ff1d0f95d0bc5a6980",
+  "branch": "codex/metadata-privacy-completion",
+  "source_manifest_entries": 629,
+  "source_manifest_verification": "PASS",
+  "repository_paths_and_completed_json": "PASS",
+  "normal_runtime_crypto_ready": false,
+  "release_status": "BLOCKED",
+  "backend_tests_passed": 111,
+  "chromium": {
+    "passed": 39,
+    "skipped": 2,
+    "final_corrected_session_test_passed": true
+  },
+  "firefox": {
+    "passed": 35,
+    "skipped": 6
+  },
+  "rust_library_passed": 5,
+  "upstream_vectors": {
+    "passed": 205,
+    "ignored": 3,
+    "filtered": 91
+  },
+  "local_endurance": {
+    "seconds": 7200.253096348999,
+    "accepted": 7200,
+    "durable_recipient_copies": 64800,
+    "real_mls_updates": 50,
+    "peak_sockets": 500,
+    "socket_errors": 0,
+    "rate_per_second": 1
+  },
+  "offered_20_per_second": "NOT QUALIFIED",
+  "scope": "Synthetic local source/regression/migration evidence; no merge, deployment, independent audit, physical-phone or domestic-field qualification"
+}

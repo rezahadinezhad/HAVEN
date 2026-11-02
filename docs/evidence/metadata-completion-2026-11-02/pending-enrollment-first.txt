@@ -1,0 +1,9 @@
+F..                                                                      [100%]
+=================================== FAILURES ===================================
+__ test_cleanup_disassociates_only_expired_pending_and_retains_replay_marker ___
+core/tests/test_pending_enrollment_privacy.py:35: in test_cleanup_disassociates_only_expired_pending_and_retains_replay_marker
+    from core.protocol import b64
+E   ImportError: cannot import name 'b64' from 'core.protocol' (/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/api/core/protocol.py)
+=========================== short test summary info ============================
+FAILED core/tests/test_pending_enrollment_privacy.py::test_cleanup_disassociates_only_expired_pending_and_retains_replay_marker
+1 failed, 2 passed in 2.47s

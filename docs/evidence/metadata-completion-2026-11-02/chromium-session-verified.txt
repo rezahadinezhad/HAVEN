@@ -1,0 +1,12 @@
+
+> haven-web@0.2.0 test
+> playwright test tests/session-hardening.spec.ts --reporter=list
+
+
+Running 1 test using 1 worker
+
+(node:2130907) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/session-hardening.spec.ts:6:5 › real vault: pagehide, suspended inactivity, offline access and confirmed remote logout (17.7s)
+
+  1 passed (18.7s)

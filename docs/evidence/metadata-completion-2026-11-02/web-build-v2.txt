@@ -1,0 +1,16 @@
+
+> haven-web@0.2.0 build
+> node scripts/patch-next-announcer.mjs && next build && node scripts/build-offline-shell.mjs
+
+Next 16.4.3 accessibility announcer uses external CSS; CSP remains strict.
+▲ Next.js 16.4.3 (Turbopack)
+✓ Running next.config.ts took 334ms
+- Experiments (use with caution):
+  · cpus: 2
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 3.8s
+  Running TypeScript ...
+tests/privacy.spec.ts(42,11): error TS7034: Variable 'identities' implicitly has type 'any[]' in some locations where its type cannot be determined.
+tests/privacy.spec.ts(260,24): error TS7005: Variable 'identities' implicitly has an 'any[]' type.
+Failed to type check.

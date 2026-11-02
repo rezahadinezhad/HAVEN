@@ -1,0 +1,194 @@
+{
+  "synthetic_expired_pending": 10000,
+  "batch_limit": 500,
+  "batches": [
+    {
+      "deleted": 500,
+      "protected": 0,
+      "milliseconds": 6509.025200997712
+    },
+    {
+      "deleted": 500,
+      "protected": 0,
+      "milliseconds": 6402.023239003029
+    },
+    {
+      "deleted": 500,
+      "protected": 0,
+      "milliseconds": 7506.395297998097
+    },
+    {
+      "deleted": 500,
+      "protected": 0,
+      "milliseconds": 6659.9919959990075
+    },
+    {
+      "deleted": 500,
+      "protected": 0,
+      "milliseconds": 12023.83372100303
+    },
+    {
+      "deleted": 500,
+      "protected": 0,
+      "milliseconds": 12578.338997001993
+    },
+    {
+      "deleted": 500,
+      "protected": 0,
+      "milliseconds": 11923.790087996167
+    },
+    {
+      "deleted": 500,
+      "protected": 0,
+      "milliseconds": 28308.25555800402
+    },
+    {
+      "deleted": 500,
+      "protected": 0,
+      "milliseconds": 20600.068671999907
+    },
+    {
+      "deleted": 500,
+      "protected": 0,
+      "milliseconds": 16444.81312500284
+    },
+    {
+      "deleted": 500,
+      "protected": 0,
+      "milliseconds": 10860.358846002782
+    },
+    {
+      "deleted": 500,
+      "protected": 0,
+      "milliseconds": 11366.277708002599
+    },
+    {
+      "deleted": 500,
+      "protected": 0,
+      "milliseconds": 9994.546086003538
+    },
+    {
+      "deleted": 500,
+      "protected": 0,
+      "milliseconds": 8678.395326998725
+    },
+    {
+      "deleted": 500,
+      "protected": 0,
+      "milliseconds": 6178.217929998937
+    },
+    {
+      "deleted": 500,
+      "protected": 0,
+      "milliseconds": 6972.861251000722
+    },
+    {
+      "deleted": 500,
+      "protected": 0,
+      "milliseconds": 6587.375971001165
+    },
+    {
+      "deleted": 500,
+      "protected": 0,
+      "milliseconds": 6318.359270997462
+    },
+    {
+      "deleted": 500,
+      "protected": 0,
+      "milliseconds": 8057.004171998415
+    },
+    {
+      "deleted": 500,
+      "protected": 0,
+      "milliseconds": 5357.108257994696
+    },
+    {
+      "deleted": 0,
+      "protected": 0,
+      "milliseconds": 1.4604609968955629
+    }
+  ],
+  "first_candidate_query_plan": [
+    {
+      "Plan": {
+        "Node Type": "Limit",
+        "Parallel Aware": false,
+        "Async Capable": false,
+        "Startup Cost": 0.29,
+        "Total Cost": 54.65,
+        "Plan Rows": 500,
+        "Plan Width": 40,
+        "Actual Startup Time": 0.011,
+        "Actual Total Time": 0.434,
+        "Actual Rows": 500,
+        "Actual Loops": 1,
+        "Shared Hit Blocks": 501,
+        "Shared Read Blocks": 0,
+        "Shared Dirtied Blocks": 0,
+        "Shared Written Blocks": 0,
+        "Local Hit Blocks": 0,
+        "Local Read Blocks": 0,
+        "Local Dirtied Blocks": 0,
+        "Local Written Blocks": 0,
+        "Temp Read Blocks": 0,
+        "Temp Written Blocks": 0,
+        "Plans": [
+          {
+            "Node Type": "Index Scan",
+            "Parent Relationship": "Outer",
+            "Parallel Aware": false,
+            "Async Capable": false,
+            "Scan Direction": "Forward",
+            "Index Name": "pending_device_expiry",
+            "Relation Name": "core_device",
+            "Alias": "core_device",
+            "Startup Cost": 0.29,
+            "Total Cost": 1087.66,
+            "Plan Rows": 10000,
+            "Plan Width": 40,
+            "Actual Startup Time": 0.01,
+            "Actual Total Time": 0.39,
+            "Actual Rows": 500,
+            "Actual Loops": 1,
+            "Index Cond": "(expires_at <= '2026-11-02 00:02:34.667974+00'::timestamp with time zone)",
+            "Rows Removed by Index Recheck": 0,
+            "Shared Hit Blocks": 501,
+            "Shared Read Blocks": 0,
+            "Shared Dirtied Blocks": 0,
+            "Shared Written Blocks": 0,
+            "Local Hit Blocks": 0,
+            "Local Read Blocks": 0,
+            "Local Dirtied Blocks": 0,
+            "Local Written Blocks": 0,
+            "Temp Read Blocks": 0,
+            "Temp Written Blocks": 0
+          }
+        ]
+      },
+      "Planning": {
+        "Shared Hit Blocks": 66,
+        "Shared Read Blocks": 0,
+        "Shared Dirtied Blocks": 0,
+        "Shared Written Blocks": 0,
+        "Local Hit Blocks": 0,
+        "Local Read Blocks": 0,
+        "Local Dirtied Blocks": 0,
+        "Local Written Blocks": 0,
+        "Temp Read Blocks": 0,
+        "Temp Written Blocks": 0
+      },
+      "Planning Time": 0.285,
+      "Triggers": [],
+      "Execution Time": 0.48
+    }
+  ],
+  "before": {
+    "device_relation_bytes": 3391488,
+    "marker_relation_bytes": 8192
+  },
+  "after": {
+    "device_relation_bytes": 3448832,
+    "marker_relation_bytes": 819200
+  },
+  "scope": "Actual isolated PG index and bounded logical cleanup; opaque pending fixtures, not cryptographic approval or physical erasure; shared host; no global WAL attribution"
+}

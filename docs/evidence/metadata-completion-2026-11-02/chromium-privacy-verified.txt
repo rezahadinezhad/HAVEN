@@ -1,0 +1,11 @@
+
+Running 3 tests using 1 worker
+
+(node:2010515) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/3] tests/enrollment-privacy.spec.ts:12:5 › opaque enrollment context keeps strict device/domain/key checks before actual worker signing
+[2/3] tests/metadata-privacy.spec.ts:3:5 › padded OpenMLS messages keep lengths coarse across browser reload and rekey
+[3/3] tests/privacy.spec.ts:22:5 › retired server ciphertext: persisted browser MLS state reloads and continues across rekey
+  3 passed (9.8s)

@@ -1,0 +1,25 @@
+Harness validation outcomes (synthetic disposable infrastructure only):
+1. Five-second setup smoke failed on a stale HTTP keepalive (BrokenPipeError).
+   Driver now reconnects and retries the exact durable/idempotent request bytes.
+2. Immediate retry initially treated a TIME_WAIT port as a live listener.
+   Preflight uses SO_REUSEADDR but still refuses a bound live listener.
+3. Five-second 2 message/s smoke: 500 authenticated sockets, 10 accepted,
+   90 recipient deliveries, zero socket errors. This preceded final harness
+   additions and is not the authoritative performance comparison.
+4. Initial 20 message/s baseline validation developed a growing backlog.
+   Interrupted deliberately; pending worker futures drained before teardown.
+   This run is ABORTED, not a completed trial or capacity pass. Driver now
+   stops offering work after ten seconds of schedule lag and drains all
+   already-generated messages. The target is still 20 message/s; stopping
+   bounds the experiment and reports NOT_SUSTAINED rather than hiding lag.
+5. The early two-minute paired trials and frequent-rekey validation used
+   max_connections=150 symmetrically in their disposable PG instances. They
+   are development observations, not unmodified production-limit qualification.
+   Final stress/endurance retain the PostgreSQL default 100, record SHOW-derived
+   durability/connection settings, and fingerprint the actual exercised source.
+6. The first one-message/second endurance attempt was interrupted for a source
+   improvement: auth/membership/public-credential queries now project only
+   necessary fields. This interrupted run is NOT two-hour evidence. Public
+   aggregate failure output is soak-development-interrupt.txt; private fixture
+   logs and snapshots remain owner-only. Final endurance must complete on the
+   projected source before its result is reported.

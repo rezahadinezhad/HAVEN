@@ -1,0 +1,60 @@
+
+Running 3 tests using 1 worker
+
+(node:2005267) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/3] tests/enrollment-privacy.spec.ts:10:5 › opaque enrollment context keeps strict device/domain/key checks before actual worker signing
+  1) tests/enrollment-privacy.spec.ts:10:5 › opaque enrollment context keeps strict device/domain/key checks before actual worker signing
+
+    Error: route.fetch: unable to verify the first certificate; if the root CA is installed locally, try running Node.js with --use-system-ca
+    Call log:
+      - → POST https://127.0.0.1:8445/api/v1/devices/enrollment/request
+        - user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36
+        - accept: */*
+        - accept-encoding: gzip,deflate,br
+        - accept-language: en-US
+        - content-type: application/json
+        - cookie: [REDACTED SYNTHETIC CREDENTIALS]
+        - origin: https://127.0.0.1:8445
+        - referer: https://127.0.0.1:8445/__integration__/
+        - x-csrftoken: [REDACTED SYNTHETIC CREDENTIALS]
+        - sec-ch-ua: "Not:A-Brand";v="8", "Chromium";v="156", "Google Chrome";v="156"
+        - sec-ch-ua-mobile: ?0
+        - sec-ch-ua-platform: "Linux"
+        - content-length: 220
+
+
+      58 |   for (const attack of ["device", "domain", "key"]) {
+      59 |     await page.route(endpoint, async (route) => {
+    > 60 |       const response = await route.fetch(),
+         |                                    ^
+      61 |         body = await response.json();
+      62 |       const parts = body.signing_payload.split(":");
+      63 |       if (attack === "device")
+        at /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/enrollment-privacy.spec.ts:60:36
+
+    Error: page.evaluate: Test ended.
+
+      69 |       await route.fulfill({ response, json: body });
+      70 |     });
+    > 71 |     const rejected = await page.evaluate(async () => {
+         |                                 ^
+      72 |       const w = window as any;
+      73 |       try {
+      74 |         await w.m.connect();
+        at /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/enrollment-privacy.spec.ts:71:33
+
+    Error Context: test-results/enrollment-privacy-opaque--3258c-efore-actual-worker-signing/error-context.md
+
+
+(node:2005500) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[2/3] tests/metadata-privacy.spec.ts:3:5 › padded OpenMLS messages keep lengths coarse across browser reload and rekey
+[3/3] tests/privacy.spec.ts:22:5 › retired server ciphertext: persisted browser MLS state reloads and continues across rekey
+  1 failed
+    tests/enrollment-privacy.spec.ts:10:5 › opaque enrollment context keeps strict device/domain/key checks before actual worker signing
+  2 passed (10.6s)

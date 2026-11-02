@@ -1,0 +1,16 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+_____________ test_device_revoked_after_authentication_cannot_ack ______________
+core/tests/test_authorization_fences.py:58: in test_device_revoked_after_authentication_cannot_ack
+    assert response.status_code == 403
+E   assert 200 == 403
+E    +  where 200 = <Response status_code=200, "application/json">.status_code
+________ test_revocation_after_authentication_cannot_consume_view_once _________
+core/tests/test_authorization_fences.py:77: in test_revocation_after_authentication_cannot_consume_view_once
+    assert response.status_code == 403
+E   assert 200 == 403
+E    +  where 200 = <Response status_code=200, "application/json">.status_code
+=========================== short test summary info ============================
+FAILED core/tests/test_authorization_fences.py::test_device_revoked_after_authentication_cannot_ack
+FAILED core/tests/test_authorization_fences.py::test_revocation_after_authentication_cannot_consume_view_once
+2 failed in 3.09s

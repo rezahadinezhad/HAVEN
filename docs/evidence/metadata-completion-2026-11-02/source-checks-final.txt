@@ -1,0 +1,4 @@
+All checks passed!
+69 files already formatted
+Checking formatting...
+All matched files use Prettier code style!

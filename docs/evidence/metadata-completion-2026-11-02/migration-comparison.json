@@ -1,0 +1,39 @@
+{
+  "before": {
+    "pending_device_account_links": 1,
+    "enrollment_replay_markers": 0,
+    "invariant_sha256": "565d5d741bee72c8a665da44c9f5e788ee0709b9e9041b599d185425316dabd8",
+    "recoverable_activity_columns": 3,
+    "legacy_receipt_table": true,
+    "membership_edges": 3,
+    "keypackage_device_links": 2,
+    "keypackage_claim_links": 2
+  },
+  "after_schema": {
+    "pending_device_account_links": 1,
+    "enrollment_replay_markers": 0,
+    "invariant_sha256": "565d5d741bee72c8a665da44c9f5e788ee0709b9e9041b599d185425316dabd8",
+    "recoverable_activity_columns": 0,
+    "legacy_receipt_table": false,
+    "membership_edges": 3,
+    "keypackage_device_links": 2,
+    "keypackage_claim_links": 2
+  },
+  "after_cleanup": {
+    "pending_device_account_links": 0,
+    "enrollment_replay_markers": 1,
+    "invariant_sha256": "565d5d741bee72c8a665da44c9f5e788ee0709b9e9041b599d185425316dabd8",
+    "recoverable_activity_columns": 0,
+    "legacy_receipt_table": false,
+    "membership_edges": 3,
+    "keypackage_device_links": 1,
+    "keypackage_claim_links": 1
+  },
+  "synthetic_dump_sha256": "fc65dec608e629dd6322cda46f5820897b124f603aa529988a40a5eb1cfaa985",
+  "dump_bytes": 92595,
+  "dump_restore": "PASS",
+  "invariants_preserved": "PASS",
+  "reverse_refused_without_changes": "PASS",
+  "restart_idempotent": "PASS",
+  "scope": "Synthetic schema/routing/retention fixture, not MLS ciphertext validity; no identity unlinkability claim"
+}

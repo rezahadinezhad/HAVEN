@@ -1,0 +1,20 @@
+{
+  "paired-baseline-final": {
+    "exercised_files_checked": 56,
+    "source_mismatches": [],
+    "native_binary_sha256_matches": true,
+    "scope": "API matches exact git baseline or final current source; harness/native/config match final current source; final docs/tests whole-tree binding is SOURCE_MANIFEST.sha256"
+  },
+  "paired-current-final": {
+    "exercised_files_checked": 61,
+    "source_mismatches": [],
+    "native_binary_sha256_matches": true,
+    "scope": "API matches exact git baseline or final current source; harness/native/config match final current source; final docs/tests whole-tree binding is SOURCE_MANIFEST.sha256"
+  },
+  "soak-resilience-final": {
+    "exercised_files_checked": 61,
+    "source_mismatches": [],
+    "native_binary_sha256_matches": true,
+    "scope": "API matches exact git baseline or final current source; harness/native/config match final current source; final docs/tests whole-tree binding is SOURCE_MANIFEST.sha256"
+  }
+}

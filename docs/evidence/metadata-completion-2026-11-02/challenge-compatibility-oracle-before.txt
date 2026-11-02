@@ -1,0 +1,11 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_________ test_fresh_challenge_cannot_probe_the_legacy_global_ordinal __________
+core/tests/test_enrollment_identifier_privacy.py:76: in test_fresh_challenge_cannot_probe_the_legacy_global_ordinal
+    assert complete(client, did, key, legacy_guess).status_code == 400
+E   assert 200 == 400
+E    +  where 200 = <Response status_code=200, "application/json">.status_code
+E    +    where <Response status_code=200, "application/json"> = complete(<rest_framework.test.APIClient object at 0x7a63ee645f40>, UUID('8c82eb7a-29db-4339-9be5-15e77976a596'), <cryptography.hazmat.bindings._rust.openssl.ed25519.Ed25519PrivateKey object at 0x7a63ee794ab0>, 'haven/session/v1:1:8c82eb7a-29db-4339-9be5-15e77976a596:6b5992c3dba2191577172ce99fcd93873956dc750f9b84c682330363c6b9b453')
+=========================== short test summary info ============================
+FAILED core/tests/test_enrollment_identifier_privacy.py::test_fresh_challenge_cannot_probe_the_legacy_global_ordinal
+1 failed, 3 deselected in 1.96s

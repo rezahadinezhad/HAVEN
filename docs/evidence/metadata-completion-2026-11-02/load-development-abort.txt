@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/scripts/benchmark-metadata-isolated.py", line 252, in <module>
+    before_block_io = docker(
+        ^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Synthetic load failed; private diagnostics: /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/.local/metadata-load-cce2f6c194bb/private.log

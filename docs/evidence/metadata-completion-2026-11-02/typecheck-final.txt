@@ -1,0 +1,6 @@
+
+> haven-web@0.2.0 typecheck
+> tsc --noEmit
+
+tests/privacy.spec.ts(42,11): error TS7034: Variable 'identities' implicitly has type 'any[]' in some locations where its type cannot be determined.
+tests/privacy.spec.ts(260,24): error TS7005: Variable 'identities' implicitly has an 'any[]' type.
