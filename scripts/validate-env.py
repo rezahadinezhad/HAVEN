@@ -27,6 +27,7 @@ for line in env_file.read_text().splitlines():
 required = (
     "HAVEN_SECRET_KEY",
     "HAVEN_ROUTING_SECRET",
+    "HAVEN_RETIREMENT_REPLAY_SECRET",
     "HAVEN_DB_NOTIFICATION_PASSWORD",
     "POSTGRES_PASSWORD",
     "HAVEN_DB_MIGRATION_PASSWORD",
@@ -48,9 +49,25 @@ require(
 )
 require(len(set(passwords)) == 4, "Database passwords must be distinct")
 
-require(len(values["HAVEN_ROUTING_SECRET"]) >= 48 and values["HAVEN_ROUTING_SECRET"] != values["HAVEN_SECRET_KEY"], "Independent routing secret required")
+require(
+    len(values["HAVEN_ROUTING_SECRET"]) >= 48
+    and values["HAVEN_ROUTING_SECRET"] != values["HAVEN_SECRET_KEY"],
+    "Independent routing secret required",
+)
 previous = values.get("HAVEN_ROUTING_PREVIOUS_SECRET", "")
-require(not previous or (len(previous) >= 48 and previous != values["HAVEN_SECRET_KEY"]), "Invalid previous routing secret")
+require(
+    not previous or (len(previous) >= 48 and previous != values["HAVEN_SECRET_KEY"]),
+    "Invalid previous routing secret",
+)
+
+retirement = values["HAVEN_RETIREMENT_REPLAY_SECRET"]
+require(
+    len(retirement) >= 48
+    and not retirement.startswith("REPLACE_WITH_")
+    and retirement
+    not in {values["HAVEN_SECRET_KEY"], values["HAVEN_ROUTING_SECRET"], previous},
+    "Independent permanent retirement secret required",
+)
 
 hosts = values["HAVEN_HOSTS"].split(",")
 optional = values.get("HAVEN_OPTIONAL_HOSTNAME", "")

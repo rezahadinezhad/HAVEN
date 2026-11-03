@@ -1,5 +1,13 @@
 # Changelog
 
+## Installation upgrade and project organization — 2026-11-04
+
+Upgrade the maintained local stack through migration 0020, provision separate routing/notification/retirement credentials, initialize and back up the independent journal, and renew the local leaf under the existing trust root. Verify the normal UI over trusted TLS in Chromium and Firefox. Move old status snapshots to `docs/history`, keep current project pages concise, and show service warnings only when the service is unavailable. [Executed upgrade](docs/operations/installation-upgrade-2026-11-04/README.md).
+
+## Account-wide conversation retirement — 2026-11-03
+
+Enable normal-product messaging and automatic server retirement with one participating device per account, unanimous historically affected group accounts, encrypted available-history archives and an independently authenticated restore-deny journal. [Implementation and verification](docs/security/account-closure/README.md).
+
 ## Follow-up dependency qualification — 2026-11-03
 
 Qualify supported Python 3.14.9 production images, matching React DOM types, pytest 9.2, idb 8.0.4 and libsodium wrappers 0.8.4. Retain the compatible OpenAPI generator. Add actual old/new vault-worker compatibility coverage and exact production-Python backend CI. [Decisions and evidence](docs/security/dependency-followup-2026-11-03.md).

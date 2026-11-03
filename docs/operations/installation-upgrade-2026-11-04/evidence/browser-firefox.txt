@@ -1,0 +1,12 @@
+
+> haven-web@0.2.0 test
+> playwright test installation.spec.ts
+
+
+Running 1 test using 1 worker
+
+(node:822698) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/installation.spec.ts:12:5 › installed product uses trusted TLS, clean operational UI and contextual service notices (6.6s)
+
+  1 passed (8.8s)

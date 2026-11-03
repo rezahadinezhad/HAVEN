@@ -30,7 +30,7 @@ test("trusted TLS, login, invitation and operator account flows, bilingual mobil
   await expect(
     page.getByRole("button", { name: "Operator console", exact: true }),
   ).toBeVisible();
-  await expect(page.getByText("CRYPTO_NOT_READY")).toBeVisible();
+  await expect(page.locator(".gate")).toHaveCount(0);
   await page
     .getByRole("button", { name: "Operator console", exact: true })
     .click();
@@ -52,7 +52,7 @@ test("trusted TLS, login, invitation and operator account flows, bilingual mobil
   await page.getByRole("button", { name: "Devices", exact: true }).click();
   await expect(
     page.getByRole("button", { name: "Create device vault", exact: true }),
-  ).toBeDisabled();
+  ).toBeEnabled();
   await page.getByRole("button", { name: "Settings", exact: true }).click();
   await page.getByLabel("Theme", { exact: true }).selectOption("light");
   await page.getByLabel("Language", { exact: true }).selectOption("fa");

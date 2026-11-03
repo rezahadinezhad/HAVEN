@@ -1,0 +1,12 @@
+{
+  "encrypted_SQL_backup": true,
+  "encrypted_backup_sha256": "643dd90558a87f14ce10c9ee366fc55788ec75efcb28421eae07417893ec91d7",
+  "isolated_restore": {
+    "verified": true,
+    "tables": 30,
+    "all_counts_and_sha256_match": true
+  },
+  "original_accounts_devices_and_conversations": 0,
+  "new_initial_owner_account": true,
+  "old_images_and_protected_configuration_retained": true
+}

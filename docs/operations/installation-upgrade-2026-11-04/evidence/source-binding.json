@@ -1,0 +1,24 @@
+{
+  "api_critical_source_matches_running_image": true,
+  "api_source_sha256": {
+    "core/closure.py": "4116b4392a328b8abe5edb06877783e41bf5e6a8d49ace4e0ad467b77e81a0ae",
+    "core/closure_views.py": "e488cd9d4b21ca1b1a4016dfb27753e9440c86b17b90a98d5a9cad8e42fb6613",
+    "core/graph_retirement.py": "78c04acdfe66a1127e3aa53bdcbf3dfd0264dc94aaff990e6410515c7a30c894",
+    "core/retirement_journal.py": "235b7fed9619faa0861b6d67bb4c10149ba198a719bbf4f4cdcba98f62005119",
+    "haven/settings.py": "6eeeb3b49c6a1b4bcf005d6f11a9be664f493fa97888b0e3546082e180967594",
+    "haven/server.py": "34125aafabf29b2772bd8827fba89a7071fed0bdafe3c18d944904d23168959d"
+  },
+  "web_image_build_inputs": {
+    "apps/web/src/app/ui.tsx": "21b8de2ce45c9c155426c95403b4e94f4f14fae7ad948d718ad0657a3641b73a",
+    "apps/web/src/lib/i18n.ts": "e364950f37a90fed13df2dec81e0e32be5bec9891d4605f56b2e007e5ff505dd",
+    "apps/web/package-lock.json": "c6cc9189d22b9d1c9607dbe8cdedc92abb8ad8b2b96b3630f621c306d5509dae",
+    "apps/web/Dockerfile": "5b1b0385e5fa6b099833dcfdd39b353a19a5ef1d9fca2e56d8d89ce16c3f5fbe"
+  },
+  "local_TEST_certificate": [
+    "notBefore=Nov  3 22:33:18 2026 GMT",
+    "notAfter=Nov  6 22:33:18 2026 GMT",
+    "issuer=CN=HAVEN TEST ONLY root"
+  ],
+  "unchanged_TEST_root": true,
+  "public_host_qualification": false
+}

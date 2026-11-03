@@ -1,0 +1,126 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.installation-web-offline
+#1 transferring dockerfile: 1.08kB done
+#1 DONE 0.0s
+
+#2 [context npmcache] load .dockerignore
+#2 transferring npmcache:
+#2 transferring npmcache: 2B done
+#2 DONE 0.3s
+
+#3 [internal] load metadata for docker.io/library/node:26.13.0-trixie-slim@sha256:e4db4c914bf8ad241bd24804fc25d272d89bad97e68cdc8a1414862790a02c39
+#3 ...
+
+#4 [auth] library/node:pull token for registry-1.docker.io
+#4 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/node:26.13.0-trixie-slim@sha256:e4db4c914bf8ad241bd24804fc25d272d89bad97e68cdc8a1414862790a02c39
+#3 DONE 13.7s
+
+#5 [internal] load .dockerignore
+#5 transferring context: 188B done
+#5 DONE 0.0s
+
+#6 [context npmcache] load from client
+#6 DONE 0.0s
+
+#7 [internal] load build context
+#7 DONE 0.0s
+
+#8 [build 1/6] FROM docker.io/library/node:26.13.0-trixie-slim@sha256:e4db4c914bf8ad241bd24804fc25d272d89bad97e68cdc8a1414862790a02c39
+#8 resolve docker.io/library/node:26.13.0-trixie-slim@sha256:e4db4c914bf8ad241bd24804fc25d272d89bad97e68cdc8a1414862790a02c39
+#8 resolve docker.io/library/node:26.13.0-trixie-slim@sha256:e4db4c914bf8ad241bd24804fc25d272d89bad97e68cdc8a1414862790a02c39 0.1s done
+#8 DONE 0.2s
+
+#7 [internal] load build context
+#7 transferring context: 4.74MB 0.2s done
+#7 DONE 0.2s
+
+#6 [context npmcache] load from client
+#6 transferring npmcache: 28B
+#6 ...
+
+#9 [build 2/6] WORKDIR /app
+#9 CACHED
+
+#10 [build 3/6] COPY apps/web/package.json apps/web/package-lock.json ./
+#10 CACHED
+
+#6 [context npmcache] load from client
+#6 transferring npmcache: 129.82MB 2.3s done
+#6 DONE 2.4s
+
+#11 [build 4/6] RUN --mount=from=npmcache,target=/npm-cache npm ci --offline --ignore-scripts --cache=/npm-cache
+#11 9.372
+#11 9.372 added 96 packages, and audited 97 packages in 9s
+#11 9.373
+#11 9.373 15 packages are looking for funding
+#11 9.373   run `npm fund` for details
+#11 9.374
+#11 9.374 found 0 vulnerabilities
+#11 DONE 9.9s
+
+#12 [build 5/6] COPY apps/web .
+#12 DONE 0.4s
+
+#13 [build 6/6] RUN rm -f public/pof.html public/pof.js && npm run build
+#13 0.632
+#13 0.632 > haven-web@0.2.0 build
+#13 0.632 > node scripts/patch-next-announcer.mjs && next build && node scripts/build-offline-shell.mjs
+#13 0.632
+#13 0.686 Next 16.4.3 accessibility announcer uses external CSS; CSP remains strict.
+#13 2.044 ▲ Next.js 16.4.3 (Turbopack)
+#13 2.132 ✓ Running next.config.ts took 86ms
+#13 2.157 - Experiments (use with caution):
+#13 2.157   · cpus: 2
+#13 2.157
+#13 2.190   Creating an optimized production build ...
+#13 10.29 ✓ Compiled successfully in 8.1s
+#13 10.39   Running TypeScript ...
+#13 22.78   Finished TypeScript in 12.4s ...
+#13 22.79   Collecting page data using 2 workers ...
+#13 23.57   Generating static pages using 2 workers (0/3) ...
+#13 23.77 ✓ Generating static pages using 2 workers (3/3) in 209ms
+#13 23.78   Finalizing page optimization ...
+#13 24.56
+#13 24.56 Route (app)
+#13 24.56 ┌ ƒ /
+#13 24.56 └ ○ /_not-found
+#13 24.56
+#13 24.56
+#13 24.56 ƒ Proxy (Middleware)
+#13 24.56
+#13 24.56 ○  (Static)   prerendered as static content
+#13 24.56 ƒ  (Dynamic)  server-rendered on demand
+#13 24.56
+#13 24.67 Prepared 21 local offline shell assets
+#13 DONE 24.8s
+
+#9 [build 2/6] WORKDIR /app
+#9 CACHED
+
+#14 [runtime 3/6] COPY --from=build --chown=node:node /app/.next/standalone ./
+#14 DONE 0.5s
+
+#15 [runtime 4/6] COPY --from=build --chown=node:node /app/.next/static ./.next/static
+#15 DONE 0.2s
+
+#16 [runtime 5/6] COPY --from=build --chown=node:node /app/public ./public
+#16 DONE 0.1s
+
+#17 [runtime 6/6] RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/corepack /opt/yarn-* /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack /usr/local/bin/yarn /usr/local/bin/yarnpkg
+#17 DONE 0.5s
+
+#18 exporting to image
+#18 exporting layers
+#18 exporting layers 2.6s done
+#18 exporting manifest sha256:f30805155643ff3e1ca573c254003cbfa67ee6ae16f3f16074a0dce7e59961f6 0.0s done
+#18 exporting config sha256:9b2de3b2d9e4f3771ac01814bf6a05807474c74fb818e1e02a3f129166e9b68b 0.0s done
+#18 exporting attestation manifest sha256:afc2ed9e1012c76112078edb9357de426ef3b6f03eb309c343f3abde8b0a06f2 0.0s done
+#18 exporting manifest list sha256:197c4307653159d040f00b93c8a3dd46cc18b072059b1c744e2eec68961a7b4e 0.0s done
+#18 naming to docker.io/library/haven-web:release-20261104
+#18 naming to docker.io/library/haven-web:release-20261104 done
+#18 unpacking to docker.io/library/haven-web:release-20261104
+#18 unpacking to docker.io/library/haven-web:release-20261104 1.0s done
+#18 DONE 3.8s

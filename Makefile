@@ -1,5 +1,5 @@
 SHELL := /bin/bash
-.PHONY: setup setup-test dependency-audit doctor prepare dev test security-test crypto production-build offline-bundle deploy-staging pki-create-offline-root pki-issue-ip-leaf certificate-check backup restore-check outage-drill failover-plan release-check
+.PHONY: setup setup-test dependency-audit doctor prepare dev test security-test crypto production-build offline-bundle deploy-staging pki-create-offline-root pki-issue-ip-leaf certificate-check backup restore-check outage-drill failover-plan release-check initialize-retirement
 setup:
 	./setup.sh
 setup-test:
@@ -32,6 +32,9 @@ production-build: crypto
 	docker build -f apps/web/Dockerfile -t haven-web:0.2.0 .
 offline-bundle:
 	bash scripts/build-offline-bundle.sh
+initialize-retirement:
+	python3 scripts/validate-env.py
+	docker compose --env-file .env -f infrastructure/compose/compose.yml --profile bootstrap run --rm retirement-init
 deploy-staging:
 	python3 scripts/validate-env.py
 	docker compose --env-file .env -f infrastructure/compose/compose.yml up -d --wait

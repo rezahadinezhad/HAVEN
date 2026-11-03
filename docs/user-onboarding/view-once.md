@@ -10,4 +10,4 @@ After opening, the message shows **Opened**. HAVEN offers no save, download or f
 
 **Recipients can still capture the screen or use another camera or a modified client.** HAVEN cannot guarantee physical erasure of all copies or browser/backup memory. The server records opening access to enforce the limit even when optional read receipts are off. This is a privacy convenience within HAVEN, not protection against an untrusted recipient.
 
-Physical iOS/Android behavior, codec compatibility and independent security review remain unqualified. The project's overall security release gate remains closed; the loopback integration is for evaluation.
+Physical iOS/Android behavior, codec compatibility and independent security review remain unqualified. Normal messaging is operational; see the current security status for deployment scope.

@@ -1,0 +1,61 @@
+
+> haven-web@0.2.0 test
+> playwright test installation.spec.ts
+
+
+Running 1 test using 1 worker
+
+(node:820274) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 tests/installation.spec.ts:12:5 › installed product uses trusted TLS, clean operational UI and contextual service notices (5.7s)
+
+
+  1) tests/installation.spec.ts:12:5 › installed product uses trusted TLS, clean operational UI and contextual service notices
+
+    Error: route.fetch: unable to verify the first certificate; if the root CA is installed locally, try running Node.js with --use-system-ca
+    Call log:
+      - → GET https://127.0.0.1:8444/api/v1/health
+        - user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36
+        - accept: */*
+        - accept-encoding: gzip,deflate,br
+        - accept-language: en-US
+        [authentication cookies redacted]
+        - sec-ch-ua: "Not:A-Brand";v="8", "Chromium";v="156", "Google Chrome";v="156"
+        - sec-ch-ua-mobile: ?0
+        - sec-ch-ua-platform: "Linux"
+
+
+      92 |   await page.getByLabel("زبان", { exact: true }).selectOption("en");
+      93 |   await page.route("**/api/v1/health", async (route) => {
+    > 94 |     const real = await route.fetch();
+         |                              ^
+      95 |     await route.fulfill({
+      96 |       response: real,
+      97 |       json: { ...(await real.json()), crypto_ready: false },
+        at /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/installation.spec.ts:94:30
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('.gate')
+    Expected substring: "Messaging unavailable"
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toContainText" locator('.gate') with timeout 5000ms
+      - waiting for locator('.gate')
+      - Test ended.
+
+
+       99 |   });
+      100 |   await page.reload();
+    > 101 |   await expect(page.locator(".gate")).toContainText("Messaging unavailable");
+          |                                       ^
+      102 |   await page.unrouteAll({ behavior: "wait" });
+      103 |   await page.reload();
+      104 |   await expect(page.locator(".gate")).toHaveCount(0);
+        at /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/installation.spec.ts:101:39
+
+    Error Context: test-results/installation-installed-pro-03868--contextual-service-notices/error-context.md
+
+  1 failed
+    tests/installation.spec.ts:12:5 › installed product uses trusted TLS, clean operational UI and contextual service notices

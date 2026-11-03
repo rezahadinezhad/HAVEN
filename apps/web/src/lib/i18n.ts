@@ -864,6 +864,9 @@ const fa: Record<string, string> = {
     "آماده‌سازی برگشت‌پذیر نیست. اگر حسابی موافقت نکند یا مجوز خود را از دست بدهد، تاریخچه در سرور نگهداری می‌شود.",
   "Deletion authorized. Cleanup runs automatically after delivery, open media sessions and required security retention finish. Your archive stays local.":
     "مجوز حذف صادر شد. پس از پایان تحویل، نشست‌های باز رسانه و دورهٔ لازم نگهداری امنیتی، پاک‌سازی خودکار انجام می‌شود. آرشیو شما در دستگاه می‌ماند.",
+  "Messaging unavailable": "پیام‌رسانی در دسترس نیست",
+  "Messaging is temporarily unavailable. Check the service status or contact your administrator.":
+    "پیام‌رسانی موقتاً در دسترس نیست. وضعیت سرویس را بررسی کنید یا با مدیر تماس بگیرید.",
   active: "فعال",
   rekey_required: "تغییر کلید لازم است",
   pending: "در انتظار تأیید",

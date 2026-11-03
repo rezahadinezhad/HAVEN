@@ -1,12 +1,12 @@
 # Contributing to HAVEN
 
-HAVEN is an experimental private messenger and security engineering project. Contributions should improve a concrete user behavior or a testable security property. Independent review is still required before production qualification.
+HAVEN is an operational private messenger with independent security review pending. Contributions should improve a concrete user behavior or a testable security property. Independent review is still required before production qualification.
 
 ## Before making a change
 
 Read README.md, SECURITY_STATUS.md and the relevant architecture decision in docs/adr. For client work, preserve the established responsive English/Persian interface, accessibility, reduced motion, and honest delivery/trust states. Read apps/web/AGENTS.md and the installed Next.js documentation before changing framework code.
 
-For security changes, explain the threat, current failure, expected behavior, and a meaningful regression test. Do not invent cryptographic primitives, silently reset identities/ratchets, weaken certificate verification, or bypass the source-level release gate. Provider changes need source provenance, native/WASM builds, interoperability checks, and the relevant protocol tests.
+For security changes, explain the threat, current failure, expected behavior, and a meaningful regression test. Do not invent cryptographic primitives, silently reset identities/ratchets, weaken certificate verification, or weaken approved-device, replay or durability checks. Provider changes need source provenance, native/WASM builds, interoperability checks, and the relevant protocol tests.
 
 ## Working locally
 

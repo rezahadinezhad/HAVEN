@@ -55,9 +55,7 @@ test("redesigned real account: responsive navigation, setup, themes, RTL, reduce
     await expect(
       page.getByRole("heading", { name: "Conversations", exact: true }),
     ).toBeVisible();
-    await expect(
-      page.getByText("Security qualification pending", { exact: true }).first(),
-    ).toBeVisible();
+    await expect(page.locator(".gate")).toHaveCount(0);
     await expect(
       page
         .locator(".welcome")

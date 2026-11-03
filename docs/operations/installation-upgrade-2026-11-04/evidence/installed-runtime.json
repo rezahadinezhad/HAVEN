@@ -1,0 +1,91 @@
+{
+  "status": "PASS",
+  "url": "https://127.0.0.1:8444",
+  "profile": "loopback-local-compatibility",
+  "runtime": {
+    "migrations": [
+      "0001_initial",
+      "0002_alter_user_managers",
+      "0003_conversation_genesis_conversation_genesis_signature_and_more",
+      "0004_membership_leave_signature",
+      "0005_serverpolicy",
+      "0006_encryptedattachment_view_once_attachmentview",
+      "0007_attachmenttombstone",
+      "0008_minimal_retention",
+      "0009_member_invitations",
+      "0010_credential_bound_sessions",
+      "0011_storage_and_sync_budgets",
+      "0012_conversation_page_index",
+      "0013_metadata_minimization",
+      "0014_keypackage_privacy_index",
+      "0015_pending_enrollment_privacy",
+      "0016_session_challenge_context",
+      "0017_contact_introduction_generation",
+      "0018_notification_worker_view",
+      "0019_experimental_conversation_closure",
+      "0020_closure_retirement_queue"
+    ],
+    "runtime_unprivileged": true,
+    "runtime_DDL_and_migration_writes_denied": true,
+    "journal_authenticated": true,
+    "all_product_flags_enabled": true,
+    "initial_owner_provisioned": true
+  },
+  "notification": {
+    "notification_view_readable": true,
+    "message_and_account_device_reads_denied": true
+  },
+  "journal_mounts_and_secret_isolation": true,
+  "encrypted_SQL_backup_restore_30_tables_verified": true,
+  "independent_initial_journal_backup_authenticated": true,
+  "services": {
+    "api": {
+      "image": "haven-api:release-20261104",
+      "image_id": "sha256:9a07afdba606504c2e6ab1e0a5327ed2598db4a7f894b04e115c6195e62dfacd",
+      "running": true,
+      "health": "healthy"
+    },
+    "web": {
+      "image": "haven-web:release-20261104",
+      "image_id": "sha256:197c4307653159d040f00b93c8a3dd46cc18b072059b1c744e2eec68961a7b4e",
+      "running": true,
+      "health": "not-configured"
+    },
+    "outbox": {
+      "image": "haven-api:release-20261104",
+      "image_id": "sha256:9a07afdba606504c2e6ab1e0a5327ed2598db4a7f894b04e115c6195e62dfacd",
+      "running": true,
+      "health": "not-configured"
+    },
+    "privacy": {
+      "image": "haven-api:release-20261104",
+      "image_id": "sha256:9a07afdba606504c2e6ab1e0a5327ed2598db4a7f894b04e115c6195e62dfacd",
+      "running": true,
+      "health": "not-configured"
+    },
+    "retirement": {
+      "image": "haven-api:release-20261104",
+      "image_id": "sha256:9a07afdba606504c2e6ab1e0a5327ed2598db4a7f894b04e115c6195e62dfacd",
+      "running": true,
+      "health": "not-configured"
+    },
+    "ingress": {
+      "image": "nginx:1.28.3-alpine@sha256:a8b39bd9cf0f83869a2162827a0caf6137ddf759d50a171451b335cecc87d236",
+      "image_id": "sha256:a8b39bd9cf0f83869a2162827a0caf6137ddf759d50a171451b335cecc87d236",
+      "running": true,
+      "health": "not-configured"
+    },
+    "db": {
+      "image": "postgres:16.14-bookworm@sha256:64154d0babcb1741988719e703419af0382b19953706149f9872fbd0f438efa8",
+      "image_id": "sha256:64154d0babcb1741988719e703419af0382b19953706149f9872fbd0f438efa8",
+      "running": true,
+      "health": "healthy"
+    },
+    "redis": {
+      "image": "redis:7.4.6-alpine@sha256:3b73847e72874be07e6657b129a94761662b79bc0f679273757d4218573b2a98",
+      "image_id": "sha256:3b73847e72874be07e6657b129a94761662b79bc0f679273757d4218573b2a98",
+      "running": true,
+      "health": "healthy"
+    }
+  }
+}

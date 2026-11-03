@@ -170,6 +170,16 @@ test("guide preserves pending browser keys; administrator invitation controls an
       second.getByRole("button", { name: "Share my friend link", exact: true }),
     ).toBeEnabled();
 
+    const liveHealth = await second.evaluate(async () =>
+      (await fetch("/api/v1/health")).json(),
+    );
+    await second.route("**/api/v1/health", (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ ...liveHealth, crypto_ready: false }),
+      }),
+    );
     await second.goto("https://127.0.0.1:8443/");
     await second.locator(".connect-entry").click();
     await expect(

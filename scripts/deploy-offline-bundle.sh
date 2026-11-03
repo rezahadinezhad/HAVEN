@@ -7,4 +7,4 @@ openssl pkeyutl -verify -rawin -pubin -inkey "$HAVEN_RELEASE_PUBLIC_KEY" -in "$H
 python3 "$root/scripts/manifest.py" "$HAVEN_BUNDLE_DIR" | cmp - "$HAVEN_BUNDLE_DIR/MANIFEST.json"
 docker image load -i "$HAVEN_BUNDLE_DIR/runtime.images.tar"
 echo 'Verified images loaded without package fetches. Configure protected .env and independently trusted IP TLS before starting.'
-echo 'Production onboarding remains BLOCKED; run scripts/release-gate.py before any real deployment.'
+echo 'Normal messaging is enabled; independent review remains pending. Follow docs/runbooks/operations.md for journal initialization and coordinated upgrades.'

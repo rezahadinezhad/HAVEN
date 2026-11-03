@@ -15,5 +15,9 @@ services:
     security_opt: !override []
   privacy:
     security_opt: !override []
+  retirement:
+    security_opt: !override []
+  retirement-init:
+    security_opt: !override []
   web:
     security_opt: !override []

@@ -4,14 +4,14 @@
 
 # HAVEN
 
-**A practical exploration of modern security architecture, built as a private browser messenger.**
+**A private, self-hosted messenger with explicit device trust.**
 
-HAVEN brings together standards-based group encryption, explicit device trust, encrypted local storage, and a familiar conversation interface. It explores what happens when security requirements shape the whole product—from the first invitation to session revocation, media delivery, and account recovery.
+HAVEN brings together standards-based group encryption, explicit device trust, encrypted local storage, and a familiar conversation interface. Security requirements shape the product from the first invitation to session revocation, media delivery, account recovery and mutual history retirement.
 
 The result is a functioning, self-hosted implementation built with **Django, Next.js, PostgreSQL, Redis, and Rust/WebAssembly**. It runs in the browser, supports English and Persian, and serves its application assets and cryptographic libraries locally. A guided terminal installer turns the initial configuration, database bootstrap, and HTTPS checks into a single-command flow.
 
 [![Repository security](https://github.com/rezahadinezhad/HAVEN/actions/workflows/repository-security.yml/badge.svg)](https://github.com/rezahadinezhad/HAVEN/actions/workflows/repository-security.yml)
-[MIT license](LICENSE) · [Security model](#security-model) · [Guided setup](#guided-setup) · [Test evidence](TEST_REPORT.md) · [Contributing](CONTRIBUTING.md)
+[MIT license](LICENSE) · [Security model](#security-model) · [Guided setup](#guided-setup) · [Test evidence](TEST_REPORT.md) · [Contributing](CONTRIBUTING.md) · [Documentation](docs/README.md) · [Current status](IMPLEMENTATION_STATUS.md) · [Project history](docs/history/README.md)
 
 > [!IMPORTANT]
 > **Operational software; independent security review is pending.** Normal messaging, account-wide closure and server retirement are enabled. Local tests demonstrate implemented behavior, not a security certification. Read [SECURITY_STATUS.md](SECURITY_STATUS.md) before evaluating or deploying the project.

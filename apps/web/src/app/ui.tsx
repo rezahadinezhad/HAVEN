@@ -1199,22 +1199,22 @@ export default function Haven() {
           </button>
         </div>
       </header>
-      <div className="gate" role="status">
-        <Icon name="warning" size={17} />
-        <strong>{t("Security qualification pending")}</strong>
-        <span>
-          {t(
-            health?.crypto_ready
-              ? "Messaging is operational. Independent security review is still pending."
-              : "Encryption is unavailable until the integrated security gates pass.",
+      {health && !health.crypto_ready && (
+        <div className="gate" role="status">
+          <Icon name="warning" size={17} />
+          <strong>{t("Messaging unavailable")}</strong>
+          <span>
+            {t(
+              "Messaging is temporarily unavailable. Check the service status or contact your administrator.",
+            )}
+          </span>
+          {user && (
+            <button className="gate-help" onClick={() => setScreen("help")}>
+              {t("Details")} <Icon name="next" size={14} />
+            </button>
           )}
-        </span>
-        {user && (
-          <button className="gate-help" onClick={() => setScreen("help")}>
-            {t("Details")} <Icon name="next" size={14} />
-          </button>
-        )}
-      </div>
+        </div>
+      )}
       {health?.maintenance && (
         <div className="banner">
           {t("Maintenance")}: {health.maintenance}
@@ -3296,7 +3296,7 @@ export default function Haven() {
           <Icon name="lock" size={12} />
           {t("Private community")}
         </span>
-        <span>{enabled ? "UNREVIEWED" : "CRYPTO_NOT_READY"} · v0.2.0</span>
+        <span>v0.2.0</span>
         <span>
           {pendingApproval
             ? t("Browser approval needed")
