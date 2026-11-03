@@ -18,6 +18,8 @@ The result is a functioning, self-hosted implementation built with **Django, Nex
 
 Metadata-privacy hardening now removes redundant activity timestamps, expires temporary routing associations, reduces API/worker disclosure and pads new MLS messages. The continuation adds transactional authority fences, replay-safe expired enrollment cleanup and narrower authentication/credential SQL reads. The account/conversation graph remains visible to the service. See the [inventory, threat model, migration procedure and measured limitations](docs/security/metadata-privacy/README.md).
 
+The additional [privacy/security hardening](docs/security/privacy-hardening/README.md) removes plaintext browser profiles, scopes device discovery, adds revocable private contact introductions, pseudonymizes Redis groups with a dedicated key, separates notification-worker SQL credentials and buckets new encrypted attachment sizes. Existing vaults, signed histories and legacy attachment reads are preserved. [Upgrade requirements and remaining threats](docs/security/privacy-hardening/final-report.md) are explicit; historical graph retirement remains design-only and the production gate stays closed.
+
 ## The engineering question
 
 Content encryption is one part of a private messenger. The harder product questions surround it: how a person trusts a new browser, where keys live, how a queued message survives a restart, what revocation actually stops, and which metadata the server still needs.

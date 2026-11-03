@@ -2,19 +2,33 @@ import { isViewOnceMedia } from "./attachment-policy";
 import sodium from "libsodium-wrappers-sumo";
 import { vaultDB, type FileMeta } from "./vault";
 import { api, uploadChunk } from "./api";
-const CHUNK = 512 * 1024;
+import {
+  attachmentLayout,
+  paddedAttachmentSize,
+  ATTACHMENT_CHUNK as CHUNK,
+} from "./attachment-format";
 function aad(
-  meta: Pick<FileMeta, "id" | "conversation_id" | "count" | "view_once">,
+  meta: Pick<
+    FileMeta,
+    | "id"
+    | "conversation_id"
+    | "count"
+    | "view_once"
+    | "size"
+    | "format"
+    | "padded_size"
+  >,
   i: number,
 ) {
   return sodium.from_string(
     JSON.stringify([
       meta.view_once ? "haven-view-once-attachment" : "haven-attachment",
-      1,
+      meta.format ?? 1,
       meta.conversation_id,
       meta.id,
       i,
       meta.count,
+      ...(meta.format === 2 ? [meta.size, meta.padded_size] : []),
     ]),
   );
 }
@@ -34,10 +48,13 @@ export async function prepareUpload(
   if (viewOnce && !isViewOnceMedia(file.type))
     throw new Error("View once supports photos and videos only");
   if (file.size > 25 * 1024 * 1024) throw new Error("File exceeds 25 MiB");
-  const count = Math.max(1, Math.ceil(file.size / CHUNK)),
+  const paddedSize = paddedAttachmentSize(file.size);
+  const count = Math.max(1, Math.ceil(paddedSize / CHUNK)),
     key = sodium.randombytes_buf(32),
     prefix = sodium.randombytes_buf(16);
   const meta: FileMeta = {
+    format: 2,
+    padded_size: paddedSize,
     ...(viewOnce ? { view_once: true as const } : {}),
     id: crypto.randomUUID(),
     name: file.name,
@@ -52,9 +69,12 @@ export async function prepareUpload(
   try {
     for (let i = 0; i < count; i++) {
       signal.throwIfAborted();
-      const plain = new Uint8Array(
+      const plain = new Uint8Array(Math.min(CHUNK, paddedSize - i * CHUNK));
+      const original = new Uint8Array(
         await file.slice(i * CHUNK, (i + 1) * CHUNK).arrayBuffer(),
       );
+      plain.set(original);
+      sodium.memzero(original);
       try {
         const cipher = sodium.crypto_aead_xchacha20poly1305_ietf_encrypt(
           plain,
@@ -81,11 +101,12 @@ export async function resumeUpload(
   onProgress: (n: number) => void,
   signal: AbortSignal,
 ) {
+  const paddedSize = attachmentLayout(meta);
   const start = await api<{ status?: string }>("attachments/init", "POST", {
     id: meta.id,
     conversation_id: meta.conversation_id,
     chunk_count: meta.count,
-    ciphertext_size: meta.size + 16 * meta.count,
+    ciphertext_size: paddedSize + 16 * meta.count,
     view_once: meta.view_once === true,
   });
   if (start.status !== "complete") {
@@ -144,13 +165,7 @@ export async function downloadDecrypt(
     throw new Error("Open view-once media in the temporary viewer");
   if (!meta.view_once && options.viewOnceToken)
     throw new Error("View-once policy mismatch");
-  if (
-    !Number.isInteger(meta.count) ||
-    meta.count < 1 ||
-    meta.count > 50 ||
-    meta.size > 25 * 1024 * 1024
-  )
-    throw new Error("Invalid file metadata");
+  const paddedSize = attachmentLayout(meta);
   const key = sodium.from_base64(meta.key),
     prefix = sodium.from_base64(meta.prefix),
     parts: Uint8Array<ArrayBuffer>[] = [];
@@ -190,6 +205,9 @@ export async function downloadDecrypt(
         if (body.byteLength > CHUNK + 16) throw new Error("Oversize chunk");
         cipher = new Uint8Array(body);
       }
+      const expected = Math.min(CHUNK, paddedSize - i * CHUNK);
+      if (cipher.byteLength !== expected + 16)
+        throw new Error("Attachment chunk length mismatch");
       try {
         parts.push(
           sodium.crypto_aead_xchacha20poly1305_ietf_decrypt(
@@ -208,8 +226,15 @@ export async function downloadDecrypt(
       if (db) await db.put("ciphertextChunks", cipher, cacheKey);
       options.progress?.((i + 1) / meta.count);
     }
-    const blob = new Blob(parts, { type: meta.mime });
-    if (blob.size !== meta.size) throw new Error("File size mismatch");
+    if (meta.format === 2) {
+      const last = parts.at(-1)!;
+      const originalLast = Math.max(0, meta.size - (meta.count - 1) * CHUNK);
+      if (last.subarray(originalLast).some((byte) => byte !== 0))
+        throw new Error("Invalid attachment padding");
+    }
+    const paddedBlob = new Blob(parts, { type: meta.mime });
+    if (paddedBlob.size !== paddedSize) throw new Error("File size mismatch");
+    const blob = paddedBlob.slice(0, meta.size, meta.mime);
     if (db) await discardDownload(meta);
     return blob;
   } catch (e) {

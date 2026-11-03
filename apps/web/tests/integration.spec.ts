@@ -57,9 +57,7 @@ test("browser MLS → Django/PostgreSQL: verified group, bidirectional delivery,
     pages.map((p) =>
       p.evaluate(async () => {
         const w = window as any;
-        return (await w.havenIntegration.api("devices")).find(
-          (d: any) => d.id === w.m.state.device_id,
-        );
+        return await w.havenIntegration.shareDevice(w.m.state.device_id);
       }),
     ),
   );
@@ -538,6 +536,16 @@ test("browser MLS → Django/PostgreSQL: verified group, bidirectional delivery,
     await w.m.connect();
     await w.m.package();
   });
+  extraDevice.contact_token = await extra.evaluate(
+    async () =>
+      (
+        await (window as any).havenIntegration.api(
+          "devices/contact-introduction",
+          "POST",
+          {},
+        )
+      ).token,
+  );
   for (const p of pages)
     await p.evaluate(async (d) => {
       const w = window as any;
@@ -779,7 +787,7 @@ test("browser MLS → Django/PostgreSQL: verified group, bidirectional delivery,
     );
     const devices = await h.api("devices");
     return {
-      device: devices.find((d: any) => d.id === w.m.state.device_id),
+      device: await h.shareDevice(w.m.state.device_id),
       oldRevoked: devices.find((d: any) => d.id === kit.oldDevice).trust_state,
       heads: Object.keys(w.m.state.heads).length,
       history: w.m.state.events.length,
@@ -845,9 +853,7 @@ test("browser MLS → Django/PostgreSQL: verified group, bidirectional delivery,
   }, credentials);
   const newcomerDevice = await newcomer.evaluate(async () => {
     const w = window as any;
-    return (await w.havenIntegration.api("devices")).find(
-      (d: any) => d.id === w.m.state.device_id,
-    );
+    return await w.havenIntegration.shareDevice(w.m.state.device_id);
   });
   for (const p of [a, rp])
     await p.evaluate(async (d) => {

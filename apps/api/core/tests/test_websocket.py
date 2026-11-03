@@ -125,7 +125,9 @@ async def test_redis_account_channel_link_expires_and_valid_heartbeat_refreshes(
     layer = get_channel_layer()
     assert layer.group_expiry == 120
     db = redis.Redis.from_url(settings.CHANNEL_LAYERS["default"]["CONFIG"]["hosts"][0])
-    key = layer._group_key("user." + str(items[0][0].user_id))
+    key = layer._group_key(
+        __import__("core.privacy", fromlist=["routing_groups"]).routing_groups(items[0][0].user_id)[0]
+    )
     ws = socket(items[0][1])
     try:
         assert (await ws.connect())[0]
@@ -189,3 +191,46 @@ async def test_password_change_invalidates_live_websocket(settings):
         assert (await ws.receive_output())["code"] == 4401
     finally:
         await ws.disconnect()
+
+
+async def test_routing_rotation_delivers_to_old_and_new_groups_without_raw_uuid_keys(settings):
+    import redis.asyncio as redis
+    from channels.layers import get_channel_layer
+    from core.management.commands.publish_outbox import Command
+
+    settings.ROUTING_SECRET = "old-routing-secret-" + "a" * 48
+    settings.ROUTING_PREVIOUS_SECRET = ""
+    items, _ = await identities()
+    first = socket(items[0][1])
+    second = None
+    layer = get_channel_layer()
+    db = redis.Redis.from_url(settings.CHANNEL_LAYERS["default"]["CONFIG"]["hosts"][0])
+    try:
+        assert (await first.connect())[0]
+        await first.receive_json_from()
+        settings.ROUTING_PREVIOUS_SECRET = settings.ROUTING_SECRET
+        settings.ROUTING_SECRET = "new-routing-secret-" + "b" * 48
+        second = socket(items[0][1])
+        assert (await second.connect())[0]
+        await second.receive_json_from()
+        await Command.notify(layer, [items[0][0].user_id])
+        for ws in (first, second):
+            assert (await ws.receive_json_from())["kind"] == "sync.required"
+            assert await ws.receive_nothing(0.1)
+        keys = await db.keys("asgi:group:*")
+        assert keys
+        for key in keys:
+            assert str(items[0][0].user_id).encode() not in key
+            assert 0 < await db.ttl(key) <= 120
+        # Notification retry remains authoritative over HTTP if group state disappears.
+        for key in keys:
+            await db.delete(key)
+        await second.send_json_to({"v": 1, "kind": "heartbeat"})
+        assert (await second.receive_json_from())["kind"] == "heartbeat"
+        await Command.notify(layer, [items[0][0].user_id])
+        assert (await second.receive_json_from())["kind"] == "sync.required"
+    finally:
+        await first.disconnect()
+        if second:
+            await second.disconnect()
+        await db.aclose()

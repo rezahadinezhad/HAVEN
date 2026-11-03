@@ -1,6 +1,8 @@
 import type { components } from "./generated/schema";
 export type User = components["schemas"]["User"];
-export type Device = components["schemas"]["Device"];
+export type AdminUser = Pick<User, "id" | "username" | "role" | "is_active">;
+export type Device = components["schemas"]["PeerDevice"] &
+  Partial<components["schemas"]["Device"]> & { contact_token?: string };
 export type Conversation = {
   id: string;
   kind: "direct" | "group";
@@ -66,6 +68,7 @@ export async function api<T>(
   method = "GET",
   value?: unknown,
   csrfRetried = false,
+  contactToken?: string,
 ): Promise<T> {
   if (location.protocol !== "https:" || !isSecureContext)
     throw new Error("Trusted HTTPS required");
@@ -81,10 +84,12 @@ export async function api<T>(
     credentials: "same-origin",
     cache: "no-store",
     signal: AbortSignal.timeout(60000),
-    headers:
-      method === "GET"
+    headers: {
+      ...(method === "GET"
         ? {}
-        : { "Content-Type": "application/json", "X-CSRFToken": csrf },
+        : { "Content-Type": "application/json", "X-CSRFToken": csrf }),
+      ...(contactToken ? { "X-Haven-Contact": contactToken } : {}),
+    },
     body: value === undefined ? undefined : JSON.stringify(value),
   });
   let data = await response.json();
@@ -111,7 +116,7 @@ export async function api<T>(
     !csrfRetried
   ) {
     csrf = "";
-    return api<T>(path, method, value, true);
+    return api<T>(path, method, value, true, contactToken);
   }
   if (!response.ok)
     throw new RequestError(

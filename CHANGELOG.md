@@ -86,3 +86,13 @@ Normal cryptography release gate remains closed. Independent review, physical de
 ## 0.1 baseline
 
 Preserved the earlier gated engineering package in the initial Git commit before continuation. It included real MLS feasibility code and substantial auth/transport/UI scaffolding, with incomplete integration and recorded release blockers. Historical evidence remains under docs/evidence.
+
+## Privacy/security hardening — 2026-11-03 (local review)
+
+- Allow pseudonymous signup without human names; remove plaintext profile cache and hide locked identity labels.
+- Scope peer/admin contracts and first contact through expiring, revocable introductions; preserve historical certificate verification.
+- Derive Redis routing groups with an independent HMAC key; separate notification DB credentials and grants.
+- Add high-privacy settings, authenticated attachment-size buckets with legacy support, restore-epoch fencing and stricter CSP host validation.
+- Add bounded adversarial/migration/permission/browser evidence and design-only conversation finality; keep production blocked.
+
+[Security boundaries and rollout](docs/security/privacy-hardening/final-report.md).

@@ -194,7 +194,7 @@ test("real server and MLS: quarantine invalid application content, reload, idle 
       [a, b].map((page) =>
         page.evaluate(async () => {
           const w = window as any;
-          return (await w.havenIntegration.api("devices"))[0];
+          return await w.havenIntegration.shareDevice(w.m.state.device_id);
         }),
       ),
     );

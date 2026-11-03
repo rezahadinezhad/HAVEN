@@ -1,0 +1,15 @@
+# Bounded encrypted attachment padding
+
+**IMPLEMENTED_AND_TESTED.** Prior media used exact plaintext length plus 16 bytes per 512 KiB AEAD chunk, revealing exact length even though filename/MIME/keys lived inside MLS. Existing OpenMLS message padding is unchanged.
+
+New FileMeta `format:2` adds encrypted padded_size. Size classes round up to 4 KiB through 64 KiB, 16 KiB through 1 MiB, then 64 KiB through 25 MiB. Minimum padded size is 4 KiB. Above 1 MiB added plaintext padding is below 6.25%; the middle band is below 25%; tiny files deliberately have high relative overhead but at most 4096 added bytes. At most 50 chunks remain; upper 25 MiB data bound does not grow. See actual [byte measurements](short-performance-results.md), including boundary discontinuities. These are explicit tradeoffs, not universal traffic indistinguishability.
+
+The existing libsodium XChaCha20-Poly1305 and nonce construction are reused. V2 AAD binds domain (ordinary/view-once), version, conversation, attachment, chunk index/count, true original size and padded size. Both sizes also travel within the authenticated encrypted MLS event. Zero padding is encrypted; last-chunk padding must decode as zero. Expected exact per-chunk length is checked before decrypt, index/AAD reject reorder/scope changes, every chunk authenticates before ciphertext is cached, and only the original byte range becomes a Blob. Plaintext buffers/keys are zeroed on exit. No received view-once chunks enter IndexedDB.
+
+`attachment-format.ts` centralizes size/count validation for the event schema, upload resume and downloader. `resumeUpload` charges padded bytes plus AEAD tags to the existing server quota/size verification. Exact encrypted chunks persist for retry; resume never reencrypts or changes an old pending upload. V1 metadata without format/padded_size uses unchanged old AAD and lengths, including empty legacy files. Negative/NaN/unknown-version/mismatched metadata is rejected. Source files: `media.ts`, `attachment-format.ts`, `events.ts`, `vault.ts`.
+
+Compatibility: legacy stored files and pending uploads remain readable/retryable with no vault migration. Old v1-only frontends cannot display new v2 file events; coordinated upgrade of the frontend/API is required. With no real users, new writes use v2 directly. Do not claim a downgrade to an old frontend can display new v2 events; do not clear vaults/outboxes to address this. No old signed event bytes are rewritten.
+
+Evidence: actual browser libsodium tests for legacy bytes, v2 roundtrip, wrong size/scope/version, corruption/truncation/extra/reorder, interrupted verified download resume, view-once nonpersistence; actual two-account MLS → Django/PostgreSQL → AEAD media delivery, padded 65,537-byte file, view-once claim/decrypt and replay denial. Backend quotas/view-once/native MLS regression passed. General full browser media/device matrices were NOT_RUN.
+
+Reduces size precision only. Bucket/chunk count, upload/download timing, sender/conversation and active consumption remain visible. Authorized malicious peers can disclose true length and plaintext. No relay or cover traffic was introduced.

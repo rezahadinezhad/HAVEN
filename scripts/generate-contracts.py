@@ -26,7 +26,9 @@ genesis=obj({'domain':{'const':'haven/genesis/v1'},'id':ID,'kind':{'enum':['dire
 env=obj({'id':ID,'client_message_id':ID,'sender_device':ID,'v':{'const':1},'seq':N,'epoch':N,'kind':{'enum':['application','commit']},'header':ref('DeliveryHeader'),'signature':S,'chain_hash':S,'ciphertext':S,'welcome':S,'transition':ref('Transition')},['id','client_message_id','sender_device','v','seq','epoch','kind','header','signature','chain_hash'])
 privacy=obj({'delivered_ciphertext_grace_hours':N,'attachment_days':N,'abandoned_upload_hours':N,'audit_days':N,'cleanup_interval_seconds':N,'unsynced_ciphertext_expires':B,'signed_history_retained':B,'accounts_and_membership_retained':B,'ingress_observes_ip':B,'independent_review':B})
 env['properties']['ciphertext_retired']=B
-schemas={'User':user,'Device':device,'Certificate':certificate,'Transition':transition,'DeliveryHeader':header,'Conversation':conv,'Genesis':genesis,'Envelope':env,'PrivacyPolicy':privacy}
+peer=obj({k:device['properties'][k] for k in ['id','user_id','identity','public_key','trust_state','revoked_at']})
+admin_user=obj({k:user['properties'][k] for k in ['id','username','role','is_active']})
+schemas={'PeerDevice':peer,'AdminUser':admin_user,'User':user,'Device':device,'Certificate':certificate,'Transition':transition,'DeliveryHeader':header,'Conversation':conv,'Genesis':genesis,'Envelope':env,'PrivacyPolicy':privacy}
 schemas['InvitationAccess']=obj({'allowed':B,'reason':{'enum':['ready','paused','crypto_unavailable','members_disabled','browser_not_ready','daily_limit','pending_limit']},'remaining_today':{'type':['integer','null'],'minimum':0},'max_hours':N,'resets_at':{'type':'string','format':'date-time'},'pending_invitations':arr(obj({'id':ID,'expires_at':{'type':'string','format':'date-time'}}))})
 # Status endpoints deliberately expose only bounded operational metadata.
 status={'type':'object','additionalProperties':True}
@@ -58,13 +60,14 @@ def response(name,method,params):
     if name in ['Login','Redeem','RecoveryReset']:return obj({'user':ref('User'),'crypto_ready':B})
     if name=='Me':return obj({'user':ref('User'),'device_id':{'type':['string','null']},'crypto_ready':B,'recovery_configured':B})
     if name=='Devices':return arr(ref('Device'))
-    if name=='PeerDevices':return arr(ref('Device'))
+    if name=='PeerDevices':return arr(ref('PeerDevice'))
+    if name=='ContactIntroduction':return obj({'token':S,'expires_in':N}) if method=='post' else ok
     if name=='EnrollmentRequest':return obj(device['properties']|{'signing_payload':S})
     if name=='EnrollmentComplete':return ref('Device')
-    if name=='Users':return ref('User') if params else arr(ref('User'))
+    if name=='Users':return ref('AdminUser') if params else arr(ref('AdminUser'))
     if name=='Invitations':return obj({'id':ID,'token':S,'expires_at':DATE}) if method=='post' else arr(obj({'id':ID,'intended_username':S,'expires_at':DATE,'consumed_at':DATE,'revoked_at':DATE}))
-    if name=='KeyPackages':return obj({'device':ref('Device')}) if params and method=='get' else obj({'id':ID,'package':S,'device':ref('Device')}) if params else obj({'id':ID})
-    if name=='Conversations':return arr(ref('Conversation')) if method=='get' and not params else obj(conv['properties']|{'genesis':ref('Genesis'),'genesis_signature':S,'members':arr(obj({'device':ref('Device'),'role':S,'valid_from_epoch':N,'leaving':B}))}) if params else ref('Conversation')
+    if name=='KeyPackages':return obj({'device':ref('PeerDevice')}) if params and method=='get' else obj({'id':ID,'package':S,'device':ref('PeerDevice')}) if params else obj({'id':ID})
+    if name=='Conversations':return arr(ref('Conversation')) if method=='get' and not params else obj(conv['properties']|{'genesis':ref('Genesis'),'genesis_signature':S,'members':arr(obj({'device':ref('PeerDevice'),'role':S,'valid_from_epoch':N,'leaving':B}))}) if params else ref('Conversation')
     if name in ['Messages','CryptoEvents']:return obj({'messages':arr(ref('Envelope')),'last_seq':N,'head_hash':S}) if method=='get' else obj({'id':ID,'seq':N,'state':{'const':'server_accepted'},'envelope':ref('Envelope')})
     if name=='Proofs':return obj({'proofs':arr(ref('Envelope')),'last_seq':N,'head_hash':S,'genesis':ref('Genesis'),'genesis_signature':S})
     if name=='Acks':return obj({'seq':N,'state':{'const':'recipient_synced'}}) if method=='post' else obj({'version':N,'cursors':arr(obj({'device_id':ID,'last_acked_seq':N}))})
@@ -91,6 +94,7 @@ for pattern in urlpatterns:
         if name in ['Conversations','Sync'] and method=='get' and not params:op.setdefault('parameters',[]).append({'name':'cursor','in':'query','required':False,'schema':S,'description':'Signed keyset cursor. Conversation array responses expose continuation in X-Haven-Next-Cursor.'})
         if name=='Conversations' and method=='get' and not params:
             for code in ['200','201']:op['responses'][code]['headers']={'X-Haven-Next-Cursor':{'description':'Present only when another page exists','schema':S}}
+        if name=='KeyPackages' and params:op.setdefault('parameters',[]).append({'name':'X-Haven-Contact','in':'header','required':False,'schema':{'type':'string','maxLength':512},'description':'Expiring shared introduction for unrelated first contact. Keep out of URLs and logs.'})
         if name=='Chunk' and method=='get':op.setdefault('parameters',[]).append({'name':'X-Haven-View-Token','in':'header','required':False,'description':'Temporary, device-bound session capability required for view-once attachments. Never a media decryption key. Never place in a URL.','schema':{'type':'string','pattern':'^[0-9a-f]{64}$'}})
         if method in ['post','patch','put']:
             schema=request_schema(requests[name]()) if name in requests else obj({})

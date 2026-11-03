@@ -23,12 +23,17 @@ import { AccountRecovery } from "./recovery";
 import { ServerPrivacy } from "./privacy";
 import { ConnectFlow, ConversationVerification } from "./connect";
 import { DeviceUnlockSettings } from "./device-unlock-settings";
-import { readContactLink, type ContactCard } from "@/lib/contact-link";
+import {
+  readContactLink,
+  lookupContact,
+  type ContactCard,
+} from "@/lib/contact-link";
 import { connectionLoop } from "@/lib/connection";
 import {
   api,
   RequestError,
   type User,
+  type AdminUser,
   type Device,
   type Conversation,
 } from "@/lib/api";
@@ -169,9 +174,11 @@ function AudioAttachment({
   );
 }
 export default function Haven() {
+  const [preferencesLoaded, setPreferencesLoaded] = useState(false);
   const [language, setLanguage] = useState<Language>("en"),
     [theme, setTheme] = useState("light");
   const t = (s: string) => translate(language, s);
+  const accountGeneration = useRef(0);
   const [user, setUser] = useState<User | null>(null),
     [screen, setScreen] = useState<Screen>("messages");
   const [health, setHealth] = useState<{
@@ -202,7 +209,7 @@ export default function Haven() {
     [draft, setDraft] = useState(""),
     [reply, setReply] = useState<string | undefined>();
   const [invitations, setInvitations] = useState<Invite[]>([]),
-    [users, setUsers] = useState<User[]>([]),
+    [users, setUsers] = useState<AdminUser[]>([]),
     [system, setSystem] = useState<Record<string, unknown>>({}),
     [newToken, setNewToken] = useState(""),
     [recovery, setRecovery] = useState(""),
@@ -288,15 +295,19 @@ export default function Haven() {
     setUsers([]);
     setSystem({});
     setProgress("");
+    setNotice("");
+    setError("");
     setPeerPresence(0);
     setPeerTyping(0);
   }, []);
   async function logout(all = false) {
     // Local key protection never waits for an unavailable or expired remote session.
+    accountGeneration.current++;
     lock();
     setUser(null);
     setPendingContact(null);
     localStorage.removeItem("haven-local-user");
+    localStorage.removeItem("haven-account-id");
     try {
       await api(all ? "auth/logout-all" : "auth/logout", "POST", {});
     } catch {
@@ -306,6 +317,8 @@ export default function Haven() {
     }
   }
   useEffect(() => {
+    // Remove the old unencrypted profile even if the network is unavailable.
+    localStorage.removeItem("haven-local-user");
     const lang = localStorage.getItem("haven-language");
     if (lang === "fa") setLanguage(lang);
     let privacy: Record<string, unknown> = {};
@@ -318,6 +331,7 @@ export default function Haven() {
     setReceipts(privacy.receipts === true);
     setTyping(privacy.typing === true);
     setPresence(privacy.presence === true);
+    setPreferencesLoaded(true);
     const color = localStorage.getItem("haven-theme");
     if (color === "light" || color === "dark") setTheme(color);
     const fragment = new URLSearchParams(location.hash.slice(1));
@@ -347,16 +361,34 @@ export default function Haven() {
         setOnline(true);
       })
       .catch(() => setOnline(false));
+    const accountRequest = accountGeneration.current;
     api<{ user: User }>("auth/me")
       .then((x) => {
+        if (accountRequest !== accountGeneration.current) return;
         setUser(x.user);
-        localStorage.setItem("haven-local-user", JSON.stringify(x.user));
+        localStorage.setItem("haven-account-id", x.user.id);
       })
       .catch((e) => {
+        if (accountRequest !== accountGeneration.current) return;
+        if (e instanceof RequestError && (e.status === 401 || e.status === 403))
+          localStorage.removeItem("haven-account-id");
         if (!(e instanceof RequestError) || e.status >= 500) {
-          const cached = localStorage.getItem("haven-local-user");
-          if (cached) {
-            setUser(JSON.parse(cached));
+          const cached = localStorage.getItem("haven-account-id");
+          if (
+            cached &&
+            /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(
+              cached,
+            )
+          ) {
+            // An unlock locator grants no session, device or administrative authority.
+            setUser({
+              id: cached,
+              username: "",
+              display_name: "",
+              role: "member",
+              is_active: false,
+              security_generation: 0,
+            });
             setHealth({
               crypto_ready: true,
               name: "HAVEN",
@@ -473,6 +505,7 @@ export default function Haven() {
               lock();
               setUser(null);
               localStorage.removeItem("haven-local-user");
+              localStorage.removeItem("haven-account-id");
               setNotice(
                 "Your sign-in expired or was revoked. Your vault is locked. Sign in again to continue.",
               );
@@ -571,11 +604,12 @@ export default function Haven() {
     lock,
   ]);
   useEffect(() => {
+    if (!preferencesLoaded) return;
     localStorage.setItem(
       "haven-privacy",
       JSON.stringify({ notifications, receipts, typing, presence }),
     );
-  }, [notifications, receipts, typing, presence]);
+  }, [notifications, receipts, typing, presence, preferencesLoaded]);
   useEffect(() => {
     if (
       !vault ||
@@ -613,7 +647,7 @@ export default function Haven() {
   async function adminRefresh() {
     const [i, u, s] = await Promise.all([
       api<Invite[]>("admin/invitations"),
-      api<User[]>("admin/users"),
+      api<AdminUser[]>("admin/users"),
       api<Record<string, unknown>>("admin/system-status"),
     ]);
     setInvitations(i);
@@ -628,19 +662,27 @@ export default function Haven() {
     const form = new FormData(e.currentTarget);
     await perform(async () => {
       const body = {
-        username: form.get("username"),
+        username: form.get("username") || "",
         password: form.get("password"),
         ...(register
           ? { token: inviteToken, display_name: form.get("display_name") }
           : {}),
       };
+      const generation = ++accountGeneration.current;
       const result = await api<{ user: User }>(
         register ? "invitations/redeem" : "auth/login",
         "POST",
         body,
       );
+      if (generation !== accountGeneration.current) return;
       setUser(result.user);
-      localStorage.setItem("haven-local-user", JSON.stringify(result.user));
+      if (register && !form.get("username"))
+        setNotice(
+          t(
+            "Your account handle is {handle}. Save it for your next sign-in.",
+          ).replace("{handle}", result.user.username),
+        );
+      localStorage.setItem("haven-account-id", result.user.id);
       setInviteToken("");
     });
   }
@@ -1233,8 +1275,15 @@ export default function Haven() {
                     />
                   </label>
                   <label>
-                    {t("Display name")}
-                    <input name="display_name" required maxLength={80} />
+                    {t("Display name (optional)")}
+                    <input
+                      name="display_name"
+                      aria-label={t("Display name (optional)")}
+                      maxLength={80}
+                    />
+                    <small>
+                      {t("Use a pseudonym. A real name is not required.")}
+                    </small>
                   </label>
                 </>
               )}
@@ -1242,11 +1291,19 @@ export default function Haven() {
                 {t("Username")}
                 <input
                   name="username"
-                  required
+                  aria-label={t("Username")}
+                  required={!register}
                   pattern="[a-zA-Z0-9_.-]{3,64}"
                   autoComplete="username"
                   dir="ltr"
                 />
+                {register && (
+                  <small>
+                    {t(
+                      "Leave blank to generate a random account handle. Save it for your next sign-in.",
+                    )}
+                  </small>
+                )}
               </label>
               <label>
                 {t("Password")}
@@ -1271,7 +1328,7 @@ export default function Haven() {
                   vaultRef.current = v;
                   setVault(v);
                   setEvents([...v.state.events]);
-                  localStorage.setItem("haven-local-user", JSON.stringify(u));
+                  localStorage.setItem("haven-account-id", u.id);
                 }}
               />
             )}
@@ -1284,10 +1341,18 @@ export default function Haven() {
         <div className="workspace">
           <aside className="sidebar">
             <div className="profile">
-              <div className="avatar">{user.display_name.slice(0, 1)}</div>
+              <div className="avatar">
+                {vault
+                  ? (user.display_name || user.username || t("You")).slice(0, 1)
+                  : "•"}
+              </div>
               <div>
-                <strong>{user.display_name}</strong>
-                <small>@{user.username}</small>
+                <strong>
+                  {vault ? user.display_name || t("You") : t("Vault locked")}
+                </strong>
+                <small>
+                  {vault ? "@" + user.username : t("Private account")}
+                </small>
               </div>
             </div>
             <button
@@ -1729,9 +1794,10 @@ export default function Haven() {
                             {t("Save")}
                           </button>
                           <label>
-                            {t("Device ID")}
+                            {t("Friend link or known device ID")}
                             <input
                               value={targetDevice}
+                              maxLength={4096}
                               onChange={(e) => setTargetDevice(e.target.value)}
                             />
                           </label>
@@ -1739,10 +1805,9 @@ export default function Haven() {
                             disabled={disabled}
                             onClick={() =>
                               void perform(async () => {
-                                const kp = await api<{ device: Device }>(
-                                  `crypto/key-packages/${targetDevice}`,
-                                );
-                                setMembers([...members, kp.device]);
+                                const device =
+                                  await lookupContact(targetDevice);
+                                setMembers([...members, device]);
                                 setScreen("trust");
                               })
                             }
@@ -1751,7 +1816,11 @@ export default function Haven() {
                           </button>
                           {members.map((d) => (
                             <div key={d.id}>
-                              <b>{d.label}</b>
+                              <b>
+                                {vault?.state.contact_names?.[d.id] ||
+                                  d.label ||
+                                  t("Participant")}
+                              </b>
                               <code>{d.id}</code>
                               <button
                                 disabled={disabled}
@@ -2153,9 +2222,10 @@ export default function Haven() {
                     )}
                     <section className="card">
                       <label>
-                        {t("Device ID")}
+                        {t("Friend link or known device ID")}
                         <input
                           value={targetDevice}
+                          maxLength={4096}
                           onChange={(e) => setTargetDevice(e.target.value)}
                         />
                       </label>
@@ -2163,12 +2233,10 @@ export default function Haven() {
                         disabled={disabled}
                         onClick={() =>
                           void perform(async () => {
-                            const result = await api<{ device: Device }>(
-                              `crypto/key-packages/${targetDevice}`,
-                            );
+                            const device = await lookupContact(targetDevice);
                             setMembers((old) => [
-                              ...old.filter((d) => d.id !== result.device.id),
-                              result.device,
+                              ...old.filter((d) => d.id !== device.id),
+                              device,
                             ]);
                           })
                         }
@@ -2202,7 +2270,11 @@ export default function Haven() {
                             ? t("Verified devices only")
                             : t("Crypto verification needed")}
                         </small>
-                        <h2>{d.label}</h2>
+                        <h2>
+                          {vault?.state.contact_names?.[d.id] ||
+                            d.label ||
+                            t("Participant")}
+                        </h2>
                         <code>{d.identity}</code>
                         <code className="fingerprint">
                           {fingerprints[d.id]}
@@ -2252,7 +2324,11 @@ export default function Haven() {
                     {devices.map((d) => (
                       <div className="device-row" key={d.id}>
                         <div>
-                          <strong>{d.label}</strong>
+                          <strong>
+                            {vault?.state.contact_names?.[d.id] ||
+                              d.label ||
+                              t("Participant")}
+                          </strong>
                           <code>{d.id}</code>
                           <small>{t(d.trust_state)}</small>
                           <code className="fingerprint">
@@ -2500,6 +2576,24 @@ export default function Haven() {
                           <option value="light">{t("Light")}</option>
                         </select>
                       </label>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setNotifications(false);
+                          setReceipts(false);
+                          setPresence(false);
+                          setTyping(false);
+                          setPeerPresence(0);
+                          setPeerTyping(0);
+                        }}
+                      >
+                        {t("Use high-privacy settings")}
+                      </button>
+                      <p className="fine">
+                        {t(
+                          "Turns off optional activity signals and notifications. Delivery acknowledgments stay enabled. This does not provide anonymity.",
+                        )}
+                      </p>
                       <label className="checkbox">
                         <input
                           type="checkbox"
@@ -2605,6 +2699,7 @@ export default function Haven() {
                               lock();
                               setUser(null);
                               localStorage.removeItem("haven-local-user");
+                              localStorage.removeItem("haven-account-id");
                             });
                           }}
                         >
@@ -2779,7 +2874,7 @@ export default function Haven() {
                       {users.map((u) => (
                         <div className="account-row" key={u.id}>
                           <div>
-                            <strong>{u.display_name}</strong>
+                            <strong>{u.username}</strong>
                             {user.role === "superadmin" &&
                               u.role !== "superadmin" && (
                                 <select

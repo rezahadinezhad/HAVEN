@@ -257,6 +257,7 @@ def test_real_keypackage_expiry_disassociation_never_allows_reupload_or_reclaim(
     package = native(target_device, "package")["key_package"]
     uploaded = post(target, "crypto/key-packages", {"package": package})
     assert uploaded.status_code == 201
+    owner.defaults["HTTP_X_HAVEN_CONTACT"] = post(target, "devices/contact-introduction", {}).json()["token"]
     claimed = post(owner, f"crypto/key-packages/{target_device.pk}", {})
     assert claimed.status_code == 200 and claimed.json()["id"] == uploaded.json()["id"]
     m.DeviceKeyPackage.objects.filter(pk=uploaded.json()["id"]).update(
@@ -307,6 +308,7 @@ def test_add_waits_for_target_revocation_before_granting_membership(settings, na
     )
     package = native(target_device, "package")["key_package"]
     assert post(target, "crypto/key-packages", {"package": package}).status_code == 201
+    owner.defaults["HTTP_X_HAVEN_CONTACT"] = post(target, "devices/contact-introduction", {}).json()["token"]
     claim = post(owner, f"crypto/key-packages/{target_device.pk}", {}).json()
     added = native(owner_device, "add", group_id=gid, key_package=claim["package"])
     roster = sorted(

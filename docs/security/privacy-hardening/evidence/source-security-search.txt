@@ -1,0 +1,1 @@
+apps/api/haven/settings.py:167:CRYPTO_READY = False  # Release gate: integration is never enabled by an environment switch.

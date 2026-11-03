@@ -737,6 +737,10 @@ export function ConnectFlow({
   async function lookup(card: ContactCard) {
     const result = await api<{ device: Device }>(
       `crypto/key-packages/${card.device_id}`,
+      "GET",
+      undefined,
+      false,
+      card.introduction,
     );
     if (result.device.user_id === user.id)
       throw new Error(
@@ -755,7 +759,7 @@ export function ConnectFlow({
       );
     if (active.current) {
       setContact(card);
-      setPeer(result.device);
+      setPeer({ ...result.device, contact_token: card.introduction });
       setMode("verify");
     }
   }
@@ -796,8 +800,16 @@ export function ConnectFlow({
     v: 1,
     device_id: vault.state.device_id,
     fingerprint: ownCode,
-    name: user.display_name || user.username,
+    // Contact labels are chosen locally after fingerprint verification.
   };
+  async function makeFriendLink(invite?: string) {
+    const grant = await api<{ token: string }>(
+      "devices/contact-introduction",
+      "POST",
+      {},
+    );
+    return contactLink(origin, { ...card, introduction: grant.token }, invite);
+  }
   const reason: Record<string, string> = {
     paused:
       "The administrator has paused new invitations. You can still connect with someone who already has an account.",
@@ -963,7 +975,7 @@ export function ConnectFlow({
                       );
                       if (!active.current) return;
                       setIssued(invitation);
-                      setShared(contactLink(origin, card, invitation.token));
+                      setShared(await makeFriendLink(invitation.token));
                       setMode("share");
                       await refresh();
                     })
@@ -985,11 +997,13 @@ export function ConnectFlow({
                 <button
                   className="quiet"
                   disabled={busy || !ownCode}
-                  onClick={() => {
-                    setIssued(null);
-                    setShared(contactLink(origin, card));
-                    setMode("share");
-                  }}
+                  onClick={() =>
+                    void run(async () => {
+                      setIssued(null);
+                      setShared(await makeFriendLink());
+                      setMode("share");
+                    })
+                  }
                 >
                   {t("Share my friend link")}
                 </button>
@@ -1035,27 +1049,47 @@ export function ConnectFlow({
             </form>
           )}
           {mode === "share" && (
-            <ShareCard
-              value={shared}
-              invitation={!!issued}
-              t={t}
-              revoke={
-                issued
-                  ? async () => {
-                      await run(async () => {
-                        await api(
-                          `invitations/${issued.id}/revoke`,
-                          "POST",
-                          {},
-                        );
-                        setIssued(null);
-                        setShared(contactLink(origin, card));
-                        await refresh();
-                      });
-                    }
-                  : undefined
-              }
-            />
+            <>
+              <p className="fine">
+                {t(
+                  "This link identifies your browser and allows contact for 24 hours. Share it privately; compare security codes before chatting.",
+                )}
+              </p>
+              <button
+                className="quiet"
+                disabled={busy}
+                onClick={() =>
+                  void run(async () => {
+                    await api("devices/contact-introduction", "DELETE");
+                    setShared("");
+                    setMode("choose");
+                  })
+                }
+              >
+                {t("Revoke my shared contact links")}
+              </button>
+              <ShareCard
+                value={shared}
+                invitation={!!issued}
+                t={t}
+                revoke={
+                  issued
+                    ? async () => {
+                        await run(async () => {
+                          await api(
+                            `invitations/${issued.id}/revoke`,
+                            "POST",
+                            {},
+                          );
+                          setIssued(null);
+                          setShared(await makeFriendLink());
+                          await refresh();
+                        });
+                      }
+                    : undefined
+                }
+              />
+            </>
           )}
           {mode === "verify" && peer && (
             <VerifyCode
@@ -1107,7 +1141,7 @@ export function ConnectFlow({
                         );
                         if (issued?.id === invite.id) {
                           setIssued(null);
-                          setShared(contactLink(origin, card));
+                          setShared(await makeFriendLink());
                         }
                         await refresh();
                       })

@@ -1,0 +1,46 @@
+
+> haven-web@0.2.0 test
+> playwright test messenger-ui.spec.ts first-chat-retry.spec.ts privacy-hardening.spec.ts --reporter=list
+
+
+Running 5 tests using 1 worker
+
+(node:250860) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/first-chat-retry.spec.ts:10:5 › direct-chat setup recovers an accepted request after a lost response and reload; concurrent retries reuse one chat (2.8s)
+  ✘  2 tests/messenger-ui.spec.ts:8:5 › real UI: vault enrollment, fingerprint verification, MLS group, text, offline shell and queued send (10.5s)
+(node:251727) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 tests/privacy-hardening.spec.ts:10:5 › bucketed media: real AEAD, legacy bytes, corruption, scope, length, retry and view-once (490ms)
+  ✓  4 tests/privacy-hardening.spec.ts:170:5 › locked storage, UUID-only offline unlock, privacy profile and generic sharing (2.7s)
+  ✓  5 tests/privacy-hardening.spec.ts:262:5 › padded attachment delivery through real MLS, PostgreSQL quotas and view-once authorization (2.9s)
+
+
+  1) tests/messenger-ui.spec.ts:8:5 › real UI: vault enrollment, fingerprint verification, MLS group, text, offline shell and queued send
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: 'People & trust', exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('heading', { name: 'People & trust', exact: true }) with timeout 5000ms
+      - waiting for getByRole('heading', { name: 'People & trust', exact: true })
+
+
+      129 |   await expect(
+      130 |     a.getByRole("heading", { name: "People & trust", exact: true }),
+    > 131 |   ).toBeVisible();
+          |     ^
+      132 |   await a.getByRole("button", { name: "Messages", exact: true }).click();
+      133 |   if (!(await a.locator(".member-controls").isVisible()))
+      134 |     await a
+        at /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/messenger-ui.spec.ts:131:5
+
+    Error Context: test-results/messenger-ui-real-UI-vault-fd132-fline-shell-and-queued-send/error-context.md
+
+  1 failed
+    tests/messenger-ui.spec.ts:8:5 › real UI: vault enrollment, fingerprint verification, MLS group, text, offline shell and queued send
+  4 passed (21.2s)

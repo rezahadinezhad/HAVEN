@@ -1,0 +1,1 @@
+{"status": "PASS", "seconds": 0.0906, "claim": "Rendered notification service has independent DB credentials/routing key and no API signing key or certificate mount", "deployed": false}

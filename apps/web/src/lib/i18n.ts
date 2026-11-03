@@ -1,5 +1,21 @@
 export type Language = "en" | "fa";
 const fa: Record<string, string> = {
+  "Friend link or known device ID": "پیوند دوست یا شناسهٔ دستگاه آشنا",
+  "Private account": "حساب خصوصی",
+  "Your account handle is {handle}. Save it for your next sign-in.":
+    "نام کاربری شما {handle} است. آن را برای ورود بعدی ذخیره کنید.",
+  "Display name (optional)": "نام نمایشی (اختیاری)",
+  "Use a pseudonym. A real name is not required.":
+    "از نام مستعار استفاده کنید. نام واقعی لازم نیست.",
+  "Leave blank to generate a random account handle. Save it for your next sign-in.":
+    "برای ساخت نام کاربری تصادفی خالی بگذارید. آن را برای ورود بعدی ذخیره کنید.",
+  "Use high-privacy settings": "استفاده از تنظیمات حریم خصوصی بیشتر",
+  "Turns off optional activity signals and notifications. Delivery acknowledgments stay enabled. This does not provide anonymity.":
+    "نشانه‌های اختیاری فعالیت و اعلان‌ها را خاموش می‌کند. تأیید تحویل فعال می‌ماند. این تنظیمات شما را ناشناس نمی‌کند.",
+  "This link identifies your browser and allows contact for 24 hours. Share it privately; compare security codes before chatting.":
+    "این پیوند مرورگر شما را معرفی می‌کند و تا ۲۴ ساعت اجازهٔ برقراری ارتباط می‌دهد. آن را خصوصی به اشتراک بگذارید و پیش از گفتگو کدهای امنیتی را مقایسه کنید.",
+  "Revoke my shared contact links": "لغو پیوندهای ارتباطی من",
+
   "Local storage is full. Export your history, then clear delivered history before continuing. Pending messages are preserved.":
     "فضای ذخیره‌سازی محلی پر شده است. از تاریخچه خروجی بگیرید و سپس تاریخچه تحویل‌شده را پاک کنید. پیام‌های در انتظار ارسال حفظ می‌شوند.",
   "A message contained invalid content and was skipped. Newer messages remain available.":

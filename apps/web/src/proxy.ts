@@ -16,10 +16,17 @@ export function proxy(request: NextRequest) {
       (/^[0-9]{1,5}$/.test(hostPort) &&
         Number(hostPort) > 0 &&
         Number(hostPort) < 65536));
-  if (
-    !/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}(?::[0-9]{1,5})?$/.test(host) &&
-    !optionalAllowed
-  ) {
+  const ipAllowed =
+    hostName.split(".").length === 4 &&
+    hostName
+      .split(".")
+      .every(
+        (part) => /^(0|[1-9][0-9]{0,2})$/.test(part) && Number(part) <= 255,
+      ) &&
+    extra === undefined &&
+    (hostPort === undefined ||
+      (/^[1-9][0-9]{0,4}$/.test(hostPort) && Number(hostPort) < 65536));
+  if (!ipAllowed && !optionalAllowed) {
     return new NextResponse("IP origin required", { status: 400 });
   }
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");

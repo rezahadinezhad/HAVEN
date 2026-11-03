@@ -60,7 +60,7 @@ test("retired server ciphertext: persisted browser MLS state reloads and continu
             w.secret,
             "Privacy browser",
           );
-          const device = (await h.api("devices"))[0];
+          const device = await h.shareDevice(w.m.state.device_id);
           return { device, user: w.user, secret: w.secret };
         }, invitations[i].token),
       );

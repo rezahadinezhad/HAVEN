@@ -65,9 +65,7 @@ test("view-once real UI: encrypted photo/video, account-wide consume, independen
       pages.map((page) =>
         page.evaluate(async () => {
           const w = window as any;
-          return (await w.havenIntegration.api("devices")).find(
-            (d: any) => d.id === w.m.state.device_id,
-          );
+          return await w.havenIntegration.shareDevice(w.m.state.device_id);
         }),
       ),
     );
@@ -89,6 +87,16 @@ test("view-once real UI: encrypted photo/video, account-wide consume, independen
       await w.m.connect();
       await w.m.package();
     });
+    devices[3].contact_token = await b2.evaluate(
+      async () =>
+        (
+          await (window as any).havenIntegration.api(
+            "devices/contact-introduction",
+            "POST",
+            {},
+          )
+        ).token,
+    );
     console.log(
       "View-once: device enrollment and fingerprint verification complete",
     );

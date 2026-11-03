@@ -1,0 +1,101 @@
+
+> haven-web@0.2.0 test
+> playwright test first-chat.spec.ts privacy-hardening.spec.ts session-hardening.spec.ts metadata-privacy.spec.ts --reporter=list
+
+
+Running 6 tests using 1 worker
+
+(node:204075) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 tests/first-chat.spec.ts:12:5 › ordinary members: guided setup, private invitation, explicit mutual verification, chat and unlock (514ms)
+(node:204314) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 tests/first-chat.spec.ts:256:5 › friend links reject foreign origins, mismatched fingerprints, changed pins; responsive RTL guide (360ms)
+(node:204484) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 tests/metadata-privacy.spec.ts:3:5 › padded OpenMLS messages keep lengths coarse across browser reload and rekey (462ms)
+  ✓  4 tests/privacy-hardening.spec.ts:10:5 › bucketed media: real AEAD, legacy bytes, corruption, scope, length, retry and view-once (449ms)
+  ✘  5 tests/privacy-hardening.spec.ts:170:5 › locked storage, UUID-only offline unlock, privacy profile and generic sharing (302ms)
+(node:204750) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  6 tests/session-hardening.spec.ts:6:5 › real vault: pagehide, suspended inactivity, offline access and confirmed remote logout (338ms)
+
+
+  1) tests/first-chat.spec.ts:12:5 › ordinary members: guided setup, private invitation, explicit mutual verification, chat and unlock
+
+    Error: page.evaluate: SyntaxError: Unexpected token 'S', "Service unavailable" is not valid JSON
+
+       at fixtures.ts:14
+
+      12 | ) {
+      13 |   for (let attempt = 0; attempt < 2; attempt++) {
+    > 14 |     const result = await page.evaluate(async (value) => {
+         |                               ^
+      15 |       try {
+      16 |         return {
+      17 |           ok: true,
+        at loginBootstrap (/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/fixtures.ts:14:31)
+        at /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/first-chat.spec.ts:39:25
+
+    Error Context: test-results/first-chat-ordinary-member-740e0-erification-chat-and-unlock/error-context.md
+
+  2) tests/first-chat.spec.ts:256:5 › friend links reject foreign origins, mismatched fingerprints, changed pins; responsive RTL guide
+
+    Error: page.evaluate: SyntaxError: Unexpected token 'S', "Service unavailable" is not valid JSON
+
+       at fixtures.ts:14
+
+      12 | ) {
+      13 |   for (let attempt = 0; attempt < 2; attempt++) {
+    > 14 |     const result = await page.evaluate(async (value) => {
+         |                               ^
+      15 |       try {
+      16 |         return {
+      17 |           ok: true,
+        at loginBootstrap (/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/fixtures.ts:14:31)
+        at /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/first-chat.spec.ts:266:25
+
+    Error Context: test-results/first-chat-friend-links-re-d0f2d-d-pins-responsive-RTL-guide/error-context.md
+
+  3) tests/privacy-hardening.spec.ts:170:5 › locked storage, UUID-only offline unlock, privacy profile and generic sharing
+
+    Error: page.evaluate: SyntaxError: Unexpected token 'S', "Service unavailable" is not valid JSON
+
+       at fixtures.ts:14
+
+      12 | ) {
+      13 |   for (let attempt = 0; attempt < 2; attempt++) {
+    > 14 |     const result = await page.evaluate(async (value) => {
+         |                               ^
+      15 |       try {
+      16 |         return {
+      17 |           ok: true,
+        at loginBootstrap (/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/fixtures.ts:14:31)
+        at /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/privacy-hardening.spec.ts:175:23
+
+    Error Context: test-results/privacy-hardening-locked-s-fb483-profile-and-generic-sharing/error-context.md
+
+  4) tests/session-hardening.spec.ts:6:5 › real vault: pagehide, suspended inactivity, offline access and confirmed remote logout
+
+    Error: page.evaluate: SyntaxError: Unexpected token 'S', "Service unavailable" is not valid JSON
+
+       at fixtures.ts:14
+
+      12 | ) {
+      13 |   for (let attempt = 0; attempt < 2; attempt++) {
+    > 14 |     const result = await page.evaluate(async (value) => {
+         |                               ^
+      15 |       try {
+      16 |         return {
+      17 |           ok: true,
+        at loginBootstrap (/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/fixtures.ts:14:31)
+        at /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/session-hardening.spec.ts:24:25
+
+    Error Context: test-results/session-hardening-real-vau-56270-and-confirmed-remote-logout/error-context.md
+
+  4 failed
+    tests/first-chat.spec.ts:12:5 › ordinary members: guided setup, private invitation, explicit mutual verification, chat and unlock
+    tests/first-chat.spec.ts:256:5 › friend links reject foreign origins, mismatched fingerprints, changed pins; responsive RTL guide
+    tests/privacy-hardening.spec.ts:170:5 › locked storage, UUID-only offline unlock, privacy profile and generic sharing
+    tests/session-hardening.spec.ts:6:5 › real vault: pagehide, suspended inactivity, offline access and confirmed remote logout
+  2 passed (5.8s)

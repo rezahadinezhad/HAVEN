@@ -1,0 +1,13 @@
+
+> haven-web@0.2.0 test
+> playwright test privacy-hardening.spec.ts --reporter=list
+
+
+Running 2 tests using 1 worker
+
+(node:197344) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/privacy-hardening.spec.ts:8:5 › bucketed media: real AEAD, legacy bytes, corruption, scope, length, retry and view-once (499ms)
+  ✓  2 tests/privacy-hardening.spec.ts:81:5 › locked storage, UUID-only offline unlock, privacy profile and generic sharing (2.8s)
+
+  2 passed (4.2s)

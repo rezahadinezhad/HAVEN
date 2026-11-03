@@ -205,6 +205,9 @@ def render_env(plan, directory, generated):
         "HAVEN_ORIGINS": ",".join(origin(h, plan["port"]) for h in hosts),
         "HAVEN_OPTIONAL_HOSTNAME": plan.get("hostname", ""),
         "HAVEN_SECRET_KEY": generated["application"],
+        "HAVEN_ROUTING_SECRET": generated["routing"],
+        "HAVEN_DB_NOTIFICATION_PASSWORD": generated["notification"],
+        "HAVEN_DB_NOTIFICATION_USER": "haven_notify",
         "POSTGRES_PASSWORD": generated["database"],
         "HAVEN_DB_MIGRATION_PASSWORD": generated["migration"],
         "HAVEN_DB_RUNTIME_PASSWORD": generated["runtime"],
@@ -230,10 +233,10 @@ def render_overlay(plan):
         + "]\n"
     )
     if plan["mode"] == "local":
-        for service in ("api", "outbox", "privacy"):
+        for service in ("api", "privacy"):
             output += f"  {service}:\n    environment:\n      DJANGO_SETTINGS_MODULE: haven.integration_settings\n"
         if plan.get("local_compatibility"):
-            for service in ("redis", "prepare-db-roles", "migrate", "web"):
+            for service in ("redis", "prepare-db-roles", "migrate", "web", "outbox"):
                 output += f"  {service}:\n    security_opt: !override []\n"
             # Each service key occurs only once in this generated YAML.
             output = output.replace(
@@ -808,7 +811,7 @@ def install(plan, *, resume=False, interactive=True):
             )
             generated = {
                 key: secrets.token_urlsafe(48)
-                for key in ("application", "database", "migration", "runtime")
+                for key in ("application", "database", "migration", "runtime", "routing", "notification")
             }
             credentials = {
                 "username": plan["admin"],
@@ -834,7 +837,7 @@ def install(plan, *, resume=False, interactive=True):
             + [
                 line.partition("=")[2]
                 for line in read_private(directory / "config.env").splitlines()
-                if "PASSWORD=" in line or line.startswith("HAVEN_SECRET_KEY=")
+                if "PASSWORD=" in line or line.startswith(("HAVEN_SECRET_KEY=", "HAVEN_ROUTING_SECRET=", "HAVEN_ROUTING_PREVIOUS_SECRET="))
             ],
         )
         if resume:

@@ -1,0 +1,12 @@
+........................................................................ [ 52%]
+..........................................................F.......       [100%]
+=================================== FAILURES ===================================
+____________ test_env_validator_fails_closed_under_optimized_python ____________
+core/tests/test_optional_hostname.py:87: in test_env_validator_fails_closed_under_optimized_python
+    assert check().returncode == 0
+E   AssertionError: assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/api/.venv/bin/python', '...MPLEMENTATION_PACKAGE/scripts/validate-env.py'], returncode=1, stdout='', stderr='Required configuration is missing\n').returncode
+E    +    where CompletedProcess(args=['/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/api/.venv/bin/python', '...MPLEMENTATION_PACKAGE/scripts/validate-env.py'], returncode=1, stdout='', stderr='Required configuration is missing\n') = <function test_env_validator_fails_closed_under_optimized_python.<locals>.check at 0x75ff8095d440>()
+=========================== short test summary info ============================
+FAILED core/tests/test_optional_hostname.py::test_env_validator_fails_closed_under_optimized_python
+1 failed, 137 passed in 83.95s (0:01:23)

@@ -12,6 +12,73 @@
   ],
   "components": {
     "schemas": {
+      "PeerDevice": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "user_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "identity": {
+            "type": "string"
+          },
+          "public_key": {
+            "type": "string"
+          },
+          "trust_state": {
+            "type": "string"
+          },
+          "revoked_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "user_id",
+          "identity",
+          "public_key",
+          "trust_state",
+          "revoked_at"
+        ],
+        "additionalProperties": false
+      },
+      "AdminUser": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "username": {
+            "type": "string"
+          },
+          "role": {
+            "enum": [
+              "member",
+              "community_admin",
+              "superadmin"
+            ]
+          },
+          "is_active": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "username",
+          "role",
+          "is_active"
+        ],
+        "additionalProperties": false
+      },
       "User": {
         "type": "object",
         "properties": {
@@ -1066,15 +1133,12 @@
                   },
                   "display_name": {
                     "type": "string",
-                    "maxLength": 80,
-                    "minLength": 1
+                    "maxLength": 80
                   }
                 },
                 "required": [
-                  "username",
                   "password",
-                  "token",
-                  "display_name"
+                  "token"
                 ],
                 "additionalProperties": false
               }
@@ -2945,7 +3009,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/User"
+                    "$ref": "#/components/schemas/AdminUser"
                   }
                 }
               }
@@ -2958,7 +3022,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/User"
+                    "$ref": "#/components/schemas/AdminUser"
                   }
                 }
               }
@@ -3047,7 +3111,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/User"
+                  "$ref": "#/components/schemas/AdminUser"
                 }
               }
             }
@@ -3057,7 +3121,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/User"
+                  "$ref": "#/components/schemas/AdminUser"
                 }
               }
             }
@@ -3388,9 +3452,262 @@
         }
       }
     },
+    "/api/v1/devices/contact-introduction": {
+      "post": {
+        "operationId": "ContactIntroduction_post_19",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Committed success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string"
+                    },
+                    "expires_in": {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "token",
+                    "expires_in"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Committed success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string"
+                    },
+                    "expires_in": {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "token",
+                    "expires_in"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request rejected; no secret diagnostics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Request rejected; no secret diagnostics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Request rejected; no secret diagnostics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Request rejected; no secret diagnostics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Request rejected; no secret diagnostics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Request rejected; no secret diagnostics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {},
+                "required": [],
+                "additionalProperties": false
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "ContactIntroduction_delete_20",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Committed success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "ok"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Committed success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "ok"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request rejected; no secret diagnostics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Request rejected; no secret diagnostics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Request rejected; no secret diagnostics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Request rejected; no secret diagnostics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Request rejected; no secret diagnostics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Request rejected; no secret diagnostics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/devices": {
       "get": {
-        "operationId": "Devices_get_19",
+        "operationId": "Devices_get_20",
         "security": [
           {
             "cookieAuth": []
@@ -3494,7 +3811,7 @@
     },
     "/api/v1/devices/enrollment/request": {
       "post": {
-        "operationId": "EnrollmentRequest_post_20",
+        "operationId": "EnrollmentRequest_post_21",
         "security": [
           {
             "cookieAuth": []
@@ -3744,7 +4061,7 @@
     },
     "/api/v1/devices/enrollment/approve": {
       "post": {
-        "operationId": "EnrollmentApprove_post_21",
+        "operationId": "EnrollmentApprove_post_22",
         "security": [
           {
             "cookieAuth": []
@@ -3886,7 +4203,7 @@
     },
     "/api/v1/devices/enrollment/complete": {
       "post": {
-        "operationId": "EnrollmentComplete_post_22",
+        "operationId": "EnrollmentComplete_post_23",
         "security": [
           {
             "cookieAuth": []
@@ -4010,7 +4327,7 @@
     },
     "/api/v1/devices/{did}/revoke": {
       "post": {
-        "operationId": "RevokeDevice_post_23",
+        "operationId": "RevokeDevice_post_24",
         "security": [
           {
             "cookieAuth": []
@@ -4134,7 +4451,7 @@
     },
     "/api/v1/crypto/devices/{uid}": {
       "get": {
-        "operationId": "PeerDevices_get_24",
+        "operationId": "PeerDevices_get_25",
         "security": [
           {
             "cookieAuth": []
@@ -4148,7 +4465,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Device"
+                    "$ref": "#/components/schemas/PeerDevice"
                   }
                 }
               }
@@ -4161,7 +4478,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Device"
+                    "$ref": "#/components/schemas/PeerDevice"
                   }
                 }
               }
@@ -4249,7 +4566,7 @@
     },
     "/api/v1/crypto/key-packages": {
       "get": {
-        "operationId": "KeyPackages_get_25",
+        "operationId": "KeyPackages_get_26",
         "security": [
           {
             "cookieAuth": []
@@ -4365,7 +4682,7 @@
         }
       },
       "post": {
-        "operationId": "KeyPackages_post_26",
+        "operationId": "KeyPackages_post_27",
         "security": [
           {
             "cookieAuth": []
@@ -4504,7 +4821,7 @@
     },
     "/api/v1/crypto/key-packages/{did}": {
       "get": {
-        "operationId": "KeyPackages_get_26",
+        "operationId": "KeyPackages_get_27",
         "security": [
           {
             "cookieAuth": []
@@ -4519,7 +4836,7 @@
                   "type": "object",
                   "properties": {
                     "device": {
-                      "$ref": "#/components/schemas/Device"
+                      "$ref": "#/components/schemas/PeerDevice"
                     }
                   },
                   "required": [
@@ -4538,7 +4855,7 @@
                   "type": "object",
                   "properties": {
                     "device": {
-                      "$ref": "#/components/schemas/Device"
+                      "$ref": "#/components/schemas/PeerDevice"
                     }
                   },
                   "required": [
@@ -4625,11 +4942,21 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "X-Haven-Contact",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 512
+            },
+            "description": "Expiring shared introduction for unrelated first contact. Keep out of URLs and logs."
           }
         ]
       },
       "post": {
-        "operationId": "KeyPackages_post_27",
+        "operationId": "KeyPackages_post_28",
         "security": [
           {
             "cookieAuth": []
@@ -4651,7 +4978,7 @@
                       "type": "string"
                     },
                     "device": {
-                      "$ref": "#/components/schemas/Device"
+                      "$ref": "#/components/schemas/PeerDevice"
                     }
                   },
                   "required": [
@@ -4679,7 +5006,7 @@
                       "type": "string"
                     },
                     "device": {
-                      "$ref": "#/components/schemas/Device"
+                      "$ref": "#/components/schemas/PeerDevice"
                     }
                   },
                   "required": [
@@ -4768,6 +5095,16 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "X-Haven-Contact",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 512
+            },
+            "description": "Expiring shared introduction for unrelated first contact. Keep out of URLs and logs."
           }
         ],
         "requestBody": {
@@ -4787,7 +5124,7 @@
     },
     "/api/v1/conversations": {
       "get": {
-        "operationId": "Conversations_get_27",
+        "operationId": "Conversations_get_28",
         "security": [
           {
             "cookieAuth": []
@@ -4916,7 +5253,7 @@
         ]
       },
       "post": {
-        "operationId": "Conversations_post_28",
+        "operationId": "Conversations_post_29",
         "security": [
           {
             "cookieAuth": []
@@ -5058,7 +5395,7 @@
     },
     "/api/v1/conversations/{cid}": {
       "get": {
-        "operationId": "Conversations_get_28",
+        "operationId": "Conversations_get_29",
         "security": [
           {
             "cookieAuth": []
@@ -5115,7 +5452,7 @@
                         "type": "object",
                         "properties": {
                           "device": {
-                            "$ref": "#/components/schemas/Device"
+                            "$ref": "#/components/schemas/PeerDevice"
                           },
                           "role": {
                             "type": "string"
@@ -5206,7 +5543,7 @@
                         "type": "object",
                         "properties": {
                           "device": {
-                            "$ref": "#/components/schemas/Device"
+                            "$ref": "#/components/schemas/PeerDevice"
                           },
                           "role": {
                             "type": "string"
@@ -5329,7 +5666,7 @@
     },
     "/api/v1/conversations/{cid}/members/propose": {
       "post": {
-        "operationId": "MembersPropose_post_29",
+        "operationId": "MembersPropose_post_30",
         "security": [
           {
             "cookieAuth": []
@@ -5468,7 +5805,7 @@
     },
     "/api/v1/conversations/{cid}/messages": {
       "get": {
-        "operationId": "Messages_get_30",
+        "operationId": "Messages_get_31",
         "security": [
           {
             "cookieAuth": []
@@ -5628,7 +5965,7 @@
         ]
       },
       "post": {
-        "operationId": "Messages_post_31",
+        "operationId": "Messages_post_32",
         "security": [
           {
             "cookieAuth": []
@@ -5832,7 +6169,7 @@
     },
     "/api/v1/conversations/{cid}/crypto-events": {
       "get": {
-        "operationId": "CryptoEvents_get_31",
+        "operationId": "CryptoEvents_get_32",
         "security": [
           {
             "cookieAuth": []
@@ -5992,7 +6329,7 @@
         ]
       },
       "post": {
-        "operationId": "CryptoEvents_post_32",
+        "operationId": "CryptoEvents_post_33",
         "security": [
           {
             "cookieAuth": []
@@ -6227,7 +6564,7 @@
     },
     "/api/v1/conversations/{cid}/proofs": {
       "get": {
-        "operationId": "Proofs_get_32",
+        "operationId": "Proofs_get_33",
         "security": [
           {
             "cookieAuth": []
@@ -6394,7 +6731,7 @@
     },
     "/api/v1/conversations/{cid}/acks": {
       "get": {
-        "operationId": "Acks_get_33",
+        "operationId": "Acks_get_34",
         "security": [
           {
             "cookieAuth": []
@@ -6565,7 +6902,7 @@
         ]
       },
       "post": {
-        "operationId": "Acks_post_34",
+        "operationId": "Acks_post_35",
         "security": [
           {
             "cookieAuth": []
@@ -6723,7 +7060,7 @@
     },
     "/api/v1/sync": {
       "get": {
-        "operationId": "Sync_get_34",
+        "operationId": "Sync_get_35",
         "security": [
           {
             "cookieAuth": []
@@ -6888,7 +7225,7 @@
     },
     "/api/v1/attachments/init": {
       "post": {
-        "operationId": "Attachments_post_35",
+        "operationId": "Attachments_post_36",
         "security": [
           {
             "cookieAuth": []
@@ -7052,7 +7389,7 @@
     },
     "/api/v1/attachments/{aid}/view-once": {
       "get": {
-        "operationId": "ViewOnceAttachment_get_36",
+        "operationId": "ViewOnceAttachment_get_37",
         "security": [
           {
             "cookieAuth": []
@@ -7185,7 +7522,7 @@
         ]
       },
       "post": {
-        "operationId": "ViewOnceAttachment_post_37",
+        "operationId": "ViewOnceAttachment_post_38",
         "security": [
           {
             "cookieAuth": []
@@ -7335,7 +7672,7 @@
     },
     "/api/v1/attachments/{aid}/view-once/close": {
       "post": {
-        "operationId": "CloseViewOnceAttachment_post_37",
+        "operationId": "CloseViewOnceAttachment_post_38",
         "security": [
           {
             "cookieAuth": []
@@ -7483,7 +7820,7 @@
     },
     "/api/v1/attachments/{aid}/chunks/{index}": {
       "get": {
-        "operationId": "Chunk_get_38",
+        "operationId": "Chunk_get_39",
         "security": [
           {
             "cookieAuth": []
@@ -7611,7 +7948,7 @@
         ]
       },
       "put": {
-        "operationId": "Chunk_put_39",
+        "operationId": "Chunk_put_40",
         "security": [
           {
             "cookieAuth": []
@@ -7768,7 +8105,7 @@
     },
     "/api/v1/attachments/{aid}/complete": {
       "post": {
-        "operationId": "CompleteAttachment_post_39",
+        "operationId": "CompleteAttachment_post_40",
         "security": [
           {
             "cookieAuth": []
@@ -7908,7 +8245,7 @@
     },
     "/api/v1/attachments/{aid}": {
       "delete": {
-        "operationId": "DeleteAttachment_delete_40",
+        "operationId": "DeleteAttachment_delete_41",
         "security": [
           {
             "cookieAuth": []
@@ -8035,7 +8372,7 @@
     },
     "/api/v1/privacy-policy": {
       "get": {
-        "operationId": "PrivacyPolicy_get_41",
+        "operationId": "PrivacyPolicy_get_42",
         "security": [
           {
             "cookieAuth": []
@@ -8133,7 +8470,7 @@
     },
     "/api/v1/invitations": {
       "get": {
-        "operationId": "FriendInvitations_get_42",
+        "operationId": "FriendInvitations_get_43",
         "security": [
           {
             "cookieAuth": []
@@ -8229,7 +8566,7 @@
         }
       },
       "post": {
-        "operationId": "FriendInvitations_post_43",
+        "operationId": "FriendInvitations_post_44",
         "security": [
           {
             "cookieAuth": []
@@ -8393,7 +8730,7 @@
     },
     "/api/v1/invitations/{iid}/revoke": {
       "post": {
-        "operationId": "FriendRevokeInvitation_post_43",
+        "operationId": "FriendRevokeInvitation_post_44",
         "security": [
           {
             "cookieAuth": []

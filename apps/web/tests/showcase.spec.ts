@@ -70,9 +70,7 @@ test("public showcase: real encrypted conversation, responsive layout and review
           );
           return {
             secret: w.secret,
-            device: (await h.api("devices")).find(
-              (d: any) => d.id === w.m.state.device_id,
-            ),
+            device: await h.shareDevice(w.m.state.device_id),
           };
         },
         { token: invites[i].token, name: i ? "Nora" : "Maya" },

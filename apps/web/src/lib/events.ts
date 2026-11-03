@@ -1,9 +1,17 @@
 import { z } from "./schema";
 import { isViewOnceMedia } from "./attachment-policy";
+import { attachmentLayout } from "./attachment-format";
 const uuid = z.string().uuid();
 const file = z
   .object({
     id: uuid,
+    format: z.literal(2).optional(),
+    padded_size: z
+      .number()
+      .int()
+      .min(4096)
+      .max(25 * 1024 * 1024)
+      .optional(),
     view_once: z.literal(true).optional(),
     conversation_id: uuid,
     name: z.string().max(255),
@@ -18,10 +26,14 @@ const file = z
       .max(25 * 1024 * 1024),
   })
   .strict()
-  .refine(
-    (f) => f.count === Math.max(1, Math.ceil(f.size / (512 * 1024))),
-    "Invalid chunk count",
-  )
+  .refine((f) => {
+    try {
+      attachmentLayout(f);
+      return true;
+    } catch {
+      return false;
+    }
+  }, "Invalid chunk count")
   .refine(
     (f) => !f.view_once || isViewOnceMedia(f.mime),
     "Unsupported view-once media",

@@ -273,6 +273,8 @@ class Redeem(Public):
     def post(self, request):
         rate(request, "redeem.total", 300, identity="service")
         d = data(request, s.Redeem)
+        # 128 random bits; login handles need not contain a human identity.
+        d["username"] = d["username"] or "h_" + secrets.token_hex(16)
         rate(request, "redeem", 5, identity=d["token"])
         invite = (
             m.Invitation.objects.select_for_update()
@@ -467,7 +469,9 @@ class Users(View):
 
     def get(self, request):
         admin(request)
-        return Response([user_json(u) for u in m.User.objects.order_by("date_joined")[:200]])
+        return Response(
+            list(m.User.objects.order_by("date_joined").values("id", "username", "role", "is_active")[:200])
+        )
 
     @transaction.atomic(savepoint=False)
     def patch(self, request, uid):
@@ -486,7 +490,9 @@ class Users(View):
             m.Device.objects.filter(user=user).update(revoked_at=timezone.now(), trust_state="revoked")
             require_rekey(m.Conversation.objects.filter(membership__device__user=user))
         audit(request.user, "user.updated", uid)
-        return Response(user_json(user))
+        return Response(
+            {"id": str(user.pk), "username": user.username, "role": user.role, "is_active": user.is_active}
+        )
 
 
 def certificate_status():
@@ -608,18 +614,76 @@ def device_json(d):
     }
 
 
-DEVICE_RESPONSE_FIELDS = (
-    "id",
-    "user_id",
-    "label",
-    "identity",
-    "public_key",
-    "trust_state",
-    "revoked_at",
-    "approved_by_id",
-    "challenge",
-    "approval_signature",
-)
+PEER_RESPONSE_FIELDS = ("id", "user_id", "identity", "public_key", "trust_state", "revoked_at")
+
+
+def peer_device_json(device):
+    # Enrollment evidence is available to the account approving that device.
+    # The signed certificate fields used by MLS are preserved byte for byte.
+    return {
+        "id": str(device.pk),
+        "user_id": str(device.user_id),
+        "identity": device.identity,
+        "public_key": b64(device.public_key),
+        "trust_state": device.trust_state,
+        "revoked_at": device.revoked_at,
+    }
+
+
+class ContactIntroduction(View):
+    def post(self, request):
+        device = trusted_device(request)
+        rate(request, "contact.issue", 20)
+        # Reusable for 24h; signup invitations remain separate and one-use.
+        token = signing.dumps(
+            {
+                "device": str(device.pk),
+                "generation": device.introduction_generation,
+                "epoch": settings.CONTACT_LINK_EPOCH,
+            },
+            salt="haven/contact-introduction/v1",
+        )
+        return Response({"token": token, "expires_in": 86400})
+
+    def delete(self, request):
+        device = trusted_device(request)
+        rate(request, "contact.revoke", 20)
+        m.Device.objects.filter(pk=device.pk).update(introduction_generation=F("introduction_generation") + 1)
+        return Response({"ok": True})
+
+
+def peer_access(request, target, claim=False):
+    if target.user_id == request.user.pk:
+        return
+    own = m.Membership.objects.filter(device=request._request.device)
+    peers = m.Membership.objects.filter(device=target)
+    if claim:
+        own = own.filter(removed_at_epoch=None, conversation__status="active")
+        peers = peers.filter(removed_at_epoch=None)
+    if own.filter(conversation_id__in=peers.values("conversation_id")).exists():
+        return
+    token = request.headers.get("X-Haven-Contact", "")
+    if (
+        token
+        and len(token) <= 512
+        and target.trust_state == "approved"
+        and not target.revoked_at
+        and target.user.is_active
+    ):
+        try:
+            value = signing.loads(token, salt="haven/contact-introduction/v1", max_age=86400)
+            if value == {
+                "device": str(target.pk),
+                "generation": target.introduction_generation,
+                "epoch": settings.CONTACT_LINK_EPOCH,
+            }:
+                return
+        except (signing.BadSignature, ValueError, TypeError):
+            pass
+    # Same response for missing, inactive and unauthorized devices. No UUID oracle.
+    from django.http import Http404
+
+    raise Http404
 
 
 def verify(key, signature, payload):
@@ -780,10 +844,15 @@ class PeerDevices(View):
         devices = m.Device.objects.filter(
             user_id=uid, trust_state="approved", revoked_at=None, membership__conversation_id__in=shared
         ).distinct()
-        return Response([device_json(d) for d in devices])
+        return Response([peer_device_json(d) for d in devices.only(*PEER_RESPONSE_FIELDS)])
 
 
 class KeyPackages(View):
+    def mutation_accounts(self, request, **kwargs):
+        did = kwargs.get("did")
+        uid = m.Device.objects.filter(pk=did).values_list("user_id", flat=True).first() if did else None
+        return (uid,) if uid else ()
+
     def post(self, request, did=None):
         if did is not None:
             return self.claim(request, did)
@@ -812,23 +881,16 @@ class KeyPackages(View):
         return Response({"id": str(package.pk)}, status=201)
 
     def get(self, request, did):
-        requester = trusted_device(request)
+        trusted_device(request)
         rate(request, "device.lookup", 30)
         target = get_object_or_404(
-            m.Device.objects.select_related("user").only(*DEVICE_RESPONSE_FIELDS, "user__is_active"), pk=did
+            m.Device.objects.select_related("user").only(
+                *PEER_RESPONSE_FIELDS, "introduction_generation", "user__is_active"
+            ),
+            pk=did,
         )
-        if target.trust_state != "approved" or target.revoked_at or not target.user.is_active:
-            shared_history = m.Membership.objects.filter(
-                device=requester,
-                removed_at_epoch=None,
-                conversation_id__in=m.Membership.objects.filter(device=target).values("conversation_id"),
-            ).exists()
-            if target.user_id != request.user.pk and not shared_history:
-                from django.http import Http404
-
-                raise Http404
-        # Historical credentials remain verifiable; this read grants no package, membership or trust.
-        return Response({"device": device_json(target)})
+        peer_access(request, target)
+        return Response({"device": peer_device_json(target)})
 
     @transaction.atomic
     def claim(self, request, did):
@@ -836,12 +898,15 @@ class KeyPackages(View):
         rate(request, "claim", 30)
         # The requested credential must be explicitly known by opaque device ID; client verifies fingerprint OOB.
         target = get_object_or_404(
-            m.Device.objects.only(*DEVICE_RESPONSE_FIELDS),
+            m.Device.objects.select_related("user").only(
+                *PEER_RESPONSE_FIELDS, "introduction_generation", "user__is_active"
+            ),
             pk=did,
             trust_state="approved",
             revoked_at=None,
             user__is_active=True,
         )
+        peer_access(request, target, claim=True)
         # A claim is an idempotent reservation for this claimant, never another Add authorization.
         p = (
             m.DeviceKeyPackage.objects.select_for_update()
@@ -862,7 +927,7 @@ class KeyPackages(View):
         p.consumed_at = timezone.now()
         p.claimed_by = device
         p.save()
-        return Response({"id": str(p.pk), "package": b64(p.package), "device": device_json(target)})
+        return Response({"id": str(p.pk), "package": b64(p.package), "device": peer_device_json(target)})
 
 
 class Conversations(View):
@@ -876,14 +941,20 @@ class Conversations(View):
                     **conversation_json(conv),
                     "members": [
                         {
-                            "device": device_json(x.device),
+                            "device": peer_device_json(x.device),
                             "role": x.role,
                             "valid_from_epoch": x.valid_from_epoch,
                             "leaving": bool(x.leave_signature),
                         }
-                        for x in m.Membership.objects.select_related("device").filter(
-                            conversation=conv, removed_at_epoch=None
+                        for x in m.Membership.objects.select_related("device")
+                        .only(
+                            "role",
+                            "valid_from_epoch",
+                            "leave_signature",
+                            "device_id",
+                            *("device__" + field for field in PEER_RESPONSE_FIELDS),
                         )
+                        .filter(conversation=conv, removed_at_epoch=None)
                     ],
                     "genesis": conv.genesis,
                     "genesis_signature": b64(conv.genesis_signature),

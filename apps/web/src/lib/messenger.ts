@@ -778,6 +778,8 @@ export class Messenger {
           `crypto/key-packages/${device.id}`,
           "POST",
           {},
+          false,
+          device.contact_token,
         );
         if (kp.device.public_key !== device.public_key)
           throw new Error("Identity changed");

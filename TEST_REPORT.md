@@ -296,3 +296,7 @@ Django deployment warnings W005/W021 concern domain/subdomain HSTS/preload and a
 - Independent cryptographic integration review, penetration test and owner release approval.
 
 These omissions keep release qualification BLOCKED. No false all-tests-complete, wartime safety, independent audit or production capacity claim follows from local passes.
+
+## Privacy/security hardening — 2026-11-03
+
+Baseline source `8fb3c6c808d14277cc59e53d7363af62d9ea6c5b`. Baseline 21 tests passed (8.23s); full backend milestone 140 passed (112.56s); final scope/recovery/config/grants use additional narrow runs. Browser aggregate 6 passed (37.8s), latest first-contact/privacy/media aggregate 5 passed (23.7s); native OpenMLS compatibility 1 passed (5 filtered); installer 13 passed (0.766s); production build/typecheck passed (5.55s latest measured build wall). These overlap and are not an additive certification count. Real PostgreSQL permission denial, pre-upgrade migration/retry/unsafe reverse, real Redis cross-process socket delivery, restore-epoch and actual MLS/SQL/media/view-once evidence are linked in the [complete execution ledger](docs/security/privacy-hardening/adversarial-test-results.md). Initial fixture/test/readiness failures are preserved there. No soak/endurance/unbounded benchmark was started. Full field/physical-browser/independent review and production deployment remain outstanding; the release gate intentionally rejects release.

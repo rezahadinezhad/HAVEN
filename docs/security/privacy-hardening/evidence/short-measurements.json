@@ -1,0 +1,101 @@
+{
+  "routing_cpu": {
+    "raw_group": {
+      "batch_size": 1000,
+      "batch_ms": [
+        0.995388,
+        0.916484,
+        0.897226,
+        0.889502,
+        0.874553
+      ],
+      "median_batch_ms": 0.897226
+    },
+    "hmac_group": {
+      "batch_size": 1000,
+      "batch_ms": [
+        8.771647,
+        8.139977,
+        7.884684,
+        8.879411,
+        8.652728
+      ],
+      "median_batch_ms": 8.652728
+    }
+  },
+  "attachment_bytes": [
+    {
+      "plaintext": 0,
+      "padded": 4096,
+      "legacy_wire": 16,
+      "v2_wire": 4112,
+      "extra_bytes": 4096,
+      "chunks": 1
+    },
+    {
+      "plaintext": 1,
+      "padded": 4096,
+      "legacy_wire": 17,
+      "v2_wire": 4112,
+      "extra_bytes": 4095,
+      "chunks": 1
+    },
+    {
+      "plaintext": 4095,
+      "padded": 4096,
+      "legacy_wire": 4111,
+      "v2_wire": 4112,
+      "extra_bytes": 1,
+      "chunks": 1
+    },
+    {
+      "plaintext": 4096,
+      "padded": 4096,
+      "legacy_wire": 4112,
+      "v2_wire": 4112,
+      "extra_bytes": 0,
+      "chunks": 1
+    },
+    {
+      "plaintext": 65536,
+      "padded": 65536,
+      "legacy_wire": 65552,
+      "v2_wire": 65552,
+      "extra_bytes": 0,
+      "chunks": 1
+    },
+    {
+      "plaintext": 65537,
+      "padded": 81920,
+      "legacy_wire": 65553,
+      "v2_wire": 81936,
+      "extra_bytes": 16383,
+      "chunks": 1
+    },
+    {
+      "plaintext": 1048576,
+      "padded": 1048576,
+      "legacy_wire": 1048608,
+      "v2_wire": 1048608,
+      "extra_bytes": 0,
+      "chunks": 2
+    },
+    {
+      "plaintext": 1048577,
+      "padded": 1114112,
+      "legacy_wire": 1048625,
+      "v2_wire": 1114160,
+      "extra_bytes": 65535,
+      "chunks": 3
+    },
+    {
+      "plaintext": 26214400,
+      "padded": 26214400,
+      "legacy_wire": 26215200,
+      "v2_wire": 26215200,
+      "extra_bytes": 0,
+      "chunks": 50
+    }
+  ],
+  "scope": "5 batches of 1000 local derivations, byte arithmetic cross-checked by actual browser implementation; not TLS overhead, latency SLA or throughput qualification"
+}

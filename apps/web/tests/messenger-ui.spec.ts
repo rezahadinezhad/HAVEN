@@ -54,16 +54,43 @@ test("real UI: vault enrollment, fingerprint verification, MLS group, text, offl
     devices.push(
       await p.evaluate(async () => {
         const r = await fetch("/api/v1/devices");
-        return (await r.json())[0];
+        const device = (await r.json())[0];
+        const csrf = (await (await fetch("/api/v1/auth/csrf")).json()).csrf;
+        const grant = await (
+          await fetch("/api/v1/devices/contact-introduction", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": csrf,
+            },
+            body: "{}",
+          })
+        ).json();
+        return { ...device, contact_token: grant.token };
       }),
     );
   }
   for (const [i, p] of pages.entries()) {
     const other = devices[1 - i];
+    const link =
+      "https://127.0.0.1:8445/#" +
+      new URLSearchParams({
+        connect: JSON.stringify({
+          v: 1,
+          device_id: other.id,
+          introduction: other.contact_token,
+          fingerprint: nodeCrypto
+            .createHash("sha256")
+            .update(Buffer.from(other.public_key, "base64"))
+            .digest("hex"),
+        }),
+      });
     await p
       .getByRole("button", { name: "People & trust", exact: true })
       .click();
-    await p.getByLabel("Device ID", { exact: true }).fill(other.id);
+    await p
+      .getByLabel("Friend link or known device ID", { exact: true })
+      .fill(link);
     await p
       .getByRole("button", { name: "Look up a known device", exact: true })
       .click();
@@ -92,7 +119,22 @@ test("real UI: vault enrollment, fingerprint verification, MLS group, text, offl
     .getByRole("button", { name: "Create conversation manually", exact: true })
     .click();
   await a.getByRole("button", { name: "Group & members", exact: true }).click();
-  await a.getByLabel("Device ID", { exact: true }).fill(devices[1].id);
+  await a
+    .getByLabel("Friend link or known device ID", { exact: true })
+    .fill(
+      "https://127.0.0.1:8445/#" +
+        new URLSearchParams({
+          connect: JSON.stringify({
+            v: 1,
+            device_id: devices[1].id,
+            introduction: devices[1].contact_token,
+            fingerprint: nodeCrypto
+              .createHash("sha256")
+              .update(Buffer.from(devices[1].public_key, "base64"))
+              .digest("hex"),
+          }),
+        }),
+    );
   await a
     .locator(".member-controls")
     .getByRole("button", { name: "Verify fingerprint", exact: true })

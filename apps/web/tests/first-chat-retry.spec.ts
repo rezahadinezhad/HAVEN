@@ -54,6 +54,9 @@ test("direct-chat setup recovers an accepted request after a lost response and r
       const device = (await h.api("devices")).find(
         (d: any) => d.id === vault.state.device_id,
       );
+      device.contact_token = (
+        await h.api("devices/contact-introduction", "POST", {})
+      ).token;
       vault.lock();
       return device;
     }, token);

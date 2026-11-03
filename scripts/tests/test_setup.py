@@ -75,7 +75,8 @@ class SetupTests(unittest.TestCase):
     def test_overlay_never_enables_nonloopback_messaging(self):
         local = setup.render_overlay(plan())
         self.assertIn("127.0.0.1:18447:443", local)
-        self.assertEqual(local.count("haven.integration_settings"), 3)
+        self.assertEqual(local.count("haven.integration_settings"), 2)
+        self.assertNotIn("outbox:\n    environment:", local)
         self.assertNotIn("security_opt", local)
         compatible = setup.render_overlay(plan(local_compatibility=True))
         self.assertEqual(compatible.count("security_opt: !override []"), 7)

@@ -289,9 +289,7 @@ test("prepared distinct IP origins: verified private TLS, fail-closed mismatch, 
       pages.map((p) =>
         p.evaluate(async () => {
           const w = window as any;
-          return (await w.havenIntegration.api("devices")).find(
-            (d: any) => d.id === w.m.state.device_id,
-          );
+          return await w.havenIntegration.shareDevice(w.m.state.device_id);
         }),
       ),
     );

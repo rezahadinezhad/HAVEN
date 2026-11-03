@@ -72,7 +72,7 @@ def test_notification_worker_never_loads_message_content_or_signed_history():
     with CaptureQueriesContext(connection) as queries:
         call_command("publish_outbox", once=True)
     selects = [q["sql"] for q in queries if q["sql"].lstrip().startswith("SELECT")]
-    envelope_reads = [q for q in selects if "core_messageenvelope" in q]
+    envelope_reads = [q for q in selects if "haven_notification_targets" in q]
     assert envelope_reads
     for query in envelope_reads:
         for column in [

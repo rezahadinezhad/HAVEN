@@ -22,6 +22,7 @@ urlpatterns = [
     path(P + "admin/users", v.Users.as_view()),
     path(P + "admin/users/<uuid:uid>", v.Users.as_view()),
     path(P + "admin/system-status", v.SystemStatus.as_view()),
+    path(P + "devices/contact-introduction", v.ContactIntroduction.as_view()),
     path(P + "devices", v.Devices.as_view()),
     path(P + "devices/enrollment/request", v.EnrollmentRequest.as_view()),
     path(P + "devices/enrollment/approve", v.EnrollmentApprove.as_view()),

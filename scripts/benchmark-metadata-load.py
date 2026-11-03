@@ -122,6 +122,7 @@ class Client:
         self.cookies = {settings.SESSION_COOKIE_NAME: self.token}
         self.http_lock = threading.Lock()
         self.csrf = ""
+        self.contact_grants = {}
         self.http = HTTPSConnection(
             "127.0.0.1", 8454, context=SSL, timeout=30, source_address=(self.ip, 0)
         )
@@ -186,6 +187,8 @@ class Client:
                         else "application/json",
                     }
                 )
+            if path in self.contact_grants:
+                headers["X-Haven-Contact"] = self.contact_grants[path]
             attempt_started = time.monotonic()
             try:
                 self.http.request(method, "/api/v1/" + path, payload, headers)
@@ -296,7 +299,12 @@ class Group:
             client.request(
                 "crypto/key-packages", "POST", {"package": kp}, expected=(201,)
             )
-            claim = self.owner.request("crypto/key-packages/" + client.id, "POST", {})
+            claim_path = "crypto/key-packages/" + client.id
+            if hasattr(m.Device, "introduction_generation"):
+                self.owner.contact_grants[claim_path] = client.request(
+                    "devices/contact-introduction", "POST", {}
+                )["token"]
+            claim = self.owner.request(claim_path, "POST", {})
             result = native(
                 self.owner, "add", group_id=self.gid, key_package=claim["package"]
             )
