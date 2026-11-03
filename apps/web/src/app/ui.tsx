@@ -20,6 +20,7 @@ import {
 } from "@/lib/chat-presentation";
 import { uiError } from "@/lib/ui-error";
 import { AccountRecovery } from "./recovery";
+import { ClosureControls, ClosureArchiveImport } from "./conversation-closure";
 import { ServerPrivacy } from "./privacy";
 import { ConnectFlow, ConversationVerification } from "./connect";
 import { DeviceUnlockSettings } from "./device-unlock-settings";
@@ -185,6 +186,8 @@ export default function Haven() {
       crypto_ready: boolean;
       name: string;
       maintenance: string;
+      experimental_closure?: boolean;
+      closure_epoch?: string;
     } | null>(null),
     [online, setOnline] = useState(false);
   const [error, setError] = useState(""),
@@ -527,6 +530,9 @@ export default function Haven() {
         const list = await api<Conversation[]>("conversations");
         if (vaultRef.current !== vault) return;
         setConversations(list);
+        setCurrent((old) =>
+          old ? list.find((item) => item.id === old.id) || old : old,
+        );
         let warning = deliveryWarning;
         for (const c of list) {
           try {
@@ -786,9 +792,13 @@ export default function Haven() {
     setConversations(list);
     if (navigator.storage.persist) await navigator.storage.persist();
   }
-  async function createManualConversation() {
+  async function createManualConversation(closureCapable = false) {
     if (!vault) return;
-    const id = await vault.create(kind);
+    const id = await vault.create(
+      closureCapable ? "direct" : kind,
+      undefined,
+      closureCapable,
+    );
     const list = await api<Conversation[]>("conversations");
     if (vaultRef.current !== vault) return;
     setConversations(list);
@@ -946,7 +956,12 @@ export default function Haven() {
   }
   const enabled = !!health?.crypto_ready;
   const disabled = !enabled || !vault || busy;
-  const chatDisabled = disabled || !vault?.state.heads[current?.id || ""];
+  const chatDisabled =
+    disabled ||
+    !vault?.state.heads[current?.id || ""] ||
+    !!vault?.state.closure_archives?.[current?.id || ""] ||
+    current?.status === "closing" ||
+    current?.status === "closed";
   const messagesByConversation = useMemo(
     () =>
       new Map(
@@ -1720,7 +1735,7 @@ export default function Haven() {
                             · {current.status}
                           </p>
                           <button
-                            disabled={disabled}
+                            disabled={chatDisabled}
                             onClick={() =>
                               void perform(async () => {
                                 await vault!.leave(current);
@@ -1733,7 +1748,7 @@ export default function Haven() {
                             {t("Leave conversation")}
                           </button>
                           <button
-                            disabled={disabled}
+                            disabled={chatDisabled}
                             onClick={() =>
                               void perform(async () => {
                                 const self = members.find(
@@ -1774,12 +1789,33 @@ export default function Haven() {
                               )}
                             </button>
                           )}
+                          {vault &&
+                            health?.experimental_closure &&
+                            vault.state.heads[current.id]?.closure_policy && (
+                              <ClosureControls
+                                vault={vault}
+                                conversation={current}
+                                t={t}
+                                changed={() => {
+                                  setEvents([...vault.state.events]);
+                                  void api<Conversation[]>(
+                                    "conversations",
+                                  ).then((list) => {
+                                    setConversations(list);
+                                    setCurrent(
+                                      list.find((c) => c.id === current.id) ||
+                                        current,
+                                    );
+                                  });
+                                }}
+                              />
+                            )}
                           <label>
                             {t("Group title")}
-                            <input id="group-title" />
+                            <input id="group-title" disabled={chatDisabled} />
                           </label>
                           <button
-                            disabled={disabled}
+                            disabled={chatDisabled}
                             onClick={() =>
                               void send(
                                 "title",
@@ -1802,7 +1838,7 @@ export default function Haven() {
                             />
                           </label>
                           <button
-                            disabled={disabled}
+                            disabled={chatDisabled}
                             onClick={() =>
                               void perform(async () => {
                                 const device =
@@ -1823,7 +1859,7 @@ export default function Haven() {
                               </b>
                               <code>{d.id}</code>
                               <button
-                                disabled={disabled}
+                                disabled={chatDisabled}
                                 onClick={() =>
                                   void perform(async () => {
                                     await vault!.changeMember(
@@ -1837,7 +1873,7 @@ export default function Haven() {
                                 {t("Add member")}
                               </button>
                               <button
-                                disabled={disabled}
+                                disabled={chatDisabled}
                                 onClick={() =>
                                   void perform(async () => {
                                     await vault!.changeMember(
@@ -1851,7 +1887,7 @@ export default function Haven() {
                                 {t("Remove member")}
                               </button>
                               <button
-                                disabled={disabled}
+                                disabled={chatDisabled}
                                 onClick={() =>
                                   void perform(async () => {
                                     await vault!.changeMember(
@@ -1868,7 +1904,7 @@ export default function Haven() {
                                 {t("Transfer ownership")}
                               </button>
                               <button
-                                disabled={disabled}
+                                disabled={chatDisabled}
                                 onClick={() =>
                                   void perform(async () => {
                                     await vault!.changeMember(
@@ -1988,6 +2024,9 @@ export default function Haven() {
                         discardRecording={discardRecording}
                         recording={recording}
                         disabled={chatDisabled}
+                        textOnly={
+                          !!vault?.state.heads[current.id]?.closure_policy
+                        }
                         reply={replyContext}
                         cancelReply={() => {
                           if (reply?.startsWith("edit:"))
@@ -2002,9 +2041,13 @@ export default function Haven() {
                               ? "Unlock this browser to write a message."
                               : pendingApproval
                                 ? "Approve this browser before messaging."
-                                : !vault.state.heads[current.id]
-                                  ? "Compare security codes above to start chatting."
-                                  : ""
+                                : vault.state.closure_archives?.[current.id] ||
+                                    current.status === "closing" ||
+                                    current.status === "closed"
+                                  ? "Conversation closure paused sending. Keep your encrypted archive."
+                                  : !vault.state.heads[current.id]
+                                    ? "Compare security codes above to start chatting."
+                                    : ""
                         }
                         t={t}
                       />
@@ -2146,7 +2189,12 @@ export default function Haven() {
                     t={t}
                     ready={(v) => acceptGuidedVault(v, renderGeneration)}
                     advanced={() => setScreen("devices")}
-                    manual={createManualConversation}
+                    manual={() => createManualConversation()}
+                    createClosable={
+                      health?.experimental_closure
+                        ? () => createManualConversation(true)
+                        : undefined
+                    }
                     conversationType={kind}
                     changeConversationType={setKind}
                     opened={async (c) => {
@@ -2372,6 +2420,64 @@ export default function Haven() {
                 )}
                 {screen === "backup" && (
                   <>
+                    {vault && (
+                      <ClosureArchiveImport
+                        vault={vault}
+                        t={t}
+                        changed={() => {
+                          setEvents([...vault.state.events]);
+                          setNotice(
+                            t(
+                              "Encrypted conversation archive restored locally.",
+                            ),
+                          );
+                        }}
+                      />
+                    )}
+                    {vault &&
+                      Object.keys(vault.state.closure_archives || {}).length >
+                        0 && (
+                        <section className="card">
+                          <h2>{t("Closed conversation archives")}</h2>
+                          <p>
+                            {t(
+                              "These copies stay encrypted in this vault. Export a backup before clearing browser data.",
+                            )}
+                          </p>
+                          {Object.entries(
+                            vault.state.closure_archives || {},
+                          ).map(([id, archive]) => (
+                            <details key={id}>
+                              <summary>
+                                {id.slice(0, 8)} ·{" "}
+                                {t(
+                                  archive.certificate?.state === "finalized"
+                                    ? "Finalized"
+                                    : "Awaiting mutual closure",
+                                )}
+                              </summary>
+                              {archive.events.map((event) => (
+                                <p key={event.id} dir="auto">
+                                  {event.text || event.type}
+                                </p>
+                              ))}
+                              <button
+                                onClick={() =>
+                                  void perform(async () =>
+                                    download(
+                                      await vault.exportClosureArchive(id),
+                                      `haven-closed-${id}.json`,
+                                    ),
+                                  )
+                                }
+                              >
+                                {t("Export encrypted archive")}
+                              </button>
+                            </details>
+                          ))}
+                        </section>
+                      )}
+
                     {archivedIds.length > 0 && (
                       <section className="card">
                         <h2>{t("Recovered local history")}</h2>

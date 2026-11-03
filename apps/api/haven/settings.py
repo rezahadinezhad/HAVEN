@@ -169,6 +169,13 @@ USE_TZ = True
 TIME_ZONE = "UTC"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 APP_NAME = os.environ.get("HAVEN_NAME", "HAVEN")
+# Source-level experimental gates; neither can be enabled by an environment switch.
+CONVERSATION_CLOSURE_READY = False
+GRAPH_RETIREMENT_SYNTHETIC_ONLY = False
+CONVERSATION_CLOSURE_EPOCH = os.environ.get("HAVEN_CLOSURE_EPOCH", "initial")
+if not re.fullmatch(r"[A-Za-z0-9_-]{1,128}", CONVERSATION_CLOSURE_EPOCH):
+    raise ImproperlyConfigured("Invalid conversation closure restore epoch")
+GRAPH_RETIREMENT_REPLAY_SECRET = os.environ.get("HAVEN_RETIREMENT_REPLAY_SECRET", "")
 CRYPTO_READY = False  # Release gate: integration is never enabled by an environment switch.
 MAINTENANCE = os.environ.get("HAVEN_MAINTENANCE", "")
 # Avoid tracebacks/queries/payloads in application logs. Security audit events use a bounded schema.

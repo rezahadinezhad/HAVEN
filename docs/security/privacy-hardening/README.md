@@ -1,6 +1,6 @@
 # Privacy and security hardening — 2026-11-03
 
-Baseline: `8fb3c6c808d14277cc59e53d7363af62d9ea6c5b`. All changes are local, reviewable source changes. **Experimental; production release remains BLOCKED.** No push, merge, deployment, real-history deletion, identity reset or backup destruction occurred.
+Baseline: `8fb3c6c808d14277cc59e53d7363af62d9ea6c5b`. The initial hardening was committed and merged into main as `21d8cbf` and pushed at the owner's explicit request. The subsequent Phase 10 implementation is local on `codex/conversation-closure`. **Experimental; production release remains BLOCKED.** No production deployment, real-history deletion, identity reset or backup destruction occurred.
 
 The owner confirms there are no real users. This allowed a coordinated client/API upgrade to be the supported rollout. Existing vaults, exact pending ciphertext, signed credentials/history, recovery identities and legacy attachment reads remain intact.
 
@@ -16,7 +16,7 @@ The owner confirms there are no real users. This allowed a coordinated client/AP
 | 7 attachment sizes | IMPLEMENTED_AND_TESTED | [Padding](07-attachment-padding.md): bounded format 2, legacy AEAD, real MLS/SQL/view-once |
 | 8 logs/retention | IMPLEMENTED_AND_TESTED | [Retention review](08-logging-retention.md): existing retention tests plus new-secret installer redaction |
 | 9 browser/release | IMPLEMENTED_AND_TESTED | [Browser](09-browser-security.md): canonical CSP host, storage/lock tests, production build; independent review open |
-| 10 historical graph retirement | DESIGNED_NOT_IMPLEMENTED | [Finality design](10-graph-retirement-design.md); no safe destructive prototype justified |
+| 10 historical graph retirement | EXPERIMENTAL_IMPLEMENTED_AND_LOCALLY_TESTED | [Mutual closure, encrypted offline archives and disposable-DB retirement](../conversation-closure/README.md); production activation disabled |
 | 11 authoritative-source validation | IMPLEMENTED_AND_TESTED | [Source-backed review](security-review.md); sources support primitives, not HAVEN certification |
 | 12 compatibility/migrations | IMPLEMENTED_AND_TESTED | [Migration/recovery](migration-and-recovery.md); pre-upgrade synthetic schema, retry and unsafe reverse refusal |
 | 13 final evidence/review | IMPLEMENTED_AND_TESTED | [Results](adversarial-test-results.md), [measurements](short-performance-results.md), [final report](final-report.md) |

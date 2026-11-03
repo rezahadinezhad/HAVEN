@@ -34,4 +34,6 @@ def require_rekey(conversations):
         .order_by("pk")
         .values_list("pk", flat=True)
     )
-    Conversation.objects.filter(pk__in=ids).update(status="rekey_required")
+    Conversation.objects.filter(pk__in=ids).exclude(status__in=["closing", "closed"]).update(
+        status="rekey_required"
+    )

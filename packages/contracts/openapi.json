@@ -350,6 +350,14 @@
           "receipt_version": {
             "type": "integer",
             "minimum": 0
+          },
+          "closure_state": {
+            "enum": [
+              null,
+              "proposed",
+              "closing",
+              "finalized"
+            ]
           }
         },
         "required": [
@@ -360,7 +368,8 @@
           "last_seq",
           "status",
           "head_hash",
-          "receipt_version"
+          "receipt_version",
+          "closure_state"
         ],
         "additionalProperties": false
       },
@@ -388,6 +397,12 @@
             "items": {
               "$ref": "#/components/schemas/Certificate"
             }
+          },
+          "closure_policy": {
+            "const": "mutual-local-archive-v1"
+          },
+          "closure_epoch": {
+            "type": "string"
           }
         },
         "required": [
@@ -583,6 +598,210 @@
           "pending_invitations"
         ],
         "additionalProperties": false
+      },
+      "ClosureSnapshot": {
+        "type": "object",
+        "properties": {
+          "domain": {
+            "enum": [
+              "haven/closure/proposal/v1",
+              "haven/closure/snapshot/v1"
+            ]
+          },
+          "v": {
+            "const": 1
+          },
+          "conversation_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "group_id": {
+            "type": "string"
+          },
+          "closure_policy": {
+            "const": "mutual-local-archive-v1"
+          },
+          "restore_epoch": {
+            "type": "string"
+          },
+          "nonce": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "proposer_device": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "genesis_hash": {
+            "type": "string"
+          },
+          "final_seq": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "final_epoch": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "final_hash": {
+            "type": "string"
+          },
+          "archive_policy": {
+            "const": "complete-text-history-on-each-device-v1"
+          },
+          "participants": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "user_id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "identity": {
+                  "type": "string"
+                },
+                "public_key": {
+                  "type": "string"
+                },
+                "role": {
+                  "enum": [
+                    "owner",
+                    "moderator",
+                    "member"
+                  ]
+                },
+                "security_generation": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "id",
+                "user_id",
+                "identity",
+                "public_key",
+                "role",
+                "security_generation"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "proposal_hash": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "domain",
+          "v",
+          "conversation_id",
+          "group_id",
+          "closure_policy",
+          "restore_epoch",
+          "nonce",
+          "proposer_device",
+          "genesis_hash",
+          "final_seq",
+          "final_epoch",
+          "final_hash",
+          "archive_policy",
+          "participants"
+        ],
+        "additionalProperties": false
+      },
+      "ClosureRecord": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "enum": [
+              "active",
+              "proposed",
+              "closing",
+              "finalized"
+            ]
+          },
+          "proposal": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ClosureSnapshot"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "transcript": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ClosureSnapshot"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "proposal_signature": {
+            "type": "string"
+          },
+          "preparations": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "properties": {
+                "transcript_hash": {
+                  "type": "string"
+                },
+                "signature": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "transcript_hash",
+                "signature"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "consents": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "properties": {
+                "archive_hash": {
+                  "type": "string"
+                },
+                "signature": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "archive_hash",
+                "signature"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "final_receipts": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "state",
+          "proposal",
+          "transcript",
+          "proposal_signature",
+          "preparations",
+          "consents",
+          "final_receipts"
+        ],
+        "additionalProperties": false
       }
     },
     "securitySchemes": {
@@ -620,6 +839,12 @@
                     },
                     "release_status": {
                       "type": "string"
+                    },
+                    "experimental_closure": {
+                      "type": "boolean"
+                    },
+                    "closure_epoch": {
+                      "type": "string"
                     }
                   },
                   "required": [
@@ -627,7 +852,9 @@
                     "crypto_ready",
                     "name",
                     "maintenance",
-                    "release_status"
+                    "release_status",
+                    "experimental_closure",
+                    "closure_epoch"
                   ],
                   "additionalProperties": false
                 }
@@ -655,6 +882,12 @@
                     },
                     "release_status": {
                       "type": "string"
+                    },
+                    "experimental_closure": {
+                      "type": "boolean"
+                    },
+                    "closure_epoch": {
+                      "type": "string"
                     }
                   },
                   "required": [
@@ -662,7 +895,9 @@
                     "crypto_ready",
                     "name",
                     "maintenance",
-                    "release_status"
+                    "release_status",
+                    "experimental_closure",
+                    "closure_epoch"
                   ],
                   "additionalProperties": false
                 }
@@ -5440,6 +5675,14 @@
                       "type": "integer",
                       "minimum": 0
                     },
+                    "closure_state": {
+                      "enum": [
+                        null,
+                        "proposed",
+                        "closing",
+                        "finalized"
+                      ]
+                    },
                     "genesis": {
                       "$ref": "#/components/schemas/Genesis"
                     },
@@ -5484,6 +5727,7 @@
                     "status",
                     "head_hash",
                     "receipt_version",
+                    "closure_state",
                     "genesis",
                     "genesis_signature",
                     "members"
@@ -5531,6 +5775,14 @@
                       "type": "integer",
                       "minimum": 0
                     },
+                    "closure_state": {
+                      "enum": [
+                        null,
+                        "proposed",
+                        "closing",
+                        "finalized"
+                      ]
+                    },
                     "genesis": {
                       "$ref": "#/components/schemas/Genesis"
                     },
@@ -5575,6 +5827,7 @@
                     "status",
                     "head_hash",
                     "receipt_version",
+                    "closure_state",
                     "genesis",
                     "genesis_signature",
                     "members"
@@ -6729,9 +6982,335 @@
         ]
       }
     },
+    "/api/v1/conversations/{cid}/closure": {
+      "get": {
+        "operationId": "ConversationClosure_get_34",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Committed success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClosureRecord"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Committed success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClosureRecord"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request rejected; no secret diagnostics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Request rejected; no secret diagnostics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Request rejected; no secret diagnostics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Request rejected; no secret diagnostics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Request rejected; no secret diagnostics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Request rejected; no secret diagnostics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "cid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "action",
+            "in": "query",
+            "schema": {
+              "enum": [
+                "propose",
+                "prepare",
+                "consent",
+                "receipt"
+              ]
+            }
+          },
+          {
+            "name": "nonce",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ]
+      },
+      "post": {
+        "operationId": "ConversationClosure_post_35",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Committed success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClosureRecord"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Committed success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClosureRecord"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request rejected; no secret diagnostics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Request rejected; no secret diagnostics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Request rejected; no secret diagnostics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Request rejected; no secret diagnostics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Request rejected; no secret diagnostics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Request rejected; no secret diagnostics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "cid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "action",
+            "in": "query",
+            "schema": {
+              "enum": [
+                "propose",
+                "prepare",
+                "consent",
+                "receipt"
+              ]
+            }
+          },
+          {
+            "name": "nonce",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "transcript": {
+                        "type": "object",
+                        "additionalProperties": true
+                      },
+                      "signature": {
+                        "type": "string",
+                        "contentEncoding": "base64",
+                        "maxLength": 88
+                      }
+                    },
+                    "required": [
+                      "transcript",
+                      "signature"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "transcript_hash": {
+                        "type": "string"
+                      },
+                      "archive_hash": {
+                        "type": "string"
+                      },
+                      "signature": {
+                        "type": "string",
+                        "contentEncoding": "base64",
+                        "maxLength": 88
+                      }
+                    },
+                    "required": [
+                      "transcript_hash",
+                      "archive_hash",
+                      "signature"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "finality_hash": {
+                        "type": "string"
+                      },
+                      "signature": {
+                        "type": "string",
+                        "contentEncoding": "base64",
+                        "maxLength": 88
+                      }
+                    },
+                    "required": [
+                      "finality_hash",
+                      "signature"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/conversations/{cid}/acks": {
       "get": {
-        "operationId": "Acks_get_34",
+        "operationId": "Acks_get_35",
         "security": [
           {
             "cookieAuth": []
@@ -6902,7 +7481,7 @@
         ]
       },
       "post": {
-        "operationId": "Acks_post_35",
+        "operationId": "Acks_post_36",
         "security": [
           {
             "cookieAuth": []
@@ -7060,7 +7639,7 @@
     },
     "/api/v1/sync": {
       "get": {
-        "operationId": "Sync_get_35",
+        "operationId": "Sync_get_36",
         "security": [
           {
             "cookieAuth": []
@@ -7225,7 +7804,7 @@
     },
     "/api/v1/attachments/init": {
       "post": {
-        "operationId": "Attachments_post_36",
+        "operationId": "Attachments_post_37",
         "security": [
           {
             "cookieAuth": []
@@ -7389,7 +7968,7 @@
     },
     "/api/v1/attachments/{aid}/view-once": {
       "get": {
-        "operationId": "ViewOnceAttachment_get_37",
+        "operationId": "ViewOnceAttachment_get_38",
         "security": [
           {
             "cookieAuth": []
@@ -7522,7 +8101,7 @@
         ]
       },
       "post": {
-        "operationId": "ViewOnceAttachment_post_38",
+        "operationId": "ViewOnceAttachment_post_39",
         "security": [
           {
             "cookieAuth": []
@@ -7672,7 +8251,7 @@
     },
     "/api/v1/attachments/{aid}/view-once/close": {
       "post": {
-        "operationId": "CloseViewOnceAttachment_post_38",
+        "operationId": "CloseViewOnceAttachment_post_39",
         "security": [
           {
             "cookieAuth": []
@@ -7820,7 +8399,7 @@
     },
     "/api/v1/attachments/{aid}/chunks/{index}": {
       "get": {
-        "operationId": "Chunk_get_39",
+        "operationId": "Chunk_get_40",
         "security": [
           {
             "cookieAuth": []
@@ -7948,7 +8527,7 @@
         ]
       },
       "put": {
-        "operationId": "Chunk_put_40",
+        "operationId": "Chunk_put_41",
         "security": [
           {
             "cookieAuth": []
@@ -8105,7 +8684,7 @@
     },
     "/api/v1/attachments/{aid}/complete": {
       "post": {
-        "operationId": "CompleteAttachment_post_40",
+        "operationId": "CompleteAttachment_post_41",
         "security": [
           {
             "cookieAuth": []
@@ -8245,7 +8824,7 @@
     },
     "/api/v1/attachments/{aid}": {
       "delete": {
-        "operationId": "DeleteAttachment_delete_41",
+        "operationId": "DeleteAttachment_delete_42",
         "security": [
           {
             "cookieAuth": []
@@ -8372,7 +8951,7 @@
     },
     "/api/v1/privacy-policy": {
       "get": {
-        "operationId": "PrivacyPolicy_get_42",
+        "operationId": "PrivacyPolicy_get_43",
         "security": [
           {
             "cookieAuth": []
@@ -8470,7 +9049,7 @@
     },
     "/api/v1/invitations": {
       "get": {
-        "operationId": "FriendInvitations_get_43",
+        "operationId": "FriendInvitations_get_44",
         "security": [
           {
             "cookieAuth": []
@@ -8566,7 +9145,7 @@
         }
       },
       "post": {
-        "operationId": "FriendInvitations_post_44",
+        "operationId": "FriendInvitations_post_45",
         "security": [
           {
             "cookieAuth": []
@@ -8730,7 +9309,7 @@
     },
     "/api/v1/invitations/{iid}/revoke": {
       "post": {
-        "operationId": "FriendRevokeInvitation_post_44",
+        "operationId": "FriendRevokeInvitation_post_45",
         "security": [
           {
             "cookieAuth": []

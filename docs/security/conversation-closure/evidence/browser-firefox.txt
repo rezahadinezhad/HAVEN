@@ -1,0 +1,12 @@
+
+> haven-web@0.2.0 test
+> playwright test conversation-closure.spec.ts
+
+
+Running 1 test using 1 worker
+
+(node:502767) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/conversation-closure.spec.ts:7:5 › mutual closure persists complete encrypted archives before consent and survives offline reload (15.9s)
+
+  1 passed (17.1s)

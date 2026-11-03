@@ -1,6 +1,6 @@
 # Final implementation report — 2026-11-03
 
-Implemented all safely feasible phases in the existing Django/PostgreSQL/Redis/Next/OpenMLS architecture. Historical graph retirement is fully specified and deliberately not implemented/activated because safe all-party finality is absent. No real deployment, push/merge, user-history deletion, key reset or backup purge occurred. **Production gate stays closed.**
+Implemented all safely feasible phases in the existing Django/PostgreSQL/Redis/Next/OpenMLS architecture. This initial report predates the later [Phase 10 experimental closure/archive and synthetic-retirement implementation](../conversation-closure/README.md). The initial hardening was subsequently merged/pushed as `21d8cbf` at the owner's request. No production deployment, real-history deletion, key reset or backup purge occurred. Production graph retirement remains disabled. **Production gate stays closed.**
 
 Concrete changes:
 

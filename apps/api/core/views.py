@@ -16,7 +16,7 @@ from django.core.cache import cache
 from django.core import signing
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import transaction, IntegrityError
-from django.db.models import Sum, Q, Min, F
+from django.db.models import Sum, Q, Min, F, OuterRef, Subquery
 from django.http import HttpResponse
 from django.middleware.csrf import get_token, rotate_token
 from django.shortcuts import get_object_or_404
@@ -36,6 +36,14 @@ from .middleware import digest
 from . import protocol as p
 from .privacy import rate_key, policy as privacy_policy
 from .storage import reserve, CONVERSATION_OVERHEAD
+from .closure import (
+    POLICY as CLOSURE_POLICY,
+    feature_gate as closure_gate,
+    write_fence,
+    check_retired_conversation,
+    check_retired_message,
+    creation_fence,
+)
 
 
 def b64(value):
@@ -92,7 +100,7 @@ def trusted_device(request):
     return d
 
 
-def membership(request, cid, lock=False, control=False):
+def membership(request, cid, lock=False, control=False, allow_closure=False):
     device = trusted_device(request)
     if not lock:
         # Reads and account-fenced ACKs can load membership/conversation in one
@@ -106,6 +114,8 @@ def membership(request, cid, lock=False, control=False):
         )
         member.device = device
         conv = member.conversation
+        if request.method not in ("GET", "HEAD") and not allow_closure:
+            write_fence(conv, member.device_id)
         if conv.status != "active" and request.method not in ("GET", "HEAD") and not control:
             raise PermissionDenied("Conversation requires rekey")
         return conv, member
@@ -130,6 +140,8 @@ def membership(request, cid, lock=False, control=False):
         device=device,
         removed_at_epoch=None,
     )
+    if request.method not in ("GET", "HEAD") and not allow_closure:
+        write_fence(conv, member.device_id)
     if conv.status != "active" and request.method not in ("GET", "HEAD") and not control:
         raise PermissionDenied("Conversation requires rekey")
     return conv, member
@@ -237,6 +249,8 @@ class Health(Public):
                     or settings.MAINTENANCE
                 ),
                 "release_status": "BLOCKED",
+                "experimental_closure": settings.CONVERSATION_CLOSURE_READY,
+                "closure_epoch": settings.CONVERSATION_CLOSURE_EPOCH,
             }
         )
 
@@ -933,7 +947,13 @@ class KeyPackages(View):
 class Conversations(View):
     def get(self, request, cid=None):
         device = trusted_device(request)
-        query = m.Conversation.objects.filter(membership__device=device, membership__removed_at_epoch=None)
+        query = m.Conversation.objects.filter(
+            membership__device=device, membership__removed_at_epoch=None
+        ).annotate(
+            closure_state=Subquery(
+                m.ConversationClosure.objects.filter(conversation_id=OuterRef("pk")).values("state")[:1]
+            )
+        )
         if cid:
             conv = get_object_or_404(query, pk=cid)
             return Response(
@@ -978,9 +998,20 @@ class Conversations(View):
             "group_id": d["group_id"],
             "members": [{**p.certificate(device), "role": "owner"}],
         }
+        if "closure_policy" in d["header"]:
+            closure_gate()
+            if (
+                d["kind"] != "direct"
+                or d["header"].get("closure_policy") != CLOSURE_POLICY
+                or d["header"].get("closure_epoch") != settings.CONVERSATION_CLOSURE_EPOCH
+            ):
+                raise ValidationError("Invalid closure capability policy")
+            expected.update(closure_policy=CLOSURE_POLICY, closure_epoch=settings.CONVERSATION_CLOSURE_EPOCH)
         if d["header"] != expected:
             raise ValidationError("Genesis binding")
         verify(device.public_key, d["signature"], p.canonical(expected))
+        creation_fence(d["id"], d["group_id"])
+        check_retired_conversation(d["id"], d["group_id"])
         old = m.Conversation.objects.filter(pk=d["id"]).first()
         if old:
             if (
@@ -1005,6 +1036,11 @@ class Conversations(View):
 
 
 def conversation_page(query, request):
+    query = query.annotate(
+        closure_state=Subquery(
+            m.ConversationClosure.objects.filter(conversation_id=OuterRef("pk")).values("state")[:1]
+        )
+    )
     cursor = request.query_params.get("cursor")
     # Signed, expiring keyset cursor; no growing OFFSET scan. All pages in a
     # traversal share an upper creation-time boundary.
@@ -1047,6 +1083,7 @@ def conversation_json(c):
         "status": c.status,
         "head_hash": c.head_hash,
         "receipt_version": c.receipt_version,
+        "closure_state": getattr(c, "closure_state", None),
     }
 
 
@@ -1086,6 +1123,7 @@ def request_hash(d):
 
 
 def prior_envelope(c, member, d):
+    check_retired_message(member.device_id, d["client_message_id"])
     old = m.MessageEnvelope.objects.filter(
         sender_device=member.device, client_message_id=d["client_message_id"]
     ).first()
@@ -1095,6 +1133,7 @@ def prior_envelope(c, member, d):
 
 
 def save_envelope(request, c, member, d, kind, transition=None):
+    write_fence(c, member.device_id)
     expected = {
         "domain": "haven/envelope/v1",
         "v": 1,
@@ -1183,10 +1222,12 @@ class Messages(View):
     def post(self, request, cid):
         rate(request, "send", 120)
         d = data(request, s.Envelope)
-        c, member = membership(request, cid, lock=True)
+        c, member = membership(request, cid, lock=True, control=True, allow_closure=True)
         old = prior_envelope(c, member, d)
         if old:
             return accepted(old, member.device, False)
+        if c.status != "active":
+            raise PermissionDenied("Conversation requires rekey or is closed")
         return accepted(save_envelope(request, c, member, d, "application"), member.device)
 
 
@@ -1259,7 +1300,7 @@ class CryptoEvents(Messages):
     def post(self, request, cid):
         rate(request, "membership", 30)
         d = data(request, s.Control)
-        c, member = membership(request, cid, lock=True, control=True)
+        c, member = membership(request, cid, lock=True, control=True, allow_closure=True)
         old = prior_envelope(c, member, d)
         if old:
             return accepted(old, member.device, False)
@@ -1395,7 +1436,7 @@ class Acks(View):
         # reads committed cursors. Keep the conversation lock to the final
         # atomic receipt-version UPDATE, instead of serializing nine complete
         # recipient transactions behind one conversation row.
-        c, member = membership(request, cid, control=True)
+        c, member = membership(request, cid, control=True, allow_closure=True)
         if d["seq"] > c.last_seq:
             raise ValidationError("Future cursor")
         cursors = m.DeliveryCursor.objects.filter(device=member.device, conversation=c)
@@ -1435,6 +1476,8 @@ class Attachments(View):
         # reservations on the account before acquiring the conversation lock.
         m.User.objects.select_for_update().get(pk=request.user.pk, is_active=True)
         c, member = membership(request, d["conversation_id"], lock=True)
+        if c.genesis.get("closure_policy") == CLOSURE_POLICY:
+            raise PermissionDenied("Experimental closable conversations support text only")
         rate(request, "upload", 30)
         old = m.EncryptedAttachment.objects.filter(pk=d["id"]).first()
         if old:

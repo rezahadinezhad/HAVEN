@@ -1,0 +1,13 @@
+
+> haven-web@0.2.0 test
+> playwright test conversation-closure.spec.ts integration.spec.ts
+
+
+Running 2 tests using 1 worker
+
+(node:509455) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/conversation-closure.spec.ts:7:5 › mutual closure persists complete encrypted archives before consent and survives offline reload (11.3s)
+  ✓  2 tests/integration.spec.ts:7:5 › browser MLS → Django/PostgreSQL: verified group, bidirectional delivery, durable retry, media, removal and reload (14.9s)
+
+  2 passed (27.2s)

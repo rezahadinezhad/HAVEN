@@ -282,3 +282,33 @@ class StorageUsage(models.Model):
     pending_bytes = models.PositiveBigIntegerField(default=0)
     envelope_count = models.PositiveBigIntegerField(default=0)
     conversation_count = models.PositiveBigIntegerField(default=0)
+
+
+class ConversationClosure(models.Model):
+    # Separate signatures attest to archive persistence; these are not delivery ACKs.
+    conversation = models.OneToOneField(Conversation, primary_key=True, on_delete=models.PROTECT)
+    state = models.CharField(max_length=12, default="proposed")
+    proposal = models.JSONField(default=dict)
+    preparations = models.JSONField(default=dict)
+    transcript = models.JSONField(default=dict)
+    proposal_signature = models.BinaryField()
+    consents = models.JSONField(default=dict)
+    final_receipts = models.JSONField(default=dict)
+
+
+class RetiredConversation(models.Model):
+    # No account/device/member references; only permanent reuse/rollback markers.
+    id = models.UUIDField(primary_key=True, editable=False)
+    group_tag = models.CharField(max_length=64, unique=True)
+    finality_digest = models.CharField(max_length=64)
+
+
+class RetiredMessage(models.Model):
+    # Keyed device/message tuple preserves existing per-sender idempotency scope.
+    tag = models.CharField(primary_key=True, max_length=64)
+
+
+class RetirementReplayKey(models.Model):
+    # Prevent accidental pepper rotation/loss from silently disabling old markers.
+    id = models.PositiveSmallIntegerField(primary_key=True, default=1, editable=False)
+    commitment = models.CharField(max_length=64)

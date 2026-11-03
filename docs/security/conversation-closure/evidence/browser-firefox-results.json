@@ -1,0 +1,157 @@
+{
+  "config": {
+    "argv": [
+      "/home/reza-hadinezhad/.nvm/versions/node/v24.18.0/bin/node",
+      "/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/node_modules/.bin/playwright",
+      "test",
+      "conversation-closure.spec.ts"
+    ],
+    "configFile": "/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/playwright.config.ts",
+    "rootDir": "/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 90000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "",
+        "testDir": "/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests",
+        "snapshotDir": "/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 90000,
+        "use": {
+          "baseURL": "https://127.0.0.1:8443",
+          "headless": true,
+          "browserName": "firefox",
+          "trace": "off",
+          "launchOptions": {
+            "executablePath": "/home/reza-hadinezhad/.cache/ms-playwright/firefox-1555/firefox/firefox",
+            "args": [],
+            "env": {
+              "PATH": "/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/node_modules/.bin:/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/node_modules/.bin:/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/node_modules/.bin:/home/reza-hadinezhad/project/node_modules/.bin:/home/reza-hadinezhad/node_modules/.bin:/home/node_modules/.bin:/node_modules/.bin:/home/reza-hadinezhad/.nvm/versions/node/v24.18.0/lib/node_modules/npm/node_modules/@npmcli/run-script/lib/node-gyp-bin:/home/reza-hadinezhad/.local/bin:/home/reza-hadinezhad/.codex/tmp/arg0-linux/codex-arg0j9J6cZ:/home/reza-hadinezhad/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override:/home/reza-hadinezhad/.local/bin:/home/reza-hadinezhad/.grok/bin:/home/reza-hadinezhad/.nvm/versions/node/v24.18.0/bin:/home/reza-hadinezhad/.local/bin:/home/reza-hadinezhad/.cargo/bin:/home/reza-hadinezhad/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin:/home/reza-hadinezhad/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/fallback:/usr/lib/chatgpt/resources",
+              "LANG": "C.UTF-8",
+              "HOME": "/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/.local/browser-home",
+              "LD_LIBRARY_PATH": "/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/.local/browser-libs/usr/lib/x86_64-linux-gnu"
+            }
+          }
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": ""
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "../../docs/evidence/browser-results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "conversation-closure.spec.ts",
+      "file": "conversation-closure.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "mutual closure persists complete encrypted archives before consent and survives offline reload",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 180000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 15886,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-03T17:17:04.815Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "cdae2840f25cfba78a02-c494a76eda834c039d96",
+          "file": "conversation-closure.spec.ts",
+          "line": 7,
+          "column": 5
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-03T17:17:04.158Z",
+    "duration": 17110.193,
+    "expected": 1,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

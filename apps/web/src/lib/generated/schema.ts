@@ -4,6 +4,11 @@
  */
 
 
+/** OneOf type helpers */
+type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
+type XOR<T, U> = (T | U) extends object ? (Without<T, U> & U) | (Without<U, T> & T) : T | U;
+type OneOf<T extends any[]> = T extends [infer Only] ? Only : T extends [infer A, infer B, ...infer Rest] ? OneOf<[XOR<A, B>, ...Rest]> : never;
+
 export interface paths {
   "/api/v1/health": {
     get: operations["Health_get_0"];
@@ -115,42 +120,46 @@ export interface paths {
   "/api/v1/conversations/{cid}/proofs": {
     get: operations["Proofs_get_33"];
   };
+  "/api/v1/conversations/{cid}/closure": {
+    get: operations["ConversationClosure_get_34"];
+    post: operations["ConversationClosure_post_35"];
+  };
   "/api/v1/conversations/{cid}/acks": {
-    get: operations["Acks_get_34"];
-    post: operations["Acks_post_35"];
+    get: operations["Acks_get_35"];
+    post: operations["Acks_post_36"];
   };
   "/api/v1/sync": {
-    get: operations["Sync_get_35"];
+    get: operations["Sync_get_36"];
   };
   "/api/v1/attachments/init": {
-    post: operations["Attachments_post_36"];
+    post: operations["Attachments_post_37"];
   };
   "/api/v1/attachments/{aid}/view-once": {
-    get: operations["ViewOnceAttachment_get_37"];
-    post: operations["ViewOnceAttachment_post_38"];
+    get: operations["ViewOnceAttachment_get_38"];
+    post: operations["ViewOnceAttachment_post_39"];
   };
   "/api/v1/attachments/{aid}/view-once/close": {
-    post: operations["CloseViewOnceAttachment_post_38"];
+    post: operations["CloseViewOnceAttachment_post_39"];
   };
   "/api/v1/attachments/{aid}/chunks/{index}": {
-    get: operations["Chunk_get_39"];
-    put: operations["Chunk_put_40"];
+    get: operations["Chunk_get_40"];
+    put: operations["Chunk_put_41"];
   };
   "/api/v1/attachments/{aid}/complete": {
-    post: operations["CompleteAttachment_post_40"];
+    post: operations["CompleteAttachment_post_41"];
   };
   "/api/v1/attachments/{aid}": {
-    delete: operations["DeleteAttachment_delete_41"];
+    delete: operations["DeleteAttachment_delete_42"];
   };
   "/api/v1/privacy-policy": {
-    get: operations["PrivacyPolicy_get_42"];
+    get: operations["PrivacyPolicy_get_43"];
   };
   "/api/v1/invitations": {
-    get: operations["FriendInvitations_get_43"];
-    post: operations["FriendInvitations_post_44"];
+    get: operations["FriendInvitations_get_44"];
+    post: operations["FriendInvitations_post_45"];
   };
   "/api/v1/invitations/{iid}/revoke": {
-    post: operations["FriendRevokeInvitation_post_44"];
+    post: operations["FriendRevokeInvitation_post_45"];
   };
 }
 
@@ -250,6 +259,8 @@ export interface components {
       status: string;
       head_hash: string;
       receipt_version: number;
+      /** @enum {unknown} */
+      closure_state: "" | "proposed" | "closing" | "finalized";
     };
     Genesis: {
       /** @constant */
@@ -260,6 +271,9 @@ export interface components {
       kind: "direct" | "group";
       group_id: string;
       members: components["schemas"]["Certificate"][];
+      /** @constant */
+      closure_policy?: "mutual-local-archive-v1";
+      closure_epoch?: string;
     };
     Envelope: {
       /** Format: uuid */
@@ -309,6 +323,62 @@ export interface components {
           expires_at: string;
         }[];
     };
+    ClosureSnapshot: {
+      /** @enum {unknown} */
+      domain: "haven/closure/proposal/v1" | "haven/closure/snapshot/v1";
+      /** @constant */
+      v: 1;
+      /** Format: uuid */
+      conversation_id: string;
+      group_id: string;
+      /** @constant */
+      closure_policy: "mutual-local-archive-v1";
+      restore_epoch: string;
+      /** Format: uuid */
+      nonce: string;
+      /** Format: uuid */
+      proposer_device: string;
+      genesis_hash: string;
+      final_seq: number;
+      final_epoch: number;
+      final_hash: string;
+      /** @constant */
+      archive_policy: "complete-text-history-on-each-device-v1";
+      participants: ({
+          /** Format: uuid */
+          id: string;
+          /** Format: uuid */
+          user_id: string;
+          identity: string;
+          public_key: string;
+          /** @enum {unknown} */
+          role: "owner" | "moderator" | "member";
+          security_generation: number;
+        })[];
+      proposal_hash?: string;
+    };
+    ClosureRecord: {
+      /** @enum {unknown} */
+      state: "active" | "proposed" | "closing" | "finalized";
+      proposal: components["schemas"]["ClosureSnapshot"] | null;
+      transcript: components["schemas"]["ClosureSnapshot"] | null;
+      proposal_signature: string;
+      preparations: {
+        [key: string]: {
+          transcript_hash: string;
+          signature: string;
+        };
+      };
+      consents: {
+        [key: string]: {
+          archive_hash: string;
+          signature: string;
+        };
+      };
+      final_receipts: {
+        [key: string]: string;
+      };
+    };
   };
   responses: never;
   parameters: never;
@@ -334,6 +404,8 @@ export interface operations {
             name: string;
             maintenance: string;
             release_status: string;
+            experimental_closure: boolean;
+            closure_epoch: string;
           };
         };
       };
@@ -346,6 +418,8 @@ export interface operations {
             name: string;
             maintenance: string;
             release_status: string;
+            experimental_closure: boolean;
+            closure_epoch: string;
           };
         };
       };
@@ -3021,6 +3095,8 @@ export interface operations {
             status: string;
             head_hash: string;
             receipt_version: number;
+            /** @enum {unknown} */
+            closure_state: "" | "proposed" | "closing" | "finalized";
             genesis: components["schemas"]["Genesis"];
             genesis_signature: string;
             members: {
@@ -3046,6 +3122,8 @@ export interface operations {
             status: string;
             head_hash: string;
             receipt_version: number;
+            /** @enum {unknown} */
+            closure_state: "" | "proposed" | "closing" | "finalized";
             genesis: components["schemas"]["Genesis"];
             genesis_signature: string;
             members: {
@@ -3645,7 +3723,170 @@ export interface operations {
       };
     };
   };
-  Acks_get_34: {
+  ConversationClosure_get_34: {
+    parameters: {
+      query?: {
+        action?: "propose" | "prepare" | "consent" | "receipt";
+        nonce?: string;
+      };
+      path: {
+        cid: string;
+      };
+    };
+    responses: {
+      /** @description Committed success */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ClosureRecord"];
+        };
+      };
+      /** @description Committed success */
+      201: {
+        content: {
+          "application/json": components["schemas"]["ClosureRecord"];
+        };
+      };
+      /** @description Request rejected; no secret diagnostics */
+      400: {
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+      /** @description Request rejected; no secret diagnostics */
+      403: {
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+      /** @description Request rejected; no secret diagnostics */
+      404: {
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+      /** @description Request rejected; no secret diagnostics */
+      409: {
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+      /** @description Request rejected; no secret diagnostics */
+      429: {
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+      /** @description Request rejected; no secret diagnostics */
+      503: {
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+    };
+  };
+  ConversationClosure_post_35: {
+    parameters: {
+      query?: {
+        action?: "propose" | "prepare" | "consent" | "receipt";
+        nonce?: string;
+      };
+      path: {
+        cid: string;
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": OneOf<[{
+          transcript: {
+            [key: string]: unknown;
+          };
+          signature: string;
+        }, {
+          transcript_hash: string;
+          archive_hash: string;
+          signature: string;
+        }, {
+          finality_hash: string;
+          signature: string;
+        }]>;
+      };
+    };
+    responses: {
+      /** @description Committed success */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ClosureRecord"];
+        };
+      };
+      /** @description Committed success */
+      201: {
+        content: {
+          "application/json": components["schemas"]["ClosureRecord"];
+        };
+      };
+      /** @description Request rejected; no secret diagnostics */
+      400: {
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+      /** @description Request rejected; no secret diagnostics */
+      403: {
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+      /** @description Request rejected; no secret diagnostics */
+      404: {
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+      /** @description Request rejected; no secret diagnostics */
+      409: {
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+      /** @description Request rejected; no secret diagnostics */
+      429: {
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+      /** @description Request rejected; no secret diagnostics */
+      503: {
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+    };
+  };
+  Acks_get_35: {
     parameters: {
       path: {
         cid: string;
@@ -3728,7 +3969,7 @@ export interface operations {
       };
     };
   };
-  Acks_post_35: {
+  Acks_post_36: {
     parameters: {
       path: {
         cid: string;
@@ -3812,7 +4053,7 @@ export interface operations {
       };
     };
   };
-  Sync_get_35: {
+  Sync_get_36: {
     parameters: {
       query?: {
         /** @description Signed keyset cursor. Conversation array responses expose continuation in X-Haven-Next-Cursor. */
@@ -3892,7 +4133,7 @@ export interface operations {
       };
     };
   };
-  Attachments_post_36: {
+  Attachments_post_37: {
     requestBody: {
       content: {
         "application/json": {
@@ -3977,7 +4218,7 @@ export interface operations {
       };
     };
   };
-  ViewOnceAttachment_get_37: {
+  ViewOnceAttachment_get_38: {
     parameters: {
       path: {
         aid: string;
@@ -4052,7 +4293,7 @@ export interface operations {
       };
     };
   };
-  ViewOnceAttachment_post_38: {
+  ViewOnceAttachment_post_39: {
     parameters: {
       path: {
         aid: string;
@@ -4134,7 +4375,7 @@ export interface operations {
       };
     };
   };
-  CloseViewOnceAttachment_post_38: {
+  CloseViewOnceAttachment_post_39: {
     parameters: {
       path: {
         aid: string;
@@ -4214,7 +4455,7 @@ export interface operations {
       };
     };
   };
-  Chunk_get_39: {
+  Chunk_get_40: {
     parameters: {
       header?: {
         /** @description Temporary, device-bound session capability required for view-once attachments. Never a media decryption key. Never place in a URL. */
@@ -4288,7 +4529,7 @@ export interface operations {
       };
     };
   };
-  Chunk_put_40: {
+  Chunk_put_41: {
     parameters: {
       path: {
         aid: string;
@@ -4369,7 +4610,7 @@ export interface operations {
       };
     };
   };
-  CompleteAttachment_post_40: {
+  CompleteAttachment_post_41: {
     parameters: {
       path: {
         aid: string;
@@ -4447,7 +4688,7 @@ export interface operations {
       };
     };
   };
-  DeleteAttachment_delete_41: {
+  DeleteAttachment_delete_42: {
     parameters: {
       path: {
         aid: string;
@@ -4520,7 +4761,7 @@ export interface operations {
       };
     };
   };
-  PrivacyPolicy_get_42: {
+  PrivacyPolicy_get_43: {
     responses: {
       /** @description Committed success */
       200: {
@@ -4584,7 +4825,7 @@ export interface operations {
       };
     };
   };
-  FriendInvitations_get_43: {
+  FriendInvitations_get_44: {
     responses: {
       /** @description Committed success */
       200: {
@@ -4648,7 +4889,7 @@ export interface operations {
       };
     };
   };
-  FriendInvitations_post_44: {
+  FriendInvitations_post_45: {
     requestBody: {
       content: {
         "application/json": {
@@ -4732,7 +4973,7 @@ export interface operations {
       };
     };
   };
-  FriendRevokeInvitation_post_44: {
+  FriendRevokeInvitation_post_45: {
     parameters: {
       path: {
         iid: string;

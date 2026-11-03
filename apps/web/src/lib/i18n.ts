@@ -1,5 +1,48 @@
 export type Language = "en" | "fa";
 const fa: Record<string, string> = {
+  "Restore a closed conversation archive": "بازیابی بایگانی گفتگوی بسته‌شده",
+  "Use the unlock passphrase from when you exported it. Restoring adds local history; it does not restore live device keys or verify a friend's identity.":
+    "از عبارت عبور زمان دریافت بایگانی استفاده کنید. بازیابی فقط تاریخچهٔ محلی را اضافه می‌کند؛ کلیدهای زندهٔ دستگاه یا هویت دوست را تأیید نمی‌کند.",
+  "Archive passphrase": "عبارت عبور بایگانی",
+  "Encrypted conversation archive": "بایگانی رمزگذاری‌شدهٔ گفتگو",
+  "Encrypted conversation archive restored locally.":
+    "بایگانی رمزگذاری‌شدهٔ گفتگو به‌صورت محلی بازیابی شد.",
+
+  "Mutual conversation closure": "بستن گفتگو با توافق دو طرف",
+  "Experimental: both devices must save verified text history. Preparing stops this device from sending; this prototype cannot reopen a prepared conversation. Server deletion is disabled.":
+    "آزمایشی: هر دو دستگاه باید تاریخچهٔ متنی تأییدشده را ذخیره کنند. آماده‌سازی ارسال را در این دستگاه متوقف می‌کند؛ باز کردن دوبارهٔ گفتگو در این نسخه ممکن نیست. حذف از سرور غیرفعال است.",
+  Finalized: "نهایی‌شده",
+  "Both devices prepared; save your final archive":
+    "هر دو دستگاه آماده‌اند؛ بایگانی نهایی خود را ذخیره کنید",
+  "Closure proposed; both devices must prepare the same head":
+    "بستن گفتگو پیشنهاد شده؛ هر دو دستگاه باید یک پایان یکسان را تأیید کنند",
+  "Text-only direct conversation; one approved device per account":
+    "گفتگوی مستقیم متنی؛ یک دستگاه تأییدشده برای هر حساب",
+  "Check closure status": "بررسی وضعیت بستن گفتگو",
+  "Propose mutual closure": "پیشنهاد بستن گفتگو",
+  "Finish pending sends and drafts first. Preparing permanently pauses this device in this conversation. Continue?":
+    "ابتدا ارسال‌های در انتظار و پیش‌نویس‌ها را تمام کنید. آماده‌سازی ارسال را برای همیشه در این گفتگو متوقف می‌کند. ادامه می‌دهید؟",
+  "Prepare this device": "آماده‌سازی این دستگاه",
+  "Save verified archive": "ذخیرهٔ بایگانی تأییدشده",
+  "Confirm my archive and close": "تأیید بایگانی من و بستن گفتگو",
+  "Create experimental closable direct conversation":
+    "ساخت گفتگوی مستقیم آزمایشی با امکان بستن",
+  "Closed conversation archives": "بایگانی گفتگوهای بسته‌شده",
+  "These copies stay encrypted in this vault. Export a backup before clearing browser data.":
+    "این نسخه‌ها در این مخزن رمزگذاری می‌شوند. پیش از پاک کردن داده‌های مرورگر، نسخهٔ پشتیبان بگیرید.",
+  "Awaiting mutual closure": "در انتظار توافق برای بستن",
+  "Export encrypted archive": "دریافت بایگانی رمزگذاری‌شده",
+  "This experimental conversation supports text only.":
+    "این گفتگوی آزمایشی فقط از متن پشتیبانی می‌کند.",
+  "Conversation closure paused sending. Keep your encrypted archive.":
+    "بستن گفتگو ارسال را متوقف کرده است. بایگانی رمزگذاری‌شدهٔ خود را نگه دارید.",
+  "This device prepared conversation closure. Sending is paused; keep the encrypted archive.":
+    "این دستگاه برای بستن گفتگو آماده شده است. ارسال متوقف است؛ بایگانی رمزگذاری‌شده را نگه دارید.",
+  "Finish pending sends, uploads and drafts before preparing closure":
+    "پیش از آماده‌سازی، ارسال‌ها، بارگذاری‌ها و پیش‌نویس‌های در انتظار را تمام کنید",
+  "Complete text-only local history is required; missing, quarantined or attachment history blocks closure":
+    "تاریخچهٔ متنی محلی کامل لازم است؛ تاریخچهٔ ناقص، قرنطینه‌شده یا دارای پیوست مانع بستن گفتگو می‌شود",
+
   "Friend link or known device ID": "پیوند دوست یا شناسهٔ دستگاه آشنا",
   "Private account": "حساب خصوصی",
   "Your account handle is {handle}. Save it for your next sign-in.":

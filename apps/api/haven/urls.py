@@ -1,5 +1,6 @@
 from django.urls import path
 from core import views as v
+from core.closure_views import ConversationClosure
 
 P = "api/v1/"
 urlpatterns = [
@@ -37,6 +38,7 @@ urlpatterns = [
     path(P + "conversations/<uuid:cid>/messages", v.Messages.as_view()),
     path(P + "conversations/<uuid:cid>/crypto-events", v.CryptoEvents.as_view()),
     path(P + "conversations/<uuid:cid>/proofs", v.Proofs.as_view()),
+    path(P + "conversations/<uuid:cid>/closure", ConversationClosure.as_view()),
     path(P + "conversations/<uuid:cid>/acks", v.Acks.as_view()),
     path(P + "sync", v.Sync.as_view()),
     path(P + "attachments/init", v.Attachments.as_view()),

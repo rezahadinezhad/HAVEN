@@ -33,6 +33,7 @@ export function ChatComposer({
   discardRecording,
   recording,
   disabled,
+  textOnly = false,
   reply,
   cancelReply,
   online,
@@ -48,6 +49,7 @@ export function ChatComposer({
   discardRecording: () => void;
   recording: boolean;
   disabled: boolean;
+  textOnly?: boolean;
   reply?: { editing: boolean; author: string; text: string };
   cancelReply: () => void;
   online: boolean;
@@ -86,7 +88,7 @@ export function ChatComposer({
     file: File | undefined,
     category: "media" | "audio" | "file",
   ) {
-    if (!file || disabled || recording) return;
+    if (!file || disabled || textOnly || recording) return;
     setFileError("");
     if (file.size > 25 * 1024 * 1024) {
       setFileError("File exceeds 25 MiB");
@@ -292,7 +294,7 @@ export function ChatComposer({
           className="quiet icon-button file-button"
           title={t("Add attachment")}
           aria-label={t("Add attachment")}
-          disabled={disabled || recording}
+          disabled={disabled || textOnly || recording}
           popoverTarget="attachment-menu"
           onClick={(e) =>
             positionPopover(
@@ -473,7 +475,7 @@ export function ChatComposer({
           className={`voice-button icon-button ${recording ? "is-recording" : ""}`}
           title={t(recording ? "Stop recording" : "Record voice note")}
           aria-label={t(recording ? "Stop recording" : "Record voice note")}
-          disabled={disabled}
+          disabled={disabled || textOnly}
           onClick={voice}
         >
           <Icon name={recording ? "stop" : "microphone"} size={22} />

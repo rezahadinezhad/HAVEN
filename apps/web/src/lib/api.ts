@@ -12,6 +12,7 @@ export type Conversation = {
   status: string;
   head_hash: string;
   receipt_version?: number;
+  closure_state?: "proposed" | "closing" | "finalized" | null;
 };
 export type Envelope = {
   id: string;

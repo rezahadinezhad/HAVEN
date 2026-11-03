@@ -1,5 +1,6 @@
 import { openDB } from "idb";
 import type { Certificate } from "./api";
+import type { ClosureArchive } from "./closure-protocol";
 export type SealedRecord = {
   v: 1;
   kdf: string;
@@ -79,6 +80,8 @@ export type VaultState = {
       group_id: string;
       genesis_hash?: string;
       kind?: "direct" | "group";
+      closure_policy?: string;
+      closure_epoch?: string;
       members: Certificate[];
       epoch_start_seq?: number;
     }
@@ -86,6 +89,7 @@ export type VaultState = {
   crypto: string;
   revision: number;
   pins: Record<string, string>;
+  closure_archives?: Record<string, ClosureArchive>;
   contact_names?: Record<string, string>;
   connection_intents?: Record<string, string>;
   cursor: Record<string, number>;

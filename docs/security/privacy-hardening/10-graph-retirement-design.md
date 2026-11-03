@@ -1,3 +1,5 @@
+> Historical design finding at `21d8cbf`. A later explicitly authorized implementation now supports a restricted two-account, single-device, text-only experiment and guarded disposable-DB retirement. See the [current implementation, protocol, tests and production limits](../conversation-closure/README.md). The broader requirements below remain relevant; the historical “not implemented” statements describe that earlier snapshot.
+
 # Conversation closure and historical graph retirement — proposed v2
 
 **DESIGNED_NOT_IMPLEMENTED.** There is no new runtime state flag, deletion command, background task or production migration for retirement. The synthetic graph test demonstrates retained graph copies; it is not a deletion prototype. The owner reports no real users, but this does not justify implementing a false finality protocol or weakening invariants.

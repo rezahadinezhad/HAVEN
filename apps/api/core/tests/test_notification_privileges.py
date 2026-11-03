@@ -86,6 +86,10 @@ def test_notification_login_can_publish_but_cannot_read_graph_or_payload():
                     "core_encryptedattachment",
                     "core_auditevent",
                     "core_recoverychallenge",
+                    "core_conversationclosure",
+                    "core_retiredconversation",
+                    "core_retiredmessage",
+                    "core_retirementreplaykey",
                 ):
                     with pytest.raises(psycopg.errors.InsufficientPrivilege):
                         narrow.execute(sql.SQL("SELECT * FROM {} LIMIT 1").format(sql.Identifier(table)))

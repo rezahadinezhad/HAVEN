@@ -1,4 +1,4 @@
-const SHELL_BUILD_REVISION = "12598041b730573621b9aabc95d9146382b08f77ef66538a625a22c2823b0e43";
+const SHELL_BUILD_REVISION = "c36282a1fbf5902941df03bb1f4295989014e6c5298f0fa19deecfa2d6add376";
 // Only the explicitly public shell and immutable build resources enter this cache. API/data never do.
 const PREFIX="haven-shell-";
 // Bind this worker to its build even when the browser terminates/restarts it

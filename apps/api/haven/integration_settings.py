@@ -16,3 +16,6 @@ if (
 ):
     raise RuntimeError("Integration settings require isolated loopback IP/localhost origins")
 CRYPTO_READY = True
+
+# Synthetic loopback implementation; production source gate remains closed.
+CONVERSATION_CLOSURE_READY = True

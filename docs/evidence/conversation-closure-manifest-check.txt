@@ -1,0 +1,1 @@
+PASS: verified-source and root source manifests match the final files.

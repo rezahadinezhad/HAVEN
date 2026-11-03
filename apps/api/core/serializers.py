@@ -154,3 +154,19 @@ class ServerPolicy(StrictSerializer):
 class DisableAccount(StrictSerializer):
     password = s.CharField(max_length=256, trim_whitespace=False)
     confirmation = s.ChoiceField(choices=["DISABLE"])
+
+
+class ClosureProposal(StrictSerializer):
+    transcript = s.JSONField()
+    signature = Base64(max_length=88)
+
+
+class ClosureConsent(StrictSerializer):
+    transcript_hash = s.RegexField(r"^[0-9a-f]{64}$")
+    archive_hash = s.RegexField(r"^[0-9a-f]{64}$")
+    signature = Base64(max_length=88)
+
+
+class ClosureFinalReceipt(StrictSerializer):
+    finality_hash = s.RegexField(r"^[0-9a-f]{64}$")
+    signature = Base64(max_length=88)

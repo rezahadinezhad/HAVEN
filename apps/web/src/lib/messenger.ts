@@ -1,3 +1,11 @@
+import {
+  CLOSURE_POLICY,
+  parseClosureRecord,
+  type ClosureSnapshot,
+  type ClosureRecord,
+  type ClosureArchive,
+  type ClosureProofBundle,
+} from "./closure-protocol";
 import { authenticatedEvent } from "./events";
 // RFC 9420 encryption stays in OpenMLS. Delivery signatures authenticate ordering and application policy.
 import { prepareUpload, resumeUpload, discardUpload } from "./media";
@@ -24,6 +32,7 @@ import {
   openVault,
   saveVault,
   unseal,
+  seal,
   stopVaultWorker,
   type VaultState,
   type LocalEvent,
@@ -82,6 +91,8 @@ type Detail = Conversation & {
     group_id: string;
     kind: string;
     members: Certificate[];
+    closure_policy?: string;
+    closure_epoch?: string;
   };
   genesis_signature: string;
 };
@@ -274,6 +285,7 @@ export class Messenger {
         pins: { ...history.pins, [id]: x.result.public_key },
         heads: {},
         cursor: {},
+        closure_archives: structuredClone(history.closure_archives || {}),
         events: history.events
           .filter((e) => !e.file?.view_once)
           .map((e) => ({ ...e, state: "local_only" })),
@@ -308,6 +320,7 @@ export class Messenger {
     this.secret = "";
     this.state.crypto = "";
     this.state.events = [];
+    this.state.closure_archives = undefined;
     this.state.drafts = {};
     this.state.recovery_seed = undefined;
     this.state.uploads = undefined;
@@ -315,6 +328,641 @@ export class Messenger {
     this.state.outbox = {};
     lockCrypto();
     stopVaultWorker();
+  }
+  private assertConversationWritable(c: Conversation) {
+    if (
+      this.state.closure_archives?.[c.id] ||
+      c.status === "closing" ||
+      c.status === "closed"
+    )
+      throw new Error(
+        "This device prepared conversation closure. Sending is paused; keep the encrypted archive.",
+      );
+  }
+  private assertClosureQueueEmpty(c: Conversation) {
+    if (
+      Object.values(this.state.outbox).some(
+        (x) => x.path.includes(c.id) || x.body.id === c.id,
+      ) ||
+      this.state.drafts[c.id]?.trim() ||
+      Object.values(this.state.uploads || {}).some(
+        (x) => x.conversation_id === c.id,
+      )
+    )
+      throw new Error(
+        "Finish pending sends, uploads and drafts before preparing closure",
+      );
+  }
+  private async closureContext(
+    c: Conversation,
+    record: ClosureRecord,
+    offline?: ClosureArchive,
+  ): Promise<ClosureProofBundle> {
+    const h = offline
+        ? {
+            seq: offline.transcript.final_seq,
+            hash: offline.transcript.final_hash,
+            epoch: offline.transcript.final_epoch,
+            group_id: offline.transcript.group_id,
+            genesis_hash: offline.transcript.genesis_hash,
+            kind: "direct" as const,
+            members: offline.transcript.participants.map(
+              ({ security_generation: _, ...x }) => x,
+            ),
+            closure_policy: CLOSURE_POLICY,
+            closure_epoch: offline.transcript.restore_epoch,
+          }
+        : this.state.heads[c.id],
+      t = record.transcript;
+    if (
+      !h ||
+      !t ||
+      h.closure_policy !== CLOSURE_POLICY ||
+      t.conversation_id !== c.id ||
+      t.group_id !== h.group_id ||
+      t.genesis_hash !== h.genesis_hash ||
+      t.final_seq !== h.seq ||
+      t.final_hash !== h.hash ||
+      t.final_epoch !== h.epoch ||
+      t.restore_epoch !== h.closure_epoch ||
+      (!offline && this.state.cursor[c.id] !== h.seq)
+    )
+      throw new Error(
+        "Closure checkpoint does not match verified local history",
+      );
+    const ours = t.participants.find(
+      (x) => x.id === (offline?.device_id || this.state.device_id),
+    );
+    const account = offline
+      ? null
+      : await api<{ user: { security_generation: number } }>("auth/me");
+    if (
+      !ours ||
+      ours.user_id !== this.user ||
+      (!offline &&
+        (ours.public_key !== this.state.device.public_key ||
+          ours.security_generation !== account!.user.security_generation)) ||
+      new Set(t.participants.map((x) => x.id)).size !== 2 ||
+      new Set(t.participants.map((x) => x.user_id)).size !== 2 ||
+      !same(
+        t.participants.map(({ security_generation: _, ...x }) => x),
+        sorted(h.members),
+      )
+    )
+      throw new Error("Closure participant or recovery binding mismatch");
+    const detail =
+        offline?.bundle || (await api<Detail>(`conversations/${c.id}`)),
+      g = detail.genesis;
+    if (
+      g.domain !== "haven/genesis/v1" ||
+      g.id !== c.id ||
+      g.kind !== "direct" ||
+      g.members.length !== 1 ||
+      g.closure_policy !== CLOSURE_POLICY ||
+      g.closure_epoch !== h.closure_epoch ||
+      (await digest(
+        canonical({ header: g, signature: detail.genesis_signature }),
+      )) !== h.genesis_hash
+    )
+      throw new Error("Closure genesis changed");
+    let head: Head = {
+      seq: 0,
+      hash: h.genesis_hash!,
+      epoch: 0,
+      group_id: g.group_id,
+      members: g.members,
+      kind: "direct",
+    };
+    if (!offline) this.pinned(g.members[0]);
+    await signatureValid(g.members[0].public_key, detail.genesis_signature, g);
+    const proofs: Envelope[] = [];
+    let proofBytes = 0;
+    while (head.seq < t.final_seq) {
+      const page = offline
+        ? {
+            proofs: offline.bundle.proofs
+              .filter((x) => x.seq > head.seq)
+              .slice(0, 100),
+          }
+        : await api<{ proofs: Envelope[] }>(
+            `conversations/${c.id}/proofs?after_seq=${head.seq}`,
+          );
+      if (
+        !Array.isArray(page.proofs) ||
+        !page.proofs.length ||
+        page.proofs.length > 100
+      )
+        throw new Error("Incomplete closure proof archive");
+      const before = head.seq;
+      for (const e of page.proofs) {
+        if (e.seq > t.final_seq) break;
+        const sender = head.members.find(
+            (x) => x.id === e.header.sender_device,
+          ),
+          header = e.header;
+        if (
+          !sender ||
+          header.domain !== "haven/envelope/v1" ||
+          header.v !== 1 ||
+          header.conversation_id !== c.id ||
+          header.group_id !== g.group_id ||
+          header.seq !== head.seq + 1 ||
+          header.previous_hash !== head.hash ||
+          header.epoch !== head.epoch ||
+          e.seq !== header.seq ||
+          e.epoch !== header.epoch ||
+          e.client_message_id !== header.client_message_id ||
+          e.sender_device !== sender.id
+        )
+          throw new Error("Closure proof gap or scope mismatch");
+        if (!offline) this.pinned(sender);
+        await signatureValid(sender.public_key, e.signature, header);
+        const chain = await digest(
+          canonical({ header, signature: e.signature }),
+        );
+        if (chain !== e.chain_hash)
+          throw new Error("Closure proof hash mismatch");
+        const nextMembers = header.transition
+          ? this.validateTransition(
+              head,
+              header.transition,
+              sender,
+              g.kind,
+              !offline,
+            )
+          : head.members;
+        if (
+          (header.transition && e.kind !== "commit") ||
+          (!header.transition && e.kind !== "application")
+        )
+          throw new Error("Closure proof kind mismatch");
+        head = {
+          ...head,
+          seq: e.seq,
+          hash: chain,
+          epoch: head.epoch + (header.transition ? 1 : 0),
+          members: nextMembers,
+        };
+        proofs.push(e);
+        if (
+          proofs.length > 500 ||
+          (proofBytes += new TextEncoder().encode(canonical(e)).length) >
+            512 * 1024
+        )
+          throw new Error("Closure proof archive limit reached");
+      }
+      if (head.seq === before) throw new Error("Truncated closure history");
+    }
+    if (
+      head.hash !== t.final_hash ||
+      head.epoch !== t.final_epoch ||
+      !same(sorted(head.members), sorted(h.members)) ||
+      proofs.filter((e) => e.header.transition?.action === "add").length !==
+        1 ||
+      proofs.some(
+        (e) =>
+          e.header.transition &&
+          !["add", "update"].includes(e.header.transition.action),
+      )
+    )
+      throw new Error("Closure final history mismatch");
+    if (record.proposal) {
+      const proposal = record.proposal,
+        proposer = t.participants.find(
+          (x) => x.id === proposal.proposer_device,
+        ),
+        anchor = proofs[proposal.final_seq - 1];
+      const { proposal_hash: _, ...snapshot } = t;
+      const expected = {
+        ...snapshot,
+        domain: "haven/closure/proposal/v1",
+        final_seq: proposal.final_seq,
+        final_hash: anchor?.chain_hash,
+        final_epoch: anchor
+          ? anchor.epoch + (anchor.kind === "commit" ? 1 : 0)
+          : -1,
+      };
+      if (
+        !proposer ||
+        !same(proposal, expected) ||
+        t.proposal_hash !== (await digest(canonical(proposal)))
+      )
+        throw new Error("Closure proposal anchor mismatch");
+      await signatureValid(
+        proposer.public_key,
+        record.proposal_signature,
+        proposal,
+      );
+    } else if (
+      record.state !== "active" ||
+      t.domain !== "haven/closure/proposal/v1" ||
+      t.proposal_hash ||
+      t.proposer_device !== this.state.device_id
+    )
+      throw new Error("Invalid initial closure candidate");
+    const th = await digest(canonical(t)),
+      ids = t.participants.map((x) => x.id);
+    for (const [did, ready] of Object.entries(record.preparations)) {
+      const device = t.participants.find((x) => x.id === did);
+      if (!device) throw new Error("Unknown prepared device");
+      await signatureValid(device.public_key, ready.signature, {
+        domain: "haven/closure/prepare/v1",
+        transcript_hash: ready.transcript_hash,
+        device_id: did,
+      });
+      if (record.state !== "proposed" && ready.transcript_hash !== th)
+        throw new Error("Devices prepared different final heads");
+    }
+    for (const [did, consent] of Object.entries(record.consents)) {
+      const device = t.participants.find((x) => x.id === did);
+      if (!device) throw new Error("Unknown archive signer");
+      await signatureValid(device.public_key, consent.signature, {
+        domain: "haven/closure/archive-consent/v1",
+        transcript_hash: th,
+        device_id: did,
+        archive_hash: consent.archive_hash,
+      });
+    }
+    if (
+      (record.state === "closing" || record.state === "finalized") &&
+      !same(Object.keys(record.preparations).sort(), [...ids].sort())
+    )
+      throw new Error("Missing mutual preparation");
+    if (
+      record.state === "finalized" &&
+      !same(Object.keys(record.consents).sort(), [...ids].sort())
+    )
+      throw new Error("Missing mutual archive consent");
+    const { final_receipts: _, ...finalCertificate } = record;
+    const finalityHash = await digest(canonical(finalCertificate));
+    for (const [did, signature] of Object.entries(record.final_receipts)) {
+      const device = t.participants.find((x) => x.id === did);
+      if (!device || record.state !== "finalized")
+        throw new Error("Invalid final receipt signer");
+      await signatureValid(device.public_key, signature, {
+        domain: "haven/closure/final-certificate-receipt/v1",
+        finality_hash: finalityHash,
+        device_id: did,
+      });
+    }
+    if (
+      this.state.closure_archives?.[c.id]?.certificate?.state === "finalized" &&
+      record.state !== "finalized"
+    )
+      throw new Error("Final certificate rollback detected");
+    return { genesis: g, genesis_signature: detail.genesis_signature, proofs };
+  }
+  private async signClosure(value: unknown) {
+    const signature = await cryptoCall(this.state.crypto, {
+      op: "sign",
+      payload: encode(canonical(value)),
+    });
+    return signature.result.signature!;
+  }
+  private async closureRecord(c: Conversation, nonce?: string) {
+    const record = parseClosureRecord(
+      await api(
+        `conversations/${c.id}/closure${nonce ? "?nonce=" + nonce : ""}`,
+      ),
+    );
+    return record;
+  }
+  async proposeClosure(c: Conversation) {
+    return this.serial(async () => {
+      c = await api<Conversation>(`conversations/${c.id}`);
+      await this.flushInternal();
+      this.assertClosureQueueEmpty(c);
+      await this.syncInternal(c);
+      const record = await this.closureRecord(c, crypto.randomUUID());
+      if (record.state !== "active") return record;
+      await this.closureContext(c, record);
+      return parseClosureRecord(
+        await api(`conversations/${c.id}/closure?action=propose`, "POST", {
+          transcript: record.transcript,
+          signature: await this.signClosure(record.transcript),
+        }),
+      );
+    });
+  }
+  async prepareClosure(c: Conversation) {
+    return this.serial(async () => {
+      c = await api<Conversation>(`conversations/${c.id}`);
+      await this.flushInternal();
+      this.assertClosureQueueEmpty(c);
+      await this.syncInternal(c);
+      const record = await this.closureRecord(c);
+      if (!record.transcript || record.state === "active")
+        throw new Error("Propose closure first");
+      const bundle = await this.closureContext(c, record),
+        t = record.transcript,
+        th = await digest(canonical(t));
+      if (record.state === "finalized")
+        return this.retainFinalCertificate(c, record);
+      const existing = this.state.closure_archives?.[c.id];
+      let archive = existing;
+      if (!archive || !same(archive.transcript, t)) {
+        const events = this.state.events.filter(
+            (x) => x.conversation_id === c.id,
+          ),
+          apps = bundle.proofs.filter((x) => x.kind === "application");
+        if (
+          events.length !== apps.length ||
+          new Set(events.map((x) => x.seq)).size !== events.length ||
+          events.some(
+            (x) => x.type === "file" || !!x.file || x.state === "local_only",
+          ) ||
+          apps.some(
+            (e) =>
+              !events.some(
+                (x) =>
+                  x.seq === e.seq &&
+                  x.transport_hash === e.header.ciphertext_hash &&
+                  x.sender === e.sender_device,
+              ),
+          )
+        )
+          throw new Error(
+            "Complete text-only local history is required; missing, quarantined or attachment history blocks closure",
+          );
+        const content = {
+          v: 1 as const,
+          archive_id: crypto.randomUUID(),
+          device_id: this.state.device_id,
+          transcript: t,
+          bundle,
+          events: structuredClone(events),
+        };
+        if (
+          new TextEncoder().encode(canonical(content)).length >
+          4 * 1024 * 1024
+        )
+          throw new Error("Closure archive exceeds the 4 MiB prototype limit");
+        archive = {
+          ...content,
+          archive_hash: await digest(canonical(content)),
+          prepare_request: {
+            transcript: t,
+            signature: await this.signClosure({
+              domain: "haven/closure/prepare/v1",
+              transcript_hash: th,
+              device_id: this.state.device_id,
+            }),
+          },
+        };
+        const n = this.next();
+        n.closure_archives ||= {};
+        if (
+          !n.closure_archives[c.id] &&
+          Object.keys(n.closure_archives).length >= 8
+        )
+          throw new Error(
+            "Prototype archive limit reached; preserve existing archives",
+          );
+        n.closure_archives[c.id] = archive;
+        await this.persist(n);
+      }
+      // Persistence and local write fencing precede the readiness signature's network submission.
+      return parseClosureRecord(
+        await api(
+          `conversations/${c.id}/closure?action=prepare`,
+          "POST",
+          archive.prepare_request,
+        ),
+      );
+    });
+  }
+  async consentClosure(c: Conversation) {
+    return this.serial(async () => {
+      c = await api<Conversation>(`conversations/${c.id}`);
+      this.assertClosureQueueEmpty(c);
+      await this.syncInternal(c);
+      const record = await this.closureRecord(c);
+      await this.closureContext(c, record);
+      if (record.state === "finalized")
+        return this.retainFinalCertificate(c, record);
+      const saved = this.state.closure_archives?.[c.id],
+        t = record.transcript;
+      if (
+        record.state !== "closing" ||
+        !saved ||
+        !t ||
+        !same(saved.transcript, t)
+      )
+        throw new Error(
+          "Both devices must prepare this exact head before consenting",
+        );
+      if (!saved.consent_request) {
+        const n = this.next(),
+          archive = n.closure_archives![c.id],
+          th = await digest(canonical(t));
+        archive.consent_request = {
+          transcript_hash: th,
+          archive_hash: archive.archive_hash,
+          signature: await this.signClosure({
+            domain: "haven/closure/archive-consent/v1",
+            transcript_hash: th,
+            device_id: this.state.device_id,
+            archive_hash: archive.archive_hash,
+          }),
+        };
+        await this.persist(n);
+      }
+      const answer = parseClosureRecord(
+        await api(
+          `conversations/${c.id}/closure?action=consent`,
+          "POST",
+          this.state.closure_archives![c.id].consent_request,
+        ),
+      );
+      await this.closureContext(c, answer);
+      return answer.state === "finalized"
+        ? this.retainFinalCertificate(c, answer)
+        : answer;
+    });
+  }
+  private async retainFinalCertificate(c: Conversation, record: ClosureRecord) {
+    const archive = this.state.closure_archives?.[c.id],
+      ours = record.consents[this.state.device_id];
+    if (
+      !archive ||
+      !ours ||
+      ours.archive_hash !== archive.archive_hash ||
+      !same(archive.transcript, record.transcript)
+    )
+      throw new Error(
+        "Restore the matching encrypted archive before acknowledging finality",
+      );
+    const { final_receipts: _, ...certificate } = record,
+      fh = await digest(canonical(certificate));
+    const n = this.next();
+    n.closure_archives![c.id].certificate = record;
+    n.closure_archives![c.id].receipt_request ||= {
+      finality_hash: fh,
+      signature: await this.signClosure({
+        domain: "haven/closure/final-certificate-receipt/v1",
+        finality_hash: fh,
+        device_id: this.state.device_id,
+      }),
+    };
+    await this.persist(n);
+    const answer = parseClosureRecord(
+      await api(
+        `conversations/${c.id}/closure?action=receipt`,
+        "POST",
+        this.state.closure_archives![c.id].receipt_request,
+      ),
+    );
+    if (
+      answer.final_receipts[this.state.device_id] !==
+      this.state.closure_archives![c.id].receipt_request!.signature
+    )
+      throw new Error("Final archive receipt was not confirmed");
+    const confirmed = this.next();
+    confirmed.closure_archives![c.id].receipt_confirmed = true;
+    await this.persist(confirmed);
+    return answer;
+  }
+  async refreshClosure(c: Conversation) {
+    return this.serial(async () => {
+      c = await api<Conversation>(`conversations/${c.id}`);
+      await this.syncInternal(c);
+      const record = await this.closureRecord(c);
+      if (record.state !== "active") await this.closureContext(c, record);
+      return record.state === "finalized"
+        ? this.retainFinalCertificate(c, record)
+        : record;
+    });
+  }
+  async exportClosureArchive(cid: string) {
+    return this.serial(async () => {
+      const archive = this.state.closure_archives?.[cid];
+      if (!archive) throw new Error("No local closure archive");
+      return JSON.stringify({
+        v: 1,
+        user: this.user,
+        conversation_id: cid,
+        scope: `${this.user}:closure:${cid}`,
+        sealed: await seal(this.secret, `${this.user}:closure:${cid}`, {
+          archive,
+        }),
+      });
+    });
+  }
+  async importClosureArchive(serialized: string, archiveSecret: string) {
+    return this.serial(async () => {
+      if (new TextEncoder().encode(serialized).length > 6 * 1024 * 1024)
+        throw new Error("Closure archive exceeds the prototype limit");
+      const box = JSON.parse(serialized);
+      if (
+        box.v !== 1 ||
+        box.user !== this.user ||
+        typeof box.conversation_id !== "string" ||
+        box.scope !== `${this.user}:closure:${box.conversation_id}`
+      )
+        throw new Error("Closure archive account mismatch");
+      const { archive } = await unseal<{ archive: ClosureArchive }>(
+        archiveSecret,
+        box.scope,
+        box.sealed,
+      );
+      if (
+        !archive ||
+        archive.v !== 1 ||
+        !archive.certificate ||
+        !Array.isArray(archive.events) ||
+        archive.events.length > 500 ||
+        !Array.isArray(archive.bundle?.proofs) ||
+        archive.bundle.proofs.length > 500
+      )
+        throw new Error("Incomplete closure archive");
+      const record = parseClosureRecord(archive.certificate),
+        t = record.transcript;
+      if (
+        record.state !== "finalized" ||
+        !t ||
+        !same(archive.transcript, t) ||
+        t.conversation_id !== box.conversation_id ||
+        archive.events.some(
+          (x) => x.type === "file" || !!x.file || x.state === "local_only",
+        )
+      )
+        throw new Error(
+          "Only complete finalized text archives can be restored",
+        );
+      const content = {
+        v: archive.v,
+        archive_id: archive.archive_id,
+        device_id: archive.device_id,
+        transcript: t,
+        bundle: archive.bundle,
+        events: archive.events,
+      };
+      if (
+        new TextEncoder().encode(canonical(content)).length > 4 * 1024 * 1024 ||
+        (await digest(canonical(content))) !== archive.archive_hash ||
+        record.consents[archive.device_id]?.archive_hash !==
+          archive.archive_hash
+      )
+        throw new Error("Closure archive commitment mismatch");
+      await this.closureContext(
+        { id: box.conversation_id } as Conversation,
+        record,
+        archive,
+      );
+      for (const event of archive.events) {
+        const { state: _, seq: _seq, transport_hash: _hash, ...data } = event;
+        authenticatedEvent(data);
+        if (event.conversation_id !== box.conversation_id)
+          throw new Error("Archive event scope mismatch");
+      }
+      if (
+        archive.events.length !==
+          archive.bundle.proofs.filter((e) => e.kind === "application")
+            .length ||
+        new Set(archive.events.map((x) => x.seq)).size !==
+          archive.events.length ||
+        archive.bundle.proofs
+          .filter((e) => e.kind === "application")
+          .some(
+            (e) =>
+              !archive.events.some(
+                (x) =>
+                  x.seq === e.seq &&
+                  x.transport_hash === e.header.ciphertext_hash &&
+                  x.sender === e.sender_device,
+              ),
+          )
+      )
+        throw new Error("Incomplete archived application history");
+      const n = this.next();
+      n.closure_archives ||= {};
+      const previous = n.closure_archives[box.conversation_id];
+      if (previous && previous.archive_hash !== archive.archive_hash)
+        throw new Error(
+          "Existing archive is preserved; conflicting import rejected",
+        );
+      if (!previous && Object.keys(n.closure_archives).length >= 8)
+        throw new Error(
+          "Prototype archive limit reached; preserve existing archives",
+        );
+      // Restore local history only. Imported proofs never install trust pins,
+      // ratchets, credentials, pending requests, cursors or server authority.
+      n.closure_archives[box.conversation_id] = previous
+        ? { ...previous, certificate: record }
+        : {
+            ...archive,
+            receipt_confirmed: false,
+            receipt_request: undefined,
+            consent_request: undefined,
+          };
+      await this.persist(n);
+    });
+  }
+  closedHistory(cid: string) {
+    if (this.locked) throw new Error("Vault locked");
+    const archive = this.state.closure_archives?.[cid];
+    if (!archive) throw new Error("No local closure archive");
+    return structuredClone(archive.events);
   }
   private serial<T>(fn: () => Promise<T>): Promise<T> {
     const task = this.chain.then(() => {
@@ -382,6 +1030,8 @@ export class Messenger {
     viewOnce = false,
   ) {
     return this.serial(async () => {
+      if (this.state.heads[cid]?.closure_policy === CLOSURE_POLICY)
+        throw new Error("This experimental conversation supports text only.");
       const meta = await prepareUpload(file, cid, signal, viewOnce),
         n = this.next();
       n.uploads ||= {};
@@ -541,9 +1191,23 @@ export class Messenger {
       await this.persist(n);
     });
   }
-  async create(kind: "direct" | "group", contactDevice?: string) {
+  async create(
+    kind: "direct" | "group",
+    contactDevice?: string,
+    closureCapable = false,
+  ) {
     return this.serial(async () => {
       this.noPendingCommit();
+      const capability = closureCapable
+        ? await api<{ experimental_closure: boolean; closure_epoch: string }>(
+            "health",
+          )
+        : null;
+      if (
+        closureCapable &&
+        (kind !== "direct" || !capability?.experimental_closure)
+      )
+        throw new Error("Experimental conversation closure is disabled");
       const id = crypto.randomUUID(),
         group_id = crypto.randomUUID();
       const x = await cryptoCall(this.state.crypto, { op: "create", group_id });
@@ -558,6 +1222,12 @@ export class Messenger {
         ),
       ];
       const header = {
+        ...(closureCapable
+          ? {
+              closure_policy: CLOSURE_POLICY,
+              closure_epoch: capability!.closure_epoch,
+            }
+          : {}),
         domain: "haven/genesis/v1",
         id,
         kind,
@@ -584,6 +1254,10 @@ export class Messenger {
       };
       n.heads[id].genesis_hash = n.heads[id].hash;
       n.heads[id].kind = kind;
+      if (closureCapable) {
+        n.heads[id].closure_policy = CLOSURE_POLICY;
+        n.heads[id].closure_epoch = capability!.closure_epoch;
+      }
       if (contactDevice) {
         n.connection_intents ||= {};
         n.connection_intents[contactDevice] = id;
@@ -673,6 +1347,12 @@ export class Messenger {
   ) {
     return this.serial(async () => {
       this.noPendingCommit();
+      this.assertConversationWritable(c);
+      if (
+        event.type === "file" &&
+        this.state.heads[c.id]?.closure_policy === CLOSURE_POLICY
+      )
+        throw new Error("This experimental conversation supports text only.");
       const h = this.state.heads[c.id];
       if (!h) throw new Error("Synchronize before sending");
       if (
@@ -756,6 +1436,7 @@ export class Messenger {
   ) {
     return this.serial(async () => {
       this.noPendingCommit();
+      this.assertConversationWritable(c);
       await this.flushInternal();
       await this.syncInternal(c);
       this.pinned(device);
@@ -914,6 +1595,7 @@ export class Messenger {
     t: Transition,
     sender: Certificate,
     kind: string,
+    verifyPins = true,
   ) {
     if (
       !["owner", "moderator"].includes(sender.role) ||
@@ -958,7 +1640,7 @@ export class Messenger {
       throw new Error("Conversation member limit");
     if (!same(sorted(members), t.members))
       throw new Error("Unexpected roster change");
-    for (const m of members) this.pinned(m);
+    if (verifyPins) for (const m of members) this.pinned(m);
     return members;
   }
   async flush() {
@@ -1075,10 +1757,27 @@ export class Messenger {
   // Only the background loop may use a freshly fetched discovery snapshot to
   // skip unchanged history. Manual/control reconciliation always rereads detail.
   async syncIfChanged(c: Conversation) {
-    return this.serial(() => this.syncInternal(c, true));
+    return this.serial(async () => {
+      await this.syncInternal(c, true);
+      const archive = this.state.closure_archives?.[c.id];
+      if (
+        c.closure_state === "finalized" &&
+        archive &&
+        !archive.receipt_confirmed
+      ) {
+        const record = await this.closureRecord(c);
+        await this.closureContext(c, record);
+        await this.retainFinalCertificate(c, record);
+      }
+    });
   }
   private async syncInternal(c: Conversation, allowUnchanged = false) {
     this.noPendingCommit();
+    if (
+      this.state.closure_archives?.[c.id]?.certificate?.state === "finalized" &&
+      c.status !== "closed"
+    )
+      throw new Error("Finalized conversation rollback detected");
     const retained = this.state.heads[c.id];
     if (
       allowUnchanged &&
@@ -1104,6 +1803,13 @@ export class Messenger {
       g.members[0].role !== "owner"
     )
       throw new Error("Invalid signed genesis");
+    if (
+      g.closure_policy !== undefined &&
+      (g.closure_policy !== CLOSURE_POLICY ||
+        g.kind !== "direct" ||
+        typeof g.closure_epoch !== "string")
+    )
+      throw new Error("Unsupported signed closure policy");
     this.pinned(g.members[0]);
     await signatureValid(g.members[0].public_key, detail.genesis_signature, g);
     let head: Head = {
@@ -1115,6 +1821,9 @@ export class Messenger {
       group_id: g.group_id,
       members: g.members,
       kind: g.kind as "direct" | "group",
+      ...(g.closure_policy
+        ? { closure_policy: g.closure_policy, closure_epoch: g.closure_epoch }
+        : {}),
     };
     head.genesis_hash = head.hash;
     const saved = this.state.heads[c.id],
