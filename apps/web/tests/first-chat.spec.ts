@@ -105,7 +105,7 @@ test("ordinary members: guided setup, private invitation, explicit mutual verifi
       .getByLabel("Username", { exact: true })
       .fill(`guided_${secret().slice(0, 12)}`);
     await b.getByLabel("Password", { exact: true }).fill(secret());
-    await b.getByLabel("Display name", { exact: true }).fill("Bob");
+    await b.getByLabel("Display name (optional)", { exact: true }).fill("Bob");
     await b.locator("form button.primary").click();
     await expect(
       b.getByRole("heading", { name: "Set up this browser", exact: true }),
@@ -134,6 +134,7 @@ test("ordinary members: guided setup, private invitation, explicit mutual verifi
       path: "../../docs/evidence/first-chat-verify.png",
       fullPage: true,
     });
+    await b.getByLabel("Friend’s name", { exact: true }).fill("Alice");
     await b
       .getByRole("checkbox", {
         name: "I compared the entire code with my friend through another trusted channel",
@@ -337,6 +338,9 @@ test("friend links reject foreign origins, mismatched fingerprints, changed pins
             "",
           ),
           name: "Peer",
+          introduction: (
+            await h.api("devices/contact-introduction", "POST", {})
+          ).token,
         };
         const result = {
           device,

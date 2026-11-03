@@ -1,11 +1,13 @@
 import { z } from "./schema";
+import { api, type Device } from "./api";
 
 const contactSchema = z
   .object({
     v: z.literal(1),
     device_id: z.uuid(),
     fingerprint: z.string().regex(/^[0-9a-f]{64}$/),
-    name: z.string().min(1).max(80),
+    name: z.string().min(1).max(80).optional(),
+    introduction: z.string().min(40).max(512).optional(),
   })
   .strict();
 export type ContactCard = z.infer<typeof contactSchema>;
@@ -60,3 +62,38 @@ export const securityCode = (fingerprint: string) =>
     .replace(/\s/g, "")
     .match(/.{1,4}/g)
     ?.join(" ") || fingerprint;
+
+export async function lookupContact(value: string): Promise<Device> {
+  const isId =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+      value,
+    );
+  const card = isId ? undefined : readContactLink(value, location.origin);
+  const { device } = await api<{ device: Device }>(
+    `crypto/key-packages/${card?.device_id ?? value}`,
+    "GET",
+    undefined,
+    false,
+    card?.introduction,
+  );
+  if (card) {
+    const fingerprint = Array.from(
+      new Uint8Array(
+        await crypto.subtle.digest(
+          "SHA-256",
+          Uint8Array.from(atob(device.public_key), (c) => c.charCodeAt(0)),
+        ),
+      ),
+    )
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("");
+    if (fingerprint !== card.fingerprint)
+      throw new Error(
+        "The security code does not match this link. Stop and ask your friend for a new link.",
+      );
+  }
+  return {
+    ...device,
+    ...(card?.introduction ? { contact_token: card.introduction } : {}),
+  };
+}

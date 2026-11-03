@@ -26,3 +26,21 @@ def policy():
         "ingress_observes_ip": True,
         "independent_review": False,
     }
+
+
+def routing_groups(account_id):
+    """Consumers join current only; publishers use both keys during rotation."""
+    import uuid
+    from django.core.exceptions import ImproperlyConfigured
+
+    keys = [settings.ROUTING_SECRET, settings.ROUTING_PREVIOUS_SECRET]
+    if len(keys[0]) < 48 or any(key and len(key) < 48 for key in keys):
+        raise ImproperlyConfigured("Configure independent routing secrets >=48 characters")
+    if any(key == settings.SECRET_KEY for key in keys if key):
+        raise ImproperlyConfigured("Routing secrets must differ from the application signing key")
+    value = b"haven/channels/account/v1\x00" + uuid.UUID(str(account_id)).bytes
+    return tuple(
+        dict.fromkeys(
+            "route." + hmac.new(key.encode(), value, hashlib.sha256).hexdigest() for key in keys if key
+        )
+    )

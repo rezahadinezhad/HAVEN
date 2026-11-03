@@ -101,3 +101,49 @@ async def test_partial_notification_failure_keeps_every_outbox_row_retryable():
     await unsent()
     assert await asyncio.to_thread(batch) == 3
     await published(3)
+
+
+async def test_independent_publisher_process_delivers_over_real_redis():
+    import os
+    import sys
+    from pathlib import Path
+    from django.conf import settings
+
+    items, cid = await identities()
+    await events(cid, items[0][0], 1)
+    ws = socket(items[1][1])
+    try:
+        assert (await ws.connect())[0]
+        await ws.receive_json_from()
+        config = connection.settings_dict
+        env = {
+            **os.environ,
+            "DJANGO_SETTINGS_MODULE": "haven.settings",
+            "POSTGRES_DB": config["NAME"],
+            "POSTGRES_USER": config["USER"],
+            "POSTGRES_PASSWORD": config["PASSWORD"],
+            "POSTGRES_HOST": config["HOST"],
+            "POSTGRES_PORT": str(config["PORT"]),
+            "HAVEN_ROUTING_SECRET": settings.ROUTING_SECRET,
+        }
+        process = await asyncio.create_subprocess_exec(
+            sys.executable,
+            "manage.py",
+            "publish_outbox",
+            "--once",
+            cwd=Path(__file__).resolve().parents[2],
+            env=env,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+        )
+        try:
+            _, stderr = await asyncio.wait_for(process.communicate(), 15)
+        except TimeoutError:
+            process.kill()
+            await process.communicate()
+            raise
+        assert process.returncode == 0 and b"unavailable" not in stderr
+        assert await ws.receive_json_from() == {"v": 1, "kind": "sync.required"}
+        await published(1)
+    finally:
+        await ws.disconnect()

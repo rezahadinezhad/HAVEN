@@ -9,6 +9,22 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("HAVEN_SECRET_KEY", "")
 if len(SECRET_KEY) < 48:
     raise ImproperlyConfigured("HAVEN_SECRET_KEY must contain at least 48 random characters")
+ROUTING_SECRET = os.environ.get("HAVEN_ROUTING_SECRET", "")
+ROUTING_PREVIOUS_SECRET = os.environ.get("HAVEN_ROUTING_PREVIOUS_SECRET", "")
+if (
+    len(ROUTING_SECRET) < 48
+    or ROUTING_SECRET == SECRET_KEY
+    or (
+        ROUTING_PREVIOUS_SECRET
+        and (len(ROUTING_PREVIOUS_SECRET) < 48 or ROUTING_PREVIOUS_SECRET == SECRET_KEY)
+    )
+):
+    raise ImproperlyConfigured("Independent routing secrets >=48 characters are required")
+# Change this namespace before reopening a restored DB to prevent old contact
+# grants from revalidating when their per-device revocation counters roll back.
+CONTACT_LINK_EPOCH = os.environ.get("HAVEN_CONTACT_LINK_EPOCH", "initial")
+if not re.fullmatch(r"[A-Za-z0-9_-]{1,128}", CONTACT_LINK_EPOCH):
+    raise ImproperlyConfigured("Invalid contact-link restore epoch")
 DEBUG = False
 ALLOWED_HOSTS = os.environ.get("HAVEN_HOSTS", "127.0.0.1").split(",")
 ORIGINS = os.environ.get("HAVEN_ORIGINS", "https://127.0.0.1:8443").split(",")

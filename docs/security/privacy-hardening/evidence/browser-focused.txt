@@ -1,0 +1,29 @@
+
+> haven-web@0.2.0 test
+> playwright test privacy-hardening.spec.ts --reporter=list
+
+
+Running 2 tests using 1 worker
+
+(node:195587) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 tests/privacy-hardening.spec.ts:8:5 › bucketed media: real AEAD, legacy bytes, corruption, scope, length, retry and view-once (479ms)
+(node:195786) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 tests/privacy-hardening.spec.ts:81:5 › locked storage, UUID-only offline unlock, privacy profile and generic sharing (3.4s)
+
+
+  1) tests/privacy-hardening.spec.ts:8:5 › bucketed media: real AEAD, legacy bytes, corruption, scope, length, retry and view-once
+
+    Error: page.evaluate: ReferenceError: _nodeCrypto is not defined
+        at eval (eval at evaluate (:370:30), <anonymous>:6:17)
+        at async <anonymous>:396:30
+        at eval (eval at evaluate (:370:30), <anonymous>:6:17)
+        at async <anonymous>:396:30
+        at /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/privacy-hardening.spec.ts:11:30
+
+    Error Context: test-results/privacy-hardening-bucketed-4f854--length-retry-and-view-once/error-context.md
+
+  1 failed
+    tests/privacy-hardening.spec.ts:8:5 › bucketed media: real AEAD, legacy bytes, corruption, scope, length, retry and view-once
+  1 passed (6.4s)

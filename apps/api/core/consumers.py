@@ -14,6 +14,7 @@ from django.db import DatabaseError
 from channels.exceptions import StopConsumer
 from .middleware import resolve_session
 from .models import Membership
+from .privacy import routing_groups
 
 # These functions create/use/close their ORM connections in the worker and
 # return primitives only. They need not share asgiref's single thread across
@@ -91,7 +92,7 @@ class SyncConsumer(AsyncJsonWebsocketConsumer):
         if self.uid is None:
             await self.close(code=4401)
             return
-        self.group = "user." + self.uid
+        self.group = routing_groups(self.uid)[0]
         try:
             await self.channel_layer.group_add(self.group, self.channel_name)
         except Exception:
@@ -151,15 +152,16 @@ class SyncConsumer(AsyncJsonWebsocketConsumer):
                 return
             sender, users = recipients
             for user in users:
-                await self.channel_layer.group_send(
-                    "user." + str(user),
-                    {
-                        "type": "typing.hint",
-                        "kind": d["kind"],
-                        "conversation_id": cid,
-                        "sender_device": sender,
-                    },
-                )
+                for group in routing_groups(user):
+                    await self.channel_layer.group_send(
+                        group,
+                        {
+                            "type": "typing.hint",
+                            "kind": d["kind"],
+                            "conversation_id": cid,
+                            "sender_device": sender,
+                        },
+                    )
         else:
             if set(d) != {"v", "kind"}:
                 await self.close(code=1008)

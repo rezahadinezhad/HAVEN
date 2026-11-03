@@ -34,6 +34,7 @@ class Device(models.Model):
     label = models.CharField(max_length=80)
     identity = models.CharField(max_length=200)
     public_key = models.BinaryField()
+    introduction_generation = models.PositiveIntegerField(default=0)
     credential = models.BinaryField(default=bytes)
     trust_state = models.CharField(max_length=20, default="pending")
     challenge = models.CharField(max_length=64)

@@ -1,0 +1,32 @@
+
+> haven-web@0.2.0 test
+> playwright test first-chat.spec.ts -g ordinary members --reporter=list
+
+
+Running 1 test using 1 worker
+
+(node:200844) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 tests/first-chat.spec.ts:12:5 › ordinary members: guided setup, private invitation, explicit mutual verification, chat and unlock (18.1s)
+
+
+  1) tests/first-chat.spec.ts:12:5 › ordinary members: guided setup, private invitation, explicit mutual verification, chat and unlock
+
+    TimeoutError: locator.fill: Timeout 15000ms exceeded.
+    Call log:
+      - waiting for getByLabel('Username', { exact: true })
+
+
+      104 |     await b
+      105 |       .getByLabel("Username", { exact: true })
+    > 106 |       .fill(`guided_${secret().slice(0, 12)}`);
+          |        ^
+      107 |     await b.getByLabel("Password", { exact: true }).fill(secret());
+      108 |     await b.getByLabel("Display name (optional)", { exact: true }).fill("Bob");
+      109 |     await b.locator("form button.primary").click();
+        at /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/first-chat.spec.ts:106:8
+
+    Error Context: test-results/first-chat-ordinary-member-740e0-erification-chat-and-unlock/error-context.md
+
+  1 failed
+    tests/first-chat.spec.ts:12:5 › ordinary members: guided setup, private invitation, explicit mutual verification, chat and unlock

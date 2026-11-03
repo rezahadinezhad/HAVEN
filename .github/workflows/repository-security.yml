@@ -100,6 +100,7 @@ jobs:
         env:
           POSTGRES_PASSWORD: disposable-ci-database
           HAVEN_SECRET_KEY: disposable-ci-only-key-with-at-least-forty-eight-characters
+          HAVEN_ROUTING_SECRET: disposable-ci-routing-key-independent-at-least-forty-eight-characters
         run: |
           set -euo pipefail
           .venv/bin/ruff check .
@@ -111,11 +112,12 @@ jobs:
         env:
           POSTGRES_PASSWORD: disposable-ci-database
           HAVEN_SECRET_KEY: disposable-ci-only-key-with-at-least-forty-eight-characters
+          HAVEN_ROUTING_SECRET: disposable-ci-routing-key-independent-at-least-forty-eight-characters
         run: |
           set -euo pipefail
           runtime_image=$(sed -n '1s/^FROM //p' apps/api/Dockerfile)
           docker run --rm --network host --cap-drop ALL --security-opt no-new-privileges:true \
-            -e POSTGRES_PASSWORD -e HAVEN_SECRET_KEY -e PYTHONDONTWRITEBYTECODE=1 \
+            -e POSTGRES_PASSWORD -e HAVEN_SECRET_KEY -e HAVEN_ROUTING_SECRET -e PYTHONDONTWRITEBYTECODE=1 \
             -e UV_PROJECT_ENVIRONMENT=/tmp/haven-test-env -e UV_PYTHON_DOWNLOADS=never \
             -v "$PWD:/workspace:ro" -v "$(command -v uv):/usr/local/bin/uv:ro" \
             -w /workspace "$runtime_image" sh -ec '

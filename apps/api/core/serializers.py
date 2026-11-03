@@ -33,8 +33,9 @@ class Login(StrictSerializer):
 
 
 class Redeem(Login):
+    username = s.RegexField(r"^[a-zA-Z0-9_.-]{3,64}$", required=False, allow_blank=True, default="")
     token = s.CharField(min_length=40, max_length=100, trim_whitespace=False)
-    display_name = s.CharField(min_length=1, max_length=80)
+    display_name = s.CharField(max_length=80, required=False, allow_blank=True, default="")
 
 
 class Invite(StrictSerializer):

@@ -1,0 +1,9 @@
+All checks passed!
+84 files already formatted
+No changes detected
+PASS: 192 current and 8 retired fields classified; no record data read
+
+> haven-web@0.2.0 typecheck
+> tsc --noEmit
+
+Generated 45 paths with request/response contracts

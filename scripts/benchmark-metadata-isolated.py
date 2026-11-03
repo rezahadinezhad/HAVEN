@@ -195,6 +195,7 @@ password = secrets.token_urlsafe(48)
 environment = {
     **os.environ,
     "HAVEN_SECRET_KEY": secret,
+    "HAVEN_ROUTING_SECRET": secrets.token_urlsafe(48),
     "POSTGRES_USER": "haven_synthetic",
     "POSTGRES_DB": "haven_synthetic",
     "POSTGRES_PASSWORD": password,

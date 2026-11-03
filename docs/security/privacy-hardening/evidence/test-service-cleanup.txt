@@ -1,0 +1,5 @@
+ Container haven-test-db-1 Stopping
+ Container haven-test-redis-1 Stopping
+ Container haven-test-redis-1 Stopped
+ Container haven-test-db-1 Stopped
+PASS: native test listeners and haven-test containers stopped; existing haven deployment and database volumes untouched.

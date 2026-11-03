@@ -36,6 +36,8 @@ export type LocalEvent = {
     | "failed";
 };
 export type FileMeta = {
+  format?: 2;
+  padded_size?: number;
   view_once?: true;
   id: string;
   name: string;
@@ -301,8 +303,7 @@ export async function openVault(
   const db = await vaultDB(),
     tx = db.transaction(["vault", "history"], "readonly");
   const current = (await tx.objectStore("vault").get(user)) as
-    | StoredVault
-    | undefined;
+    StoredVault | undefined;
   if (
     current?.revision !== stored.revision ||
     current.sealed.nonce !== stored.sealed.nonce
@@ -416,8 +417,7 @@ export async function saveVault(
     const tx = db.transaction(["vault", "history"], "readwrite");
     try {
       const current = (await tx.objectStore("vault").get(user)) as
-        | StoredVault
-        | undefined;
+        StoredVault | undefined;
       if (
         (current?.revision ?? 0) !== expected ||
         current?.sealed.nonce !== old?.sealed.nonce

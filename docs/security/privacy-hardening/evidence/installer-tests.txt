@@ -1,0 +1,17 @@
+[1/6] Checking Docker, architecture and source integrity…
+......F.[1/6] Checking Docker, architecture and source integrity…
+[1/6] Checking Docker, architecture and source integrity…
+.....
+======================================================================
+FAIL: test_overlay_never_enables_nonloopback_messaging (test_setup.SetupTests.test_overlay_never_enables_nonloopback_messaging)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/scripts/tests/test_setup.py", line 78, in test_overlay_never_enables_nonloopback_messaging
+    self.assertEqual(local.count("haven.integration_settings"), 3)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 3
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.787s
+
+FAILED (failures=1)

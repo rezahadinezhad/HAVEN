@@ -8,6 +8,9 @@ x-api: &api
   image: ${HAVEN_API_IMAGE:-haven-api:0.2.0}
   environment: &api_env
     HAVEN_SECRET_KEY: ${HAVEN_SECRET_KEY:?required}
+    HAVEN_ROUTING_SECRET: ${HAVEN_ROUTING_SECRET:?required}
+    HAVEN_ROUTING_PREVIOUS_SECRET: ${HAVEN_ROUTING_PREVIOUS_SECRET:-}
+    HAVEN_CONTACT_LINK_EPOCH: ${HAVEN_CONTACT_LINK_EPOCH:-initial}
     HAVEN_HOSTS: ${HAVEN_HOSTS:?required}
     HAVEN_ORIGINS: ${HAVEN_ORIGINS:?required}
     HAVEN_OPTIONAL_HOSTNAME: ${HAVEN_OPTIONAL_HOSTNAME:-}
@@ -82,6 +85,8 @@ services:
       <<: *api_env
       POSTGRES_USER: ${POSTGRES_USER:-haven}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?required}
+      HAVEN_DB_NOTIFICATION_USER: ${HAVEN_DB_NOTIFICATION_USER:-haven_notify}
+      HAVEN_DB_NOTIFICATION_PASSWORD: ${HAVEN_DB_NOTIFICATION_PASSWORD:?required}
       HAVEN_DB_MIGRATION_USER: ${HAVEN_DB_MIGRATION_USER:-haven_migrate}
       HAVEN_DB_MIGRATION_PASSWORD: ${HAVEN_DB_MIGRATION_PASSWORD:?required}
       HAVEN_DB_RUNTIME_USER: ${HAVEN_DB_RUNTIME_USER:-haven_app}
@@ -92,6 +97,7 @@ services:
     <<: *api
     environment:
       <<: *api_env
+      HAVEN_DB_NOTIFICATION_USER: ${HAVEN_DB_NOTIFICATION_USER:-haven_notify}
       POSTGRES_USER: ${HAVEN_DB_MIGRATION_USER:-haven_migrate}
       POSTGRES_PASSWORD: ${HAVEN_DB_MIGRATION_PASSWORD:?required}
     depends_on:
@@ -109,6 +115,18 @@ services:
       retries: 3
   outbox:
     <<: *api
+    # Replace the entire inherited mapping: no runtime DB or app signing secret.
+    environment:
+      DJANGO_SETTINGS_MODULE: haven.notification_settings
+      HAVEN_ROUTING_SECRET: ${HAVEN_ROUTING_SECRET:?required}
+      HAVEN_ROUTING_PREVIOUS_SECRET: ${HAVEN_ROUTING_PREVIOUS_SECRET:-}
+      POSTGRES_DB: ${POSTGRES_DB:-haven}
+      POSTGRES_USER: ${HAVEN_DB_NOTIFICATION_USER:-haven_notify}
+      POSTGRES_PASSWORD: ${HAVEN_DB_NOTIFICATION_PASSWORD:?required}
+      POSTGRES_HOST: db
+      POSTGRES_PORT: "5432"
+      REDIS_URL: redis://redis:6379/0
+    volumes: []
     command: ["python", "manage.py", "publish_outbox"]
     depends_on:
       migrate: {condition: service_completed_successfully}

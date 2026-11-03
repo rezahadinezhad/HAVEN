@@ -64,3 +64,7 @@ Installed all 14 Neshino frontend/testing skills with provenance and implemented
 ## View-once media — engineering implementation
 
 Added view-once photos/videos with an authenticated policy, durable per-account consumption and device-bound temporary download authorization, native temporary viewer, export/import exclusions and cleanup. Usage and security limits are in docs/user-onboarding/view-once.md and docs/adr/0005-view-once-media.md. Independent review, physical Safari/Android and qualified production ledger durability remain outstanding; overall release stays BLOCKED.
+
+## Privacy/security hardening continuation — 2026-11-03
+
+Phases 0–9 and 11–13 have concrete local implementation/review/evidence; phase 10 is DESIGNED_NOT_IMPLEMENTED because authenticated all-party finality is absent. New schema: 0017 device introduction revocation generation (unsafe reverse refused), 0018 pending-notification recipient view. New deployment requirements: independent routing secret and notification DB login, coordinated client/raw-routing upgrade, and a fresh contact namespace before reopening restored DBs. No identity/vault/pending-send reset. Production remains BLOCKED. [Full status, limitations and tests](docs/security/privacy-hardening/README.md).

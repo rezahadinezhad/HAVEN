@@ -3,6 +3,7 @@ from psycopg import sql
 from django.db import connection
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
+from core.database_privileges import grant_notification_worker
 
 
 class Command(BaseCommand):
@@ -18,3 +19,5 @@ class Command(BaseCommand):
                     sql.Identifier(os.environ.get("HAVEN_DB_RUNTIME_USER", "haven_app"))
                 )
             )
+
+            grant_notification_worker(cursor, os.environ.get("HAVEN_DB_NOTIFICATION_USER", "haven_notify"))

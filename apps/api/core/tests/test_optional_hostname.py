@@ -62,6 +62,8 @@ def test_env_validator_fails_closed_under_optimized_python(tmp_path):
     env_file = tmp_path / ".env"
     lines = [
         f"HAVEN_SECRET_KEY={'s' * 64}",
+        f"HAVEN_ROUTING_SECRET={'r' * 64}",
+        f"HAVEN_DB_NOTIFICATION_PASSWORD={'n' * 40}",
         f"POSTGRES_PASSWORD={'a' * 40}",
         f"HAVEN_DB_MIGRATION_PASSWORD={'b' * 40}",
         f"HAVEN_DB_RUNTIME_PASSWORD={'c' * 40}",
@@ -87,3 +89,21 @@ def test_env_validator_fails_closed_under_optimized_python(tmp_path):
     assert check().returncode == 0
     env_file.write_text("\n".join(lines[:-2] + ["HAVEN_OPTIONAL_HOSTNAME=*.example.org", lines[-1]]) + "\n")
     assert check().returncode != 0
+
+
+def test_routing_configuration_is_required_and_independent():
+    for current, previous, accepted in [
+        ("", "", False),
+        ("short", "", False),
+        (os.environ["HAVEN_SECRET_KEY"], "", False),
+        ("r" * 64, os.environ["HAVEN_SECRET_KEY"], False),
+        ("r" * 64, "p" * 64, True),
+    ]:
+        result = subprocess.run(
+            [sys.executable, "-c", "import haven.settings"],
+            env={**os.environ, "HAVEN_ROUTING_SECRET": current, "HAVEN_ROUTING_PREVIOUS_SECRET": previous},
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+        assert (result.returncode == 0) is accepted

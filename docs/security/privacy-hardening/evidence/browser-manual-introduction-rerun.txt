@@ -1,0 +1,12 @@
+
+> haven-web@0.2.0 test
+> playwright test messenger-ui.spec.ts --reporter=list
+
+
+Running 1 test using 1 worker
+
+(node:254770) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/messenger-ui.spec.ts:8:5 › real UI: vault enrollment, fingerprint verification, MLS group, text, offline shell and queued send (1.1m)
+
+  1 passed (1.1m)

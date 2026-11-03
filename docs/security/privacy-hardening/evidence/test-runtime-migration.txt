@@ -1,0 +1,5 @@
+Operations to perform:
+  Apply all migrations: auth, contenttypes, core, sessions
+Running migrations:
+  Applying core.0017_contact_introduction_generation... OK
+  Applying core.0018_notification_worker_view... OK

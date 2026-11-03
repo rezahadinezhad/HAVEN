@@ -1,0 +1,21 @@
+# Final implementation report — 2026-11-03
+
+Implemented all safely feasible phases in the existing Django/PostgreSQL/Redis/Next/OpenMLS architecture. Historical graph retirement is fully specified and deliberately not implemented/activated because safe all-party finality is absent. No real deployment, push/merge, user-history deletion, key reset or backup purge occurred. **Production gate stays closed.**
+
+Concrete changes:
+
+- Optional human name and optional randomly generated pseudonymous login handle; no existing identity rotation.
+- Full plaintext browser profile removed; UUID-only offline vault locator, no cached administrative authority, locked profile/handle hidden, stale bootstrap/login completions fenced.
+- Purpose-specific peer/admin response contracts; unrelated device UUID knowledge is insufficient for lookup/claim. Historical public certificate validation still works for revoked/inactive peers.
+- Explicit 24h device-scoped contact introduction with generation revocation and restore-epoch fencing; no default real name in cards, fragment clearing and EN/FA warnings; existing one-use signup behavior retained.
+- Independent-key HMAC routing for every Channels producer/consumer, staged key rotation and existing TTL/revocation/HTTP fallback.
+- Actual notification-only PostgreSQL credential/view/column grants; independent worker environment with no main signing/runtime DB credentials; actual permission denials and subprocess evidence.
+- One-click high-privacy preferences using existing off defaults; mandatory durable delivery ACKs unchanged.
+- Bounded version-2 encrypted media buckets with true-length/scope/version AAD, quota charging, exact chunk validation and legacy v1 decryption/retry; real browser MLS/SQL/view-once delivery.
+- Existing minimal audit/retention/backup protections retained, new-secret installer redaction, canonical production CSP host validation, production build/offline assets/contracts/source manifest updated.
+
+Verification: full backend regression **140 passed in 112.56s** before the final small scope/recovery additions; final changes have separately recorded focused tests, including restore-epoch and effective column-ACL denial. Real cross-process Redis delivery, synthetic pre-upgrade migration/unsafe rollback refusal and native OpenMLS compatibility passed. Browser aggregate **6 passed in 37.8s**, followed by the latest-source **5 passed in 23.7s**, covering real first contact, privacy/offline/locked behavior and authenticated media/view-once delivery. Broader multi-device/recovery/durable-retry/full-view-once browser regression also passed **5 tests in 46.1s**. Advanced/manual friend-link lookup, blocked-WebSocket HTTP fallback and queued sending also passed (1.1-minute browser workflow). Installer **13 passed in 0.766s**. Final build/typecheck passed; measured production build wall time **5.55s**. The publishable source snapshot passed a redacted Gitleaks scan. See [adversarial results](adversarial-test-results.md) for exact commands, failures, reruns, durations, scope and NOT_RUN cases. Counts are overlapping suites, not an additive certification score.
+
+New scheme CPU/size smoke is [measured](short-performance-results.md), without production p95/throughput claims. Migration 0017 adds one revocation generation and refuses unsafe reversal; 0018 supplies the pending-recipient view. Required new config, coordinated client rollout, old-client limits, staged routing rotation and restore epoch are in [migration/recovery](migration-and-recovery.md). Nothing silently clears a vault, pending exact ciphertext, replay marker or signed history.
+
+The current **active centralized social graph remains reconstructable** by a privileged database reader. A malicious application origin can compromise unlocked clients. Old backups/WAL/replicas are independent historical copies. No anonymity, physical erasure, independent security certification or production readiness is claimed. [Remaining risks](remaining-risks.md) and [phase statuses](README.md) are authoritative parts of this report.

@@ -78,9 +78,7 @@ test("conversation UX: encrypted messages, keyboard/IME, drafts, replies, scroll
           );
           return {
             secret: w.secret,
-            device: (await h.api("devices")).find(
-              (d: any) => d.id === w.m.state.device_id,
-            ),
+            device: await h.shareDevice(w.m.state.device_id),
           };
         },
         { token: invitations[i].token, name: i ? "Nora" : "Maya" },

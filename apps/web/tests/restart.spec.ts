@@ -122,7 +122,7 @@ test("actual API SIGKILL after durable acceptance: browser reload retries the ex
       [a, b].map((p) =>
         p.evaluate(async () => {
           const w = window as any;
-          return (await w.havenIntegration.api("devices"))[0];
+          return await w.havenIntegration.shareDevice(w.m.state.device_id);
         }),
       ),
     );

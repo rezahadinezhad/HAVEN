@@ -3,6 +3,7 @@
  * Do not make direct changes to the file.
  */
 
+
 export interface paths {
   "/api/v1/health": {
     get: operations["Health_get_0"];
@@ -63,89 +64,93 @@ export interface paths {
     get: operations["SystemStatus_get_18"];
     patch: operations["SystemStatus_patch_19"];
   };
+  "/api/v1/devices/contact-introduction": {
+    post: operations["ContactIntroduction_post_19"];
+    delete: operations["ContactIntroduction_delete_20"];
+  };
   "/api/v1/devices": {
-    get: operations["Devices_get_19"];
+    get: operations["Devices_get_20"];
   };
   "/api/v1/devices/enrollment/request": {
-    post: operations["EnrollmentRequest_post_20"];
+    post: operations["EnrollmentRequest_post_21"];
   };
   "/api/v1/devices/enrollment/approve": {
-    post: operations["EnrollmentApprove_post_21"];
+    post: operations["EnrollmentApprove_post_22"];
   };
   "/api/v1/devices/enrollment/complete": {
-    post: operations["EnrollmentComplete_post_22"];
+    post: operations["EnrollmentComplete_post_23"];
   };
   "/api/v1/devices/{did}/revoke": {
-    post: operations["RevokeDevice_post_23"];
+    post: operations["RevokeDevice_post_24"];
   };
   "/api/v1/crypto/devices/{uid}": {
-    get: operations["PeerDevices_get_24"];
+    get: operations["PeerDevices_get_25"];
   };
   "/api/v1/crypto/key-packages": {
-    get: operations["KeyPackages_get_25"];
-    post: operations["KeyPackages_post_26"];
-  };
-  "/api/v1/crypto/key-packages/{did}": {
     get: operations["KeyPackages_get_26"];
     post: operations["KeyPackages_post_27"];
   };
+  "/api/v1/crypto/key-packages/{did}": {
+    get: operations["KeyPackages_get_27"];
+    post: operations["KeyPackages_post_28"];
+  };
   "/api/v1/conversations": {
-    get: operations["Conversations_get_27"];
-    post: operations["Conversations_post_28"];
+    get: operations["Conversations_get_28"];
+    post: operations["Conversations_post_29"];
   };
   "/api/v1/conversations/{cid}": {
-    get: operations["Conversations_get_28"];
+    get: operations["Conversations_get_29"];
   };
   "/api/v1/conversations/{cid}/members/propose": {
-    post: operations["MembersPropose_post_29"];
+    post: operations["MembersPropose_post_30"];
   };
   "/api/v1/conversations/{cid}/messages": {
-    get: operations["Messages_get_30"];
-    post: operations["Messages_post_31"];
+    get: operations["Messages_get_31"];
+    post: operations["Messages_post_32"];
   };
   "/api/v1/conversations/{cid}/crypto-events": {
-    get: operations["CryptoEvents_get_31"];
-    post: operations["CryptoEvents_post_32"];
+    get: operations["CryptoEvents_get_32"];
+    post: operations["CryptoEvents_post_33"];
   };
   "/api/v1/conversations/{cid}/proofs": {
-    get: operations["Proofs_get_32"];
+    get: operations["Proofs_get_33"];
   };
   "/api/v1/conversations/{cid}/acks": {
-    get: operations["Acks_get_33"];
-    post: operations["Acks_post_34"];
+    get: operations["Acks_get_34"];
+    post: operations["Acks_post_35"];
   };
   "/api/v1/sync": {
-    get: operations["Sync_get_34"];
+    get: operations["Sync_get_35"];
   };
   "/api/v1/attachments/init": {
-    post: operations["Attachments_post_35"];
+    post: operations["Attachments_post_36"];
   };
   "/api/v1/attachments/{aid}/view-once": {
-    get: operations["ViewOnceAttachment_get_36"];
-    post: operations["ViewOnceAttachment_post_37"];
+    get: operations["ViewOnceAttachment_get_37"];
+    post: operations["ViewOnceAttachment_post_38"];
   };
   "/api/v1/attachments/{aid}/view-once/close": {
-    post: operations["CloseViewOnceAttachment_post_37"];
+    post: operations["CloseViewOnceAttachment_post_38"];
   };
   "/api/v1/attachments/{aid}/chunks/{index}": {
-    get: operations["Chunk_get_38"];
-    put: operations["Chunk_put_39"];
+    get: operations["Chunk_get_39"];
+    put: operations["Chunk_put_40"];
   };
   "/api/v1/attachments/{aid}/complete": {
-    post: operations["CompleteAttachment_post_39"];
+    post: operations["CompleteAttachment_post_40"];
   };
   "/api/v1/attachments/{aid}": {
-    delete: operations["DeleteAttachment_delete_40"];
+    delete: operations["DeleteAttachment_delete_41"];
   };
   "/api/v1/privacy-policy": {
-    get: operations["PrivacyPolicy_get_41"];
+    get: operations["PrivacyPolicy_get_42"];
   };
   "/api/v1/invitations": {
-    get: operations["FriendInvitations_get_42"];
-    post: operations["FriendInvitations_post_43"];
+    get: operations["FriendInvitations_get_43"];
+    post: operations["FriendInvitations_post_44"];
   };
   "/api/v1/invitations/{iid}/revoke": {
-    post: operations["FriendRevokeInvitation_post_43"];
+    post: operations["FriendRevokeInvitation_post_44"];
   };
 }
 
@@ -153,6 +158,25 @@ export type webhooks = Record<string, never>;
 
 export interface components {
   schemas: {
+    PeerDevice: {
+      /** Format: uuid */
+      id: string;
+      /** Format: uuid */
+      user_id: string;
+      identity: string;
+      public_key: string;
+      trust_state: string;
+      /** Format: date-time */
+      revoked_at: string | null;
+    };
+    AdminUser: {
+      /** Format: uuid */
+      id: string;
+      username: string;
+      /** @enum {unknown} */
+      role: "member" | "community_admin" | "superadmin";
+      is_active: boolean;
+    };
     User: {
       /** Format: uuid */
       id: string;
@@ -273,24 +297,17 @@ export interface components {
     InvitationAccess: {
       allowed: boolean;
       /** @enum {unknown} */
-      reason:
-        | "ready"
-        | "paused"
-        | "crypto_unavailable"
-        | "members_disabled"
-        | "browser_not_ready"
-        | "daily_limit"
-        | "pending_limit";
+      reason: "ready" | "paused" | "crypto_unavailable" | "members_disabled" | "browser_not_ready" | "daily_limit" | "pending_limit";
       remaining_today: number | null;
       max_hours: number;
       /** Format: date-time */
       resets_at: string;
       pending_invitations: {
-        /** Format: uuid */
-        id: string;
-        /** Format: date-time */
-        expires_at: string;
-      }[];
+          /** Format: uuid */
+          id: string;
+          /** Format: date-time */
+          expires_at: string;
+        }[];
     };
   };
   responses: never;
@@ -305,6 +322,7 @@ export type $defs = Record<string, never>;
 export type external = Record<string, never>;
 
 export interface operations {
+
   Health_get_0: {
     responses: {
       /** @description Committed success */
@@ -531,10 +549,10 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": {
-          username: string;
+          username?: string;
           password: string;
           token: string;
-          display_name: string;
+          display_name?: string;
         };
       };
     };
@@ -1230,33 +1248,33 @@ export interface operations {
       /** @description Committed success */
       200: {
         content: {
-          "application/json": {
-            /** Format: uuid */
-            id: string;
-            intended_username: string;
-            /** Format: date-time */
-            expires_at: string | null;
-            /** Format: date-time */
-            consumed_at: string | null;
-            /** Format: date-time */
-            revoked_at: string | null;
-          }[];
+          "application/json": ({
+              /** Format: uuid */
+              id: string;
+              intended_username: string;
+              /** Format: date-time */
+              expires_at: string | null;
+              /** Format: date-time */
+              consumed_at: string | null;
+              /** Format: date-time */
+              revoked_at: string | null;
+            })[];
         };
       };
       /** @description Committed success */
       201: {
         content: {
-          "application/json": {
-            /** Format: uuid */
-            id: string;
-            intended_username: string;
-            /** Format: date-time */
-            expires_at: string | null;
-            /** Format: date-time */
-            consumed_at: string | null;
-            /** Format: date-time */
-            revoked_at: string | null;
-          }[];
+          "application/json": ({
+              /** Format: uuid */
+              id: string;
+              intended_username: string;
+              /** Format: date-time */
+              expires_at: string | null;
+              /** Format: date-time */
+              consumed_at: string | null;
+              /** Format: date-time */
+              revoked_at: string | null;
+            })[];
         };
       };
       /** @description Request rejected; no secret diagnostics */
@@ -1477,16 +1495,16 @@ export interface operations {
       200: {
         content: {
           "application/json": {
-            [key: string]: unknown;
-          }[];
+              [key: string]: unknown;
+            }[];
         };
       };
       /** @description Committed success */
       201: {
         content: {
           "application/json": {
-            [key: string]: unknown;
-          }[];
+              [key: string]: unknown;
+            }[];
         };
       };
       /** @description Request rejected; no secret diagnostics */
@@ -1622,13 +1640,13 @@ export interface operations {
       /** @description Committed success */
       200: {
         content: {
-          "application/json": components["schemas"]["User"][];
+          "application/json": components["schemas"]["AdminUser"][];
         };
       };
       /** @description Committed success */
       201: {
         content: {
-          "application/json": components["schemas"]["User"][];
+          "application/json": components["schemas"]["AdminUser"][];
         };
       };
       /** @description Request rejected; no secret diagnostics */
@@ -1700,13 +1718,13 @@ export interface operations {
       /** @description Committed success */
       200: {
         content: {
-          "application/json": components["schemas"]["User"];
+          "application/json": components["schemas"]["AdminUser"];
         };
       };
       /** @description Committed success */
       201: {
         content: {
-          "application/json": components["schemas"]["User"];
+          "application/json": components["schemas"]["AdminUser"];
         };
       };
       /** @description Request rejected; no secret diagnostics */
@@ -1904,7 +1922,150 @@ export interface operations {
       };
     };
   };
-  Devices_get_19: {
+  ContactIntroduction_post_19: {
+    requestBody: {
+      content: {
+        "application/json": Record<string, never>;
+      };
+    };
+    responses: {
+      /** @description Committed success */
+      200: {
+        content: {
+          "application/json": {
+            token: string;
+            expires_in: number;
+          };
+        };
+      };
+      /** @description Committed success */
+      201: {
+        content: {
+          "application/json": {
+            token: string;
+            expires_in: number;
+          };
+        };
+      };
+      /** @description Request rejected; no secret diagnostics */
+      400: {
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+      /** @description Request rejected; no secret diagnostics */
+      403: {
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+      /** @description Request rejected; no secret diagnostics */
+      404: {
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+      /** @description Request rejected; no secret diagnostics */
+      409: {
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+      /** @description Request rejected; no secret diagnostics */
+      429: {
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+      /** @description Request rejected; no secret diagnostics */
+      503: {
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+    };
+  };
+  ContactIntroduction_delete_20: {
+    responses: {
+      /** @description Committed success */
+      200: {
+        content: {
+          "application/json": {
+            ok: boolean;
+          };
+        };
+      };
+      /** @description Committed success */
+      201: {
+        content: {
+          "application/json": {
+            ok: boolean;
+          };
+        };
+      };
+      /** @description Request rejected; no secret diagnostics */
+      400: {
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+      /** @description Request rejected; no secret diagnostics */
+      403: {
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+      /** @description Request rejected; no secret diagnostics */
+      404: {
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+      /** @description Request rejected; no secret diagnostics */
+      409: {
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+      /** @description Request rejected; no secret diagnostics */
+      429: {
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+      /** @description Request rejected; no secret diagnostics */
+      503: {
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+    };
+  };
+  Devices_get_20: {
     responses: {
       /** @description Committed success */
       200: {
@@ -1968,7 +2129,7 @@ export interface operations {
       };
     };
   };
-  EnrollmentRequest_post_20: {
+  EnrollmentRequest_post_21: {
     requestBody: {
       content: {
         "application/json": {
@@ -2073,7 +2234,7 @@ export interface operations {
       };
     };
   };
-  EnrollmentApprove_post_21: {
+  EnrollmentApprove_post_22: {
     requestBody: {
       content: {
         "application/json": {
@@ -2150,7 +2311,7 @@ export interface operations {
       };
     };
   };
-  EnrollmentComplete_post_22: {
+  EnrollmentComplete_post_23: {
     requestBody: {
       content: {
         "application/json": {
@@ -2223,7 +2384,7 @@ export interface operations {
       };
     };
   };
-  RevokeDevice_post_23: {
+  RevokeDevice_post_24: {
     parameters: {
       path: {
         did: string;
@@ -2301,7 +2462,7 @@ export interface operations {
       };
     };
   };
-  PeerDevices_get_24: {
+  PeerDevices_get_25: {
     parameters: {
       path: {
         uid: string;
@@ -2311,13 +2472,13 @@ export interface operations {
       /** @description Committed success */
       200: {
         content: {
-          "application/json": components["schemas"]["Device"][];
+          "application/json": components["schemas"]["PeerDevice"][];
         };
       };
       /** @description Committed success */
       201: {
         content: {
-          "application/json": components["schemas"]["Device"][];
+          "application/json": components["schemas"]["PeerDevice"][];
         };
       };
       /** @description Request rejected; no secret diagnostics */
@@ -2370,7 +2531,7 @@ export interface operations {
       };
     };
   };
-  KeyPackages_get_25: {
+  KeyPackages_get_26: {
     responses: {
       /** @description Committed success */
       200: {
@@ -2440,7 +2601,7 @@ export interface operations {
       };
     };
   };
-  KeyPackages_post_26: {
+  KeyPackages_post_27: {
     requestBody: {
       content: {
         "application/json": {
@@ -2517,8 +2678,12 @@ export interface operations {
       };
     };
   };
-  KeyPackages_get_26: {
+  KeyPackages_get_27: {
     parameters: {
+      header?: {
+        /** @description Expiring shared introduction for unrelated first contact. Keep out of URLs and logs. */
+        "X-Haven-Contact"?: string;
+      };
       path: {
         did: string;
       };
@@ -2528,7 +2693,7 @@ export interface operations {
       200: {
         content: {
           "application/json": {
-            device: components["schemas"]["Device"];
+            device: components["schemas"]["PeerDevice"];
           };
         };
       };
@@ -2536,7 +2701,7 @@ export interface operations {
       201: {
         content: {
           "application/json": {
-            device: components["schemas"]["Device"];
+            device: components["schemas"]["PeerDevice"];
           };
         };
       };
@@ -2590,8 +2755,12 @@ export interface operations {
       };
     };
   };
-  KeyPackages_post_27: {
+  KeyPackages_post_28: {
     parameters: {
+      header?: {
+        /** @description Expiring shared introduction for unrelated first contact. Keep out of URLs and logs. */
+        "X-Haven-Contact"?: string;
+      };
       path: {
         did: string;
       };
@@ -2609,7 +2778,7 @@ export interface operations {
             /** Format: uuid */
             id: string;
             package: string;
-            device: components["schemas"]["Device"];
+            device: components["schemas"]["PeerDevice"];
           };
         };
       };
@@ -2620,7 +2789,7 @@ export interface operations {
             /** Format: uuid */
             id: string;
             package: string;
-            device: components["schemas"]["Device"];
+            device: components["schemas"]["PeerDevice"];
           };
         };
       };
@@ -2674,7 +2843,7 @@ export interface operations {
       };
     };
   };
-  Conversations_get_27: {
+  Conversations_get_28: {
     parameters: {
       query?: {
         /** @description Signed keyset cursor. Conversation array responses expose continuation in X-Haven-Next-Cursor. */
@@ -2752,7 +2921,7 @@ export interface operations {
       };
     };
   };
-  Conversations_post_28: {
+  Conversations_post_29: {
     requestBody: {
       content: {
         "application/json": {
@@ -2831,7 +3000,7 @@ export interface operations {
       };
     };
   };
-  Conversations_get_28: {
+  Conversations_get_29: {
     parameters: {
       path: {
         cid: string;
@@ -2855,11 +3024,11 @@ export interface operations {
             genesis: components["schemas"]["Genesis"];
             genesis_signature: string;
             members: {
-              device: components["schemas"]["Device"];
-              role: string;
-              valid_from_epoch: number;
-              leaving: boolean;
-            }[];
+                device: components["schemas"]["PeerDevice"];
+                role: string;
+                valid_from_epoch: number;
+                leaving: boolean;
+              }[];
           };
         };
       };
@@ -2880,11 +3049,11 @@ export interface operations {
             genesis: components["schemas"]["Genesis"];
             genesis_signature: string;
             members: {
-              device: components["schemas"]["Device"];
-              role: string;
-              valid_from_epoch: number;
-              leaving: boolean;
-            }[];
+                device: components["schemas"]["PeerDevice"];
+                role: string;
+                valid_from_epoch: number;
+                leaving: boolean;
+              }[];
           };
         };
       };
@@ -2938,7 +3107,7 @@ export interface operations {
       };
     };
   };
-  MembersPropose_post_29: {
+  MembersPropose_post_30: {
     parameters: {
       path: {
         cid: string;
@@ -3020,7 +3189,7 @@ export interface operations {
       };
     };
   };
-  Messages_get_30: {
+  Messages_get_31: {
     parameters: {
       path: {
         cid: string;
@@ -3105,7 +3274,7 @@ export interface operations {
       };
     };
   };
-  Messages_post_31: {
+  Messages_post_32: {
     parameters: {
       path: {
         cid: string;
@@ -3203,7 +3372,7 @@ export interface operations {
       };
     };
   };
-  CryptoEvents_get_31: {
+  CryptoEvents_get_32: {
     parameters: {
       path: {
         cid: string;
@@ -3288,7 +3457,7 @@ export interface operations {
       };
     };
   };
-  CryptoEvents_post_32: {
+  CryptoEvents_post_33: {
     parameters: {
       path: {
         cid: string;
@@ -3395,7 +3564,7 @@ export interface operations {
       };
     };
   };
-  Proofs_get_32: {
+  Proofs_get_33: {
     parameters: {
       path: {
         cid: string;
@@ -3476,7 +3645,7 @@ export interface operations {
       };
     };
   };
-  Acks_get_33: {
+  Acks_get_34: {
     parameters: {
       path: {
         cid: string;
@@ -3489,10 +3658,10 @@ export interface operations {
           "application/json": {
             version: number;
             cursors: {
-              /** Format: uuid */
-              device_id: string;
-              last_acked_seq: number;
-            }[];
+                /** Format: uuid */
+                device_id: string;
+                last_acked_seq: number;
+              }[];
           };
         };
       };
@@ -3502,10 +3671,10 @@ export interface operations {
           "application/json": {
             version: number;
             cursors: {
-              /** Format: uuid */
-              device_id: string;
-              last_acked_seq: number;
-            }[];
+                /** Format: uuid */
+                device_id: string;
+                last_acked_seq: number;
+              }[];
           };
         };
       };
@@ -3559,7 +3728,7 @@ export interface operations {
       };
     };
   };
-  Acks_post_34: {
+  Acks_post_35: {
     parameters: {
       path: {
         cid: string;
@@ -3643,7 +3812,7 @@ export interface operations {
       };
     };
   };
-  Sync_get_34: {
+  Sync_get_35: {
     parameters: {
       query?: {
         /** @description Signed keyset cursor. Conversation array responses expose continuation in X-Haven-Next-Cursor. */
@@ -3723,7 +3892,7 @@ export interface operations {
       };
     };
   };
-  Attachments_post_35: {
+  Attachments_post_36: {
     requestBody: {
       content: {
         "application/json": {
@@ -3808,7 +3977,7 @@ export interface operations {
       };
     };
   };
-  ViewOnceAttachment_get_36: {
+  ViewOnceAttachment_get_37: {
     parameters: {
       path: {
         aid: string;
@@ -3883,7 +4052,7 @@ export interface operations {
       };
     };
   };
-  ViewOnceAttachment_post_37: {
+  ViewOnceAttachment_post_38: {
     parameters: {
       path: {
         aid: string;
@@ -3965,7 +4134,7 @@ export interface operations {
       };
     };
   };
-  CloseViewOnceAttachment_post_37: {
+  CloseViewOnceAttachment_post_38: {
     parameters: {
       path: {
         aid: string;
@@ -4045,7 +4214,7 @@ export interface operations {
       };
     };
   };
-  Chunk_get_38: {
+  Chunk_get_39: {
     parameters: {
       header?: {
         /** @description Temporary, device-bound session capability required for view-once attachments. Never a media decryption key. Never place in a URL. */
@@ -4119,7 +4288,7 @@ export interface operations {
       };
     };
   };
-  Chunk_put_39: {
+  Chunk_put_40: {
     parameters: {
       path: {
         aid: string;
@@ -4200,7 +4369,7 @@ export interface operations {
       };
     };
   };
-  CompleteAttachment_post_39: {
+  CompleteAttachment_post_40: {
     parameters: {
       path: {
         aid: string;
@@ -4278,7 +4447,7 @@ export interface operations {
       };
     };
   };
-  DeleteAttachment_delete_40: {
+  DeleteAttachment_delete_41: {
     parameters: {
       path: {
         aid: string;
@@ -4351,7 +4520,7 @@ export interface operations {
       };
     };
   };
-  PrivacyPolicy_get_41: {
+  PrivacyPolicy_get_42: {
     responses: {
       /** @description Committed success */
       200: {
@@ -4415,7 +4584,7 @@ export interface operations {
       };
     };
   };
-  FriendInvitations_get_42: {
+  FriendInvitations_get_43: {
     responses: {
       /** @description Committed success */
       200: {
@@ -4479,7 +4648,7 @@ export interface operations {
       };
     };
   };
-  FriendInvitations_post_43: {
+  FriendInvitations_post_44: {
     requestBody: {
       content: {
         "application/json": {
@@ -4563,7 +4732,7 @@ export interface operations {
       };
     };
   };
-  FriendRevokeInvitation_post_43: {
+  FriendRevokeInvitation_post_44: {
     parameters: {
       path: {
         iid: string;

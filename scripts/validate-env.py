@@ -26,6 +26,8 @@ for line in env_file.read_text().splitlines():
 
 required = (
     "HAVEN_SECRET_KEY",
+    "HAVEN_ROUTING_SECRET",
+    "HAVEN_DB_NOTIFICATION_PASSWORD",
     "POSTGRES_PASSWORD",
     "HAVEN_DB_MIGRATION_PASSWORD",
     "HAVEN_DB_RUNTIME_PASSWORD",
@@ -39,11 +41,16 @@ passwords = (
     values["POSTGRES_PASSWORD"],
     values["HAVEN_DB_MIGRATION_PASSWORD"],
     values["HAVEN_DB_RUNTIME_PASSWORD"],
+    values["HAVEN_DB_NOTIFICATION_PASSWORD"],
 )
 require(
     all(len(password) >= 32 for password in passwords), "Database password is too short"
 )
-require(len(set(passwords)) == 3, "Database passwords must be distinct")
+require(len(set(passwords)) == 4, "Database passwords must be distinct")
+
+require(len(values["HAVEN_ROUTING_SECRET"]) >= 48 and values["HAVEN_ROUTING_SECRET"] != values["HAVEN_SECRET_KEY"], "Independent routing secret required")
+previous = values.get("HAVEN_ROUTING_PREVIOUS_SECRET", "")
+require(not previous or (len(previous) >= 48 and previous != values["HAVEN_SECRET_KEY"]), "Invalid previous routing secret")
 
 hosts = values["HAVEN_HOSTS"].split(",")
 optional = values.get("HAVEN_OPTIONAL_HOSTNAME", "")

@@ -2,10 +2,11 @@ import time
 import asyncio
 from channels.layers import channel_layers
 from django.core.management.base import BaseCommand
-from django.db import transaction, close_old_connections
+from django.db import transaction, close_old_connections, connection
 from django.db.models import F
 from django.utils import timezone
-from core.models import NotificationOutbox, Membership
+from core.models import NotificationOutbox
+from core.privacy import routing_groups
 
 
 class Command(BaseCommand):
@@ -17,25 +18,25 @@ class Command(BaseCommand):
     @staticmethod
     async def notify(layer, users):
         for uid in users:
-            await layer.group_send("user." + str(uid), {"type": "sync.hint"})
+            for group in routing_groups(uid):
+                await layer.group_send(group, {"type": "sync.hint"})
 
     def publish_batch(self, layer, runner):
         with transaction.atomic():
             rows = list(
                 NotificationOutbox.objects.select_for_update(skip_locked=True)
                 .filter(sent_at=None)
-                .select_related("envelope")
-                .only("envelope__conversation_id", "sent_at", "attempts")[:100]
+                .only("id", "envelope_id", "sent_at", "attempts")[:100]
             )
             if not rows:
                 return 0
-            users = list(
-                Membership.objects.filter(
-                    conversation_id__in={row.envelope.conversation_id for row in rows}, removed_at_epoch=None
+            with connection.cursor() as cursor:
+                # The worker login cannot query the underlying graph tables.
+                cursor.execute(
+                    "SELECT DISTINCT user_id FROM haven_notification_targets WHERE outbox_id = ANY(%s)",
+                    [[row.pk for row in rows]],
                 )
-                .values_list("device__user_id", flat=True)
-                .distinct()
-            )
+                users = [uid for (uid,) in cursor.fetchall()]
             # A hint means "sync", not "one message". Coalesce each account's
             # hints, but mark every claimed outbox row only after all sends.
             # Failure rolls the whole batch back; duplicate retry hints are safe.
