@@ -18,7 +18,8 @@ export function ClosureControls({
 }) {
   const [record, setRecord] = useState<ClosureRecord | null>(null),
     [error, setError] = useState(""),
-    [busy, setBusy] = useState(false);
+    [busy, setBusy] = useState(false),
+    [agreed, setAgreed] = useState(false);
   useEffect(() => {
     let active = true;
     void vault
@@ -52,7 +53,7 @@ export function ClosureControls({
       <h3>{t("Mutual conversation closure")}</h3>
       <p>
         {t(
-          "Experimental: both devices must save verified text history. Preparing stops this device from sending; this prototype cannot reopen a prepared conversation. Server deletion is disabled.",
+          "One approved participating device acts for your entire account. Preparing pauses all your devices. After every affected account agrees, the server removes this conversation and its media. Your archive contains history available on this device; other devices may have additional history or unsent messages. View-once content is never archived.",
         )}
       </p>
       <p role="status">
@@ -60,10 +61,22 @@ export function ClosureControls({
           record?.state === "finalized"
             ? "Finalized"
             : record?.state === "closing"
-              ? "Both devices prepared; save your final archive"
+              ? "All accounts prepared; review your archive"
               : record?.state === "proposed"
-                ? "Closure proposed; both devices must prepare the same head"
-                : "Text-only direct conversation; one approved device per account",
+                ? "Closure proposed; each account chooses one device to prepare"
+                : "Direct chats need both accounts; groups need every affected account, including former members",
+        )}
+      </p>
+      {record?.state === "finalized" && (
+        <p>
+          {t(
+            "Deletion authorized. Cleanup runs automatically after delivery, open media sessions and required security retention finish. Your archive stays local.",
+          )}
+        </p>
+      )}
+      <p>
+        {t(
+          "Preparation cannot be undone. If any account withholds consent or loses authorization, server history is retained.",
         )}
       </p>
       {error && <p role="alert">{t(error)}</p>}
@@ -89,14 +102,14 @@ export function ClosureControls({
               if (
                 confirm(
                   t(
-                    "Finish pending sends and drafts first. Preparing permanently pauses this device in this conversation. Continue?",
+                    "Prepare this account for closure? Your pending requests and drafts are retained locally. Other devices will stop sending. This conversation cannot reopen after finalization.",
                   ),
                 )
               )
                 void run(() => vault.prepareClosure(conversation));
             }}
           >
-            {t("Prepare this device")}
+            {t("Prepare my account")}
           </button>
         )}
         {record?.state === "closing" && (
@@ -107,11 +120,40 @@ export function ClosureControls({
             >
               {t("Save verified archive")}
             </button>
+            <label>
+              <input
+                type="checkbox"
+                checked={agreed}
+                onChange={(e) => setAgreed(e.target.checked)}
+              />
+              {t(
+                "I authorize deletion for all my devices, including history or queued messages unavailable here, and files listed as unavailable in my archive.",
+              )}
+            </label>
+            <p>
+              {t("Saved local messages")}:{" "}
+              {vault.state.closure_archives?.[conversation.id]?.events.length ||
+                0}{" "}
+              · {t("Saved files")}:{" "}
+              {
+                Object.keys(
+                  vault.state.closure_archives?.[conversation.id]?.files || {},
+                ).length
+              }{" "}
+              · {t("Unconfirmed local messages")}:{" "}
+              {vault.state.closure_archives?.[conversation.id]?.unsent
+                ?.length || 0}
+            </p>
+            <p>
+              {t("Unavailable or excluded files")}:{" "}
+              {vault.state.closure_archives?.[conversation.id]?.omissions
+                ?.length || 0}
+            </p>
             <button
-              disabled={busy}
+              disabled={busy || !agreed}
               onClick={() => void run(() => vault.consentClosure(conversation))}
             >
-              {t("Confirm my archive and close")}
+              {t("Authorize account-wide server deletion")}
             </button>
           </>
         )}
@@ -163,9 +205,9 @@ export function ClosureArchiveImport({
             setError("");
             void (async () => {
               try {
-                if (file.size > 6 * 1024 * 1024)
+                if (file.size > 90 * 1024 * 1024)
                   throw new Error(
-                    "Closure archive exceeds the prototype limit",
+                    "Closure archive exceeds the supported storage limit",
                   );
                 await vault.importClosureArchive(await file.text(), secret);
                 setSecret("");
@@ -180,6 +222,73 @@ export function ClosureArchiveImport({
         />
       </label>
       {error && <p role="alert">{t(error)}</p>}
+    </section>
+  );
+}
+
+export function ClosureInbox({
+  vault,
+  t,
+  changed,
+}: {
+  vault: Messenger;
+  t: (text: string) => string;
+  changed: () => void;
+}) {
+  const [items, setItems] = useState<Conversation[]>([]),
+    [selected, setSelected] = useState<string>(),
+    [cursor, setCursor] = useState<string | null>(null),
+    [error, setError] = useState("");
+  async function load(after?: string) {
+    try {
+      const { api } = await import("@/lib/api");
+      const page = await api<{
+        items: Conversation[];
+        next_cursor: string | null;
+      }>("closures/pending" + (after ? "?after=" + after : ""));
+      setItems((old) => (after ? [...old, ...page.items] : page.items));
+      setCursor(page.next_cursor);
+      setError("");
+    } catch (e) {
+      setError(uiError(e));
+    }
+  }
+  useEffect(() => {
+    void load();
+  }, [vault]);
+  return (
+    <section className="card">
+      <h2>{t("Conversation closure requests")}</h2>
+      <p>
+        {t(
+          "You can respond here even after leaving a group. One device per account is enough.",
+        )}
+      </p>
+      <button onClick={() => void load()}>{t("Refresh")}</button>
+      {error && <p role="alert">{t(error)}</p>}
+      {items.map((c) => (
+        <details key={c.id} open={selected === c.id}>
+          <summary
+            onClick={(e) => {
+              e.preventDefault();
+              setSelected(selected === c.id ? undefined : c.id);
+            }}
+          >
+            {c.kind} · {c.id.slice(0, 8)}
+          </summary>
+          {selected === c.id && (
+            <ClosureControls
+              vault={vault}
+              conversation={c}
+              t={t}
+              changed={changed}
+            />
+          )}
+        </details>
+      ))}
+      {cursor && (
+        <button onClick={() => void load(cursor)}>{t("Load more")}</button>
+      )}
     </section>
   );
 }

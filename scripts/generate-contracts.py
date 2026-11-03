@@ -23,9 +23,9 @@ transition=obj({'action':{'enum':['add','remove','update','transfer','role']},'d
 header=obj({'domain':{'const':'haven/envelope/v1'},'v':{'const':1},'conversation_id':ID,'group_id':S,'sender_device':ID,'client_message_id':ID,'epoch':N,'seq':N,'previous_hash':S,'ciphertext_hash':S,'transition':{'oneOf':[ref('Transition'),{'type':'null'}]}})
 conv=obj({'id':ID,'kind':{'enum':['direct','group']},'group_id':S,'epoch':N,'last_seq':N,'status':S,'head_hash':S,'receipt_version':N,'closure_state':{'enum':[None,'proposed','closing','finalized']}})
 genesis=obj({'domain':{'const':'haven/genesis/v1'},'id':ID,'kind':{'enum':['direct','group']},'group_id':S,'members':arr(ref('Certificate'))})
-genesis['properties'].update({'closure_policy':{'const':'mutual-local-archive-v1'},'closure_epoch':S})
+genesis['properties'].update({'closure_policy':{'enum':['mutual-local-archive-v1','account-wide-retirement-v2']},'closure_epoch':S})
 env=obj({'id':ID,'client_message_id':ID,'sender_device':ID,'v':{'const':1},'seq':N,'epoch':N,'kind':{'enum':['application','commit']},'header':ref('DeliveryHeader'),'signature':S,'chain_hash':S,'ciphertext':S,'welcome':S,'transition':ref('Transition')},['id','client_message_id','sender_device','v','seq','epoch','kind','header','signature','chain_hash'])
-privacy=obj({'delivered_ciphertext_grace_hours':N,'attachment_days':N,'abandoned_upload_hours':N,'audit_days':N,'cleanup_interval_seconds':N,'unsynced_ciphertext_expires':B,'signed_history_retained':B,'accounts_and_membership_retained':B,'ingress_observes_ip':B,'independent_review':B})
+privacy=obj({'delivered_ciphertext_grace_hours':N,'attachment_days':N,'abandoned_upload_hours':N,'audit_days':N,'cleanup_interval_seconds':N,'unsynced_ciphertext_expires':B,'signed_history_retained':B,'accounts_and_membership_retained':B,'ingress_observes_ip':B,'independent_review':B,'mutual_account_retirement':B,'retirement_scope':S,'archive_scope':S})
 env['properties']['ciphertext_retired']=B
 peer=obj({k:device['properties'][k] for k in ['id','user_id','identity','public_key','trust_state','revoked_at']})
 admin_user=obj({k:user['properties'][k] for k in ['id','username','role','is_active']})
@@ -61,6 +61,8 @@ def response(name,method,params):
     if name in ['Login','Redeem','RecoveryReset']:return obj({'user':ref('User'),'crypto_ready':B})
     if name=='Me':return obj({'user':ref('User'),'device_id':{'type':['string','null']},'crypto_ready':B,'recovery_configured':B})
     if name=='ConversationClosure':return ref('ClosureRecord')
+    if name=='ClosureProofs':return obj({'proofs':arr(ref('Envelope')),'genesis':ref('Genesis'),'genesis_signature':S})
+    if name=='PendingClosures':return obj({'items':arr(ref('Conversation')),'next_cursor':{'type':['string','null']}})
     if name=='Devices':return arr(ref('Device'))
     if name=='PeerDevices':return arr(ref('PeerDevice'))
     if name=='ContactIntroduction':return obj({'token':S,'expires_in':N}) if method=='post' else ok
@@ -82,8 +84,9 @@ def response(name,method,params):
     if name in ['MembersPropose','DisableAccount','RevokeDevice','ChangePassword']:return status
     return ok
 
-snapshot=obj({'domain':{'enum':['haven/closure/proposal/v1','haven/closure/snapshot/v1']},'v':{'const':1},'conversation_id':ID,'group_id':S,'closure_policy':{'const':'mutual-local-archive-v1'},'restore_epoch':S,'nonce':ID,'proposer_device':ID,'genesis_hash':S,'final_seq':N,'final_epoch':N,'final_hash':S,'archive_policy':{'const':'complete-text-history-on-each-device-v1'},'participants':arr(obj(certificate['properties']|{'security_generation':N}))})
+snapshot=obj({'domain':{'enum':['haven/closure/proposal/v1','haven/closure/snapshot/v1']},'v':{'const':1},'conversation_id':ID,'group_id':S,'closure_policy':{'enum':['mutual-local-archive-v1','account-wide-retirement-v2']},'restore_epoch':S,'nonce':ID,'proposer_device':ID,'genesis_hash':S,'final_seq':N,'final_epoch':N,'final_hash':S,'archive_policy':{'enum':['complete-text-history-on-each-device-v1','available-history-account-wide-release-v2']},'participants':arr(obj(certificate['properties']|{'security_generation':N}))})
 snapshot['properties']['proposal_hash']=S
+snapshot['properties']['participants']['items']['properties'].update({'can_sign':B,'active':B,'valid_from_epoch':N,'removed_at_epoch':{'type':['integer','null'],'minimum':0}})
 schemas['ClosureSnapshot']=snapshot
 signature_map={'type':'object','additionalProperties':S}
 schemas['ClosureRecord']=obj({'state':{'enum':['active','proposed','closing','finalized']},'proposal':{'oneOf':[ref('ClosureSnapshot'),{'type':'null'}]},'transcript':{'oneOf':[ref('ClosureSnapshot'),{'type':'null'}]},'proposal_signature':S,'preparations':{'type':'object','additionalProperties':obj({'transcript_hash':S,'signature':S})},'consents':{'type':'object','additionalProperties':obj({'archive_hash':S,'signature':S})},'final_receipts':signature_map})

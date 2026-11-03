@@ -19,6 +19,7 @@ const assets = [
   "/offline.css",
   "/crypto-worker.js",
   "/vault-worker.js",
+  "/vault-worker-v2.js",
   "/crypto/haven_crypto.js",
   "/crypto/haven_crypto_bg.wasm",
   ...files.sort(),

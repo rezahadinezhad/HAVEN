@@ -1,6 +1,6 @@
 from django.urls import path
 from core import views as v
-from core.closure_views import ConversationClosure
+from core.closure_views import ConversationClosure, ClosureProofs, PendingClosures
 
 P = "api/v1/"
 urlpatterns = [
@@ -32,6 +32,8 @@ urlpatterns = [
     path(P + "crypto/devices/<uuid:uid>", v.PeerDevices.as_view()),
     path(P + "crypto/key-packages", v.KeyPackages.as_view()),
     path(P + "crypto/key-packages/<uuid:did>", v.KeyPackages.as_view()),
+    path(P + "closures/pending", PendingClosures.as_view()),
+    path(P + "conversations/<uuid:cid>/closure/proofs", ClosureProofs.as_view()),
     path(P + "conversations", v.Conversations.as_view()),
     path(P + "conversations/<uuid:cid>", v.Conversations.as_view()),
     path(P + "conversations/<uuid:cid>/members/propose", v.MembersPropose.as_view()),

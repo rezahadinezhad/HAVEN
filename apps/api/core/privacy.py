@@ -25,6 +25,9 @@ def policy():
         "accounts_and_membership_retained": True,
         "ingress_observes_ip": True,
         "independent_review": False,
+        "mutual_account_retirement": settings.GRAPH_RETIREMENT_READY,
+        "retirement_scope": "all-affected-accounts-one-approved-participating-device-per-account",
+        "archive_scope": "available-device-history-with-explicit-account-wide-release",
     }
 
 

@@ -1,0 +1,73 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.account-closure-offline
+#1 transferring dockerfile: 911B done
+#1 DONE 0.0s
+
+#2 [context wheels] load .dockerignore
+#2 transferring wheels: 2B done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/python:3.14.9-slim-trixie@sha256:35caba83af2fe6da9a5d922f9b0156f21d1246a48278c58a08bd253303ba42e8
+#3 ...
+
+#4 [auth] library/python:pull token for registry-1.docker.io
+#4 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/python:3.14.9-slim-trixie@sha256:35caba83af2fe6da9a5d922f9b0156f21d1246a48278c58a08bd253303ba42e8
+#3 DONE 7.2s
+
+#5 [internal] load .dockerignore
+#5 transferring context: 188B done
+#5 DONE 0.0s
+
+#6 [stage-0 1/8] FROM docker.io/library/python:3.14.9-slim-trixie@sha256:35caba83af2fe6da9a5d922f9b0156f21d1246a48278c58a08bd253303ba42e8
+#6 resolve docker.io/library/python:3.14.9-slim-trixie@sha256:35caba83af2fe6da9a5d922f9b0156f21d1246a48278c58a08bd253303ba42e8 0.0s done
+#6 DONE 0.0s
+
+#7 [context wheels] load from client
+#7 transferring wheels: 2.10kB done
+#7 DONE 0.0s
+
+#8 [internal] load build context
+#8 transferring context: 14.91kB done
+#8 DONE 0.0s
+
+#9 [stage-0 2/8] WORKDIR /app
+#9 CACHED
+
+#10 [stage-0 3/8] COPY apps/api/requirements.lock /app/requirements.lock
+#10 CACHED
+
+#11 [stage-0 4/8] RUN --mount=from=wheels,target=/wheels pip install --no-index --find-links=/wheels --no-cache-dir --require-hashes -r requirements.lock && useradd --uid 10001 --create-home haven
+#11 CACHED
+
+#12 [stage-0 5/8] COPY --chown=10001:10001 apps/api /app
+#12 DONE 0.1s
+
+#13 [stage-0 6/8] COPY --chown=10001:10001 packages/crypto-core/bin/haven-public-verify-x86_64-linux /usr/local/bin/haven-public-verify
+#13 DONE 0.1s
+
+#14 [stage-0 7/8] RUN test "$(uname -m)" = x86_64 && chmod 0555 /usr/local/bin/haven-public-verify
+#14 DONE 0.1s
+
+#15 [stage-0 8/8] RUN python -m pip uninstall -y pip
+#15 2.349 Found existing installation: pip 26.2.2
+#15 2.399 Uninstalling pip-26.2.2:
+#15 2.660   Successfully uninstalled pip-26.2.2
+#15 2.687 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+#15 DONE 2.9s
+
+#16 exporting to image
+#16 exporting layers
+#16 exporting layers 0.3s done
+#16 exporting manifest sha256:87c9ee6a6019a700e6a6d632581e8f8b6718900b63f06c330e26923cc2ac0372
+#16 exporting manifest sha256:87c9ee6a6019a700e6a6d632581e8f8b6718900b63f06c330e26923cc2ac0372 0.0s done
+#16 exporting config sha256:53ec364f41a349a34b59fa9ae6c2b2f43cef689cd2e860203c10416e554ce786 0.0s done
+#16 exporting attestation manifest sha256:9a827a1e067c25eda6c9bf2d2219f1dbaaa7802d154c2ab9d541c8bc31f97f5c 0.0s done
+#16 exporting manifest list sha256:9a07afdba606504c2e6ab1e0a5327ed2598db4a7f894b04e115c6195e62dfacd 0.0s done
+#16 naming to docker.io/library/haven-api:account-closure
+#16 naming to docker.io/library/haven-api:account-closure done
+#16 unpacking to docker.io/library/haven-api:account-closure
+#16 unpacking to docker.io/library/haven-api:account-closure 0.2s done
+#16 DONE 0.7s

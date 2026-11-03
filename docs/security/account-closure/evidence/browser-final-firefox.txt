@@ -1,0 +1,9 @@
+
+Running 2 tests using 1 worker
+
+(node:696768) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/conversation-closure.spec.ts:50:5 › mutual closure persists complete encrypted archives before consent and survives offline reload (41.1s)
+  ✓  2 tests/conversation-closure.spec.ts:620:5 › group closure needs three accounts, accepts one of two devices, and preserves the other device's queued send (29.2s)
+
+  2 passed (1.2m)

@@ -1,0 +1,2 @@
+Independent retirement journal initialized
+PASS: non-root API reads authenticated journal on read-only mount

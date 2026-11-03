@@ -99,67 +99,73 @@ export interface paths {
     get: operations["KeyPackages_get_27"];
     post: operations["KeyPackages_post_28"];
   };
+  "/api/v1/closures/pending": {
+    get: operations["PendingClosures_get_28"];
+  };
+  "/api/v1/conversations/{cid}/closure/proofs": {
+    get: operations["ClosureProofs_get_29"];
+  };
   "/api/v1/conversations": {
-    get: operations["Conversations_get_28"];
-    post: operations["Conversations_post_29"];
+    get: operations["Conversations_get_30"];
+    post: operations["Conversations_post_31"];
   };
   "/api/v1/conversations/{cid}": {
-    get: operations["Conversations_get_29"];
+    get: operations["Conversations_get_31"];
   };
   "/api/v1/conversations/{cid}/members/propose": {
-    post: operations["MembersPropose_post_30"];
+    post: operations["MembersPropose_post_32"];
   };
   "/api/v1/conversations/{cid}/messages": {
-    get: operations["Messages_get_31"];
-    post: operations["Messages_post_32"];
+    get: operations["Messages_get_33"];
+    post: operations["Messages_post_34"];
   };
   "/api/v1/conversations/{cid}/crypto-events": {
-    get: operations["CryptoEvents_get_32"];
-    post: operations["CryptoEvents_post_33"];
+    get: operations["CryptoEvents_get_34"];
+    post: operations["CryptoEvents_post_35"];
   };
   "/api/v1/conversations/{cid}/proofs": {
-    get: operations["Proofs_get_33"];
+    get: operations["Proofs_get_35"];
   };
   "/api/v1/conversations/{cid}/closure": {
-    get: operations["ConversationClosure_get_34"];
-    post: operations["ConversationClosure_post_35"];
+    get: operations["ConversationClosure_get_36"];
+    post: operations["ConversationClosure_post_37"];
   };
   "/api/v1/conversations/{cid}/acks": {
-    get: operations["Acks_get_35"];
-    post: operations["Acks_post_36"];
+    get: operations["Acks_get_37"];
+    post: operations["Acks_post_38"];
   };
   "/api/v1/sync": {
-    get: operations["Sync_get_36"];
+    get: operations["Sync_get_38"];
   };
   "/api/v1/attachments/init": {
-    post: operations["Attachments_post_37"];
+    post: operations["Attachments_post_39"];
   };
   "/api/v1/attachments/{aid}/view-once": {
-    get: operations["ViewOnceAttachment_get_38"];
-    post: operations["ViewOnceAttachment_post_39"];
+    get: operations["ViewOnceAttachment_get_40"];
+    post: operations["ViewOnceAttachment_post_41"];
   };
   "/api/v1/attachments/{aid}/view-once/close": {
-    post: operations["CloseViewOnceAttachment_post_39"];
+    post: operations["CloseViewOnceAttachment_post_41"];
   };
   "/api/v1/attachments/{aid}/chunks/{index}": {
-    get: operations["Chunk_get_40"];
-    put: operations["Chunk_put_41"];
+    get: operations["Chunk_get_42"];
+    put: operations["Chunk_put_43"];
   };
   "/api/v1/attachments/{aid}/complete": {
-    post: operations["CompleteAttachment_post_41"];
+    post: operations["CompleteAttachment_post_43"];
   };
   "/api/v1/attachments/{aid}": {
-    delete: operations["DeleteAttachment_delete_42"];
+    delete: operations["DeleteAttachment_delete_44"];
   };
   "/api/v1/privacy-policy": {
-    get: operations["PrivacyPolicy_get_43"];
+    get: operations["PrivacyPolicy_get_45"];
   };
   "/api/v1/invitations": {
-    get: operations["FriendInvitations_get_44"];
-    post: operations["FriendInvitations_post_45"];
+    get: operations["FriendInvitations_get_46"];
+    post: operations["FriendInvitations_post_47"];
   };
   "/api/v1/invitations/{iid}/revoke": {
-    post: operations["FriendRevokeInvitation_post_45"];
+    post: operations["FriendRevokeInvitation_post_47"];
   };
 }
 
@@ -271,8 +277,8 @@ export interface components {
       kind: "direct" | "group";
       group_id: string;
       members: components["schemas"]["Certificate"][];
-      /** @constant */
-      closure_policy?: "mutual-local-archive-v1";
+      /** @enum {unknown} */
+      closure_policy?: "mutual-local-archive-v1" | "account-wide-retirement-v2";
       closure_epoch?: string;
     };
     Envelope: {
@@ -307,6 +313,9 @@ export interface components {
       accounts_and_membership_retained: boolean;
       ingress_observes_ip: boolean;
       independent_review: boolean;
+      mutual_account_retirement: boolean;
+      retirement_scope: string;
+      archive_scope: string;
     };
     InvitationAccess: {
       allowed: boolean;
@@ -331,8 +340,8 @@ export interface components {
       /** Format: uuid */
       conversation_id: string;
       group_id: string;
-      /** @constant */
-      closure_policy: "mutual-local-archive-v1";
+      /** @enum {unknown} */
+      closure_policy: "mutual-local-archive-v1" | "account-wide-retirement-v2";
       restore_epoch: string;
       /** Format: uuid */
       nonce: string;
@@ -342,8 +351,8 @@ export interface components {
       final_seq: number;
       final_epoch: number;
       final_hash: string;
-      /** @constant */
-      archive_policy: "complete-text-history-on-each-device-v1";
+      /** @enum {unknown} */
+      archive_policy: "complete-text-history-on-each-device-v1" | "available-history-account-wide-release-v2";
       participants: ({
           /** Format: uuid */
           id: string;
@@ -354,6 +363,10 @@ export interface components {
           /** @enum {unknown} */
           role: "owner" | "moderator" | "member";
           security_generation: number;
+          can_sign?: boolean;
+          active?: boolean;
+          valid_from_epoch?: number;
+          removed_at_epoch?: number | null;
         })[];
       proposal_hash?: string;
     };
@@ -2917,7 +2930,154 @@ export interface operations {
       };
     };
   };
-  Conversations_get_28: {
+  PendingClosures_get_28: {
+    responses: {
+      /** @description Committed success */
+      200: {
+        content: {
+          "application/json": {
+            items: components["schemas"]["Conversation"][];
+            next_cursor: string | null;
+          };
+        };
+      };
+      /** @description Committed success */
+      201: {
+        content: {
+          "application/json": {
+            items: components["schemas"]["Conversation"][];
+            next_cursor: string | null;
+          };
+        };
+      };
+      /** @description Request rejected; no secret diagnostics */
+      400: {
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+      /** @description Request rejected; no secret diagnostics */
+      403: {
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+      /** @description Request rejected; no secret diagnostics */
+      404: {
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+      /** @description Request rejected; no secret diagnostics */
+      409: {
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+      /** @description Request rejected; no secret diagnostics */
+      429: {
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+      /** @description Request rejected; no secret diagnostics */
+      503: {
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+    };
+  };
+  ClosureProofs_get_29: {
+    parameters: {
+      path: {
+        cid: string;
+      };
+    };
+    responses: {
+      /** @description Committed success */
+      200: {
+        content: {
+          "application/json": {
+            proofs: components["schemas"]["Envelope"][];
+            genesis: components["schemas"]["Genesis"];
+            genesis_signature: string;
+          };
+        };
+      };
+      /** @description Committed success */
+      201: {
+        content: {
+          "application/json": {
+            proofs: components["schemas"]["Envelope"][];
+            genesis: components["schemas"]["Genesis"];
+            genesis_signature: string;
+          };
+        };
+      };
+      /** @description Request rejected; no secret diagnostics */
+      400: {
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+      /** @description Request rejected; no secret diagnostics */
+      403: {
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+      /** @description Request rejected; no secret diagnostics */
+      404: {
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+      /** @description Request rejected; no secret diagnostics */
+      409: {
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+      /** @description Request rejected; no secret diagnostics */
+      429: {
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+      /** @description Request rejected; no secret diagnostics */
+      503: {
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+    };
+  };
+  Conversations_get_30: {
     parameters: {
       query?: {
         /** @description Signed keyset cursor. Conversation array responses expose continuation in X-Haven-Next-Cursor. */
@@ -2995,7 +3155,7 @@ export interface operations {
       };
     };
   };
-  Conversations_post_29: {
+  Conversations_post_31: {
     requestBody: {
       content: {
         "application/json": {
@@ -3074,7 +3234,7 @@ export interface operations {
       };
     };
   };
-  Conversations_get_29: {
+  Conversations_get_31: {
     parameters: {
       path: {
         cid: string;
@@ -3185,7 +3345,7 @@ export interface operations {
       };
     };
   };
-  MembersPropose_post_30: {
+  MembersPropose_post_32: {
     parameters: {
       path: {
         cid: string;
@@ -3267,7 +3427,7 @@ export interface operations {
       };
     };
   };
-  Messages_get_31: {
+  Messages_get_33: {
     parameters: {
       path: {
         cid: string;
@@ -3352,7 +3512,7 @@ export interface operations {
       };
     };
   };
-  Messages_post_32: {
+  Messages_post_34: {
     parameters: {
       path: {
         cid: string;
@@ -3450,7 +3610,7 @@ export interface operations {
       };
     };
   };
-  CryptoEvents_get_32: {
+  CryptoEvents_get_34: {
     parameters: {
       path: {
         cid: string;
@@ -3535,7 +3695,7 @@ export interface operations {
       };
     };
   };
-  CryptoEvents_post_33: {
+  CryptoEvents_post_35: {
     parameters: {
       path: {
         cid: string;
@@ -3642,7 +3802,7 @@ export interface operations {
       };
     };
   };
-  Proofs_get_33: {
+  Proofs_get_35: {
     parameters: {
       path: {
         cid: string;
@@ -3723,7 +3883,7 @@ export interface operations {
       };
     };
   };
-  ConversationClosure_get_34: {
+  ConversationClosure_get_36: {
     parameters: {
       query?: {
         action?: "propose" | "prepare" | "consent" | "receipt";
@@ -3796,7 +3956,7 @@ export interface operations {
       };
     };
   };
-  ConversationClosure_post_35: {
+  ConversationClosure_post_37: {
     parameters: {
       query?: {
         action?: "propose" | "prepare" | "consent" | "receipt";
@@ -3886,7 +4046,7 @@ export interface operations {
       };
     };
   };
-  Acks_get_35: {
+  Acks_get_37: {
     parameters: {
       path: {
         cid: string;
@@ -3969,7 +4129,7 @@ export interface operations {
       };
     };
   };
-  Acks_post_36: {
+  Acks_post_38: {
     parameters: {
       path: {
         cid: string;
@@ -4053,7 +4213,7 @@ export interface operations {
       };
     };
   };
-  Sync_get_36: {
+  Sync_get_38: {
     parameters: {
       query?: {
         /** @description Signed keyset cursor. Conversation array responses expose continuation in X-Haven-Next-Cursor. */
@@ -4133,7 +4293,7 @@ export interface operations {
       };
     };
   };
-  Attachments_post_37: {
+  Attachments_post_39: {
     requestBody: {
       content: {
         "application/json": {
@@ -4218,7 +4378,7 @@ export interface operations {
       };
     };
   };
-  ViewOnceAttachment_get_38: {
+  ViewOnceAttachment_get_40: {
     parameters: {
       path: {
         aid: string;
@@ -4293,7 +4453,7 @@ export interface operations {
       };
     };
   };
-  ViewOnceAttachment_post_39: {
+  ViewOnceAttachment_post_41: {
     parameters: {
       path: {
         aid: string;
@@ -4375,7 +4535,7 @@ export interface operations {
       };
     };
   };
-  CloseViewOnceAttachment_post_39: {
+  CloseViewOnceAttachment_post_41: {
     parameters: {
       path: {
         aid: string;
@@ -4455,7 +4615,7 @@ export interface operations {
       };
     };
   };
-  Chunk_get_40: {
+  Chunk_get_42: {
     parameters: {
       header?: {
         /** @description Temporary, device-bound session capability required for view-once attachments. Never a media decryption key. Never place in a URL. */
@@ -4529,7 +4689,7 @@ export interface operations {
       };
     };
   };
-  Chunk_put_41: {
+  Chunk_put_43: {
     parameters: {
       path: {
         aid: string;
@@ -4610,7 +4770,7 @@ export interface operations {
       };
     };
   };
-  CompleteAttachment_post_41: {
+  CompleteAttachment_post_43: {
     parameters: {
       path: {
         aid: string;
@@ -4688,7 +4848,7 @@ export interface operations {
       };
     };
   };
-  DeleteAttachment_delete_42: {
+  DeleteAttachment_delete_44: {
     parameters: {
       path: {
         aid: string;
@@ -4761,7 +4921,7 @@ export interface operations {
       };
     };
   };
-  PrivacyPolicy_get_43: {
+  PrivacyPolicy_get_45: {
     responses: {
       /** @description Committed success */
       200: {
@@ -4825,7 +4985,7 @@ export interface operations {
       };
     };
   };
-  FriendInvitations_get_44: {
+  FriendInvitations_get_46: {
     responses: {
       /** @description Committed success */
       200: {
@@ -4889,7 +5049,7 @@ export interface operations {
       };
     };
   };
-  FriendInvitations_post_45: {
+  FriendInvitations_post_47: {
     requestBody: {
       content: {
         "application/json": {
@@ -4973,7 +5133,7 @@ export interface operations {
       };
     };
   };
-  FriendRevokeInvitation_post_45: {
+  FriendRevokeInvitation_post_47: {
     parameters: {
       path: {
         iid: string;

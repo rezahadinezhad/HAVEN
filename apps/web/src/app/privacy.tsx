@@ -87,6 +87,11 @@ export function ServerPrivacy({ t }: { t: (text: string) => string }) {
           </div>
         </dl>
       )}
+      <p>
+        {t(
+          "Mutual closure lets every affected account authorize server deletion from one approved participating device. Review the local archive first: other devices may have additional history. View-once content is excluded. Active conversations and conversations awaiting consent remain on the server.",
+        )}
+      </p>
       <details>
         <summary>{t("Understand the remaining limits")}</summary>
         <p>

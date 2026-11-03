@@ -1,0 +1,1 @@
+PASS: rendered normal worker, read-only API journal, isolated notification/privacy services and explicit bootstrap

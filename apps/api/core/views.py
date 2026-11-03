@@ -38,6 +38,7 @@ from .privacy import rate_key, policy as privacy_policy
 from .storage import reserve, CONVERSATION_OVERHEAD
 from .closure import (
     POLICY as CLOSURE_POLICY,
+    POLICIES as CLOSURE_POLICIES,
     feature_gate as closure_gate,
     write_fence,
     check_retired_conversation,
@@ -248,7 +249,7 @@ class Health(Public):
                     m.ServerPolicy.objects.filter(pk=1).values_list("maintenance", flat=True).first()
                     or settings.MAINTENANCE
                 ),
-                "release_status": "BLOCKED",
+                "release_status": "ACTIVE_REVIEW_PENDING",
                 "experimental_closure": settings.CONVERSATION_CLOSURE_READY,
                 "closure_epoch": settings.CONVERSATION_CLOSURE_EPOCH,
             }
@@ -947,6 +948,8 @@ class KeyPackages(View):
 class Conversations(View):
     def get(self, request, cid=None):
         device = trusted_device(request)
+        if cid and m.RetiredConversation.objects.filter(pk=cid).exists():
+            return Response({"detail": "Not found."}, status=404)
         query = m.Conversation.objects.filter(
             membership__device=device, membership__removed_at_epoch=None
         ).annotate(
@@ -1001,12 +1004,15 @@ class Conversations(View):
         if "closure_policy" in d["header"]:
             closure_gate()
             if (
-                d["kind"] != "direct"
-                or d["header"].get("closure_policy") != CLOSURE_POLICY
+                (d["kind"] != "direct" and d["header"].get("closure_policy") == CLOSURE_POLICY)
+                or d["header"].get("closure_policy") not in CLOSURE_POLICIES
                 or d["header"].get("closure_epoch") != settings.CONVERSATION_CLOSURE_EPOCH
             ):
                 raise ValidationError("Invalid closure capability policy")
-            expected.update(closure_policy=CLOSURE_POLICY, closure_epoch=settings.CONVERSATION_CLOSURE_EPOCH)
+            expected.update(
+                closure_policy=d["header"]["closure_policy"],
+                closure_epoch=settings.CONVERSATION_CLOSURE_EPOCH,
+            )
         if d["header"] != expected:
             raise ValidationError("Genesis binding")
         verify(device.public_key, d["signature"], p.canonical(expected))
@@ -1134,6 +1140,12 @@ def prior_envelope(c, member, d):
 
 def save_envelope(request, c, member, d, kind, transition=None):
     write_fence(c, member.device_id)
+    if (
+        transition
+        and transition.get("action") != "update"
+        and m.ConversationClosure.objects.filter(conversation=c).exists()
+    ):
+        raise PermissionDenied("Membership changes pause during mutual closure")
     expected = {
         "domain": "haven/envelope/v1",
         "v": 1,
@@ -1222,6 +1234,9 @@ class Messages(View):
     def post(self, request, cid):
         rate(request, "send", 120)
         d = data(request, s.Envelope)
+        trusted_device(request)
+        if m.RetiredConversation.objects.filter(pk=cid).exists():
+            return Response({"detail": "Not found."}, status=404)
         c, member = membership(request, cid, lock=True, control=True, allow_closure=True)
         old = prior_envelope(c, member, d)
         if old:
@@ -1261,6 +1276,8 @@ class MembersPropose(View):
     def post(self, request, cid):
         d = data(request, s.Leave)
         c, member = membership(request, cid, lock=True, control=True)
+        if m.ConversationClosure.objects.filter(conversation=c).exists():
+            raise PermissionDenied("Membership changes pause during mutual closure")
         if member.role == "owner":
             raise PermissionDenied("Transfer ownership before requesting departure")
         verify(
@@ -1300,6 +1317,9 @@ class CryptoEvents(Messages):
     def post(self, request, cid):
         rate(request, "membership", 30)
         d = data(request, s.Control)
+        trusted_device(request)
+        if m.RetiredConversation.objects.filter(pk=cid).exists():
+            return Response({"detail": "Not found."}, status=404)
         c, member = membership(request, cid, lock=True, control=True, allow_closure=True)
         old = prior_envelope(c, member, d)
         if old:
@@ -1541,9 +1561,9 @@ class Attachments(View):
         return Response({"id": str(a.pk)}, status=201)
 
 
-def attachment(request, aid, write=False):
+def attachment(request, aid, write=False, settle=False):
     a = get_object_or_404(m.EncryptedAttachment, pk=aid, expires_at__gt=timezone.now())
-    _, member = membership(request, a.conversation_id)
+    _, member = membership(request, a.conversation_id, control=settle, allow_closure=settle)
     if member.valid_from_epoch > a.epoch or a.status == "deleted":
         raise PermissionDenied()
     if write and a.uploader_device_id != member.device_id:
@@ -1626,7 +1646,7 @@ class CompleteAttachment(View):
 class DeleteAttachment(View):
     @transaction.atomic(savepoint=False)
     def delete(self, request, aid):
-        a = attachment(request, aid, True)
+        a = attachment(request, aid, True, settle=True)
         a = m.EncryptedAttachment.objects.select_for_update().get(pk=a.pk)
         a.status = "deleted"
         a.save(update_fields=["status"])
@@ -1683,7 +1703,7 @@ class CloseViewOnceAttachment(View):
     @transaction.atomic(savepoint=False)
     def post(self, request, aid):
         d = data(request, s.AttachmentViewToken)
-        a = attachment(request, aid)
+        a = attachment(request, aid, settle=True)
         a = m.EncryptedAttachment.objects.select_for_update().get(pk=a.pk)
         view = get_object_or_404(m.AttachmentView, attachment=a, user=request.user)
         if (

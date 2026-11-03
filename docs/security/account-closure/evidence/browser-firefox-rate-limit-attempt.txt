@@ -1,0 +1,36 @@
+
+Running 2 tests using 1 worker
+
+(node:678755) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 tests/conversation-closure.spec.ts:50:5 › mutual closure persists complete encrypted archives before consent and survives offline reload (4.0s)
+(node:679534) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 tests/conversation-closure.spec.ts:620:5 › group closure needs three accounts, accepts one of two devices, and preserves the other device's queued send (17.5s)
+
+
+  1) tests/conversation-closure.spec.ts:50:5 › mutual closure persists complete encrypted archives before consent and survives offline reload
+
+    Error: page.evaluate: {"detail":"Request was throttled. Expected available in 60 seconds."}
+    RequestError@https://127.0.0.1:8445/__integration__/client.js:24085:7
+    api@https://127.0.0.1:8445/__integration__/client.js:24127:13
+    async*@debugger eval code line 370 > eval:3:51
+    @debugger eval code line 370 > eval:3:39
+    evaluate@debugger eval code:372:16
+    @debugger eval code:1:44
+    @debugger eval code:1:62
+
+        at RequestError@https://127.0.0.1:8445/__integration__/client.js:24085:7
+        at api@https://127.0.0.1:8445/__integration__/client.js:24127:13
+        at async*@debugger eval code line 370 > eval:3:51
+        at @debugger eval code line 370 > eval:3:39
+        at evaluate@debugger eval code:372:16
+        at @debugger eval code:1:44
+        at @debugger eval code:1:62
+        at /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/conversation-closure.spec.ts:71:33
+
+    Error Context: test-results/conversation-closure-mutua-80bbf-and-survives-offline-reload/error-context.md
+
+  1 failed
+    tests/conversation-closure.spec.ts:50:5 › mutual closure persists complete encrypted archives before consent and survives offline reload
+  1 passed (23.8s)

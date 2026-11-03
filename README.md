@@ -14,11 +14,11 @@ The result is a functioning, self-hosted implementation built with **Django, Nex
 [MIT license](LICENSE) · [Security model](#security-model) · [Guided setup](#guided-setup) · [Test evidence](TEST_REPORT.md) · [Contributing](CONTRIBUTING.md)
 
 > [!IMPORTANT]
-> **Experimental software; independent security review is pending.** Local tests demonstrate implemented behavior, not a security certification. Production onboarding remains disabled by a source-level gate. Read [SECURITY_STATUS.md](SECURITY_STATUS.md) before evaluating or deploying the project.
+> **Operational software; independent security review is pending.** Normal messaging, account-wide closure and server retirement are enabled. Local tests demonstrate implemented behavior, not a security certification. Read [SECURITY_STATUS.md](SECURITY_STATUS.md) before evaluating or deploying the project.
 
 Metadata-privacy hardening now removes redundant activity timestamps, expires temporary routing associations, reduces API/worker disclosure and pads new MLS messages. The continuation adds transactional authority fences, replay-safe expired enrollment cleanup and narrower authentication/credential SQL reads. The account/conversation graph remains visible to the service. See the [inventory, threat model, migration procedure and measured limitations](docs/security/metadata-privacy/README.md).
 
-The additional [privacy/security hardening](docs/security/privacy-hardening/README.md) removes plaintext browser profiles, scopes device discovery, adds revocable private contact introductions, pseudonymizes Redis groups with a dedicated key, separates notification-worker SQL credentials and buckets new encrypted attachment sizes. Existing vaults, signed histories and legacy attachment reads are preserved. [Upgrade requirements and remaining threats](docs/security/privacy-hardening/final-report.md) are explicit; [Phase 10 now implements experimental mutual closure, encrypted offline archives and guarded synthetic graph retirement](docs/security/conversation-closure/README.md). Production closure/deletion and the production release gate remain disabled.
+The additional [privacy/security hardening](docs/security/privacy-hardening/README.md) removes plaintext browser profiles, scopes device discovery, adds revocable private contact introductions, pseudonymizes Redis groups with a dedicated key, separates notification-worker SQL credentials and buckets new encrypted attachment sizes. Existing vaults, signed histories and legacy attachment reads are preserved. [Upgrade requirements and remaining threats](docs/security/privacy-hardening/final-report.md) are explicit; [Phase 10 now provides account-wide mutual closure, encrypted offline archives and automatic server retirement](docs/security/account-closure/README.md). One participating device represents an account; groups require every historically affected account. See the [activation and restore runbook](docs/security/account-closure/operations.md) before upgrading.
 
 ## The engineering question
 
@@ -130,7 +130,7 @@ Prerequisites: **Python 3.10+, OpenSSL, a Linux x86_64 Docker engine, and Docker
 | Wizard mode | Access and requirements |
 |---|---|
 | **Local evaluation** | Working messaging on this computer at `https://localhost:8447` by default. With Chrome/Chromium and NSS `certutil` installed, setup prepares a separate trusted test browser profile. |
-| **Gated server** | Configures your server IP and existing matching IP-SAN TLS certificate/key. Normal server messaging stays blocked until release requirements pass. Public certificate issuance, client trust and remote reachability require external infrastructure. |
+| **Server** | Configures your server IP and existing matching IP-SAN TLS certificate/key. Normal messaging and account-wide closure are enabled; independent review is pending. Public certificate issuance, client trust and remote reachability require external infrastructure. |
 
 The wizard prints the address, protected administrator credential path, and browser launcher after verification. Client message keys are created in the browser at first setup. Installation does not qualify production use.
 
@@ -148,7 +148,7 @@ make prepare
 make dev
 ```
 
-The gated app is served at **https://127.0.0.1:8443**. Keep that terminal open. In a second terminal:
+The app is served at **https://127.0.0.1:8443**. Keep that terminal open. In a second terminal:
 
 ```bash
 make integration-dev
@@ -200,7 +200,7 @@ GITLEAKS_BIN=/absolute/path/to/gitleaks bash scripts/scan-repository.sh
 make dependency-audit
 ```
 
-`make production-build` produces gated engineering images. `make release-check` intentionally fails until external acceptance requirements are complete. The local Docker compatibility overlay is test-only and must not be used as a production hardening profile.
+`make production-build` produces the normal application images. `make release-check` verifies product activation. `python3 scripts/release-gate.py --qualification` separately reports pending external assurance. The local Docker compatibility overlay is test-only and must not be used as a production hardening profile.
 
 ## Explore the repository
 

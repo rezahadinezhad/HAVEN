@@ -127,7 +127,8 @@ def test_rate_and_schema(client, credentials, monkeypatch):
         now[0] += timedelta(minutes=1)
 
 
-def test_crypto_release_gate(client, credentials):
+def test_crypto_release_gate(client, credentials, settings):
+    settings.CRYPTO_READY = False
     login(client, credentials)
     assert client.get("/api/v1/conversations", secure=True).status_code == 403
     assert post(client, "devices/enrollment/request", {}).status_code == 403

@@ -20,7 +20,11 @@ import {
 } from "@/lib/chat-presentation";
 import { uiError } from "@/lib/ui-error";
 import { AccountRecovery } from "./recovery";
-import { ClosureControls, ClosureArchiveImport } from "./conversation-closure";
+import {
+  ClosureControls,
+  ClosureArchiveImport,
+  ClosureInbox,
+} from "./conversation-closure";
 import { ServerPrivacy } from "./privacy";
 import { ConnectFlow, ConversationVerification } from "./connect";
 import { DeviceUnlockSettings } from "./device-unlock-settings";
@@ -792,7 +796,7 @@ export default function Haven() {
     setConversations(list);
     if (navigator.storage.persist) await navigator.storage.persist();
   }
-  async function createManualConversation(closureCapable = false) {
+  async function createManualConversation(closureCapable = true) {
     if (!vault) return;
     const id = await vault.create(
       closureCapable ? "direct" : kind,
@@ -960,6 +964,7 @@ export default function Haven() {
     disabled ||
     !vault?.state.heads[current?.id || ""] ||
     !!vault?.state.closure_archives?.[current?.id || ""] ||
+    !!vault?.state.retired_history?.[current?.id || ""] ||
     current?.status === "closing" ||
     current?.status === "closed";
   const messagesByConversation = useMemo(
@@ -1200,7 +1205,7 @@ export default function Haven() {
         <span>
           {t(
             health?.crypto_ready
-              ? "Experimental cryptographic integration. Not approved for production use."
+              ? "Messaging is operational. Independent security review is still pending."
               : "Encryption is unavailable until the integrated security gates pass.",
           )}
         </span>
@@ -2025,7 +2030,8 @@ export default function Haven() {
                         recording={recording}
                         disabled={chatDisabled}
                         textOnly={
-                          !!vault?.state.heads[current.id]?.closure_policy
+                          vault?.state.heads[current.id]?.closure_policy ===
+                          "mutual-local-archive-v1"
                         }
                         reply={replyContext}
                         cancelReply={() => {
@@ -2190,11 +2196,6 @@ export default function Haven() {
                     ready={(v) => acceptGuidedVault(v, renderGeneration)}
                     advanced={() => setScreen("devices")}
                     manual={() => createManualConversation()}
-                    createClosable={
-                      health?.experimental_closure
-                        ? () => createManualConversation(true)
-                        : undefined
-                    }
                     conversationType={kind}
                     changeConversationType={setKind}
                     opened={async (c) => {
@@ -2420,6 +2421,33 @@ export default function Haven() {
                 )}
                 {screen === "backup" && (
                   <>
+                    {vault &&
+                      Object.entries(vault.state.retired_history || {}).map(
+                        ([id, history]) => (
+                          <section className="card" key={id}>
+                            <h2>
+                              {t("Closed conversations saved on this device")}
+                            </h2>
+                            <code>{id.slice(0, 8)}</code>
+                            <p>
+                              {t(
+                                "This conversation stays closed. Local recovered history, drafts and unconfirmed sends are preserved in your encrypted recovery kit.",
+                              )}
+                            </p>
+                            {history.events.map((event) => (
+                              <p key={event.id}>{event.text || event.type}</p>
+                            ))}
+                            {history.draft && <p>{history.draft}</p>}
+                          </section>
+                        ),
+                      )}
+                    {vault && (
+                      <ClosureInbox
+                        vault={vault}
+                        t={t}
+                        changed={() => setEvents([...vault.state.events])}
+                      />
+                    )}
                     {vault && (
                       <ClosureArchiveImport
                         vault={vault}
@@ -2459,8 +2487,55 @@ export default function Haven() {
                               {archive.events.map((event) => (
                                 <p key={event.id} dir="auto">
                                   {event.text || event.type}
+                                  {event.file &&
+                                    archive.files?.[event.file.id] && (
+                                      <button
+                                        onClick={() =>
+                                          download(
+                                            vault.archivedFile(
+                                              id,
+                                              event.file!.id,
+                                            ),
+                                            event.file!.name,
+                                          )
+                                        }
+                                      >
+                                        {t("Download")}
+                                      </button>
+                                    )}
                                 </p>
                               ))}
+                              {!!archive.unsent?.length && (
+                                <>
+                                  <h3>{t("Unconfirmed local messages")}</h3>
+                                  {archive.unsent.map((event) => (
+                                    <p key={event.id} dir="auto">
+                                      {event.text ||
+                                        event.file?.name ||
+                                        event.type}
+                                      {event.file &&
+                                        archive.files?.[event.file.id] && (
+                                          <button
+                                            onClick={() =>
+                                              download(
+                                                vault.archivedFile(
+                                                  id,
+                                                  event.file!.id,
+                                                ),
+                                                event.file!.name,
+                                              )
+                                            }
+                                          >
+                                            {t("Download")}
+                                          </button>
+                                        )}
+                                    </p>
+                                  ))}
+                                </>
+                              )}
+                              {archive.draft && (
+                                <p dir="auto">{archive.draft}</p>
+                              )}
                               <button
                                 onClick={() =>
                                   void perform(async () =>
@@ -2473,6 +2548,27 @@ export default function Haven() {
                               >
                                 {t("Export encrypted archive")}
                               </button>
+                              {archive.certificate?.state === "finalized" && (
+                                <button
+                                  onClick={() => {
+                                    if (
+                                      confirm(
+                                        t(
+                                          "Remove this local archive copy? First verify your encrypted export and keep its passphrase. The server cannot restore these files.",
+                                        ),
+                                      )
+                                    )
+                                      void perform(async () => {
+                                        await vault.removeLocalClosureArchive(
+                                          id,
+                                        );
+                                        setEvents([...vault.state.events]);
+                                      });
+                                  }}
+                                >
+                                  {t("Remove this local archive copy")}
+                                </button>
+                              )}
                             </details>
                           ))}
                         </section>

@@ -1,4 +1,4 @@
-"""Experimental mutual closure. No production deletion or MLS primitive changes."""
+"""Mutual account-authorized closure; MLS primitives remain unchanged."""
 
 import base64
 import hashlib
@@ -15,27 +15,41 @@ from rest_framework.exceptions import PermissionDenied, ValidationError
 from . import models as m, protocol as p
 
 POLICY = "mutual-local-archive-v1"
-MAX_ENVELOPES = 500
-MAX_PROOF_BYTES = 512 * 1024
+ACCOUNT_POLICY = "account-wide-retirement-v2"
+POLICIES = (POLICY, ACCOUNT_POLICY)
+MAX_ENVELOPES = 5000
+MAX_PROOF_BYTES = 8 * 1024 * 1024
 
 
 def feature_gate():
     if not settings.CRYPTO_READY or not settings.CONVERSATION_CLOSURE_READY:
-        raise PermissionDenied("Experimental conversation closure is disabled")
+        raise PermissionDenied("Conversation closure is unavailable")
 
 
 def write_fence(conversation, device_id=None):
+    if settings.RETIREMENT_JOURNAL_DIR:
+        from .retirement_journal import denied, group_tag
+
+        if denied(conversation.pk, group_tag(conversation.group_id)):
+            raise PermissionDenied("This conversation is permanently retired")
     if conversation.status in ("closing", "closed"):
         raise PermissionDenied(
             "Conversation closure freezes new writes; history and durable ACKs remain available"
         )
-    if conversation.genesis.get("closure_policy") == POLICY:
+    if conversation.genesis.get("closure_policy") in POLICIES:
         if conversation.genesis.get("closure_epoch") != settings.CONVERSATION_CLOSURE_EPOCH:
             raise PermissionDenied(
                 "Restored closure-capable conversation is read-only; verify recovery before continuing"
             )
         pending = m.ConversationClosure.objects.filter(conversation=conversation, state="proposed").first()
-        if pending and str(device_id) in pending.preparations:
+        prepared = pending and str(device_id) in pending.preparations
+        if pending and conversation.genesis.get("closure_policy") == ACCOUNT_POLICY:
+            uid = m.Device.objects.filter(pk=device_id).values_list("user_id", flat=True).first()
+            prepared = any(
+                x["id"] in pending.preparations and x["user_id"] == str(uid)
+                for x in pending.transcript["participants"]
+            )
+        if prepared:
             raise PermissionDenied(
                 "This device prepared closure; synchronize and finish mutual closure before further writes"
             )
@@ -69,6 +83,11 @@ def tag(purpose, value):
 
 
 def check_retired_conversation(cid, group_id):
+    if settings.RETIREMENT_JOURNAL_DIR:
+        from .retirement_journal import denied
+
+        if denied(cid, tag("group", group_id)):
+            raise PermissionDenied("Retired conversation cannot be reopened after database restoration")
     if m.RetiredConversation.objects.filter(pk=cid).exists():
         raise PermissionDenied("Retired conversation IDs cannot be reused")
     if m.RetiredConversation.objects.exists():
@@ -112,8 +131,9 @@ def proof_json(envelope):
 
 
 def eligibility(conversation):
-    if conversation.kind != "direct" or conversation.genesis.get("closure_policy") != POLICY:
-        raise ValidationError("Only explicitly opted-in direct conversations support closure")
+    policy = conversation.genesis.get("closure_policy")
+    if policy not in POLICIES or (policy == POLICY and conversation.kind != "direct"):
+        raise ValidationError("Conversation does not advertise a supported closure policy")
     if conversation.genesis.get("closure_epoch") != settings.CONVERSATION_CLOSURE_EPOCH:
         raise PermissionDenied("Closure restore epoch changed; keep history and use verified recovery")
     if conversation.status not in ("active", "closing", "closed"):
@@ -124,6 +144,7 @@ def eligibility(conversation):
             "conversation_id",
             "device_id",
             "removed_at_epoch",
+            "valid_from_epoch",
             "leave_signature",
             "role",
             "device__id",
@@ -139,32 +160,65 @@ def eligibility(conversation):
         .filter(conversation=conversation)
         .order_by("device_id")
     )
-    if len(members) != 2 or len({x.device.user_id for x in members}) != 2:
-        raise ValidationError("Prototype requires exactly two participant accounts")
-    if any(
-        x.removed_at_epoch is not None
-        or bytes(x.leave_signature)
-        or x.device.revoked_at
-        or x.device.trust_state != "approved"
-        or not x.device.user.is_active
-        for x in members
-    ):
-        raise PermissionDenied("Participant authorization changed; retirement is blocked")
     users = {x.device.user_id for x in members}
-    approved = m.Device.objects.filter(user_id__in=users, trust_state="approved", revoked_at=None).count()
-    if approved != 2:
-        raise ValidationError("Prototype requires one approved device per account")
-    if m.EncryptedAttachment.objects.filter(conversation=conversation).exists():
-        raise ValidationError("Attachment and view-once obligations block this text-only prototype")
+    if not 2 <= len(users) <= (2 if conversation.kind == "direct" else 50) or len(members) > 100:
+        raise ValidationError("Closure requires 2–50 affected accounts and at most 100 participating devices")
+    if policy == POLICY:
+        if len(members) != 2 or any(
+            x.removed_at_epoch is not None or bytes(x.leave_signature) or not can_sign(x) for x in members
+        ):
+            raise PermissionDenied("Participant authorization changed; retirement is blocked")
+        if m.Device.objects.filter(user_id__in=users, trust_state="approved", revoked_at=None).count() != 2:
+            raise ValidationError("Legacy policy requires one approved device per account")
+        if m.EncryptedAttachment.objects.filter(conversation=conversation).exists():
+            raise ValidationError("Legacy text-only archive cannot retire attachments")
+    elif {x.device.user_id for x in members if can_sign(x)} != users:
+        raise PermissionDenied(
+            "Every affected account needs an approved participating device; preserve server history"
+        )
     envelopes = proof_rows(conversation)
-    controls = [row.header.get("transition") for row in envelopes if row.kind == "commit"]
-    if len([x for x in controls if x and x.get("action") == "add"]) != 1 or any(
-        not x or x.get("action") not in ("add", "update") for x in controls
+    controls = [x.header.get("transition") for x in envelopes if x.kind == "commit"]
+    if policy == POLICY and (
+        sum(bool(x and x.get("action") == "add") for x in controls) != 1
+        or any(not x or x.get("action") not in ("add", "update") for x in controls)
     ):
-        raise ValidationError("Membership/authority changes are outside this prototype")
+        raise ValidationError("Legacy policy cannot retire changed membership")
     if sum(len(p.canonical(proof_json(row))) for row in envelopes) > MAX_PROOF_BYTES:
-        raise ValidationError("Closure proof archive exceeds bounded size")
+        raise ValidationError("Closure proof archive exceeds the supported size")
     return members, envelopes
+
+
+def can_sign(member):
+    return (
+        not member.device.revoked_at
+        and member.device.trust_state == "approved"
+        and member.device.user.is_active
+    )
+
+
+def quorum(transcript, records):
+    by_id = {x["id"]: x for x in transcript["participants"]}
+    if any(did not in by_id or not by_id[did].get("can_sign", True) for did in records):
+        raise PermissionDenied("Ineligible closure signer")
+    if transcript["closure_policy"] == POLICY:
+        return set(records) == set(by_id)
+    accounts = [by_id[did]["user_id"] for did in records]
+    if len(accounts) != len(set(accounts)):
+        raise ValidationError("One device represents each account; additional devices cannot add votes")
+    return set(accounts) == {x["user_id"] for x in by_id.values()}
+
+
+def require_representative(closure, did):
+    participants = {x["id"]: x for x in closure.transcript["participants"]}
+    ours = participants.get(did)
+    if not ours or not ours.get("can_sign", True):
+        raise PermissionDenied("Approved participating device required")
+    if closure.transcript["closure_policy"] == ACCOUNT_POLICY:
+        if any(
+            other != did and participants[other]["user_id"] == ours["user_id"]
+            for other in closure.preparations
+        ):
+            raise PermissionDenied("Another device already represents your account in this closure")
 
 
 def transcript_for(conversation, nonce, proposer, proposal_hash=None):
@@ -179,7 +233,7 @@ def transcript_for(conversation, nonce, proposer, proposal_hash=None):
         "v": 1,
         "conversation_id": str(conversation.pk),
         "group_id": conversation.group_id,
-        "closure_policy": POLICY,
+        "closure_policy": conversation.genesis["closure_policy"],
         "restore_epoch": settings.CONVERSATION_CLOSURE_EPOCH,
         "nonce": nonce,
         "proposer_device": str(proposer),
@@ -187,12 +241,26 @@ def transcript_for(conversation, nonce, proposer, proposal_hash=None):
         "final_seq": conversation.last_seq,
         "final_epoch": conversation.epoch,
         "final_hash": conversation.head_hash,
-        "archive_policy": "complete-text-history-on-each-device-v1",
+        "archive_policy": (
+            "available-history-account-wide-release-v2"
+            if conversation.genesis["closure_policy"] == ACCOUNT_POLICY
+            else "complete-text-history-on-each-device-v1"
+        ),
         "participants": [
             {
                 **p.certificate(row.device),
                 "role": row.role,
                 "security_generation": row.device.user.security_generation,
+                **(
+                    {
+                        "can_sign": can_sign(row),
+                        "active": row.removed_at_epoch is None,
+                        "valid_from_epoch": row.valid_from_epoch,
+                        "removed_at_epoch": row.removed_at_epoch,
+                    }
+                    if conversation.genesis["closure_policy"] == ACCOUNT_POLICY
+                    else {}
+                ),
             }
             for row in members
         ],
@@ -269,6 +337,8 @@ def validate_closure(conversation, closure, require_final=False):
                 "device_id": did,
             },
         )
+    if any(did not in closure.preparations for did in closure.consents):
+        raise PermissionDenied("Archive consent requires the account's prepared representative")
     for did, record in closure.consents.items():
         if did not in by_id or set(record) != {"archive_hash", "signature"}:
             raise ValidationError("Invalid closure consent set")
@@ -283,12 +353,13 @@ def validate_closure(conversation, closure, require_final=False):
             record["signature"],
             consent_payload(transcript, did, record["archive_hash"]),
         )
-    if closure.state != "proposed" and set(closure.preparations) != set(by_id):
+    quorum(transcript, closure.preparations)
+    if closure.state != "proposed" and not quorum(transcript, closure.preparations):
         raise PermissionDenied("Both device preparations are required")
-    if require_final and (closure.state != "finalized" or set(closure.consents) != set(by_id)):
+    if require_final and (closure.state != "finalized" or not quorum(transcript, closure.consents)):
         raise PermissionDenied("Both device archive consents are required")
     for did, signature in closure.final_receipts.items():
-        if closure.state != "finalized" or did not in by_id:
+        if closure.state != "finalized" or did not in closure.consents:
             raise ValidationError("Invalid final certificate receipt set")
         verify(by_id[did].public_key, signature, final_receipt_payload(closure, did))
     return members
@@ -344,7 +415,7 @@ def final_receipt_payload(closure, device_id):
 def validate_final_receipts(conversation, closure):
     members = validate_closure(conversation, closure, require_final=True)
     by_id = {str(row.device_id): row.device for row in members}
-    if set(closure.final_receipts) != set(by_id):
+    if not quorum(closure.transcript, closure.final_receipts):
         raise PermissionDenied("Both devices must durably retain the complete final certificate")
     for did, signature in closure.final_receipts.items():
         verify(by_id[did].public_key, signature, final_receipt_payload(closure, did))

@@ -399,7 +399,10 @@
             }
           },
           "closure_policy": {
-            "const": "mutual-local-archive-v1"
+            "enum": [
+              "mutual-local-archive-v1",
+              "account-wide-retirement-v2"
+            ]
           },
           "closure_epoch": {
             "type": "string"
@@ -519,6 +522,15 @@
           },
           "independent_review": {
             "type": "boolean"
+          },
+          "mutual_account_retirement": {
+            "type": "boolean"
+          },
+          "retirement_scope": {
+            "type": "string"
+          },
+          "archive_scope": {
+            "type": "string"
           }
         },
         "required": [
@@ -531,7 +543,10 @@
           "signed_history_retained",
           "accounts_and_membership_retained",
           "ingress_observes_ip",
-          "independent_review"
+          "independent_review",
+          "mutual_account_retirement",
+          "retirement_scope",
+          "archive_scope"
         ],
         "additionalProperties": false
       },
@@ -619,7 +634,10 @@
             "type": "string"
           },
           "closure_policy": {
-            "const": "mutual-local-archive-v1"
+            "enum": [
+              "mutual-local-archive-v1",
+              "account-wide-retirement-v2"
+            ]
           },
           "restore_epoch": {
             "type": "string"
@@ -647,7 +665,10 @@
             "type": "string"
           },
           "archive_policy": {
-            "const": "complete-text-history-on-each-device-v1"
+            "enum": [
+              "complete-text-history-on-each-device-v1",
+              "available-history-account-wide-release-v2"
+            ]
           },
           "participants": {
             "type": "array",
@@ -677,6 +698,23 @@
                 },
                 "security_generation": {
                   "type": "integer",
+                  "minimum": 0
+                },
+                "can_sign": {
+                  "type": "boolean"
+                },
+                "active": {
+                  "type": "boolean"
+                },
+                "valid_from_epoch": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "removed_at_epoch": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
                   "minimum": 0
                 }
               },
@@ -5357,9 +5395,294 @@
         }
       }
     },
+    "/api/v1/closures/pending": {
+      "get": {
+        "operationId": "PendingClosures_get_28",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Committed success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Conversation"
+                      }
+                    },
+                    "next_cursor": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "items",
+                    "next_cursor"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Committed success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Conversation"
+                      }
+                    },
+                    "next_cursor": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "items",
+                    "next_cursor"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request rejected; no secret diagnostics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Request rejected; no secret diagnostics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Request rejected; no secret diagnostics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Request rejected; no secret diagnostics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Request rejected; no secret diagnostics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Request rejected; no secret diagnostics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/conversations/{cid}/closure/proofs": {
+      "get": {
+        "operationId": "ClosureProofs_get_29",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Committed success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "proofs": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Envelope"
+                      }
+                    },
+                    "genesis": {
+                      "$ref": "#/components/schemas/Genesis"
+                    },
+                    "genesis_signature": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "proofs",
+                    "genesis",
+                    "genesis_signature"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Committed success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "proofs": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Envelope"
+                      }
+                    },
+                    "genesis": {
+                      "$ref": "#/components/schemas/Genesis"
+                    },
+                    "genesis_signature": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "proofs",
+                    "genesis",
+                    "genesis_signature"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request rejected; no secret diagnostics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Request rejected; no secret diagnostics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Request rejected; no secret diagnostics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Request rejected; no secret diagnostics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Request rejected; no secret diagnostics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Request rejected; no secret diagnostics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "cid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ]
+      }
+    },
     "/api/v1/conversations": {
       "get": {
-        "operationId": "Conversations_get_28",
+        "operationId": "Conversations_get_30",
         "security": [
           {
             "cookieAuth": []
@@ -5488,7 +5811,7 @@
         ]
       },
       "post": {
-        "operationId": "Conversations_post_29",
+        "operationId": "Conversations_post_31",
         "security": [
           {
             "cookieAuth": []
@@ -5630,7 +5953,7 @@
     },
     "/api/v1/conversations/{cid}": {
       "get": {
-        "operationId": "Conversations_get_29",
+        "operationId": "Conversations_get_31",
         "security": [
           {
             "cookieAuth": []
@@ -5919,7 +6242,7 @@
     },
     "/api/v1/conversations/{cid}/members/propose": {
       "post": {
-        "operationId": "MembersPropose_post_30",
+        "operationId": "MembersPropose_post_32",
         "security": [
           {
             "cookieAuth": []
@@ -6058,7 +6381,7 @@
     },
     "/api/v1/conversations/{cid}/messages": {
       "get": {
-        "operationId": "Messages_get_31",
+        "operationId": "Messages_get_33",
         "security": [
           {
             "cookieAuth": []
@@ -6218,7 +6541,7 @@
         ]
       },
       "post": {
-        "operationId": "Messages_post_32",
+        "operationId": "Messages_post_34",
         "security": [
           {
             "cookieAuth": []
@@ -6422,7 +6745,7 @@
     },
     "/api/v1/conversations/{cid}/crypto-events": {
       "get": {
-        "operationId": "CryptoEvents_get_32",
+        "operationId": "CryptoEvents_get_34",
         "security": [
           {
             "cookieAuth": []
@@ -6582,7 +6905,7 @@
         ]
       },
       "post": {
-        "operationId": "CryptoEvents_post_33",
+        "operationId": "CryptoEvents_post_35",
         "security": [
           {
             "cookieAuth": []
@@ -6817,7 +7140,7 @@
     },
     "/api/v1/conversations/{cid}/proofs": {
       "get": {
-        "operationId": "Proofs_get_33",
+        "operationId": "Proofs_get_35",
         "security": [
           {
             "cookieAuth": []
@@ -6984,7 +7307,7 @@
     },
     "/api/v1/conversations/{cid}/closure": {
       "get": {
-        "operationId": "ConversationClosure_get_34",
+        "operationId": "ConversationClosure_get_36",
         "security": [
           {
             "cookieAuth": []
@@ -7111,7 +7434,7 @@
         ]
       },
       "post": {
-        "operationId": "ConversationClosure_post_35",
+        "operationId": "ConversationClosure_post_37",
         "security": [
           {
             "cookieAuth": []
@@ -7310,7 +7633,7 @@
     },
     "/api/v1/conversations/{cid}/acks": {
       "get": {
-        "operationId": "Acks_get_35",
+        "operationId": "Acks_get_37",
         "security": [
           {
             "cookieAuth": []
@@ -7481,7 +7804,7 @@
         ]
       },
       "post": {
-        "operationId": "Acks_post_36",
+        "operationId": "Acks_post_38",
         "security": [
           {
             "cookieAuth": []
@@ -7639,7 +7962,7 @@
     },
     "/api/v1/sync": {
       "get": {
-        "operationId": "Sync_get_36",
+        "operationId": "Sync_get_38",
         "security": [
           {
             "cookieAuth": []
@@ -7804,7 +8127,7 @@
     },
     "/api/v1/attachments/init": {
       "post": {
-        "operationId": "Attachments_post_37",
+        "operationId": "Attachments_post_39",
         "security": [
           {
             "cookieAuth": []
@@ -7968,7 +8291,7 @@
     },
     "/api/v1/attachments/{aid}/view-once": {
       "get": {
-        "operationId": "ViewOnceAttachment_get_38",
+        "operationId": "ViewOnceAttachment_get_40",
         "security": [
           {
             "cookieAuth": []
@@ -8101,7 +8424,7 @@
         ]
       },
       "post": {
-        "operationId": "ViewOnceAttachment_post_39",
+        "operationId": "ViewOnceAttachment_post_41",
         "security": [
           {
             "cookieAuth": []
@@ -8251,7 +8574,7 @@
     },
     "/api/v1/attachments/{aid}/view-once/close": {
       "post": {
-        "operationId": "CloseViewOnceAttachment_post_39",
+        "operationId": "CloseViewOnceAttachment_post_41",
         "security": [
           {
             "cookieAuth": []
@@ -8399,7 +8722,7 @@
     },
     "/api/v1/attachments/{aid}/chunks/{index}": {
       "get": {
-        "operationId": "Chunk_get_40",
+        "operationId": "Chunk_get_42",
         "security": [
           {
             "cookieAuth": []
@@ -8527,7 +8850,7 @@
         ]
       },
       "put": {
-        "operationId": "Chunk_put_41",
+        "operationId": "Chunk_put_43",
         "security": [
           {
             "cookieAuth": []
@@ -8684,7 +9007,7 @@
     },
     "/api/v1/attachments/{aid}/complete": {
       "post": {
-        "operationId": "CompleteAttachment_post_41",
+        "operationId": "CompleteAttachment_post_43",
         "security": [
           {
             "cookieAuth": []
@@ -8824,7 +9147,7 @@
     },
     "/api/v1/attachments/{aid}": {
       "delete": {
-        "operationId": "DeleteAttachment_delete_42",
+        "operationId": "DeleteAttachment_delete_44",
         "security": [
           {
             "cookieAuth": []
@@ -8951,7 +9274,7 @@
     },
     "/api/v1/privacy-policy": {
       "get": {
-        "operationId": "PrivacyPolicy_get_43",
+        "operationId": "PrivacyPolicy_get_45",
         "security": [
           {
             "cookieAuth": []
@@ -9049,7 +9372,7 @@
     },
     "/api/v1/invitations": {
       "get": {
-        "operationId": "FriendInvitations_get_44",
+        "operationId": "FriendInvitations_get_46",
         "security": [
           {
             "cookieAuth": []
@@ -9145,7 +9468,7 @@
         }
       },
       "post": {
-        "operationId": "FriendInvitations_post_45",
+        "operationId": "FriendInvitations_post_47",
         "security": [
           {
             "cookieAuth": []
@@ -9309,7 +9632,7 @@
     },
     "/api/v1/invitations/{iid}/revoke": {
       "post": {
-        "operationId": "FriendRevokeInvitation_post_45",
+        "operationId": "FriendRevokeInvitation_post_47",
         "security": [
           {
             "cookieAuth": []

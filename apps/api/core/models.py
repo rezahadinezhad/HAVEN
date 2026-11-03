@@ -295,6 +295,9 @@ class ConversationClosure(models.Model):
     consents = models.JSONField(default=dict)
     final_receipts = models.JSONField(default=dict)
 
+    class Meta:
+        indexes = [models.Index(fields=["state", "conversation"], name="closure_retirement_queue")]
+
 
 class RetiredConversation(models.Model):
     # No account/device/member references; only permanent reuse/rollback markers.

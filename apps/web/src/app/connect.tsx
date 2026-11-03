@@ -637,7 +637,6 @@ export function ConnectFlow({
   opened,
   advanced,
   manual,
-  createClosable,
   conversationType,
   changeConversationType,
   t,
@@ -650,7 +649,6 @@ export function ConnectFlow({
   opened: (conversation: Conversation) => Promise<void>;
   advanced: () => void;
   manual: () => Promise<void>;
-  createClosable?: () => Promise<void>;
   conversationType: "direct" | "group";
   changeConversationType: (value: "direct" | "group") => void;
   t: Translate;
@@ -1174,14 +1172,6 @@ export function ConnectFlow({
                 <option value="group">{t("Group")}</option>
               </select>
             </label>
-            {createClosable && (
-              <button
-                disabled={busy || !enabled}
-                onClick={() => void run(createClosable)}
-              >
-                {t("Create experimental closable direct conversation")}
-              </button>
-            )}
             <button disabled={busy} onClick={() => void run(manual)}>
               {t("Create conversation manually")}
             </button>

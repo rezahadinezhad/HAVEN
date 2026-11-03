@@ -24,7 +24,7 @@ On hosts that cannot launch a container with `no-new-privileges`, the wizard sto
 
 **Gated server** asks for the real server IPv4 address, optional exact hostname, an existing full-chain PEM certificate, matching unencrypted private-key file with mode 0600, and optionally an independently verified public root bundle. The certificate must cover the IP and any configured hostname, be a server leaf rather than a CA, match the key, have a valid trust chain, and have at least 48 hours remaining. Private-root certificate acquisition, offline CA custody, client trust installation, public IP reachability, firewall rules, NAT, renewal and standby infrastructure remain operator responsibilities. Do not put an offline CA signing key on the server.
 
-Server mode binds the chosen port on IPv4 interfaces and retains the ordinary blocked cryptographic release gate. It can prepare the stack and administrator login; it cannot enable production messaging. No environment variable supplied by this wizard overrides independent review or release acceptance.
+Server mode binds the chosen port on IPv4 interfaces and enables normal messaging, account-wide closure and retirement. Independent review and deployment qualification remain pending; installation checks do not certify them. See [retirement operations](../security/account-closure/operations.md) for the independent journal, one-time initialization and SQL restore requirements.
 
 ## What happens automatically
 
@@ -32,8 +32,8 @@ Server mode binds the chosen port on IPv4 interfaces and retains the ordinary bl
 2. Save protected configuration and credentials; validate and atomically publish TLS material.
 3. Build API and web images from the checkout, using the locked dependencies and committed browser/native artifacts. Pull missing digest-pinned infrastructure images.
 4. Start the private PostgreSQL and Redis services, create least-privilege database roles, and apply durability-checked migrations.
-5. Bootstrap the initial administrator through stdin and start the application, workers and ingress.
-6. Verify the configured TLS identity and trust chain, strict browser CSP, expected release/crypto gate, and saved administrator login. Log out the probe session.
+5. Initialize the independent retirement journal once, bootstrap the initial administrator through stdin and start the application, workers and ingress.
+6. Verify the configured TLS identity and trust chain, strict browser CSP, expected operational/review-pending status, and saved administrator login. Log out the probe session.
 
 The server check connects locally while validating the configured server identity; it does not prove that a remote client can reach or trust the endpoint. Browser message keys are generated on the user's device during first setup. The installer does not create or retain client message keys, recovery kits or unlock passphrases. After sign-in, follow the in-app browser setup and [first conversation guide](../user-onboarding/README.md).
 

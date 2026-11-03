@@ -15,6 +15,9 @@ with open(p) as f:
 if 'HAVEN_ROUTING_SECRET=' not in configured:
     with open(p, 'a') as f:
         f.write('\nHAVEN_ROUTING_SECRET='+secrets.token_urlsafe(48)+'\n')
+if 'HAVEN_RETIREMENT_REPLAY_SECRET=' not in configured:
+    with open(p, 'a') as f:
+        f.write('\nHAVEN_RETIREMENT_REPLAY_SECRET='+secrets.token_urlsafe(48)+'\n')
 PY
 uv sync --project apps/api --frozen --python 3.12
 npm ci --prefix apps/web --ignore-scripts

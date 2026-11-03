@@ -1,0 +1,2 @@
+ACTIVE_REVIEW_PENDING: normal messaging, account-wide closure and retirement are enabled.
+Independent qualification is tracked separately; use --qualification to require it.

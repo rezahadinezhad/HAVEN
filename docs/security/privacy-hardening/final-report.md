@@ -1,5 +1,7 @@
 # Final implementation report — 2026-11-03
 
+> Historical report. Normal-product activation, multi-device/account consent, group closure and real retirement now supersede the prototype restrictions below. See [the current implementation](../account-closure/README.md) and [verification](../account-closure/verification.md).
+
 Implemented all safely feasible phases in the existing Django/PostgreSQL/Redis/Next/OpenMLS architecture. This initial report predates the later [Phase 10 experimental closure/archive and synthetic-retirement implementation](../conversation-closure/README.md). The initial hardening was subsequently merged/pushed as `21d8cbf` at the owner's request. No production deployment, real-history deletion, key reset or backup purge occurred. Production graph retirement remains disabled. **Production gate stays closed.**
 
 Concrete changes:

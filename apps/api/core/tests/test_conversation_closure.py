@@ -17,22 +17,25 @@ pytestmark = pytest.mark.django_db
 
 
 @pytest.fixture
-def pair(settings, native):
+def pair(settings, native, request):
     settings.CRYPTO_READY = True
     settings.CONVERSATION_CLOSURE_READY = True
     a, ad = bound_client()
     b, bd = bound_client()
     for device in (ad, bd):
         initialize(native, device)
+    choice = getattr(request, "param", lifecycle.POLICY)
+    policy = choice.get("policy", lifecycle.POLICY) if isinstance(choice, dict) else choice
+    kind = choice.get("kind", "direct") if isinstance(choice, dict) else "direct"
     cid, gid = str(uuid.uuid4()), uuid.uuid4().hex
     native(ad, "create", group_id=gid)
     genesis = {
         "domain": "haven/genesis/v1",
         "id": cid,
-        "kind": "direct",
+        "kind": kind,
         "group_id": gid,
         "members": [{**p.certificate(ad), "role": "owner"}],
-        "closure_policy": lifecycle.POLICY,
+        "closure_policy": policy,
         "closure_epoch": settings.CONVERSATION_CLOSURE_EPOCH,
     }
     result = post(
@@ -40,7 +43,7 @@ def pair(settings, native):
         "conversations",
         {
             "id": cid,
-            "kind": "direct",
+            "kind": kind,
             "group_id": gid,
             "header": genesis,
             "signature": sign(native, ad, genesis),

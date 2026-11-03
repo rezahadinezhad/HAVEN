@@ -12,6 +12,8 @@ x-api: &api
     HAVEN_ROUTING_PREVIOUS_SECRET: ${HAVEN_ROUTING_PREVIOUS_SECRET:-}
     HAVEN_CONTACT_LINK_EPOCH: ${HAVEN_CONTACT_LINK_EPOCH:-initial}
     HAVEN_CLOSURE_EPOCH: ${HAVEN_CLOSURE_EPOCH:-initial}
+    HAVEN_RETIREMENT_REPLAY_SECRET: ${HAVEN_RETIREMENT_REPLAY_SECRET:?required}
+    HAVEN_RETIREMENT_JOURNAL_DIR: /var/lib/haven-retirement
     HAVEN_HOSTS: ${HAVEN_HOSTS:?required}
     HAVEN_ORIGINS: ${HAVEN_ORIGINS:?required}
     HAVEN_OPTIONAL_HOSTNAME: ${HAVEN_OPTIONAL_HOSTNAME:-}
@@ -28,7 +30,7 @@ x-api: &api
     REDIS_URL: redis://redis:6379/0
     HAVEN_TLS_CERT_PATH: /run/haven/tls/leaf.crt
   networks: [private]
-  volumes: ["${HAVEN_TLS_DIR:?required}/leaf.crt:/run/haven/tls/leaf.crt:ro"]
+  volumes: ["${HAVEN_TLS_DIR:?required}/leaf.crt:/run/haven/tls/leaf.crt:ro", "retirement:/var/lib/haven-retirement:ro"]
   read_only: true
   tmpfs: ["/tmp:size=64m,mode=1777"]
   cap_drop: [ALL]
@@ -131,8 +133,30 @@ services:
     command: ["python", "manage.py", "publish_outbox"]
     depends_on:
       migrate: {condition: service_completed_successfully}
+  retirement-init:
+    <<: *api
+    profiles: [bootstrap]
+    user: "0:0"
+    cap_add: [CHOWN, FOWNER, DAC_OVERRIDE]
+    volumes: ["retirement:/var/lib/haven-retirement"]
+    command: ["sh", "-c", "chown 10001:10001 /var/lib/haven-retirement && chmod 700 /var/lib/haven-retirement && python manage.py initialize_retirement_journal --new-installation && chown 10001:10001 /var/lib/haven-retirement/key.json"]
+    restart: "no"
+  retirement:
+    <<: *api
+    environment:
+      <<: *api_env
+      HAVEN_DB_POOL_SIZE: "1"
+    volumes: ["${HAVEN_TLS_DIR:?required}/leaf.crt:/run/haven/tls/leaf.crt:ro", "retirement:/var/lib/haven-retirement"]
+    command: ["python", "manage.py", "retire_conversations"]
+    depends_on:
+      migrate: {condition: service_completed_successfully}
   privacy:
     <<: *api
+    environment:
+      <<: *api_env
+      HAVEN_RETIREMENT_REPLAY_SECRET: ""
+      HAVEN_RETIREMENT_JOURNAL_DIR: ""
+    volumes: ["${HAVEN_TLS_DIR:?required}/leaf.crt:/run/haven/tls/leaf.crt:ro"]
     command: ["python", "manage.py", "maintain_privacy"]
     depends_on:
       migrate: {condition: service_completed_successfully}
@@ -168,4 +192,5 @@ networks:
   private: {internal: true}
   ingress: {}
 volumes:
+  retirement:
   db:

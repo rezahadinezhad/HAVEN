@@ -1,5 +1,7 @@
 # Experimental mutual conversation closure and synthetic graph retirement
 
+> Historical report. Normal-product activation, multi-device/account consent, group closure and real retirement now supersede the prototype restrictions below. See [the current implementation](../account-closure/README.md) and [verification](../account-closure/verification.md).
+
 Phase 10 now has an executable implementation and local verification. **Production activation and general graph retirement remain disabled.** This supersedes the design-only status at commit `21d8cbf`; it is not an independent security certification or a production deletion rollout.
 
 The supported scope is a newly created, explicitly opted-in, text-only direct conversation between two accounts, each with exactly one approved device. Existing conversations and their signed bytes are unchanged. The signed genesis advertises `mutual-local-archive-v1` and a restore namespace. A past removal, leave, role/ownership change, extra approved device, recovery/revocation, attachment obligation, or missing local history blocks this prototype. Epoch Update remains supported.

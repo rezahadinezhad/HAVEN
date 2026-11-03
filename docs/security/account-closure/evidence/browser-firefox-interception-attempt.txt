@@ -1,0 +1,42 @@
+
+Running 2 tests using 1 worker
+
+(node:683331) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 tests/conversation-closure.spec.ts:50:5 › mutual closure persists complete encrypted archives before consent and survives offline reload (26.4s)
+(node:685465) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 tests/conversation-closure.spec.ts:620:5 › group closure needs three accounts, accepts one of two devices, and preserves the other device's queued send (27.6s)
+
+
+  1) tests/conversation-closure.spec.ts:50:5 › mutual closure persists complete encrypted archives before consent and survives offline reload
+
+    Error: page.evaluate: Vault locked
+    stopVaultWorker@https://127.0.0.1:8445/__integration__/client.js:23733:50
+    work/worker.onerror@https://127.0.0.1:8445/__integration__/client.js:23720:30
+    EventHandlerNonNull*work@https://127.0.0.1:8445/__integration__/client.js:23720:7
+    rawOpen@https://127.0.0.1:8445/__integration__/client.js:23746:89
+    openVault@https://127.0.0.1:8445/__integration__/client.js:23855:25
+    unlock@https://127.0.0.1:8445/__integration__/client.js:24845:27
+    async*@debugger eval code line 370 > eval:3:50
+    evaluate@debugger eval code:372:16
+    @debugger eval code:1:44
+    @debugger eval code:1:62
+
+        at stopVaultWorker@https://127.0.0.1:8445/__integration__/client.js:23733:50
+        at work/worker.onerror@https://127.0.0.1:8445/__integration__/client.js:23720:30
+        at EventHandlerNonNull*work@https://127.0.0.1:8445/__integration__/client.js:23720:7
+        at rawOpen@https://127.0.0.1:8445/__integration__/client.js:23746:89
+        at openVault@https://127.0.0.1:8445/__integration__/client.js:23855:25
+        at unlock@https://127.0.0.1:8445/__integration__/client.js:24845:27
+        at async*@debugger eval code line 370 > eval:3:50
+        at evaluate@debugger eval code:372:16
+        at @debugger eval code:1:44
+        at @debugger eval code:1:62
+        at /home/reza-hadinezhad/project/HAVEN_CODEX_IMPLEMENTATION_PACKAGE/apps/web/tests/conversation-closure.spec.ts:478:17
+
+    Error Context: test-results/conversation-closure-mutua-80bbf-and-survives-offline-reload/error-context.md
+
+  1 failed
+    tests/conversation-closure.spec.ts:50:5 › mutual closure persists complete encrypted archives before consent and survives offline reload
+  1 passed (57.1s)

@@ -9,12 +9,11 @@ import http.client
 import ipaddress
 import json
 import os
-from pathlib import Path
 import re
 import secrets
-import signal
 import shlex
 import shutil
+import signal
 import socket
 import ssl
 import stat
@@ -23,6 +22,7 @@ import sys
 import tempfile
 import time
 from http.cookies import SimpleCookie
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 SLUG = re.compile(r"[a-z][a-z0-9-]{2,30}\Z")
@@ -206,6 +206,7 @@ def render_env(plan, directory, generated):
         "HAVEN_OPTIONAL_HOSTNAME": plan.get("hostname", ""),
         "HAVEN_SECRET_KEY": generated["application"],
         "HAVEN_ROUTING_SECRET": generated["routing"],
+        "HAVEN_RETIREMENT_REPLAY_SECRET": generated["retirement"],
         "HAVEN_DB_NOTIFICATION_PASSWORD": generated["notification"],
         "HAVEN_DB_NOTIFICATION_USER": "haven_notify",
         "POSTGRES_PASSWORD": generated["database"],
@@ -218,7 +219,7 @@ def render_env(plan, directory, generated):
         "HAVEN_TLS_DIR": str(directory / "tls-bundle" / "tls"),
         "HAVEN_API_IMAGE": plan["api_image"],
         "HAVEN_WEB_IMAGE": plan["web_image"],
-        "HAVEN_MAINTENANCE": "Experimental software. Independent review pending.",
+        "HAVEN_MAINTENANCE": "",
     }
     return "".join(
         key + "=" + safe_value(value) + "\n" for key, value in values.items()
@@ -233,10 +234,10 @@ def render_overlay(plan):
         + "]\n"
     )
     if plan["mode"] == "local":
-        for service in ("api", "privacy"):
+        for service in ("api", "privacy", "retirement"):
             output += f"  {service}:\n    environment:\n      DJANGO_SETTINGS_MODULE: haven.integration_settings\n"
         if plan.get("local_compatibility"):
-            for service in ("redis", "prepare-db-roles", "migrate", "web", "outbox"):
+            for service in ("redis", "prepare-db-roles", "migrate", "web", "outbox", "retirement-init"):
                 output += f"  {service}:\n    security_opt: !override []\n"
             # Each service key occurs only once in this generated YAML.
             output = output.replace(
@@ -621,7 +622,7 @@ def verify_service(plan, roots, credentials):
                 response.status == 200,
                 f"Verified HTTPS probe rejected ({response.status}); check the protected log and saved administrator credentials",
             )
-            return value, dict((k.lower(), v) for k, v in response.getheaders())
+            return value, {k.lower(): v for k, v in response.getheaders()}
         finally:
             connection.close()
 
@@ -631,9 +632,9 @@ def verify_service(plan, roots, credentials):
             raw, _ = request("/api/v1/health")
             health = json.loads(raw)
             need(
-                health.get("crypto_ready") is (plan["mode"] == "local")
-                and health.get("release_status") == "BLOCKED",
-                "Unexpected security gate state; setup cannot qualify a release",
+                health.get("crypto_ready") is True
+                and health.get("release_status") == "ACTIVE_REVIEW_PENDING",
+                "Unexpected product activation state; independent qualification is tracked separately",
             )
             break
         except (OSError, http.client.HTTPException) as exc:
@@ -734,9 +735,9 @@ def ask(label, default=None):
 
 def questionnaire():
     print(
-        "\nHAVEN · Guided setup\nLocal evaluation uses a private test CA. Server mode keeps production messaging gated.\n"
+        "\nHAVEN · Guided setup\nLocal evaluation uses a private test CA. Messaging is operational; independent security review is pending.\n"
     )
-    mode = ask("Mode: 1 local evaluation, 2 gated server", "1")
+    mode = ask("Mode: 1 local evaluation, 2 server", "1")
     need(mode in ("1", "2"), "Choose 1 or 2")
     local = mode == "1"
     p = {
@@ -811,7 +812,7 @@ def install(plan, *, resume=False, interactive=True):
             )
             generated = {
                 key: secrets.token_urlsafe(48)
-                for key in ("application", "database", "migration", "runtime", "routing", "notification")
+                for key in ("application", "database", "migration", "runtime", "routing", "notification", "retirement")
             }
             credentials = {
                 "username": plan["admin"],
@@ -837,7 +838,7 @@ def install(plan, *, resume=False, interactive=True):
             + [
                 line.partition("=")[2]
                 for line in read_private(directory / "config.env").splitlines()
-                if "PASSWORD=" in line or line.startswith(("HAVEN_SECRET_KEY=", "HAVEN_ROUTING_SECRET=", "HAVEN_ROUTING_PREVIOUS_SECRET="))
+                if "PASSWORD=" in line or line.startswith(("HAVEN_SECRET_KEY=", "HAVEN_ROUTING_SECRET=", "HAVEN_ROUTING_PREVIOUS_SECRET=", "HAVEN_RETIREMENT_REPLAY_SECRET="))
             ],
         )
         if resume:
@@ -913,6 +914,11 @@ def install(plan, *, resume=False, interactive=True):
             overlay.write_text(render_overlay(plan))
             overlay.chmod(0o600)
             state["plan"] = plan
+            save_state(directory, state)
+        if not state.get("retirement_journal_initialized"):
+            need(not resume or "HAVEN_RETIREMENT_REPLAY_SECRET=" in read_private(directory / "config.env"), "Upgrade configuration with an independent retirement secret before resuming")
+            runner.run(base + ["run", "--rm", "--no-deps", "retirement-init"])
+            state["retirement_journal_initialized"] = True
             save_state(directory, state)
         images = runner.run(base + ["config", "--images"]).stdout.splitlines()
         for image in sorted(set(images) - {plan["api_image"], plan["web_image"]}):
@@ -1000,11 +1006,11 @@ def install(plan, *, resume=False, interactive=True):
             "Browser message keys are created on the device at first unlock, never by this installer."
         )
         print(
-            "Release remains BLOCKED for independent review and external qualification."
+            "Messaging is operational. Independent review and external qualification remain pending."
         )
         if plan["mode"] == "server":
             print(
-                "Server messaging is gated. Local checks do not establish public reachability or client certificate trust."
+                "Local checks do not establish public reachability or client certificate trust."
             )
         return directory
     finally:

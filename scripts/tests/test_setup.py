@@ -72,14 +72,14 @@ class SetupTests(unittest.TestCase):
                 setup.safe_value(value)
         self.assertEqual(setup.safe_value("A private community"), "A private community")
 
-    def test_overlay_never_enables_nonloopback_messaging(self):
+    def test_integration_overrides_remain_loopback_only(self):
         local = setup.render_overlay(plan())
         self.assertIn("127.0.0.1:18447:443", local)
-        self.assertEqual(local.count("haven.integration_settings"), 2)
+        self.assertEqual(local.count("haven.integration_settings"), 3)
         self.assertNotIn("outbox:\n    environment:", local)
         self.assertNotIn("security_opt", local)
         compatible = setup.render_overlay(plan(local_compatibility=True))
-        self.assertEqual(compatible.count("security_opt: !override []"), 7)
+        self.assertEqual(compatible.count("security_opt: !override []"), 9)
         server = setup.render_overlay(plan(mode="server", port=443))
         self.assertIn("0.0.0.0:443:443", server)
         self.assertNotIn("integration_settings", server)

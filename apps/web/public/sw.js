@@ -1,4 +1,4 @@
-const SHELL_BUILD_REVISION = "c36282a1fbf5902941df03bb1f4295989014e6c5298f0fa19deecfa2d6add376";
+const SHELL_BUILD_REVISION = "ebbd1d237a4e20adae75a88d1ac8e66736f492229e41c6cc5e91be7c6ea1acc0";
 // Only the explicitly public shell and immutable build resources enter this cache. API/data never do.
 const PREFIX="haven-shell-";
 // Bind this worker to its build even when the browser terminates/restarts it
@@ -8,11 +8,11 @@ self.addEventListener("install",event=>event.waitUntil((async()=>{
   const response=await fetch("/sw-assets.json",{cache:"no-store",credentials:"omit"});if(!response.ok)throw new Error("Offline manifest unavailable");
   const manifest=await response.json();if(manifest.revision!==SHELL_BUILD_REVISION||!/^[0-9a-f]{64}$/.test(manifest.revision)||!Array.isArray(manifest.assets)||manifest.assets.length>1000)throw new Error("Invalid offline manifest");
   const name=PREFIX+manifest.revision,cache=await caches.open(name);
-  try{for(const asset of manifest.assets){if(asset!=="/"&&!/^\/(?:_next\/static\/|crypto\/|(?:crypto-worker|vault-worker)\.js$|offline\.(?:html|css)$)/.test(asset))throw new Error("Invalid shell path");const r=await fetch(asset,{credentials:"omit",cache:"reload"});if(!r.ok||(asset==="/"&&r.headers.get("x-haven-public-shell")!=="1"))throw new Error("Uncacheable shell");await cache.put(asset,r);}}catch(e){await caches.delete(name);throw e;}
+  try{for(const asset of manifest.assets){if(asset!=="/"&&!/^\/(?:_next\/static\/|crypto\/|(?:crypto-worker|vault-worker(?:-v2)?)\.js$|offline\.(?:html|css)$)/.test(asset))throw new Error("Invalid shell path");const r=await fetch(asset,{credentials:"omit",cache:"reload"});if(!r.ok||(asset==="/"&&r.headers.get("x-haven-public-shell")!=="1"))throw new Error("Uncacheable shell");await cache.put(asset,r);}}catch(e){await caches.delete(name);throw e;}
 })()));
 self.addEventListener("activate",event=>event.waitUntil((async()=>{const name=await cacheName();for(const key of await caches.keys())if(key.startsWith(PREFIX)&&key!==name)await caches.delete(key);await self.clients.claim();})()));
 self.addEventListener("fetch",event=>{
   const u=new URL(event.request.url);if(event.request.method!=="GET"||u.origin!==location.origin||u.pathname.startsWith("/api/")||u.pathname.startsWith("/ws/"))return;
   if(event.request.mode==="navigate"){event.respondWith(fetch(event.request).catch(async()=>{const name=await cacheName(),cache=name&&await caches.open(name);return cache&&(await cache.match("/"))||Response.error();}));return;}
-  if(u.pathname.startsWith("/_next/static/")||u.pathname.startsWith("/crypto/")||["/crypto-worker.js","/vault-worker.js"].includes(u.pathname))event.respondWith((async()=>{const name=await cacheName(),cache=name&&await caches.open(name);return cache&&(await cache.match(u.pathname))||fetch(event.request);})());
+  if(u.pathname.startsWith("/_next/static/")||u.pathname.startsWith("/crypto/")||["/crypto-worker.js","/vault-worker.js","/vault-worker-v2.js"].includes(u.pathname))event.respondWith((async()=>{const name=await cacheName(),cache=name&&await caches.open(name);return cache&&(await cache.match(u.pathname))||fetch(event.request);})());
 });

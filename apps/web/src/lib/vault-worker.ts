@@ -41,9 +41,14 @@ self.onmessage = (e) => {
       if (
         binding !== undefined &&
         (typeof binding !== "string" ||
-          !/^history:[0-9a-f-]{36}$/.test(binding))
+          !/^(?:history|archive):[0-9a-f-]{36}$/.test(binding))
       )
         throw new Error();
+      const archiveScope =
+        (typeof binding === "string" && binding.startsWith("archive:")) ||
+        /^[0-9a-f-]{36}:closure:[0-9a-f-]{36}$/.test(scope);
+      const plainLimit = archiveScope ? 72 * 1024 * 1024 : 16000000;
+      const cipherLimit = archiveScope ? 96 * 1024 * 1024 : 24000000;
       const aad = sodium.from_string(
         binding === undefined
           ? "haven/vault/v1:" + scope
@@ -58,7 +63,7 @@ self.onmessage = (e) => {
           nonce = sodium.randombytes_buf(24);
         const plain = sodium.from_string(JSON.stringify(value));
         try {
-          if (plain.length > 16000000)
+          if (plain.length > plainLimit)
             throw new Error("VAULT_CAPACITY_REACHED");
           const ciphertext = sodium.crypto_aead_xchacha20poly1305_ietf_encrypt(
             plain,
@@ -85,7 +90,7 @@ self.onmessage = (e) => {
           value.v !== 1 ||
           value.kdf !== "argon2id-3-64MiB" ||
           typeof value.ciphertext !== "string" ||
-          value.ciphertext.length > 24000000
+          value.ciphertext.length > cipherLimit
         )
           throw new Error();
         const salt = sodium.from_base64(value.salt),

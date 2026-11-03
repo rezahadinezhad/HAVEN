@@ -1,5 +1,44 @@
 export type Language = "en" | "fa";
 const fa: Record<string, string> = {
+  "Saved local messages": "پیام‌های محلی ذخیره‌شده",
+  "Saved files": "فایل‌های ذخیره‌شده",
+  "Unconfirmed local messages": "پیام‌های محلی تأییدنشده",
+  "Closed conversations saved on this device":
+    "گفتگوهای بسته‌شدهٔ ذخیره‌شده در این دستگاه",
+  "This conversation stays closed. Local recovered history, drafts and unconfirmed sends are preserved in your encrypted recovery kit.":
+    "این گفتگو بسته می‌ماند. تاریخچهٔ محلی بازیابی‌شده، پیش‌نویس‌ها و ارسال‌های تأییدنشده در بستهٔ بازیابی رمزگذاری‌شدهٔ شما محفوظ‌اند.",
+  "Remove this local archive copy": "حذف این نسخهٔ محلی بایگانی",
+  "Remove this local archive copy? First verify your encrypted export and keep its passphrase. The server cannot restore these files.":
+    "این نسخهٔ محلی بایگانی حذف شود؟ ابتدا خروجی رمزگذاری‌شده را بررسی کنید و عبارت عبورش را نگه دارید. سرور نمی‌تواند این فایل‌ها را بازیابی کند.",
+  "Mutual closure lets every affected account authorize server deletion from one approved participating device. Review the local archive first: other devices may have additional history. View-once content is excluded. Active conversations and conversations awaiting consent remain on the server.":
+    "با بستن توافقی گفتگو، هر حساب مربوط می‌تواند از یک دستگاه عضو و تأییدشده اجازهٔ حذف از سرور بدهد. ابتدا بایگانی محلی را بررسی کنید: دستگاه‌های دیگر ممکن است تاریخچهٔ بیشتری داشته باشند. محتوای یک‌بارمصرف ذخیره نمی‌شود. گفتگوهای فعال یا در انتظار توافق در سرور می‌مانند.",
+
+  "Messaging is operational. Independent security review is still pending.":
+    "پیام‌رسان فعال است. بازبینی امنیتی مستقل هنوز در انتظار انجام است.",
+  "One approved participating device acts for your entire account. Preparing pauses all your devices. After every affected account agrees, the server removes this conversation and its media. Your archive contains history available on this device; other devices may have additional history or unsent messages. View-once content is never archived.":
+    "یک دستگاه عضو و تأییدشده از طرف تمام حساب شما اقدام می‌کند. آماده‌سازی ارسال را در همهٔ دستگاه‌هایتان متوقف می‌کند. پس از موافقت تمام حساب‌های مربوط، گفتگو و رسانه‌های آن از سرور حذف می‌شوند. بایگانی شامل تاریخچهٔ موجود در این دستگاه است؛ دستگاه‌های دیگر ممکن است تاریخچه یا پیام‌های ارسال‌نشدهٔ بیشتری داشته باشند. رسانهٔ یک‌بارمصرف هرگز بایگانی نمی‌شود.",
+  "All accounts prepared; review your archive":
+    "همهٔ حساب‌ها آماده‌اند؛ بایگانی خود را بررسی کنید",
+  "Closure proposed; each account chooses one device to prepare":
+    "بستن گفتگو پیشنهاد شده؛ هر حساب یک دستگاه را برای آماده‌سازی انتخاب می‌کند",
+  "Direct chats need both accounts; groups need every affected account, including former members":
+    "گفتگوی مستقیم به توافق هر دو حساب و گروه به توافق تمام حساب‌های مربوط، از جمله اعضای پیشین، نیاز دارد",
+  "Prepare this account for closure? Your pending requests and drafts are retained locally. Other devices will stop sending. This conversation cannot reopen after finalization.":
+    "حساب را برای بستن گفتگو آماده می‌کنید؟ درخواست‌های در انتظار و پیش‌نویس‌ها به‌صورت محلی نگه داشته می‌شوند. ارسال در دستگاه‌های دیگر متوقف می‌شود. پس از نهایی‌سازی، این گفتگو دوباره باز نمی‌شود.",
+  "Prepare my account": "آماده‌سازی حساب من",
+  "Authorize account-wide server deletion": "اجازهٔ حذف از سرور برای تمام حساب",
+  "I authorize deletion for all my devices, including history or queued messages unavailable here, and files listed as unavailable in my archive.":
+    "حذف برای تمام دستگاه‌هایم را تأیید می‌کنم؛ از جمله تاریخچه یا پیام‌های در صف که اینجا موجود نیستند و فایل‌هایی که در بایگانی ناموجود اعلام شده‌اند.",
+  "Unavailable or excluded files": "فایل‌های ناموجود یا خارج از بایگانی",
+  "Conversation closure requests": "درخواست‌های بستن گفتگو",
+  "You can respond here even after leaving a group. One device per account is enough.":
+    "حتی پس از خروج از گروه می‌توانید اینجا پاسخ دهید. یک دستگاه برای هر حساب کافی است.",
+  "Load more": "نمایش بیشتر",
+  "Retired conversation saved on this device":
+    "گفتگوی حذف‌شده از سرور، ذخیره‌شده در این دستگاه",
+  "The server copy was removed. Local history, drafts and unconfirmed sends are preserved in your encrypted recovery kit.":
+    "نسخهٔ سرور حذف شد. تاریخچهٔ محلی، پیش‌نویس‌ها و ارسال‌های تأییدنشده در بستهٔ بازیابی رمزگذاری‌شدهٔ شما محفوظ‌اند.",
+
   "Restore a closed conversation archive": "بازیابی بایگانی گفتگوی بسته‌شده",
   "Use the unlock passphrase from when you exported it. Restoring adds local history; it does not restore live device keys or verify a friend's identity.":
     "از عبارت عبور زمان دریافت بایگانی استفاده کنید. بازیابی فقط تاریخچهٔ محلی را اضافه می‌کند؛ کلیدهای زندهٔ دستگاه یا هویت دوست را تأیید نمی‌کند.",
@@ -821,6 +860,10 @@ const fa: Record<string, string> = {
   "Pending delivery": "تحویل در انتظار",
   "Verify device fingerprint before accepting":
     "پیش از پذیرش، اثر انگشت دستگاه را تأیید کنید",
+  "Preparation cannot be undone. If any account withholds consent or loses authorization, server history is retained.":
+    "آماده‌سازی برگشت‌پذیر نیست. اگر حسابی موافقت نکند یا مجوز خود را از دست بدهد، تاریخچه در سرور نگهداری می‌شود.",
+  "Deletion authorized. Cleanup runs automatically after delivery, open media sessions and required security retention finish. Your archive stays local.":
+    "مجوز حذف صادر شد. پس از پایان تحویل، نشست‌های باز رسانه و دورهٔ لازم نگهداری امنیتی، پاک‌سازی خودکار انجام می‌شود. آرشیو شما در دستگاه می‌ماند.",
   active: "فعال",
   rekey_required: "تغییر کلید لازم است",
   pending: "در انتظار تأیید",

@@ -7,17 +7,24 @@ from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
 
 from . import closure as lifecycle, models as m, serializers as s
-from .views import View, trusted_device, membership, data, rate
+from .views import View, trusted_device, data, rate
 from .protocol import canonical
+
+
+def closure_membership(request, cid, lock=False):
+    device = trusted_device(request)
+    query = m.Conversation.objects.select_for_update() if lock else m.Conversation.objects
+    conversation = get_object_or_404(query, pk=cid, membership__device=device)
+    member = m.Membership.objects.select_related("device").get(conversation=conversation, device=device)
+    member.device = device
+    return conversation, member
 
 
 class ConversationClosure(View):
     def mutation_accounts(self, request, **kwargs):
         lifecycle.feature_gate()
         device = trusted_device(request)
-        if not m.Membership.objects.filter(
-            conversation_id=kwargs["cid"], device=device, removed_at_epoch=None
-        ).exists():
+        if not m.Membership.objects.filter(conversation_id=kwargs["cid"], device=device).exists():
             raise PermissionDenied()
         return tuple(
             m.Membership.objects.filter(conversation_id=kwargs["cid"]).values_list(
@@ -28,7 +35,7 @@ class ConversationClosure(View):
     def get(self, request, cid):
         lifecycle.feature_gate()
         rate(request, "closure_read", 60)
-        conversation, _ = membership(request, cid)
+        conversation, _ = closure_membership(request, cid)
         lifecycle.eligibility(conversation)
         closure = m.ConversationClosure.objects.filter(conversation=conversation).first()
         if closure:
@@ -58,14 +65,14 @@ class ConversationClosure(View):
         action = request.query_params.get("action", "propose")
         if action not in ("propose", "prepare", "consent", "receipt"):
             raise ValidationError("Unsupported closure action; reopening/deletion is not available")
-        conversation, member = membership(request, cid, lock=True, control=True, allow_closure=True)
+        conversation, member = closure_membership(request, cid, lock=True)
         lifecycle.eligibility(conversation)
         did = str(member.device_id)
         closure = m.ConversationClosure.objects.select_for_update().filter(conversation=conversation).first()
         if action == "propose":
             payload = data(request, s.ClosureProposal)
             transcript = payload["transcript"]
-            if not isinstance(transcript, dict) or len(canonical(transcript)) > 8192:
+            if not isinstance(transcript, dict) or len(canonical(transcript)) > 128 * 1024:
                 raise ValidationError("Invalid closure proposal")
             if closure:
                 if (
@@ -74,6 +81,16 @@ class ConversationClosure(View):
                 ):
                     raise ValidationError("Another closure proposal already exists")
             else:
+                if (
+                    conversation.kind == "group"
+                    and not m.Membership.objects.filter(
+                        conversation=conversation,
+                        device__user_id=request.user.pk,
+                        removed_at_epoch=None,
+                        role__in=["owner", "moderator"],
+                    ).exists()
+                ):
+                    raise PermissionDenied("A current group owner or moderator must propose closure")
                 expected = lifecycle.transcript_for(conversation, transcript.get("nonce"), did)
                 if transcript != expected:
                     raise ValidationError("HEAD_CONFLICT: synchronize before proposing closure")
@@ -91,6 +108,7 @@ class ConversationClosure(View):
                 m.ConversationClosure.objects.select_for_update(), conversation=conversation
             )
             lifecycle.validate_closure(conversation, closure, require_final=closure.state == "finalized")
+            lifecycle.require_representative(closure, did)
             if action == "prepare":
                 payload = data(request, s.ClosureProposal)
                 expected = lifecycle.current_transcript(conversation, closure)
@@ -107,8 +125,7 @@ class ConversationClosure(View):
                     raise PermissionDenied("Closure is already frozen")
                 closure.preparations = {**closure.preparations, did: record}
                 closure.transcript = expected
-                participants = {item["id"] for item in expected["participants"]}
-                if set(closure.preparations) == participants and all(
+                if lifecycle.quorum(expected, closure.preparations) and all(
                     x["transcript_hash"] == record["transcript_hash"] for x in closure.preparations.values()
                 ):
                     if closure.state == "proposed":
@@ -139,7 +156,7 @@ class ConversationClosure(View):
                 acknowledged = m.DeliveryCursor.objects.filter(
                     conversation=conversation, device=member.device, last_acked_seq__gte=conversation.last_seq
                 ).exists()
-                if not acknowledged:
+                if not acknowledged and conversation.genesis["closure_policy"] == lifecycle.POLICY:
                     raise PermissionDenied("Persist verified history before archive consent")
                 lifecycle.verify(
                     member.device.public_key,
@@ -153,10 +170,63 @@ class ConversationClosure(View):
                 if did in closure.consents and closure.consents[did] != record:
                     raise ValidationError("Archive consent is immutable; retry the same persisted request")
                 closure.consents = {**closure.consents, did: record}
-                if len(closure.consents) == 2:
+                if lifecycle.quorum(closure.transcript, closure.consents):
                     closure.state = "finalized"
                     conversation.status = "closed"
                     conversation.save(update_fields=["status"])
             closure.save(update_fields=["transcript", "preparations", "consents", "state", "final_receipts"])
         lifecycle.validate_closure(conversation, closure, require_final=closure.state == "finalized")
         return Response(lifecycle.closure_json(closure, conversation))
+
+
+class ClosureProofs(View):
+    def get(self, request, cid):
+        lifecycle.feature_gate()
+        conversation, _ = closure_membership(request, cid)
+        if conversation.genesis.get("closure_policy") != lifecycle.ACCOUNT_POLICY:
+            raise PermissionDenied("Historical finality proofs require the account-wide policy")
+        rate(request, "closure_proof", 120)
+        try:
+            after = max(0, int(request.query_params.get("after_seq", "0")))
+        except ValueError:
+            raise ValidationError("Invalid proof cursor") from None
+        rows = (
+            m.MessageEnvelope.objects.filter(conversation=conversation, server_seq__gt=after)
+            .defer("ciphertext")
+            .order_by("server_seq")[:100]
+        )
+        return Response(
+            {
+                "proofs": [lifecycle.proof_json(x) for x in rows],
+                "genesis": conversation.genesis,
+                "genesis_signature": __import__("base64")
+                .b64encode(bytes(conversation.genesis_signature))
+                .decode(),
+            }
+        )
+
+
+class PendingClosures(View):
+    def get(self, request):
+        lifecycle.feature_gate()
+        device = trusted_device(request)
+        from .views import conversation_json
+
+        query = m.Conversation.objects.filter(
+            membership__device=device, conversationclosure__isnull=False
+        ).distinct()
+        after = request.query_params.get("after")
+        if after:
+            import uuid
+
+            try:
+                query = query.filter(pk__gt=uuid.UUID(after))
+            except ValueError:
+                raise ValidationError("Invalid closure cursor") from None
+        rows = list(query.order_by("pk")[:51])
+        return Response(
+            {
+                "items": [conversation_json(x) for x in rows[:50]],
+                "next_cursor": str(rows[49].pk) if len(rows) > 50 else None,
+            }
+        )

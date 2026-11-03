@@ -5,4 +5,4 @@ cd "$(dirname "$0")/.."
 cargo build --manifest-path packages/crypto-core/Cargo.toml --target wasm32-unknown-unknown --lib --release --locked -j 2
 wasm-bindgen packages/crypto-core/target/wasm32-unknown-unknown/release/haven_crypto_core.wasm --target web --out-dir apps/web/public/crypto --out-name haven_crypto
 node scripts/build-client.mjs
-sha256sum apps/web/public/crypto/* apps/web/public/crypto-worker.js apps/web/public/vault-worker.js > docs/evidence/crypto-assets.sha256
+sha256sum apps/web/public/crypto/* apps/web/public/crypto-worker.js apps/web/public/vault-worker.js apps/web/public/vault-worker-v2.js > docs/evidence/crypto-assets.sha256

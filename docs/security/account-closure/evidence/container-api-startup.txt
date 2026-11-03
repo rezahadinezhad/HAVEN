@@ -1,0 +1,1 @@
+PASS: normal image starts with protected read-only journal, runtime pool and operational health behind HTTPS proxy headers

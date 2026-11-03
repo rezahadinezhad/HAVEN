@@ -17,5 +17,5 @@ if (
     raise RuntimeError("Integration settings require isolated loopback IP/localhost origins")
 CRYPTO_READY = True
 
-# Synthetic loopback implementation; production source gate remains closed.
+# Loopback compatibility settings for legacy disposable-database tests.
 CONVERSATION_CLOSURE_READY = True

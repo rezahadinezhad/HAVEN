@@ -1,5 +1,8 @@
 import {
   CLOSURE_POLICY,
+  LEGACY_CLOSURE_POLICY,
+  closureCertificate,
+  closureQuorum,
   parseClosureRecord,
   type ClosureSnapshot,
   type ClosureRecord,
@@ -8,7 +11,12 @@ import {
 } from "./closure-protocol";
 import { authenticatedEvent } from "./events";
 // RFC 9420 encryption stays in OpenMLS. Delivery signatures authenticate ordering and application policy.
-import { prepareUpload, resumeUpload, discardUpload } from "./media";
+import {
+  prepareUpload,
+  resumeUpload,
+  discardUpload,
+  downloadDecrypt,
+} from "./media";
 import type { FileMeta } from "./vault";
 import sodium from "libsodium-wrappers-sumo";
 import canonicalize from "canonicalize";
@@ -71,6 +79,14 @@ const certificate = (
 const sorted = (a: Certificate[]) =>
   [...a].sort((x, y) => x.id.localeCompare(y.id));
 const same = (a: unknown, b: unknown) => canonical(a) === canonical(b);
+const archivalRequests = (requests: VaultState["outbox"]) =>
+  Object.fromEntries(
+    Object.entries(requests).map(([id, { path, body }]) => [
+      id,
+      { path, body: structuredClone(body) },
+    ]),
+  );
+
 async function signatureValid(key: string, signature: string, value: unknown) {
   await sodium.ready;
   if (
@@ -286,6 +302,7 @@ export class Messenger {
         heads: {},
         cursor: {},
         closure_archives: structuredClone(history.closure_archives || {}),
+        retired_history: structuredClone(history.retired_history || {}),
         events: history.events
           .filter((e) => !e.file?.view_once)
           .map((e) => ({ ...e, state: "local_only" })),
@@ -321,6 +338,7 @@ export class Messenger {
     this.state.crypto = "";
     this.state.events = [];
     this.state.closure_archives = undefined;
+    this.state.retired_history = undefined;
     this.state.drafts = {};
     this.state.recovery_seed = undefined;
     this.state.uploads = undefined;
@@ -332,6 +350,7 @@ export class Messenger {
   private assertConversationWritable(c: Conversation) {
     if (
       this.state.closure_archives?.[c.id] ||
+      this.state.retired_history?.[c.id] ||
       c.status === "closing" ||
       c.status === "closed"
     )
@@ -358,26 +377,38 @@ export class Messenger {
     record: ClosureRecord,
     offline?: ClosureArchive,
   ): Promise<ClosureProofBundle> {
-    const h = offline
-        ? {
-            seq: offline.transcript.final_seq,
-            hash: offline.transcript.final_hash,
-            epoch: offline.transcript.final_epoch,
-            group_id: offline.transcript.group_id,
-            genesis_hash: offline.transcript.genesis_hash,
-            kind: "direct" as const,
-            members: offline.transcript.participants.map(
-              ({ security_generation: _, ...x }) => x,
-            ),
-            closure_policy: CLOSURE_POLICY,
-            closure_epoch: offline.transcript.restore_epoch,
-          }
-        : this.state.heads[c.id],
+    if (
+      !offline &&
+      this.state.retired_history?.[c.id] &&
+      this.state.closure_archives?.[c.id]?.certificate?.state !== "finalized"
+    )
+      throw new Error(
+        "This conversation is closed locally; restore its archive for local reading",
+      );
+    const accountWide = record.transcript?.closure_policy === CLOSURE_POLICY;
+    const h =
+        offline || accountWide
+          ? {
+              seq: record.transcript!.final_seq,
+              hash: record.transcript!.final_hash,
+              epoch: record.transcript!.final_epoch,
+              group_id: record.transcript!.group_id,
+              genesis_hash: record.transcript!.genesis_hash,
+              kind: "direct" as const,
+              members: record
+                .transcript!.participants.filter((x) => x.active !== false)
+                .map(closureCertificate),
+              closure_policy: CLOSURE_POLICY,
+              closure_epoch: record.transcript!.restore_epoch,
+            }
+          : this.state.heads[c.id],
       t = record.transcript;
     if (
       !h ||
       !t ||
-      h.closure_policy !== CLOSURE_POLICY ||
+      ![CLOSURE_POLICY, LEGACY_CLOSURE_POLICY].includes(
+        h.closure_policy || "",
+      ) ||
       t.conversation_id !== c.id ||
       t.group_id !== h.group_id ||
       t.genesis_hash !== h.genesis_hash ||
@@ -385,7 +416,7 @@ export class Messenger {
       t.final_hash !== h.hash ||
       t.final_epoch !== h.epoch ||
       t.restore_epoch !== h.closure_epoch ||
-      (!offline && this.state.cursor[c.id] !== h.seq)
+      (!offline && !accountWide && this.state.cursor[c.id] !== h.seq)
     )
       throw new Error(
         "Closure checkpoint does not match verified local history",
@@ -402,23 +433,26 @@ export class Messenger {
       (!offline &&
         (ours.public_key !== this.state.device.public_key ||
           ours.security_generation !== account!.user.security_generation)) ||
-      new Set(t.participants.map((x) => x.id)).size !== 2 ||
-      new Set(t.participants.map((x) => x.user_id)).size !== 2 ||
-      !same(
-        t.participants.map(({ security_generation: _, ...x }) => x),
-        sorted(h.members),
-      )
+      new Set(t.participants.map((x) => x.id)).size !== t.participants.length ||
+      new Set(t.participants.map((x) => x.user_id)).size < 2 ||
+      (!accountWide &&
+        !same(t.participants.map(closureCertificate), sorted(h.members)))
     )
       throw new Error("Closure participant or recovery binding mismatch");
     const detail =
-        offline?.bundle || (await api<Detail>(`conversations/${c.id}`)),
+        offline?.bundle ||
+        (accountWide
+          ? await api<ClosureProofBundle>(
+              `conversations/${c.id}/closure/proofs`,
+            )
+          : await api<Detail>(`conversations/${c.id}`)),
       g = detail.genesis;
     if (
       g.domain !== "haven/genesis/v1" ||
       g.id !== c.id ||
-      g.kind !== "direct" ||
+      !["direct", "group"].includes(g.kind) ||
       g.members.length !== 1 ||
-      g.closure_policy !== CLOSURE_POLICY ||
+      g.closure_policy !== t.closure_policy ||
       g.closure_epoch !== h.closure_epoch ||
       (await digest(
         canonical({ header: g, signature: detail.genesis_signature }),
@@ -431,8 +465,9 @@ export class Messenger {
       epoch: 0,
       group_id: g.group_id,
       members: g.members,
-      kind: "direct",
+      kind: g.kind as "direct" | "group",
     };
+    const historical = new Map(g.members.map((x) => [x.id, x]));
     if (!offline) this.pinned(g.members[0]);
     await signatureValid(g.members[0].public_key, detail.genesis_signature, g);
     const proofs: Envelope[] = [];
@@ -445,7 +480,7 @@ export class Messenger {
               .slice(0, 100),
           }
         : await api<{ proofs: Envelope[] }>(
-            `conversations/${c.id}/proofs?after_seq=${head.seq}`,
+            `conversations/${c.id}/${accountWide ? "closure/proofs" : "proofs"}?after_seq=${head.seq}`,
           );
       if (
         !Array.isArray(page.proofs) ||
@@ -475,7 +510,7 @@ export class Messenger {
           e.sender_device !== sender.id
         )
           throw new Error("Closure proof gap or scope mismatch");
-        if (!offline) this.pinned(sender);
+        if (!offline && !accountWide) this.pinned(sender);
         await signatureValid(sender.public_key, e.signature, header);
         const chain = await digest(
           canonical({ header, signature: e.signature }),
@@ -488,7 +523,7 @@ export class Messenger {
               header.transition,
               sender,
               g.kind,
-              !offline,
+              !offline && !accountWide,
             )
           : head.members;
         if (
@@ -496,6 +531,7 @@ export class Messenger {
           (!header.transition && e.kind !== "application")
         )
           throw new Error("Closure proof kind mismatch");
+        for (const member of nextMembers) historical.set(member.id, member);
         head = {
           ...head,
           seq: e.seq,
@@ -505,9 +541,9 @@ export class Messenger {
         };
         proofs.push(e);
         if (
-          proofs.length > 500 ||
+          proofs.length > 5000 ||
           (proofBytes += new TextEncoder().encode(canonical(e)).length) >
-            512 * 1024
+            8 * 1024 * 1024
         )
           throw new Error("Closure proof archive limit reached");
       }
@@ -517,13 +553,18 @@ export class Messenger {
       head.hash !== t.final_hash ||
       head.epoch !== t.final_epoch ||
       !same(sorted(head.members), sorted(h.members)) ||
-      proofs.filter((e) => e.header.transition?.action === "add").length !==
-        1 ||
-      proofs.some(
-        (e) =>
-          e.header.transition &&
-          !["add", "update"].includes(e.header.transition.action),
-      )
+      (accountWide
+        ? !same(
+            sorted([...historical.values()]),
+            sorted(t.participants.map(closureCertificate)),
+          )
+        : proofs.filter((e) => e.header.transition?.action === "add").length !==
+            1 ||
+          proofs.some(
+            (e) =>
+              e.header.transition &&
+              !["add", "update"].includes(e.header.transition.action),
+          ))
     )
       throw new Error("Closure final history mismatch");
     if (record.proposal) {
@@ -560,11 +601,11 @@ export class Messenger {
       t.proposer_device !== this.state.device_id
     )
       throw new Error("Invalid initial closure candidate");
-    const th = await digest(canonical(t)),
-      ids = t.participants.map((x) => x.id);
+    const th = await digest(canonical(t));
     for (const [did, ready] of Object.entries(record.preparations)) {
       const device = t.participants.find((x) => x.id === did);
-      if (!device) throw new Error("Unknown prepared device");
+      if (!device || device.can_sign === false)
+        throw new Error("Unknown prepared device");
       await signatureValid(device.public_key, ready.signature, {
         domain: "haven/closure/prepare/v1",
         transcript_hash: ready.transcript_hash,
@@ -585,13 +626,10 @@ export class Messenger {
     }
     if (
       (record.state === "closing" || record.state === "finalized") &&
-      !same(Object.keys(record.preparations).sort(), [...ids].sort())
+      !closureQuorum(t, record.preparations)
     )
       throw new Error("Missing mutual preparation");
-    if (
-      record.state === "finalized" &&
-      !same(Object.keys(record.consents).sort(), [...ids].sort())
-    )
+    if (record.state === "finalized" && !closureQuorum(t, record.consents))
       throw new Error("Missing mutual archive consent");
     const { final_receipts: _, ...finalCertificate } = record;
     const finalityHash = await digest(canonical(finalCertificate));
@@ -627,12 +665,54 @@ export class Messenger {
     );
     return record;
   }
+  private async syncForClosure(c: Conversation) {
+    if (this.state.retired_history?.[c.id]) return;
+    const head = this.state.heads[c.id];
+    if (
+      !head?.members.some((x) => x.id === this.state.device_id) ||
+      Object.values(this.state.outbox).some((x) => x.candidate)
+    )
+      return;
+    let current: Conversation;
+    try {
+      current = await api<Conversation>(`conversations/${c.id}`);
+    } catch (error) {
+      if (
+        error &&
+        typeof error === "object" &&
+        "status" in error &&
+        [403, 404, 410].includes(Number(error.status))
+      )
+        return;
+      throw error;
+    }
+    try {
+      await this.syncInternal(current);
+    } catch (error) {
+      if (
+        error &&
+        typeof error === "object" &&
+        "status" in error &&
+        [403, 404, 410].includes(Number(error.status))
+      )
+        return;
+      throw error;
+    }
+  }
   async proposeClosure(c: Conversation) {
     return this.serial(async () => {
-      c = await api<Conversation>(`conversations/${c.id}`);
-      await this.flushInternal();
-      this.assertClosureQueueEmpty(c);
-      await this.syncInternal(c);
+      const policy = this.state.heads[c.id]?.closure_policy;
+      if (policy === LEGACY_CLOSURE_POLICY) {
+        await this.flushInternal();
+        this.assertClosureQueueEmpty(c);
+      } else {
+        try {
+          await this.flushInternal();
+        } catch {
+          /* Pending ciphertext is retained in the account archive. */
+        }
+      }
+      await this.syncForClosure(c);
       const record = await this.closureRecord(c, crypto.randomUUID());
       if (record.state !== "active") return record;
       await this.closureContext(c, record);
@@ -646,10 +726,18 @@ export class Messenger {
   }
   async prepareClosure(c: Conversation) {
     return this.serial(async () => {
-      c = await api<Conversation>(`conversations/${c.id}`);
-      await this.flushInternal();
-      this.assertClosureQueueEmpty(c);
-      await this.syncInternal(c);
+      const policy = this.state.heads[c.id]?.closure_policy;
+      if (policy === LEGACY_CLOSURE_POLICY) {
+        await this.flushInternal();
+        this.assertClosureQueueEmpty(c);
+      } else {
+        try {
+          await this.flushInternal();
+        } catch {
+          /* Pending ciphertext is retained in the account archive. */
+        }
+      }
+      await this.syncForClosure(c);
       const record = await this.closureRecord(c);
       if (!record.transcript || record.state === "active")
         throw new Error("Propose closure first");
@@ -661,29 +749,97 @@ export class Messenger {
       const existing = this.state.closure_archives?.[c.id];
       let archive = existing;
       if (!archive || !same(archive.transcript, t)) {
-        const events = this.state.events.filter(
-            (x) => x.conversation_id === c.id,
-          ),
-          apps = bundle.proofs.filter((x) => x.kind === "application");
+        const accountWide = t.closure_policy === CLOSURE_POLICY;
+        const accepted = new Map(
+          bundle.proofs
+            .filter((x) => x.kind === "application")
+            .map((x) => [x.client_message_id, x]),
+        );
+        const sources = [
+          ...new Map(
+            [
+              ...(existing?.events || []),
+              ...(existing?.unsent || []),
+              ...this.state.events,
+            ].map((event) => [event.id, event]),
+          ).values(),
+        ];
+        const local = sources.map((event) => {
+          const proof = accepted.get(event.id);
+          return event.conversation_id === c.id &&
+            event.seq === undefined &&
+            proof &&
+            proof.header.ciphertext_hash === event.transport_hash
+            ? { ...event, seq: proof.seq, state: "server_accepted" as const }
+            : event;
+        });
+        const events = local.filter(
+          (x) =>
+            x.conversation_id === c.id &&
+            x.state !== "local_only" &&
+            x.seq !== undefined &&
+            (!accountWide || !x.file?.view_once),
+        );
+        const apps = bundle.proofs.filter((x) => x.kind === "application");
         if (
-          events.length !== apps.length ||
           new Set(events.map((x) => x.seq)).size !== events.length ||
           events.some(
-            (x) => x.type === "file" || !!x.file || x.state === "local_only",
-          ) ||
-          apps.some(
-            (e) =>
-              !events.some(
-                (x) =>
-                  x.seq === e.seq &&
-                  x.transport_hash === e.header.ciphertext_hash &&
-                  x.sender === e.sender_device,
+            (x) =>
+              !apps.some(
+                (e) =>
+                  e.seq === x.seq &&
+                  e.header.ciphertext_hash === x.transport_hash &&
+                  e.sender_device === x.sender,
               ),
-          )
+          ) ||
+          (!accountWide &&
+            (events.length !== apps.length || events.some((x) => x.file)))
         )
           throw new Error(
-            "Complete text-only local history is required; missing, quarantined or attachment history blocks closure",
+            "Available local history does not match verified signed proofs",
           );
+        const files: Record<string, string> = { ...existing?.files },
+          omissions: { id: string; reason: string }[] = [];
+        let fileBytes = Object.values(files).reduce(
+          (size, value) => size + value.length,
+          0,
+        );
+        if (accountWide)
+          for (const event of sources.filter(
+            (x) => x.conversation_id === c.id && x.file,
+          )) {
+            const file = event.file!;
+            if (file.view_once) {
+              omissions.push({
+                id: file.id,
+                reason: "view-once content is never archived",
+              });
+              continue;
+            }
+            if (files[file.id]) continue;
+            if (fileBytes + Math.ceil((file.size * 4) / 3) > 48 * 1024 * 1024) {
+              omissions.push({
+                id: file.id,
+                reason:
+                  "file exceeds archive budget; server copy released by account consent",
+              });
+              continue;
+            }
+            try {
+              const blob = await downloadDecrypt(file);
+              fileBytes += Math.ceil((blob.size * 4) / 3);
+              files[file.id] = sodium.to_base64(
+                new Uint8Array(await blob.arrayBuffer()),
+                sodium.base64_variants.ORIGINAL,
+              );
+            } catch {
+              omissions.push({
+                id: file.id,
+                reason:
+                  "file unavailable; server copy released by account consent",
+              });
+            }
+          }
         const content = {
           v: 1 as const,
           archive_id: crypto.randomUUID(),
@@ -691,12 +847,35 @@ export class Messenger {
           transcript: t,
           bundle,
           events: structuredClone(events),
+          ...(accountWide
+            ? {
+                files,
+                omissions,
+                unsent: local.filter(
+                  (x) =>
+                    x.conversation_id === c.id &&
+                    x.seq === undefined &&
+                    !x.file?.view_once,
+                ),
+                draft: this.state.drafts[c.id] || existing?.draft || "",
+                pending: {
+                  ...existing?.pending,
+                  ...archivalRequests(
+                    Object.fromEntries(
+                      Object.entries(this.state.outbox).filter(([, x]) =>
+                        x.path.includes(c.id),
+                      ),
+                    ),
+                  ),
+                },
+              }
+            : {}),
         };
         if (
           new TextEncoder().encode(canonical(content)).length >
-          4 * 1024 * 1024
+          64 * 1024 * 1024
         )
-          throw new Error("Closure archive exceeds the 4 MiB prototype limit");
+          throw new Error("Closure archive exceeds the 64 MiB storage limit");
         archive = {
           ...content,
           archive_hash: await digest(canonical(content)),
@@ -713,12 +892,28 @@ export class Messenger {
         n.closure_archives ||= {};
         if (
           !n.closure_archives[c.id] &&
-          Object.keys(n.closure_archives).length >= 8
+          Object.keys(n.closure_archives).length >= 256
+        )
+          throw new Error("Archive limit reached; preserve existing archives");
+        const archiveBytes = Object.entries(n.closure_archives)
+          .filter(([id]) => id !== c.id)
+          .reduce(
+            (size, [, x]) =>
+              size + new TextEncoder().encode(canonical(x)).length,
+            0,
+          );
+        if (
+          archiveBytes + new TextEncoder().encode(canonical(archive)).length >
+          128 * 1024 * 1024
         )
           throw new Error(
-            "Prototype archive limit reached; preserve existing archives",
+            "Archive storage budget reached; export and remove an old local archive first",
           );
         n.closure_archives[c.id] = archive;
+        if (accountWide) {
+          for (const id of Object.keys(content.pending || {}))
+            delete n.outbox[id];
+        }
         await this.persist(n);
       }
       // Persistence and local write fencing precede the readiness signature's network submission.
@@ -733,9 +928,9 @@ export class Messenger {
   }
   async consentClosure(c: Conversation) {
     return this.serial(async () => {
-      c = await api<Conversation>(`conversations/${c.id}`);
-      this.assertClosureQueueEmpty(c);
-      await this.syncInternal(c);
+      if (this.state.heads[c.id]?.closure_policy === LEGACY_CLOSURE_POLICY)
+        this.assertClosureQueueEmpty(c);
+      await this.syncForClosure(c);
       const record = await this.closureRecord(c);
       await this.closureContext(c, record);
       if (record.state === "finalized")
@@ -753,8 +948,9 @@ export class Messenger {
         );
       if (!saved.consent_request) {
         const n = this.next(),
-          archive = n.closure_archives![c.id],
+          archive = { ...n.closure_archives![c.id] },
           th = await digest(canonical(t));
+        n.closure_archives![c.id] = archive;
         archive.consent_request = {
           transcript_hash: th,
           archive_hash: archive.archive_hash,
@@ -795,7 +991,10 @@ export class Messenger {
     const { final_receipts: _, ...certificate } = record,
       fh = await digest(canonical(certificate));
     const n = this.next();
-    n.closure_archives![c.id].certificate = record;
+    n.closure_archives![c.id] = {
+      ...n.closure_archives![c.id],
+      certificate: record,
+    };
     n.closure_archives![c.id].receipt_request ||= {
       finality_hash: fh,
       signature: await this.signClosure({
@@ -818,14 +1017,16 @@ export class Messenger {
     )
       throw new Error("Final archive receipt was not confirmed");
     const confirmed = this.next();
-    confirmed.closure_archives![c.id].receipt_confirmed = true;
+    confirmed.closure_archives![c.id] = {
+      ...confirmed.closure_archives![c.id],
+      receipt_confirmed: true,
+    };
     await this.persist(confirmed);
     return answer;
   }
   async refreshClosure(c: Conversation) {
     return this.serial(async () => {
-      c = await api<Conversation>(`conversations/${c.id}`);
-      await this.syncInternal(c);
+      await this.syncForClosure(c);
       const record = await this.closureRecord(c);
       if (record.state !== "active") await this.closureContext(c, record);
       return record.state === "finalized"
@@ -850,8 +1051,8 @@ export class Messenger {
   }
   async importClosureArchive(serialized: string, archiveSecret: string) {
     return this.serial(async () => {
-      if (new TextEncoder().encode(serialized).length > 6 * 1024 * 1024)
-        throw new Error("Closure archive exceeds the prototype limit");
+      if (new TextEncoder().encode(serialized).length > 90 * 1024 * 1024)
+        throw new Error("Closure archive exceeds the supported storage limit");
       const box = JSON.parse(serialized);
       if (
         box.v !== 1 ||
@@ -870,9 +1071,9 @@ export class Messenger {
         archive.v !== 1 ||
         !archive.certificate ||
         !Array.isArray(archive.events) ||
-        archive.events.length > 500 ||
+        archive.events.length > 5000 ||
         !Array.isArray(archive.bundle?.proofs) ||
-        archive.bundle.proofs.length > 500
+        archive.bundle.proofs.length > 5000
       )
         throw new Error("Incomplete closure archive");
       const record = parseClosureRecord(archive.certificate),
@@ -883,12 +1084,10 @@ export class Messenger {
         !same(archive.transcript, t) ||
         t.conversation_id !== box.conversation_id ||
         archive.events.some(
-          (x) => x.type === "file" || !!x.file || x.state === "local_only",
+          (x) => x.state === "local_only" || x.file?.view_once,
         )
       )
-        throw new Error(
-          "Only complete finalized text archives can be restored",
-        );
+        throw new Error("Only finalized account archives can be restored");
       const content = {
         v: archive.v,
         archive_id: archive.archive_id,
@@ -896,9 +1095,19 @@ export class Messenger {
         transcript: t,
         bundle: archive.bundle,
         events: archive.events,
+        ...(t.closure_policy === CLOSURE_POLICY
+          ? {
+              files: archive.files,
+              omissions: archive.omissions,
+              unsent: archive.unsent,
+              draft: archive.draft,
+              pending: archive.pending,
+            }
+          : {}),
       };
       if (
-        new TextEncoder().encode(canonical(content)).length > 4 * 1024 * 1024 ||
+        new TextEncoder().encode(canonical(content)).length >
+          64 * 1024 * 1024 ||
         (await digest(canonical(content))) !== archive.archive_hash ||
         record.consents[archive.device_id]?.archive_hash !==
           archive.archive_hash
@@ -916,24 +1125,26 @@ export class Messenger {
           throw new Error("Archive event scope mismatch");
       }
       if (
-        archive.events.length !==
-          archive.bundle.proofs.filter((e) => e.kind === "application")
-            .length ||
         new Set(archive.events.map((x) => x.seq)).size !==
           archive.events.length ||
-        archive.bundle.proofs
-          .filter((e) => e.kind === "application")
-          .some(
-            (e) =>
-              !archive.events.some(
-                (x) =>
-                  x.seq === e.seq &&
-                  x.transport_hash === e.header.ciphertext_hash &&
-                  x.sender === e.sender_device,
-              ),
-          )
+        archive.events.some(
+          (x) =>
+            !archive.bundle.proofs.some(
+              (e) =>
+                e.kind === "application" &&
+                e.seq === x.seq &&
+                e.sender_device === x.sender &&
+                e.header.ciphertext_hash === x.transport_hash,
+            ),
+        )
       )
-        throw new Error("Incomplete archived application history");
+        throw new Error("Archived event proof mismatch");
+      if (
+        t.closure_policy === LEGACY_CLOSURE_POLICY &&
+        archive.events.length !==
+          archive.bundle.proofs.filter((e) => e.kind === "application").length
+      )
+        throw new Error("Incomplete legacy archive");
       const n = this.next();
       n.closure_archives ||= {};
       const previous = n.closure_archives[box.conversation_id];
@@ -941,12 +1152,22 @@ export class Messenger {
         throw new Error(
           "Existing archive is preserved; conflicting import rejected",
         );
-      if (!previous && Object.keys(n.closure_archives).length >= 8)
-        throw new Error(
-          "Prototype archive limit reached; preserve existing archives",
-        );
+      if (!previous && Object.keys(n.closure_archives).length >= 256)
+        throw new Error("Archive limit reached; preserve existing archives");
       // Restore local history only. Imported proofs never install trust pins,
       // ratchets, credentials, pending requests, cursors or server authority.
+      if (
+        !previous &&
+        Object.values(n.closure_archives).reduce(
+          (size, x) => size + new TextEncoder().encode(canonical(x)).length,
+          0,
+        ) +
+          new TextEncoder().encode(canonical(archive)).length >
+          128 * 1024 * 1024
+      )
+        throw new Error(
+          "Archive storage budget reached; export and remove an old local archive first",
+        );
       n.closure_archives[box.conversation_id] = previous
         ? { ...previous, certificate: record }
         : {
@@ -957,6 +1178,29 @@ export class Messenger {
           };
       await this.persist(n);
     });
+  }
+  async removeLocalClosureArchive(cid: string) {
+    return this.serial(async () => {
+      const archive = this.state.closure_archives?.[cid];
+      if (archive?.certificate?.state !== "finalized")
+        throw new Error("Only finalized local archives can be removed");
+      const n = this.next();
+      n.retired_history ||= {};
+      n.retired_history[cid] ||= { events: [], draft: "", pending: {} };
+      delete n.closure_archives![cid];
+      await this.persist(n);
+    });
+  }
+  archivedFile(cid: string, id: string) {
+    if (this.locked) throw new Error("Vault locked");
+    const archive = this.state.closure_archives?.[cid],
+      event = [...(archive?.events || []), ...(archive?.unsent || [])].find(
+        (x) => x.file?.id === id,
+      ),
+      wire = archive?.files?.[id];
+    if (!wire || !event?.file || event.file.view_once)
+      throw new Error("File is not available in this archive");
+    return new Blob([raw(wire)], { type: event.file.mime });
   }
   closedHistory(cid: string) {
     if (this.locked) throw new Error("Vault locked");
@@ -986,7 +1230,14 @@ export class Messenger {
   private next() {
     if (this.locked) throw new Error("Vault locked");
     return {
-      ...structuredClone({ ...this.state, events: [] }),
+      ...structuredClone({
+        ...this.state,
+        events: [],
+        closure_archives: undefined,
+      }),
+      closure_archives: this.state.closure_archives
+        ? { ...this.state.closure_archives }
+        : undefined,
       events: [...this.state.events],
     };
   }
@@ -1030,7 +1281,7 @@ export class Messenger {
     viewOnce = false,
   ) {
     return this.serial(async () => {
-      if (this.state.heads[cid]?.closure_policy === CLOSURE_POLICY)
+      if (this.state.heads[cid]?.closure_policy === LEGACY_CLOSURE_POLICY)
         throw new Error("This experimental conversation supports text only.");
       const meta = await prepareUpload(file, cid, signal, viewOnce),
         n = this.next();
@@ -1194,7 +1445,7 @@ export class Messenger {
   async create(
     kind: "direct" | "group",
     contactDevice?: string,
-    closureCapable = false,
+    closureCapable = true,
   ) {
     return this.serial(async () => {
       this.noPendingCommit();
@@ -1203,11 +1454,8 @@ export class Messenger {
             "health",
           )
         : null;
-      if (
-        closureCapable &&
-        (kind !== "direct" || !capability?.experimental_closure)
-      )
-        throw new Error("Experimental conversation closure is disabled");
+      if (closureCapable && !capability?.experimental_closure)
+        throw new Error("Conversation closure is unavailable");
       const id = crypto.randomUUID(),
         group_id = crypto.randomUUID();
       const x = await cryptoCall(this.state.crypto, { op: "create", group_id });
@@ -1350,7 +1598,7 @@ export class Messenger {
       this.assertConversationWritable(c);
       if (
         event.type === "file" &&
-        this.state.heads[c.id]?.closure_policy === CLOSURE_POLICY
+        this.state.heads[c.id]?.closure_policy === LEGACY_CLOSURE_POLICY
       )
         throw new Error("This experimental conversation supports text only.");
       const h = this.state.heads[c.id];
@@ -1643,6 +1891,32 @@ export class Messenger {
     if (verifyPins) for (const m of members) this.pinned(m);
     return members;
   }
+  private async retainRetiredHistory(cid: string) {
+    const n = this.next();
+    n.retired_history ||= {};
+    if (!n.retired_history[cid] && Object.keys(n.retired_history).length >= 256)
+      throw new Error(
+        "Local retired-history limit reached; export before continuing",
+      );
+    const requests = Object.fromEntries(
+      Object.entries(n.outbox).filter(([, x]) => x.path.includes(cid)),
+    );
+    n.retired_history[cid] = {
+      events: structuredClone(
+        n.events.filter(
+          (x) =>
+            x.conversation_id === cid && !x.file?.view_once && x.id in requests,
+        ),
+      ),
+      draft: n.drafts[cid] || "",
+      pending: {
+        ...n.retired_history[cid]?.pending,
+        ...archivalRequests(requests),
+      },
+    };
+    for (const id of Object.keys(requests)) delete n.outbox[id];
+    await this.persist(n);
+  }
   async flush() {
     return this.serial(() => this.flushInternal());
   }
@@ -1745,6 +2019,18 @@ export class Messenger {
           });
         }
       } catch (e) {
+        if (
+          e &&
+          typeof e === "object" &&
+          "status" in e &&
+          [404, 410].includes(Number(e.status))
+        ) {
+          const header = pending.body.header as DeliveryHeader;
+          if (header?.conversation_id) {
+            await this.retainRetiredHistory(header.conversation_id);
+            continue;
+          }
+        }
         throw new Error(
           `Pending delivery: ${e instanceof Error ? e.message : "connection unavailable"}`,
         );
@@ -1772,6 +2058,8 @@ export class Messenger {
     });
   }
   private async syncInternal(c: Conversation, allowUnchanged = false) {
+    if (this.state.retired_history?.[c.id])
+      throw new Error("This conversation is closed locally");
     this.noPendingCommit();
     if (
       this.state.closure_archives?.[c.id]?.certificate?.state === "finalized" &&
@@ -1791,7 +2079,13 @@ export class Messenger {
       await this.syncReceipts(c);
       return;
     }
-    const detail = await api<Detail>(`conversations/${c.id}`),
+    const detail = await api<Detail>(`conversations/${c.id}`).catch(
+        async (error) => {
+          if ([404, 410].includes(error?.status))
+            await this.retainRetiredHistory(c.id);
+          throw error;
+        },
+      ),
       g = detail.genesis;
     if (
       g.domain !== "haven/genesis/v1" ||
@@ -1805,8 +2099,7 @@ export class Messenger {
       throw new Error("Invalid signed genesis");
     if (
       g.closure_policy !== undefined &&
-      (g.closure_policy !== CLOSURE_POLICY ||
-        g.kind !== "direct" ||
+      (![CLOSURE_POLICY, LEGACY_CLOSURE_POLICY].includes(g.closure_policy) ||
         typeof g.closure_epoch !== "string")
     )
       throw new Error("Unsupported signed closure policy");

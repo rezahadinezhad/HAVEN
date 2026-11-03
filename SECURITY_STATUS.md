@@ -1,5 +1,14 @@
 # Security status
 
+
+## Current product status — 2026-11-03
+
+**ACTIVE_REVIEW_PENDING.** Normal settings enable messaging, account-wide mutual closure and automatic server graph/media retirement. The owner requested normal-product activation; this is an operational decision, not independent security certification. One approved participating device represents each account. Groups require unanimous consent from every historically affected account, including former members. Legacy prototype signatures never authorize this deletion policy.
+
+[Current implementation and limits](docs/security/account-closure/README.md) · [Upgrade and restore](docs/security/account-closure/operations.md) · [Final verification](docs/security/account-closure/verification.md).
+
+The dated entries below are historical evidence. Their older “BLOCKED”, “disabled” and source-gate statements describe their original snapshots and are superseded by this status. Independent security review, physical-device and reference-deployment qualification remain pending. Existing running installations have not been remotely upgraded by this source change.
+
 ## Follow-up dependency qualification — 2026-11-03
 
 The follow-up batch qualifies supported Python 3.14 production images and updated browser storage/crypto dependencies while retaining TypeScript-compatible contract generation. All independent review, OS triage and production gates remain in force. [Decisions and evidence](docs/security/dependency-followup-2026-11-03.md).

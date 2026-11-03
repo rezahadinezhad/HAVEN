@@ -32,6 +32,18 @@ def main():
         parser.error(str(error))
     os.environ["HAVEN_API_WORKERS"] = str(workers)
     os.environ["HAVEN_DB_POOL_SIZE"] = str(pool_size)
+    if os.environ.get("HAVEN_RETIREMENT_JOURNAL_DIR"):
+        import django
+
+        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "haven.runtime_settings")
+        django.setup()
+        from core.retirement_journal import reconcile
+
+        reconcile()  # Fail closed before accepting traffic after SQL restoration.
+        from django.db import connection
+
+        connection.close()
+        connection.close_pool()
     import uvicorn
 
     uvicorn.run(

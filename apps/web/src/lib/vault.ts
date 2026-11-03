@@ -14,6 +14,7 @@ export type Sealed =
       v: 2;
       checkpoint: SealedRecord;
       pages: { key: string; sealed: SealedRecord }[];
+      archives?: { key: string; sealed: SealedRecord }[];
     };
 export type LocalEvent = {
   id: string;
@@ -90,6 +91,10 @@ export type VaultState = {
   revision: number;
   pins: Record<string, string>;
   closure_archives?: Record<string, ClosureArchive>;
+  retired_history?: Record<
+    string,
+    { events: LocalEvent[]; draft: string; pending: Record<string, unknown> }
+  >;
   contact_names?: Record<string, string>;
   connection_intents?: Record<string, string>;
   cursor: Record<string, number>;
@@ -125,7 +130,7 @@ function work<T>(
   if (location.protocol !== "https:" || !isSecureContext)
     return Promise.reject(new Error("Trusted HTTPS required"));
   if (!worker) {
-    worker = new Worker("/vault-worker.js");
+    worker = new Worker("/vault-worker-v2.js");
     worker.onmessage = (e) => {
       const h = waiting.get(e.data.id);
       waiting.delete(e.data.id);
@@ -151,6 +156,7 @@ export function stopVaultWorker() {
 type HistoryRef = { id: string; key: string };
 type Checkpoint = VaultState & {
   history_records?: HistoryRef[];
+  closure_records?: HistoryRef[];
   history_pages?: { key: string; count: number }[];
 };
 type StoredVault = { sealed: SealedRecord; revision: number; format?: 2 };
@@ -161,6 +167,8 @@ const historyCache = new Map<
     keyTag: string;
     refs: HistoryRef[];
     events: Map<string, LocalEvent>;
+    archiveRefs: HistoryRef[];
+    archives: Map<string, ClosureArchive>;
   }
 >();
 const secretTag = async (scope: string, secret: string) =>
@@ -209,8 +217,19 @@ export async function seal(
     });
     refs.push({ key, count: events.length });
   }
+  const archives: { key: string; sealed: SealedRecord }[] = [],
+    archiveRefs: HistoryRef[] = [];
+  for (const [id, archive] of Object.entries(history.closure_archives || {})) {
+    const key = crypto.randomUUID();
+    archiveRefs.push({ id, key });
+    archives.push({
+      key,
+      sealed: await rawSeal(secret, scope, archive, "archive:" + key, started),
+    });
+  }
   return {
     v: 2,
+    archives,
     checkpoint: await rawSeal(
       secret,
       scope,
@@ -218,6 +237,8 @@ export async function seal(
         ...history,
         events: [],
         history_pages: refs,
+        closure_archives: undefined,
+        closure_records: archiveRefs,
       },
       undefined,
       started,
@@ -266,6 +287,31 @@ export async function unseal<T>(
       throw new Error("Invalid history page");
     state.events.push(...events);
   }
+  const archiveRefs = state.closure_records || [],
+    archives = value.archives || [];
+  if (
+    archives.length > 256 ||
+    archiveRefs.length !== archives.length ||
+    new Set(archiveRefs.map((x) => x.id)).size !== archiveRefs.length ||
+    new Set(archiveRefs.map((x) => x.key)).size !== archiveRefs.length
+  )
+    throw new Error("Invalid archive export manifest");
+  if (archives.length) state.closure_archives = {};
+  for (let i = 0; i < archiveRefs.length; i++) {
+    if (archives[i].key !== archiveRefs[i].key)
+      throw new Error("Archive export binding mismatch");
+    const archive = await rawOpen<ClosureArchive>(
+      secret,
+      scope,
+      archives[i].sealed,
+      "archive:" + archiveRefs[i].key,
+      started,
+    );
+    if (archive.transcript.conversation_id !== archiveRefs[i].id)
+      throw new Error("Archive export scope mismatch");
+    state.closure_archives![archiveRefs[i].id] = archive;
+  }
+  delete state.closure_records;
   delete state.history_pages;
   return state as T;
 }
@@ -315,8 +361,19 @@ export async function openVault(
     await tx.done;
     throw new Error("Vault changed while unlocking. Retry unlock.");
   }
+  const archiveRefs = state.closure_records || [];
+  if (
+    archiveRefs.length > 256 ||
+    new Set(archiveRefs.map((x) => x.id)).size !== archiveRefs.length ||
+    new Set([...refs, ...archiveRefs].map((x) => x.key)).size !==
+      refs.length + archiveRefs.length
+  )
+    throw new Error("Invalid encrypted archive manifest");
   const records = await Promise.all(
     refs.map((r) => tx.objectStore("history").get([user, r.key])),
+  );
+  const archiveRecords = await Promise.all(
+    archiveRefs.map((r) => tx.objectStore("history").get([user, r.key])),
   );
   await tx.done;
   state.events = [];
@@ -333,6 +390,21 @@ export async function openVault(
       throw new Error("History record binding rejected");
     state.events.push(event);
   }
+  if (archiveRefs.length) state.closure_archives = {};
+  for (let i = 0; i < archiveRefs.length; i++) {
+    if (!archiveRecords[i]) throw new Error("Encrypted archive record missing");
+    const archive = await rawOpen<ClosureArchive>(
+      secret,
+      user,
+      archiveRecords[i],
+      "archive:" + archiveRefs[i].key,
+      started,
+    );
+    if (archive.transcript.conversation_id !== archiveRefs[i].id)
+      throw new Error("Archive record scope mismatch");
+    state.closure_archives![archiveRefs[i].id] = Object.freeze(archive);
+  }
+  delete state.closure_records;
   const keyTag = await secretTag(user, secret);
   if (started !== generation) throw new Error("Vault locked");
   delete state.history_records;
@@ -345,6 +417,8 @@ export async function openVault(
     keyTag,
     refs,
     events: new Map(state.events.map((e) => [e.id, e])),
+    archiveRefs,
+    archives: new Map(Object.entries(state.closure_archives || {})),
   });
   return state;
 }
@@ -371,19 +445,46 @@ export async function saveVault(
       cached?.revision === expected && cached.keyTag === keyTag
         ? cached
         : undefined;
+    const baseline =
+      cached?.revision !== expected && old?.format === 2
+        ? await rawOpen<Checkpoint>(
+            secret,
+            user,
+            old.sealed,
+            undefined,
+            started,
+          )
+        : undefined;
     const existingRefs =
-      (cached?.revision === expected ? cached.refs : undefined) ??
-      (old?.format === 2
-        ? ((
-            await rawOpen<Checkpoint>(
-              secret,
-              user,
-              old.sealed,
-              undefined,
-              started,
-            )
-          ).history_records ?? [])
-        : []);
+      (cached?.revision === expected ? cached.refs : undefined) ||
+      baseline?.history_records ||
+      [];
+    const existingArchiveRefs =
+      (cached?.revision === expected ? cached.archiveRefs : undefined) ||
+      baseline?.closure_records ||
+      [];
+    const archivePrior = new Map(existingArchiveRefs.map((r) => [r.id, r]));
+    const archiveRefs: HistoryRef[] = [],
+      archiveWrites: { key: string; sealed: SealedRecord }[] = [];
+    for (const [id, archive] of Object.entries(value.closure_archives || {})) {
+      const oldRef = archivePrior.get(id);
+      if (oldRef && reusable?.archives.get(id) === archive)
+        archiveRefs.push(oldRef);
+      else {
+        const key = crypto.randomUUID();
+        archiveRefs.push({ id, key });
+        archiveWrites.push({
+          key,
+          sealed: await rawSeal(
+            secret,
+            user,
+            archive,
+            "archive:" + key,
+            started,
+          ),
+        });
+      }
+    }
     const prior = new Map(reusable?.refs.map((r) => [r.id, r]) ?? []);
     const refs: HistoryRef[] = [],
       writes: { key: string; sealed: SealedRecord }[] = [];
@@ -411,6 +512,8 @@ export async function saveVault(
         ...value,
         events: [],
         history_records: refs,
+        closure_archives: undefined,
+        closure_records: archiveRefs,
       },
       undefined,
       started,
@@ -432,11 +535,11 @@ export async function saveVault(
           "Vault conflict: another tab changed state. Lock and reload.",
         );
       }
-      const keep = new Set(refs.map((r) => r.key));
-      for (const ref of existingRefs)
+      const keep = new Set([...refs, ...archiveRefs].map((r) => r.key));
+      for (const ref of [...existingRefs, ...existingArchiveRefs])
         if (!keep.has(ref.key))
           await tx.objectStore("history").delete([user, ref.key]);
-      for (const record of writes)
+      for (const record of [...writes, ...archiveWrites])
         await tx.objectStore("history").put(record.sealed, [user, record.key]);
       await tx
         .objectStore("vault")
@@ -458,11 +561,15 @@ export async function saveVault(
       if (event.file) Object.freeze(event.file);
       Object.freeze(event);
     }
+    for (const archive of Object.values(value.closure_archives || {}))
+      Object.freeze(archive);
     historyCache.set(user, {
       revision: expected + 1,
       keyTag,
       refs,
       events: new Map(value.events.map((e) => [e.id, e])),
+      archiveRefs,
+      archives: new Map(Object.entries(value.closure_archives || {})),
     });
   });
 }
