@@ -38,11 +38,14 @@ Root status, verification, security policy, release checklist, contributor and a
 | Trusted-TLS Chromium | **1 passed in 3.6 s**; login, enabled setup, clean notices, dark theme, Persian RTL/mobile, no overflow or foreign requests; [log](evidence/browser-chromium.txt) |
 | Trusted-TLS Firefox | **1 passed in 8.8 s**, same installed-product workflow; [log](evidence/browser-firefox.txt) |
 | Source binding | Critical API source hashes match the running image; current client build inputs and TEST leaf validity recorded in [binding evidence](evidence/source-binding.json) |
+| Optimized configuration validation | **11 passed in 0.65 s**, including required-key fixture and rejection cases; [log](evidence/validator-regression.txt) |
 | Source/build | Pinned production web image built offline from lockfile/cache; TypeScript passed; 13 installer tests passed; rendered worker configuration passed |
 
 Browser tests use the actual installed endpoint and native certificate verification. They confirm the unavailable-service banner through a browser-scoped simulated health response, then reload the actual healthy service. They do not create browser identities, seed conversations or send test messages into this installation. Prior native/Chromium/Firefox protocol and real deletion evidence remains in the [activation verification](../../security/account-closure/verification.md).
 
 An initial browser attempt reached login/settings but its test-only Node `route.fetch` did not trust the private CA. The fixture now reuses the health response already fetched through the trusted browser for its simulated outage. No TLS check was weakened. The retained [initial attempt](evidence/browser-initial-attempt.txt) has authentication headers redacted. Short-lived probe sessions were revoked after verification.
+
+The initial CI run found one missed environment-validator test fixture: it omitted the newly required retirement secret. The fixture was corrected, with added optimized-Python checks rejecting missing, short, placeholder and reused keys. The validator itself remained strict. [Initial CI result](https://github.com/rezahadinezhad/HAVEN/actions/runs/41733747447); 169 other API tests passed in that attempt.
 
 The owner account still needs its first browser setup and a privately saved recovery kit. Existing browser tabs may need to close/reopen to activate the new offline shell; never clear vault storage as an upgrade step. Certificate renewal and public/physical-device qualification remain operator work recorded in [security status](../../../SECURITY_STATUS.md).
 

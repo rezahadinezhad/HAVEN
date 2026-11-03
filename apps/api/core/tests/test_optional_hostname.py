@@ -63,6 +63,7 @@ def test_env_validator_fails_closed_under_optimized_python(tmp_path):
     lines = [
         f"HAVEN_SECRET_KEY={'s' * 64}",
         f"HAVEN_ROUTING_SECRET={'r' * 64}",
+        f"HAVEN_RETIREMENT_REPLAY_SECRET={'k' * 64}",
         f"HAVEN_DB_NOTIFICATION_PASSWORD={'n' * 40}",
         f"POSTGRES_PASSWORD={'a' * 40}",
         f"HAVEN_DB_MIGRATION_PASSWORD={'b' * 40}",
@@ -87,6 +88,14 @@ def test_env_validator_fails_closed_under_optimized_python(tmp_path):
         )
 
     assert check().returncode == 0
+    # The permanent journal key is required even with assertions disabled, and
+    # must never reuse application/routing material or a template placeholder.
+    for retirement in [None, "", "short", "s" * 64, "r" * 64, "REPLACE_WITH_" + "x" * 64]:
+        candidate = [line for line in lines if not line.startswith("HAVEN_RETIREMENT_REPLAY_SECRET=")]
+        if retirement is not None:
+            candidate.append("HAVEN_RETIREMENT_REPLAY_SECRET=" + retirement)
+        env_file.write_text("\n".join(candidate) + "\n")
+        assert check().returncode != 0
     env_file.write_text("\n".join(lines[:-2] + ["HAVEN_OPTIONAL_HOSTNAME=*.example.org", lines[-1]]) + "\n")
     assert check().returncode != 0
 
