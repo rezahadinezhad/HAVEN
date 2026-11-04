@@ -222,7 +222,7 @@ export default function Haven() {
     [online, setOnline] = useState(false);
   const [error, setError] = useState(""),
     [notice, setNotice] = useState(""),
-    [busy, setBusy] = useState(false),
+    [pendingOperations, setPendingOperations] = useState(0),
     [register, setRegister] = useState(false),
     [inviteToken, setInviteToken] = useState("");
   const [vault, setVault] = useState<Messenger | null>(null),
@@ -274,12 +274,14 @@ export default function Haven() {
         d.id === vault.state.device_id &&
         (d.trust_state !== "approved" || !!d.revoked_at),
     );
+  const busy = pendingOperations > 0;
+  const sendingDrafts = useRef(new Set<string>());
   const appName = health?.name || "HAVEN";
   const perform = async (fn: () => Promise<void>) => {
     const generation = vaultGeneration.current;
     setError("");
     setNotice("");
-    setBusy(true);
+    setPendingOperations((count) => count + 1);
     try {
       await fn();
     } catch (e) {
@@ -292,7 +294,7 @@ export default function Haven() {
             : uiError(e),
         );
     } finally {
-      setBusy(false);
+      setPendingOperations((count) => count - 1);
     }
   };
   const lock = useCallback(() => {
@@ -874,27 +876,34 @@ export default function Haven() {
   ) {
     if (!vault || !current) return;
     const conversation = current;
-    await perform(async () => {
-      await vault.send(conversation, {
-        type,
-        text,
-        target,
-        emoji,
-        reply:
-          type === "text" && !reply?.startsWith("edit:") ? reply : undefined,
+    const consumesDraft = type === "text" || type === "edit";
+    if (consumesDraft && sendingDrafts.current.has(conversation.id)) return;
+    if (consumesDraft) sendingDrafts.current.add(conversation.id);
+    try {
+      await perform(async () => {
+        await vault.send(conversation, {
+          type,
+          text,
+          target,
+          emoji,
+          reply:
+            type === "text" && !reply?.startsWith("edit:") ? reply : undefined,
+        });
+        if (vaultRef.current !== vault) return;
+        if (
+          (type === "text" || type === "edit") &&
+          currentId.current === conversation.id
+        ) {
+          setDraft(
+            type === "edit" ? vault.state.drafts[conversation.id] || "" : "",
+          );
+          setReply(undefined);
+        }
+        setEvents([...vault.state.events]);
       });
-      if (vaultRef.current !== vault) return;
-      if (
-        (type === "text" || type === "edit") &&
-        currentId.current === conversation.id
-      ) {
-        setDraft(
-          type === "edit" ? vault.state.drafts[conversation.id] || "" : "",
-        );
-        setReply(undefined);
-      }
-      setEvents([...vault.state.events]);
-    });
+    } finally {
+      if (consumesDraft) sendingDrafts.current.delete(conversation.id);
+    }
   }
 
   async function attach(file: File, asViewOnce = false) {
@@ -1017,13 +1026,15 @@ export default function Haven() {
   }
   const enabled = !!health?.crypto_ready;
   const disabled = !enabled || !vault || busy;
-  const chatDisabled =
-    disabled ||
+  const chatUnavailable =
+    !enabled ||
+    !vault ||
     !vault?.state.heads[current?.id || ""] ||
     !!vault?.state.closure_archives?.[current?.id || ""] ||
     !!vault?.state.retired_history?.[current?.id || ""] ||
     current?.status === "closing" ||
     current?.status === "closed";
+  const chatDisabled = chatUnavailable || busy;
   const messagesByConversation = useMemo(
     () =>
       new Map(
@@ -2089,7 +2100,14 @@ export default function Haven() {
                         }}
                         inactive={() => composerActivity(false)}
                         saveDraft={() => {
-                          if (vault && !reply?.startsWith("edit:"))
+                          // A blur while navigating during a send must not queue
+                          // the outgoing text behind the send that consumes it.
+                          if (
+                            vault &&
+                            vaultRef.current === vault &&
+                            !reply?.startsWith("edit:") &&
+                            !sendingDrafts.current.has(current.id)
+                          )
                             void vault
                               .draft(current.id, draft)
                               .catch((e) => setError(uiError(e)));
@@ -2103,7 +2121,8 @@ export default function Haven() {
                         voice={() => void voice()}
                         discardRecording={discardRecording}
                         recording={recording}
-                        disabled={chatDisabled}
+                        disabled={chatUnavailable}
+                        busy={busy}
                         textOnly={
                           vault?.state.heads[current.id]?.closure_policy ===
                           "mutual-local-archive-v1"

@@ -33,7 +33,8 @@ export function ChatComposer({
   voice,
   discardRecording,
   recording,
-  disabled,
+  disabled: unavailable,
+  busy = false,
   textOnly = false,
   reply,
   cancelReply,
@@ -51,6 +52,7 @@ export function ChatComposer({
   discardRecording: () => void;
   recording: boolean;
   disabled: boolean;
+  busy?: boolean;
   textOnly?: boolean;
   reply?: { editing: boolean; author: string; text: string };
   cancelReply: () => void;
@@ -58,6 +60,7 @@ export function ChatComposer({
   blockedReason: string;
   t: Translate;
 }) {
+  const disabled = unavailable || busy;
   const input = useRef<HTMLTextAreaElement>(null),
     picker = useRef<HTMLDivElement>(null),
     attachmentMenu = useRef<HTMLDivElement>(null),
@@ -77,6 +80,13 @@ export function ChatComposer({
   const supportsViewOnce = !!selectedFile && isViewOnceMedia(selectedFile.type);
   const viewOnce = supportsViewOnce && selectionFile?.viewOnce === true;
   const [fileError, setFileError] = useState("");
+  const submit = () => {
+    if (disabled || recording || !draft.trim()) return;
+    // Keep keyboard entry ready for both Enter and a click on Send. Focus now,
+    // rather than after awaiting delivery, so navigation never steals it back.
+    input.current?.focus({ preventScroll: true });
+    send();
+  };
   useEffect(() => {
     const clear = () => setSelectionFile(null);
     window.addEventListener("haven:lock", clear);
@@ -288,7 +298,7 @@ export function ChatComposer({
         aria-label={t("Message composer")}
         onSubmit={(e) => {
           e.preventDefault();
-          if (!disabled && !recording && draft.trim()) send();
+          submit();
         }}
       >
         <button
@@ -397,7 +407,8 @@ export function ChatComposer({
             reply?.editing ? "Edit your message" : "Write a message…",
           )}
           aria-label={t("Message")}
-          disabled={disabled || recording}
+          disabled={unavailable || recording}
+          readOnly={busy}
           onCompositionStart={() => {
             composing.current = true;
           }}
@@ -430,7 +441,7 @@ export function ChatComposer({
               window.matchMedia("(hover: hover) and (pointer: fine)").matches
             ) {
               e.preventDefault();
-              if (!disabled && draft.trim()) send();
+              submit();
             }
           }}
         />
