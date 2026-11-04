@@ -4,6 +4,7 @@ The product's current source and the maintained local installation have separate
 
 | Scope | Evidence |
 |---|---|
+| Current project presentation | Real encrypted synthetic conversation capture on desktop/dark/mobile viewport, status/privacy assertions and TypeScript check; [documentation verification](docs/project-presentation/verification.md) |
 | Normal product source at `8545a76` | All five [GitHub CI jobs passed](https://github.com/rezahadinezhad/HAVEN/actions/runs/41704724702): publication/secret checks, frontend, Python/Rust advisories and API regression/image checks |
 | Account-wide closure and deletion | 166-test backend milestone; 30 final focused tests; 3 Chromium workflows and 2 Firefox closure workflows. Suites overlap; [full scope and attempts](docs/security/account-closure/verification.md) |
 | Verified client/API-origin separation | 14 boundary/installer tests on Python3.12 and3.14, Chromium and Firefox native MLS/media/reload plus hostile API while unlocked, signed release2 installed and separate frontend activated; [scope and evidence](docs/security/client-delivery/verification.md) |

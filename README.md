@@ -1,121 +1,126 @@
 <p align="center">
-  <img src=".github/assets/haven-hero.svg" alt="HAVEN — Private conversations. Explicit trust. A browser messenger exploring modern security engineering." width="1200" />
+  <img src=".github/assets/haven-hero.svg" alt="HAVEN — Private conversations. Explicit trust. Keys and readable history on your device; delivery and routing on your service." width="1200" />
 </p>
 
 # HAVEN
 
-**A private, self-hosted messenger with explicit device trust.**
+**A self-hosted messenger for small, trusted communities.**
 
-HAVEN brings together standards-based group encryption, explicit device trust, encrypted local storage, and a familiar conversation interface. Security requirements shape the product from the first invitation to session revocation, media delivery, account recovery and mutual history retirement.
+HAVEN brings together end-to-end encryption for direct and group conversations, explicit device approval, encrypted local history, and a familiar interface in English and Persian.
 
-The result is a functioning, self-hosted implementation built with **Django, Next.js, PostgreSQL, Redis, and Rust/WebAssembly**. It runs in the browser, supports English and Persian, and serves its application assets and cryptographic libraries locally. A guided terminal installer turns the initial configuration, database bootstrap, and HTTPS checks into a single-command flow.
+Its design follows the life of a conversation: who can join, where keys live, how messages survive interrupted delivery, how readable history is recovered, and when shared server history can be retired by agreement. A signed installed client also separates the software handling your keys from the messaging server carrying your data.
 
-[![Repository security](https://github.com/rezahadinezhad/HAVEN/actions/workflows/repository-security.yml/badge.svg)](https://github.com/rezahadinezhad/HAVEN/actions/workflows/repository-security.yml)
-[MIT license](LICENSE) · [Security model](#security-model) · [Guided setup](#guided-setup) · [Test evidence](TEST_REPORT.md) · [Contributing](CONTRIBUTING.md) · [Documentation](docs/README.md) · [Current status](IMPLEMENTATION_STATUS.md) · [Project history](docs/history/README.md)
+[Get started](#get-started) · [Architecture](docs/architecture/README.md) · [Security design](docs/security/design-guide.md) · [Verification](TEST_REPORT.md)
 
-> [!IMPORTANT]
-> **Operational software; independent security review is pending.** Normal messaging, account-wide closure and server retirement are enabled. Local tests demonstrate implemented behavior, not a security certification. Read [SECURITY_STATUS.md](SECURITY_STATUS.md) before evaluating or deploying the project.
+[![Repository security](https://github.com/rezahadinezhad/HAVEN/actions/workflows/repository-security.yml/badge.svg)](https://github.com/rezahadinezhad/HAVEN/actions/workflows/repository-security.yml) · [MIT license](LICENSE)
 
-Metadata-privacy hardening now removes redundant activity timestamps, expires temporary routing associations, reduces API/worker disclosure and pads new MLS messages. The continuation adds transactional authority fences, replay-safe expired enrollment cleanup and narrower authentication/credential SQL reads. The account/conversation graph remains visible to the service. See the [inventory, threat model, migration procedure and measured limitations](docs/security/metadata-privacy/README.md).
+> Messaging, mutual conversation retirement, and verified Linux client delivery are implemented. Independent security review and public-deployment qualification remain pending. See [current security status](SECURITY_STATUS.md).
 
-The additional [privacy/security hardening](docs/security/privacy-hardening/README.md) removes plaintext browser profiles, scopes device discovery, adds revocable private contact introductions, pseudonymizes Redis groups with a dedicated key, separates notification-worker SQL credentials and buckets new encrypted attachment sizes. Existing vaults, signed histories and legacy attachment reads are preserved. [Upgrade requirements and remaining threats](docs/security/privacy-hardening/final-report.md) are explicit; [Phase 10 now provides account-wide mutual closure, encrypted offline archives and automatic server retirement](docs/security/account-closure/README.md). One participating device represents an account; groups require every historically affected account. See the [activation and restore runbook](docs/security/account-closure/operations.md) before upgrading.
+## A familiar place for private conversations
 
-## The engineering question
+[![HAVEN conversation interface with a real encrypted exchange between synthetic Maya and Nora accounts](.github/assets/conversation-desktop.png)](.github/assets/conversation-desktop.png)
 
-Content encryption is one part of a private messenger. The harder product questions surround it: how a person trusts a new browser, where keys live, how a queued message survives a restart, what revocation actually stops, and which metadata the server still needs.
+Direct chats and groups share the same conversation interface: replies, edits, reactions, local search, voice notes, and encrypted photos, videos, audio, and files. Local previews make it clear what you are about to send. Delivery indicators describe observed state; server acceptance does not imply that another person has read a message.
 
-HAVEN treats those questions as implementation requirements. Its value is the connection between the interface, protocol state, delivery guarantees, and operational controls—and the documented tests and limits behind each decision.
-
-## Inside HAVEN
-
-<p align="center">
-  <img src=".github/assets/conversation-desktop.png" alt="HAVEN desktop conversation interface with a contact list, encrypted chat, message composer, and explicit security review notice" width="1200" />
-</p>
+The interface supports English and Persian, right-to-left and mixed-direction text, light and dark themes, keyboard navigation, reduced motion, and layouts for smaller screens. Local history remains available after it has been saved and the vault is unlocked; remote delivery still needs a connection.
 
 <details>
-<summary>Mobile and dark mode</summary>
+<summary>Dark theme and a smaller screen</summary>
 
-<p align="center">
-  <img src=".github/assets/conversation-mobile.png" alt="HAVEN mobile conversation interface" width="310" />
-  &nbsp;&nbsp;
-  <img src=".github/assets/conversation-dark.png" alt="HAVEN conversation interface in dark mode" width="650" />
+<p>
+  <a href=".github/assets/conversation-dark.png"><img src=".github/assets/conversation-dark.png" alt="Current HAVEN conversation in dark mode" width="640" /></a>
+  <a href=".github/assets/conversation-mobile.png"><img src=".github/assets/conversation-mobile.png" alt="The same conversation at a mobile viewport size" width="260" /></a>
 </p>
 
 </details>
 
-<sub>Actual application captures from isolated local evaluation, using synthetic accounts and messages. They illustrate the implemented interface, not a hosted production service.</sub>
+<sub>Actual application captures from an isolated encrypted conversation with disposable synthetic accounts. A mobile viewport demonstrates layout, not physical iOS/Android qualification. [Capture provenance](.github/assets/README.md).</sub>
 
-## What is implemented
+## Three separate steps of trust
 
-| Capability | Behavior |
+An account is not the same thing as an encryption identity, and signing in is not the same thing as unlocking message keys.
+
+| Step | What it authorizes |
 |---|---|
-| **Private conversations** | Direct and group messaging through real OpenMLS in the browser. Replies, edits, reactions, local search, and observed delivery states. |
-| **Explicit device trust** | Invite-only accounts, signed browser enrollment, approval from an existing trusted device, and independent fingerprint comparison. |
-| **Encrypted media** | Photos, videos, files, audio, and voice notes. Local previews before sending; media keys and descriptive metadata travel inside encrypted messages. |
-| **View-once photos and videos** | One opening session per recipient account across devices. Capture and remote-erasure limitations are disclosed before use. |
-| **Local key custody** | Encrypted IndexedDB vault, encrypted drafts/outbox, inactivity and navigation locks, and optional WebAuthn PRF unlock on compatible trusted hostnames. |
-| **Reliable delivery** | Durable PostgreSQL acceptance, ordered signed histories, retryable encrypted outbox, and cached local history. Redis carries transient hints and rate-limit state. |
-| **Account protection** | Secure cookies, CSRF and exact Origin checks, credential-bound sessions, revocation checks, bounded unfinished sign-ins, and explicit recovery. |
-| **Considered interface** | Responsive desktop/mobile layouts, light/dark themes, English/Persian and RTL support, keyboard interaction, and reduced-motion behavior. |
-| **Guided installation** | `./setup.sh` collects the setup details, creates unique credentials, builds and starts an isolated Docker stack, and verifies HTTPS/login. Interrupted setup resumes without replacing secrets. |
-| **Self-hosted operations** | Separate database roles, TLS-only access, encrypted backup tooling, signed artifact tooling, retention cleanup, and documented deployment procedures. |
+| **Sign in** | Access your account through a password-bound, revocable session. |
+| **Approve this device** | Establish its signed device identity and permission to participate. Additional devices need approval; peer fingerprints still require independent comparison. |
+| **Unlock the local vault** | Decrypt this device's saved keys and history with its local secret. |
 
-## Security model
+For example, signing in on a new browser does not silently give that browser an existing device's keys. An account password reset cannot reconstruct lost message keys. Recovery establishes fresh identity state; history imports provide readable records rather than resume an old cryptographic ratchet. [Device trust and recovery](docs/security/design-guide.md#identity-login-and-unlock).
 
-### Cryptography and trust
+## Your device, your service
 
-| Layer | Implementation |
+[![HAVEN architecture: client encryption and encrypted local state, a Django API, authoritative PostgreSQL storage, Redis hints, and independent retirement records](.github/assets/architecture.svg)](.github/assets/architecture.svg)
+
+The **client** encrypts and decrypts messages, verifies identities and ordered history, and saves encrypted local state. It uses [Messaging Layer Security](https://www.rfc-editor.org/rfc/rfc9420.html) through OpenMLS, compiled from Rust to WebAssembly. Direct chats are groups of device identities too.
+
+The **Django API** checks current account/device authority and coordinates delivery. **PostgreSQL** holds authoritative encrypted envelopes, signed public records, and authentication/routing state. **Redis** carries transient synchronization hints and rate-limit state; it does not replace durable message storage.
+
+Separate workers publish notifications, maintain retention, and retire eligible conversations. The notification worker uses a narrow SQL credential. An authenticated retirement journal is retained independently of SQL so restoring an older database cannot silently undo recorded retirement.
+
+The service still sees active relationships, routing, timing and other processing metadata. Message encryption is not anonymity. [Component responsibilities and data custody](docs/architecture/README.md).
+
+## A message should survive an interrupted send
+
+Sending involves more than an encryption operation:
+
+1. The client prepares an encrypted message and saves the resulting crypto state and pending request together in its encrypted vault.
+2. The API checks current authority and commits the ordered record before returning acceptance.
+3. A recipient retrieves the encrypted envelope, verifies its history/sender/MLS context, and commits its local state before acknowledging it.
+
+A lost response triggers a retry of the **saved request bytes**, rather than a fresh encryption operation. A Redis hint prompts synchronization; authoritative history comes from the API. If local persistence fails, the client does not acknowledge state it failed to save.
+
+Segmented encrypted history avoids rewriting every old message when a draft changes. Resource limits reject work explicitly, and authenticated malformed application content can be quarantined without making later valid messages unreadable. [Message flow and failure behavior](docs/architecture/README.md#the-message-journey).
+
+## Keep local history. Retire shared records by agreement.
+
+HAVEN has two distinct retention mechanisms.
+
+**Routine cleanup** makes delivered application ciphertext eligible for removal after a minimum age of 24 hours and durable acknowledgement from every eligible device. Unacknowledged ciphertext and required public control history remain. Ordinary attachments have a seven-day maximum lifetime. [Retention policy](docs/security/server-data-retention.md).
+
+**Mutual conversation closure** goes further. One approved device already participating in the conversation represents each account. Direct chats require both accounts; groups require every historically affected account, including former members. Neither a majority nor an administrator can substitute for consent.
+
+Representatives save available encrypted history, agree on the final signed head, explicitly consent, and save the mutual final certificate before signing receipts. The worker removes eligible conversation records only after required dependencies settle and an independent retirement exclusion is persisted.
+
+Preparation pauses sending for that account and currently cannot be cancelled or transferred. Missing consent preserves server history and can leave a conversation paused. Archives disclose unavailable history/media and exclude view-once content. Retirement does not erase old backups, recipient copies, physical storage traces, or prior observations. [Closure, archives and restoration safeguards](docs/security/account-closure/README.md).
+
+## Know which software handles your keys
+
+Encryption assumes trustworthy client code. HAVEN provides three delivery choices:
+
+| Client | Who supplies executable code? | Boundary |
+|---|---|---|
+| **Ordinary website** | The messaging website/operator | A compromised origin can replace its code. |
+| **Independent web frontend** | A separately controlled frontend host | The API supplies data; the frontend host remains trusted. |
+| **Verified installed client** | A signed release checked against a pinned publisher root | The API cannot replace the installed interface, workers, WASM or runtime through its responses. |
+
+The portable Linux client serves authenticated assets through local HTTPS and uses a constrained bridge to the fixed messaging API. Manual updates reject changed payloads, installed-state rollback and conflicting versions. Separate dependency environments and browser/process locks protect the version switch.
+
+Initial installation, the publisher/build pipeline, browser and OS remain trusted. The local deployment demonstrates the boundary; resilience to host-root compromise requires independently controlled infrastructure and signing. This is not an app-store-signed mobile application. [Delivery architecture and installation](docs/security/client-delivery/README.md).
+
+## The decisions behind the behavior
+
+The design has grown through concrete failure cases: interrupted sends, oversized local history, requests racing with revocation, incidental metadata copies, stalled group consent, restored SQL snapshots, and hostile client-code delivery.
+
+Those problems led to atomic encrypted checkpoints, exact-request retries, current-authority fences, scoped reads and worker credentials, account-wide signed finality, independent replay exclusions, and authenticated installed releases. Each choice has a purpose and a limit. The [security design guide](docs/security/design-guide.md) connects those decisions to their implementation and verification records.
+
+View-once media follows the same approach: one opening session per recipient account across approved devices, with explicit limits. It cannot prevent screenshots, a modified client, or a recipient recording plaintext. [View-once design](docs/adr/0005-view-once-media.md).
+
+## Evidence you can inspect
+
+| Behavior | Where to review it |
 |---|---|
-| Message encryption | RFC 9420 Messaging Layer Security through OpenMLS 0.9.2. HAVEN selects suite `0x0001`: X25519, AES-128-GCM, SHA-256, and Ed25519. |
-| Provider maintenance | A pinned upstream provider backport resolves the recorded Rust vulnerability entries. Source hashes, licenses, the compatibility patch, and old/new build tests are retained. See [ADR 0010](docs/adr/0010-upstream-provider-security-backport.md). |
-| Vault protection | Argon2id with a 64 MiB/three-pass profile and authenticated encryption, executed in a worker. Unwrapped state is held in memory while unlocked. |
-| Attachments | Independent random attachment keys and XChaCha20-Poly1305 chunks, with authenticated binding to the conversation, attachment, and chunk positions. |
-| Device identity | Signed enrollment/session challenges, existing-device approval, client fingerprint pins, and checked MLS membership transitions. |
-| Session lifecycle | Django-derived session binding and constant-time verification. Concurrent password updates are serialized; sessions expire and can be revoked. The browser locks on navigation and inactivity. See [ADR 0011](docs/adr/0011-session-and-browser-key-lifecycle.md). |
+| Native MLS, tampering, replay, encrypted media and durable state | [Verification index](TEST_REPORT.md), [crypto source](packages/crypto-core), [browser tests](apps/web/tests) |
+| Account-wide closure, final archives and SQL restore denial | [Closure verification](docs/security/account-closure/verification.md) |
+| Signed updates, rollback refusal and hostile API code while a vault is unlocked | [Verified-client checks](docs/security/client-delivery/verification.md) |
+| Guided setup, migrations, backups and actual runtime checks | [Installation upgrade record](docs/operations/installation-upgrade-2026-11-04/README.md) |
+| Publication hygiene, dependency advisories and runtime regressions | [GitHub Actions](https://github.com/rezahadinezhad/HAVEN/actions/workflows/repository-security.yml) |
 
-**Account login, device approval, and vault unlock are separate boundaries.** An account password does not restore lost message keys or silently authorize a replacement identity. Recovery creates fresh credentials and requires peers to verify the change.
+These are engineering checks of specific behaviors and revisions. They do not add up to an independent audit, global fork-detection proof, throughput SLA, or physical-phone qualification. The server still observes active metadata; an unlocked or compromised endpoint can expose plaintext. [Threats and remaining assurance work](SECURITY_STATUS.md).
 
-### Restrained server retention
+## Get started
 
-The server stores routing and authentication information, ciphertext, and the signed public records needed for delivery and membership. It does not receive the client vault's private MLS state or attachment decryption keys through the normal protocol.
-
-Delivered application ciphertext becomes eligible for retirement after every eligible device has durably acknowledged it and a minimum age of 24 hours has passed. Unsynchronized ciphertext and required signed/control history remain. Attachments have a seven-day lifetime; cleanup also retires expired sessions, invitations, and challenges. [Retention details and backup limits](docs/security/server-data-retention.md).
-
-### Boundaries that remain
-
-- **Browser code distribution is a trust boundary.** The ordinary website trusts its delivery origin. The [signed installed client and independent frontend gateway](docs/security/client-delivery/README.md) prevent the messaging API from replacing client assets. Installed releases pin independent publisher trust and reject tampering/rollback; the publisher/build, local OS and browser remain trusted.
-- **Encryption is not anonymity.** The service and network infrastructure can observe account/device relationships, routing, timing, sizes, and live network addresses. A stolen database still reveals metadata.
-- **View-once is a cooperating-client access control.** It cannot prevent screenshots, modified clients, retained recipient copies, or all memory/cache recovery.
-- **The complete integration is not independently audited.** Physical mobile testing, capacity and infrastructure qualification, remaining container OS findings, and independent application/cryptographic review are still outstanding.
-
-These limits are part of the design record. See the [threat model](docs/threat-model), [security status](SECURITY_STATUS.md), and [architecture decisions](docs/adr).
-
-## Architecture
-
-```mermaid
-flowchart LR
-  subgraph Browser[User's browser]
-    UI[Next.js / React interface]
-    Crypto[Rust / OpenMLS WASM worker]
-    Vault[Encrypted IndexedDB vault]
-    UI <--> Crypto
-    Crypto <--> Vault
-  end
-  subgraph Service[Self-hosted service]
-    API[Django API]
-    PG[(PostgreSQL)]
-    Redis[(Redis)]
-    API -->|Ciphertext, signed records, auth metadata| PG
-    API -->|Transient hints and limits| Redis
-  end
-  UI <-->|TLS: messaging ciphertext and signed public metadata| API
-```
-
-The browser handles message encryption, verification, and local key storage. Django enforces account/device authorization and coordinates durable delivery. PostgreSQL is the authoritative store; Redis notifications help synchronization but do not replace it. TLS protects account authentication and transport metadata as well as the encrypted messaging traffic.
-
-## Guided setup
-
-Run the terminal wizard to configure and start an isolated Docker installation:
+For guided Docker setup:
 
 ```bash
 git clone https://github.com/rezahadinezhad/HAVEN.git
@@ -123,101 +128,31 @@ cd HAVEN
 ./setup.sh
 ```
 
-It asks for the installation name, community name, administrator username, and HTTPS port. It generates unique secrets and administrator credentials, builds the application, prepares database roles and migrations, starts the services, and checks verified HTTPS and administrator login. Nothing needs to be copied into `.env` by hand.
+The wizard creates unique secrets, prepares database roles/migrations and the retirement journal, starts an isolated stack, and verifies HTTPS/login. It prints the address and protected credential/management paths; interrupted setup can resume without replacing secrets.
 
-Prerequisites: **Python 3.10+, OpenSSL, a Linux x86_64 Docker engine, and Docker Compose 2.24.4+**. The Docker build supplies the application runtimes; host Node.js, Rust and uv are unnecessary for this path. Initial builds need access to the pinned images and dependency registries.
+This path requires Python 3.10+, OpenSSL, a Linux x86_64 Docker engine, and Compose 2.24.4+. Initial builds need access to pinned images and package registries. Local evaluation prepares separate browser trust when supported; server mode needs independently trusted matching TLS and reachable infrastructure. Never bypass certificate errors.
 
-| Wizard mode | Access and requirements |
+| Your next step | Guide |
 |---|---|
-| **Local evaluation** | Working messaging on this computer at `https://localhost:8447` by default. With Chrome/Chromium and NSS `certutil` installed, setup prepares a separate trusted test browser profile. |
-| **Server** | Configures your server IP and existing matching IP-SAN TLS certificate/key. Normal messaging and account-wide closure are enabled; independent review is pending. Public certificate issuance, client trust and remote reachability require external infrastructure. |
+| Evaluate or operate the service | [Guided setup](docs/runbooks/guided-setup.md) · [First conversation](docs/user-onboarding/README.md) |
+| Install the verified client or separate web frontend | [Client delivery operations](docs/security/client-delivery/operations.md) — a separate trust/install step from the service wizard |
+| Develop and run checks | [Contributor setup](CONTRIBUTING.md) · [Source development](docs/development.md) |
+| Assess the design and deployment | [Architecture](docs/architecture/README.md) · [Security design](docs/security/design-guide.md) · [Operator runbook](docs/runbooks/operations.md) |
 
-The wizard prints the address, protected administrator credential path, and browser launcher after verification. Client message keys are created in the browser at first setup. Installation does not qualify production use.
+## Find your way through the source
 
-Passwords and configuration stay in owner-only files under `.local/setup/<name>`. The wizard prints the address, protected credential path, browser launcher, and management commands. Interrupted setup can be resumed with `./setup.sh --resume <name>` without rotating secrets. See the [guided setup runbook](docs/runbooks/guided-setup.md) for TLS, recovery, and operational limits.
-
-## Source development
-
-Prepared native server artifacts target **Linux x86_64**. Prerequisites: Docker/Compose, Python 3.12/uv, Node.js, Rust, OpenSSL, and the browser trust tooling described in the [operations runbook](docs/runbooks/operations.md). Exact versions are recorded in `.nvmrc`, `.python-version`, `rust-toolchain.toml`, and the dependency lockfiles.
-
-```bash
-git clone https://github.com/rezahadinezhad/HAVEN.git
-cd HAVEN
-cargo install wasm-bindgen-cli --version 0.2.105 --locked -j 2
-make prepare
-make dev
-```
-
-The app is served at **https://127.0.0.1:8443**. Keep that terminal open. In a second terminal:
-
-```bash
-make integration-dev
-```
-
-The isolated evaluation messenger is **https://127.0.0.1:8445**. Its settings refuse non-loopback hosts and keep real encryption, authentication, CSRF, device approval, and TLS checks in place. It is not a production enable switch.
-
-In a third terminal, prepare the isolated test browser and disposable credentials:
-
-```bash
-make browser-test-prepare
-make test
-```
-
-The generated test credentials live in a mode-0600 file under `.local`; there are no shipped fixed passwords. Trust the disposable test CA only in the isolated browser profiles prepared by the tooling. **Never bypass a certificate error or install the test signing key on a server.** See [first conversation and invitations](docs/user-onboarding/README.md) for the user flow.
-
-The optional device unlock requires a compatible WebAuthn PRF authenticator and a trusted HTTPS hostname. Raw-IP origins keep the passphrase/password-manager path; simply changing hostname does not migrate a browser's vault. [Design and support limits](docs/adr/0009-optional-device-unlock.md).
-
-A running local server uses an immutable copy of its completed build. After rebuilding, restart `make dev` to evaluate the new assets.
-
-## Verification and development
-
-Recorded local evidence includes:
-
-- **13 installer tests** plus real Docker setup, failure/retry recovery, trusted browser sign-in and TLS rejection checks.
-- The dependency-alert remediation reran **all 70 API tests** after removing the unused Daphne/Twisted/Autobahn development stack. Python audits now include development tools; [all nine original alerts are mapped to their remediation](docs/security/dependency-alert-remediation.md).
-
-- **70 API tests** for authentication, authorization, sessions, concurrency, migrations, retention, attachments, and device enrollment.
-- **205 upstream protocol vector tests passed**, with ignored/filtered/unsupported-suite cases recorded.
-- Native Rust properties and browser tests covering interoperability, prior-build compatibility, tampering, replay, media, and key lifecycle.
-- The latest session-security pass: **four Chromium and three Firefox workflows passed**.
-- Fresh npm, Python, and Rust audits reported no known vulnerabilities in their recorded runs. An optional Rust maintenance warning and previously recorded container OS findings remain documented.
-
-These are different recorded suites and revisions, not a combined certification score. The [test report](TEST_REPORT.md) identifies exact evidence, dates, failures and reruns, and remaining gaps.
-
-```bash
-# Native protocol adapter and pinned provider source
-cargo test --manifest-path packages/crypto-core/Cargo.toml --locked -j 2
-python3 scripts/check-crypto-vendor.py
-bash scripts/test-provider-vectors.sh
-
-# Interface types and prepared browser integration
-npm run typecheck --prefix apps/web
-HAVEN_BROWSER=firefox npm test --prefix apps/web -- crypto.spec.ts integration.spec.ts
-
-# Publication hygiene and dependency review (including Python development tools)
-bash scripts/audit-python.sh
-GITLEAKS_BIN=/absolute/path/to/gitleaks bash scripts/scan-repository.sh
-make dependency-audit
-```
-
-`make production-build` produces the normal application images. `make release-check` verifies product activation. `python3 scripts/release-gate.py --qualification` separately reports pending external assurance. The local Docker compatibility overlay is test-only and must not be used as a production hardening profile.
-
-## Explore the repository
-
-| Path | Contents |
+| Path | Responsibility |
 |---|---|
-| [`apps/web`](apps/web) | Conversation UI, encrypted vault/media workers, translations, and browser integration tests. |
-| [`apps/api`](apps/api) | Authentication, sessions, device/recovery controls, durable delivery, media authorization, and migrations. |
-| [`packages/crypto-core`](packages/crypto-core) | OpenMLS adapter, self-hosted WASM, public-only native verifier, pinned providers, and Rust tests. |
-| [`packages/contracts`](packages/contracts) | OpenAPI and WebSocket contracts, generated client/types. |
-| [`infrastructure`](infrastructure), [`scripts`](scripts) | Container, PKI, backup, replication, source-integrity and build tooling. |
-| [`docs/adr`](docs/adr) | Why the security and architecture choices were made. |
-| [`docs/evidence`](docs/evidence) | Recorded engineering output; current results are indexed in TEST_REPORT.md. |
+| [`apps/web`](apps/web) | Shared conversation UI, encrypted local storage/media, translations and browser tests |
+| [`apps/verified-client`](apps/verified-client) | Installed release verification, local HTTPS/API bridge and independent frontend runtime |
+| [`apps/api`](apps/api) | Authentication, device authority, ordered delivery, media, closure and migrations |
+| [`packages/crypto-core`](packages/crypto-core) | OpenMLS adapter, Rust/WASM, public-only native verifier and pinned providers |
+| [`packages/contracts`](packages/contracts) | API/WebSocket contracts and generated types |
+| [`infrastructure`](infrastructure) · [`scripts`](scripts) | Deployment, PKI, build, maintenance and backup/restore tools |
+| [`docs`](docs/README.md) | Current guides, architecture decisions and dated evidence |
 
-## Contributing and responsible disclosure
+## Contribute or review
 
-Contributions that improve correctness, usability, reproducibility, and test coverage are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) and [SECURITY.md](SECURITY.md). Report vulnerabilities privately through GitHub's security reporting feature; do not place real messages, credentials, invitations, or recovery material in public issues.
+Contributions to correctness, usability, documentation and reproducible verification are welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md). Report vulnerabilities privately using [SECURITY.md](SECURITY.md); keep real messages, credentials, invitation tokens and recovery material out of public issues.
 
-## License
-
-Original HAVEN code and documentation are available under the **[MIT License](LICENSE)**. Vendored libraries, fonts, icons, and authoring resources retain their own licenses and notices. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+Original HAVEN code and documentation use the **[MIT License](LICENSE)**. Dependencies, fonts, icons and vendored sources retain their own [licenses and notices](THIRD_PARTY_NOTICES.md).

@@ -1,46 +1,145 @@
-import { test, expect, loginBootstrap } from "./fixtures";
+import {
+  test,
+  expect,
+  chromium,
+  firefox,
+  type BrowserContext,
+} from "@playwright/test";
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
+import { execFileSync } from "node:child_process";
+import configuration from "../playwright.config";
+import { loginBootstrap } from "./fixtures";
+const profile = process.env.HAVEN_VERIFIED_PROFILE;
+const endpoint = process.env.HAVEN_VERIFIED_URL || "https://127.0.0.1:9455";
+test.skip(
+  !profile || process.env.HAVEN_CAPTURE_SHOWCASE !== "1",
+  "Explicit signed QA profile and documentation-capture opt-in required",
+);
 
-// Documentation images are actual application captures with disposable synthetic
-// data. This opt-in workflow never changes personal browser profiles or accounts.
-test("public showcase: real encrypted conversation, responsive layout and review notice", async ({
-  browser,
-}) => {
-  test.skip(
-    process.env.HAVEN_CAPTURE_SHOWCASE !== "1",
-    "Opt-in documentation capture",
-  );
-  test.setTimeout(120000);
-  const origin = "https://127.0.0.1:8445";
-  const credentials = JSON.parse(
-    fs.readFileSync(path.resolve("../../.local/ui-credentials.json"), "utf8"),
-  );
-  const contexts = await Promise.all([
-    browser.newContext({ viewport: { width: 1440, height: 940 } }),
-    browser.newContext(),
-  ]);
-  const [a, b] = await Promise.all(contexts.map((c) => c.newPage()));
-  const bodies: string[] = [];
-  const statements = [
-    "Hey Maya, are we still on for the garden tomorrow?",
-    "Absolutely. I’ll bring the coffee ☕",
-    "Perfect. I found a quiet spot by the water.",
-    "I’ll send you the photos here afterward.",
-    "Sounds good. See you at ten 🌿",
-  ];
-  for (const page of [a, b])
-    page.on("request", (r) => {
-      if (r.url().includes("/messages") && r.postData())
-        bodies.push(r.postData()!);
+test("public presentation: current encrypted conversation, desktop, dark and mobile", async () => {
+  test.setTimeout(180000);
+  const temp = fs.mkdtempSync(path.join(os.tmpdir(), "haven-client-browser-"));
+  const contexts: BrowserContext[] = [];
+  const binary =
+    process.env.HAVEN_BROWSER === "firefox" ? "firefox" : "chromium";
+  const root = path.resolve("../..");
+  const localCA = path.join(profile!, "tls/root.crt");
+  const launchEnv = { ...configuration.use!.launchOptions!.env } as Record<
+    string,
+    string
+  >;
+  const browserHome = path.join(temp, "trusted-home");
+  fs.mkdirSync(browserHome, { recursive: true, mode: 0o700 });
+  for (const folder of [".pki/nssdb", ".local/share/pki/nssdb"]) {
+    const dir = path.join(browserHome, folder);
+    fs.mkdirSync(dir, { recursive: true, mode: 0o700 });
+    execFileSync("certutil", ["-N", "-d", "sql:" + dir, "--empty-password"], {
+      stdio: "pipe",
     });
+    execFileSync(
+      "certutil",
+      [
+        "-A",
+        "-d",
+        "sql:" + dir,
+        "-n",
+        "LOCAL CLIENT TEST",
+        "-t",
+        "C,,",
+        "-i",
+        localCA,
+      ],
+      { stdio: "pipe" },
+    );
+  }
+  launchEnv.HOME = browserHome;
   try {
-    for (const page of [a, b]) {
-      await page.goto(origin + "/__integration__/");
-      await page.waitForFunction(() => !!(window as any).havenIntegration);
+    for (const i of [0, 1]) {
+      const dir = path.join(temp, "browser-" + i);
+      fs.mkdirSync(dir, { mode: 0o700 });
+      if (binary === "firefox") {
+        execFileSync(
+          "certutil",
+          ["-N", "-d", "sql:" + dir, "--empty-password"],
+          { stdio: "pipe" },
+        );
+        execFileSync(
+          "certutil",
+          [
+            "-A",
+            "-d",
+            "sql:" + dir,
+            "-n",
+            "LOCAL CLIENT TEST",
+            "-t",
+            "C,,",
+            "-i",
+            localCA,
+          ],
+          { stdio: "pipe" },
+        );
+      }
+      contexts.push(
+        await (
+          binary === "firefox" ? firefox : chromium
+        ).launchPersistentContext(dir, {
+          headless: true,
+          env: launchEnv,
+          executablePath:
+            binary === "firefox"
+              ? firefox.executablePath()
+              : "/usr/bin/google-chrome",
+          ...(binary === "chromium" ? { chromiumSandbox: true } : {}),
+        }),
+      );
     }
+    const pages = await Promise.all(contexts.map((c) => c.newPage()));
+    const foreign: string[] = [],
+      errors: string[] = [];
+    for (const page of pages) {
+      page.on("pageerror", (e) => errors.push(e.message));
+      page.on("request", (r) => {
+        const u = new URL(r.url());
+        if (
+          ["http:", "https:", "ws:", "wss:"].includes(u.protocol) &&
+          u.host !== new URL(endpoint).host
+        )
+          foreign.push(u.origin);
+      });
+      await page.goto(endpoint);
+      await expect(
+        page.getByRole("heading", { name: "Open your private space" }),
+      ).toBeVisible();
+      expect(await page.evaluate(() => isSecureContext)).toBe(true);
+      await page.addScriptTag({ url: "/qa-client.js" });
+      await page.evaluate(async () =>
+        (window as any).havenIntegration.configureClientDelivery(
+          await (await fetch("/client-config.json")).json(),
+        ),
+      );
+    }
+    const [a, b] = pages;
+    await a.setViewportSize({ width: 1440, height: 940 });
+    const bodies: string[] = [];
+    const statements = [
+      "Hey Maya, are we still on for the garden tomorrow?",
+      "Absolutely. I’ll bring the coffee ☕",
+      "Perfect. I found a quiet spot by the water.",
+      "I’ll send you the photos here afterward.",
+      "Sounds good. See you at ten 🌿",
+    ];
+    for (const p of pages)
+      p.on("request", (r) => {
+        if (r.url().includes("/messages") && r.postData())
+          bodies.push(r.postData()!);
+      });
+    const credentials = JSON.parse(
+      fs.readFileSync(path.join(root, ".local/ui-credentials.json"), "utf8"),
+    );
     await loginBootstrap(a, credentials);
-    const invites = await a.evaluate(async () =>
+    const invitations = await a.evaluate(async () =>
       Promise.all(
         [0, 1].map(() =>
           (window as any).havenIntegration.api("admin/invitations", "POST", {
@@ -73,7 +172,7 @@ test("public showcase: real encrypted conversation, responsive layout and review
             device: await h.shareDevice(w.m.state.device_id),
           };
         },
-        { token: invites[i].token, name: i ? "Nora" : "Maya" },
+        { token: invitations[i].token, name: i ? "Nora" : "Maya" },
       );
       secrets.push(answer.secret);
       devices.push(answer.device);
@@ -113,24 +212,28 @@ test("public showcase: real encrypted conversation, responsive layout and review
     expect(
       statements.every((text) => !bodies.some((body) => body.includes(text))),
     ).toBe(true);
-    await a.goto(origin);
-    await a.locator(".connect-entry").click();
-    await a.getByLabel("Unlock passphrase", { exact: true }).fill(secrets[0]);
+    await a.evaluate(() => (window as any).m.lock());
+    await a.reload();
+    await a.getByRole("button", { name: "Devices", exact: true }).click();
     await a
-      .getByRole("button", { name: "Unlock and continue", exact: true })
-      .click();
-    await expect(
-      a.getByText("This browser is ready", { exact: true }),
-    ).toBeVisible();
+      .getByLabel("Local unlock passphrase", { exact: true })
+      .fill(secrets[0]);
+    await a.getByRole("button", { name: "Unlock vault", exact: true }).click();
+    await expect(a.locator(".key-state")).toContainText(
+      "Verified devices only",
+    );
     await a.getByRole("button", { name: "Messages", exact: true }).click();
     await a.locator(".conversation-row").click();
     await expect(a.locator(".chat-heading")).toContainText("Nora");
     await expect(a.locator(".message-log")).toContainText(statements.at(-1)!);
-    await expect(
-      a.getByText(
-        "Experimental cryptographic integration. Not approved for production use.",
+    expect(
+      await a.evaluate(
+        async () =>
+          (await (await fetch("/api/v1/health")).json()).release_status,
       ),
-    ).toBeVisible();
+    ).toBe("ACTIVE_REVIEW_PENDING");
+    expect(foreign).toEqual([]);
+    expect(errors).toEqual([]);
     await a.getByLabel("Message", { exact: true }).fill("");
     await a.locator(".chat-heading").click();
     await a.screenshot({
@@ -154,6 +257,7 @@ test("public showcase: real encrypted conversation, responsive layout and review
       secrets.some((secret) => bodies.some((body) => body.includes(secret))),
     ).toBe(false);
   } finally {
-    for (const context of contexts) await context.close();
+    for (const c of contexts) await c.close();
+    fs.rmSync(temp, { recursive: true, force: true });
   }
 });

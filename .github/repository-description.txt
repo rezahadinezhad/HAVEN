@@ -1,0 +1,1 @@
+A self-hosted messenger for small trusted communities: end-to-end encryption, explicit device approval, encrypted local history, mutual conversation retirement and signed Linux client delivery. Independent security review pending.
