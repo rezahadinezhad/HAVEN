@@ -1,14 +1,14 @@
 # ADR 0009 — Optional passkey PRF vault unlock
 
-Status: implemented for compatible trusted HTTPS **hostname** origins; unavailable on direct-IP origins. Local engineering tests only. Release remains BLOCKED.
+Status: implemented for compatible trusted HTTPS **hostname** origins. Enrollment is optional and user initiated; direct-IP origins retain passphrase unlock. The maintained local hostname deployment is documented in [the installation guide](../security/device-unlock-installation.md).
 
 ## Decision
 
-Keep the existing encrypted IndexedDB vault, Argon2id passphrase, recovery kit, account login, device approval, five-minute inactivity lock and refresh lock. An unlocked user may optionally enroll a user-verifying platform WebAuthn credential. HAVEN makes a fresh WebAuthn assertion requesting the `prf` extension and `userVerification: "required"`, checks credential ID, challenge, origin, RP-ID hash, user-presence and user-verification flags, and requires a 32-byte PRF result. A plain passkey assertion or a UI-only biometric prompt cannot unlock the vault.
+Keep the existing encrypted IndexedDB vault, Argon2id passphrase, recovery kit, account login, device approval, five-minute inactivity lock and refresh lock. An unlocked user may optionally enroll a user-verifying WebAuthn credential through a built-in authenticator, compatible passkey provider, or security key. HAVEN makes a fresh WebAuthn assertion requesting the `prf` extension and `userVerification: "required"`, checks credential ID, challenge, origin, RP-ID hash, user-presence and user-verification flags, and requires a 32-byte PRF result. A plain passkey assertion or a UI-only biometric prompt cannot unlock the vault.
 
 The PRF result is used as a 256-bit AES-GCM key to encrypt a **copy of the existing vault passphrase** with a fresh 96-bit nonce and 128-bit tag. Authenticated associated data binds version, account ID, origin, RP ID, local device ID and credential ID. Only the ciphertext, nonce, salt and public identifiers are stored in a separate browser-local IndexedDB database. The PRF output and temporary byte buffers are cleared on completion where JavaScript permits; immutable strings and browser internals cannot be securely erased. On later visits, a fresh user-verified assertion reproduces the PRF output, decrypts the passphrase in memory and opens the unchanged vault. The local device ID is checked again after vault authentication. Removal deletes the local wrapper; it does not delete the passkey from the OS/provider. The passphrase remains the fallback.
 
-No WebAuthn credential, PRF output or wrapped passphrase is sent to HAVEN's server. This credential is **not** a server-login credential and does not extend an expired server session. Its local encrypted wrapper is an additional attack surface relative to passphrase-only operation. It is optional and never silently enabled. A compromised application origin or endpoint can solicit a WebAuthn prompt and steal secrets after unlock. Some platform passkeys can synchronize through an OS/provider account; platform attachment does not prove a hardware-bound, nonsyncing key. User verification may use a device PIN rather than biometrics. HAVEN cannot promise a fresh biometric scan on every assertion or protection from a compromised OS/browser.
+No WebAuthn credential, PRF output or wrapped passphrase is sent to HAVEN's server. This credential is **not** a server-login credential and does not extend an expired server session. Its local encrypted wrapper is an additional attack surface relative to passphrase-only operation. It is optional and never silently enabled. A compromised application origin or endpoint can solicit a WebAuthn prompt and steal secrets after unlock. Passkeys can synchronize through an OS/provider account; the selected provider does not prove a hardware-bound, nonsyncing key. User verification may use a device PIN rather than biometrics. HAVEN cannot promise a fresh biometric scan on every assertion or protection from a compromised OS/browser.
 
 ## Access-model boundary
 
@@ -20,4 +20,24 @@ Implementation references: [W3C WebAuthn Level 3](https://www.w3.org/TR/webauthn
 
 ## Qualification
 
-Chrome virtual-authenticator tests exercise PRF enrollment/unlock after reload/removal, missing PRF, failed user verification and cross-account wrapper copying over a test-root-signed `https://localhost` origin with certificate validation enabled. A separate test uses the **real HAVEN UI, API, IndexedDB vault, session and virtual authenticator** on an opt-in `https://localhost:8446` origin, including passphrase fallback and no unlock secret in observed API requests. API config tests cover exact hostname/IPv4 acceptance and fail-closed invalid cases; Chrome and Firefox test direct-IP denial and fallback UI. These are not physical Face ID/Touch ID, mobile passkey-provider, browser-memory or independent security-audit results. The normal IP-only review origin remains passphrase-only; no fake biometric switch is shown. The release gate stays BLOCKED.
+Chrome virtual-authenticator tests exercise PRF enrollment/unlock after reload/removal, missing PRF, failed user verification and cross-account wrapper copying over a test-root-signed `https://localhost` origin with certificate validation enabled. A separate test uses the **real HAVEN UI, API, IndexedDB vault, session and virtual authenticator** on an opt-in `https://localhost:8446` origin, including passphrase fallback and no unlock secret in observed API requests. API config tests cover exact hostname/IPv4 acceptance and fail-closed invalid cases; Chrome and Firefox test direct-IP denial and fallback UI. These are not physical Face ID/Touch ID, mobile passkey-provider, browser-memory or independent security-audit results. The direct-IP route remains passphrase-only. A configured hostname link opens a separate tab without moving local keys or redirecting the current vault. No fake biometric switch is shown. Device unlock does not change the project’s independent security-review status.
+
+
+## Provider selection and maintained route
+
+Do not use `isUserVerifyingPlatformAuthenticatorAvailable()` as a universal
+capability gate: it excludes compatible security keys and passkey providers when
+no built-in authenticator is present. Offer the browser chooser on a trusted
+WebAuthn-capable hostname, omit a forced platform attachment, and accept only a
+fresh assertion with required user verification and a valid 32-byte PRF output.
+An API being available means enrollment can be attempted; it does not promise
+that every provider or physical device supports PRF.
+
+The current regression set covers a virtual USB authenticator with platform
+availability false, alongside the existing built-in, missing-PRF, missing-UV,
+account-copy and IP-denial checks. The real application workflow runs both
+virtual transports through enrollment, reload, unlock, removal and fallback.
+It also verifies that the configured hostname link retains the original tab and
+carries no vault contents or URL tokens. Browser cancellation and unsupported
+providers receive an actionable fallback message. Physical enrollment remains
+the owner's own ceremony.

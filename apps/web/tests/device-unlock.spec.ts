@@ -51,14 +51,19 @@ test.afterAll(async () => {
     await new Promise<void>((resolve) => server.close(() => resolve()));
 });
 
-async function authenticator(page: Page, hasPrf: boolean, verified = true) {
+async function authenticator(
+  page: Page,
+  hasPrf: boolean,
+  verified = true,
+  transport: "internal" | "usb" = "internal",
+) {
   const cdp = await page.context().newCDPSession(page);
   await cdp.send("WebAuthn.enable");
   await cdp.send("WebAuthn.addVirtualAuthenticator", {
     options: {
       protocol: "ctap2",
       ctap2Version: "ctap2_1",
-      transport: "internal",
+      transport,
       hasResidentKey: true,
       hasUserVerification: true,
       automaticPresenceSimulation: true,
@@ -112,6 +117,52 @@ test("device verified PRF wraps the passphrase locally, survives reload, and can
         return (await device.loadDeviceUnlock("test-user")) === undefined;
       }),
     ).toBe(true);
+  } finally {
+    await cdp.detach();
+    await context.close();
+  }
+});
+
+test("verified security key unlock works without a platform authenticator", async ({
+  browser,
+}) => {
+  test.skip(
+    process.env.HAVEN_BROWSER === "firefox",
+    "Chrome CDP virtual authenticator test",
+  );
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  const cdp = await authenticator(page, true, true, "usb");
+  try {
+    await page.goto(origin);
+    expect(
+      await page.evaluate(() =>
+        PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable(),
+      ),
+    ).toBe(false);
+    const result = await page.evaluate(async (value) => {
+      const device = (window as any).HavenDeviceUnlock;
+      const environment = await device.deviceUnlockEnvironment();
+      await device.enrollDeviceUnlock(
+        "external-user",
+        "external-device",
+        value,
+      );
+      return {
+        environment,
+        unlocked: await device.unlockWithDevice("external-user"),
+      };
+    }, secret);
+    expect(result).toEqual({
+      environment: "ready",
+      unlocked: { secret, deviceId: "external-device" },
+    });
+    await page.reload();
+    expect(
+      await page.evaluate(async () =>
+        (window as any).HavenDeviceUnlock.unlockWithDevice("external-user"),
+      ),
+    ).toEqual({ secret, deviceId: "external-device" });
   } finally {
     await cdp.detach();
     await context.close();
