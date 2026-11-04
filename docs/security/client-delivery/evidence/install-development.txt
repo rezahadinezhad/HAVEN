@@ -1,0 +1,3 @@
+Verified client release installed: 3
+Private HTTPS client profile prepared. Only its dedicated Firefox profile trusts the local CA.
+Client URL: https://127.0.0.1:9455

@@ -2,6 +2,6 @@
 201f6b4658c6500df7a9883b6c5e92b55efd26ad6c6fe0774239bdfe0d0e24d9  apps/web/public/crypto/haven_crypto.js
 39697747e2e33d40835dce781dca8bd3d1466d14f6299b6a7f8e0eadf792a642  apps/web/public/crypto/haven_crypto_bg.wasm
 1bbb472e76f5092c3eded0d5e44752d285bc97a84e45a12c5a30ca32e730a25b  apps/web/public/crypto/haven_crypto_bg.wasm.d.ts
-6f0ddfae1ddbfc6b5a2c2f6ba8d67df6a2c4d169b0dc4786cc2494995cd272bb  apps/web/public/crypto-worker.js
+354fc273ab17b6d17a1241f8e5297829b65eb9a0ffc094bdc47ca4cfe172a418  apps/web/public/crypto-worker.js
 d74c549d0c0a3b107118f20adbab52c9b099ef930eb2a19fff4fca517fa2f77a  apps/web/public/vault-worker.js
 d74c549d0c0a3b107118f20adbab52c9b099ef930eb2a19fff4fca517fa2f77a  apps/web/public/vault-worker-v2.js

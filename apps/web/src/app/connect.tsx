@@ -1,4 +1,5 @@
 "use client";
+import { serviceOrigin } from "@/lib/client-delivery";
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import QRCode from "qrcode";
@@ -674,7 +675,7 @@ export function ConnectFlow({
   const active = useRef(true);
   useEffect(() => {
     active.current = true;
-    setOrigin(location.origin);
+    setOrigin(serviceOrigin());
     return () => {
       active.current = false;
     };

@@ -11,6 +11,7 @@
 | Conversation closure | Default signed v2 policy; one participating device represents an account; every affected group account must agree |
 | Server retirement | Normal background worker, signed final archive receipts, dependency settlement, storage accounting and independent restore-deny journal |
 | Interface | English/Persian, RTL, responsive layouts, light/dark themes, offline shell and contextual operational notices |
+| Client delivery | Signed installed Linux client, atomic offline updates, pinned release trust and independently deployable frontend/API bridge |
 | Operations | Versioned container images, coordinated migrations, protected backups, journal bootstrap and documented restoration |
 
 The [current installation upgrade](docs/operations/installation-upgrade-2026-11-04/README.md) records the running stack and verification. Protocol/resource limits and the irreversible preparation step are documented in [account-wide closure](docs/security/account-closure/README.md).

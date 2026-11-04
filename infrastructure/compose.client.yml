@@ -1,0 +1,42 @@
+# Deploy on an independently administered frontend host. This service needs no DB,
+# backend secrets, publisher private key, Docker socket, or application code volume.
+name: haven-client
+services:
+  client:
+    image: ${HAVEN_CLIENT_IMAGE:?Set the reviewed immutable image reference}
+    restart: unless-stopped
+    user: "10001:10001"
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    ulimits:
+      core: 0
+      nofile: {soft: 1024, hard: 1024}
+    pids_limit: 128
+    mem_limit: 256m
+    cpus: 1
+    tmpfs: ["/tmp:rw,noexec,nosuid,nodev,size=16m,mode=1777"]
+    ports: ["${HAVEN_CLIENT_BIND_IP:?Dedicated frontend IP}:${HAVEN_CLIENT_PORT:-8447}:8447"]
+    command:
+      - --listen
+      - 0.0.0.0
+      - --port
+      - "8447"
+      - --public-origin
+      - ${HAVEN_CLIENT_ORIGIN:?Dedicated HTTPS frontend origin}
+      - --api-origin
+      - ${HAVEN_CLIENT_API_ORIGIN:?Logical HTTPS API origin}
+      - --api-ca
+      - /tls/api-ca.crt
+      - --cert
+      - /tls/leaf.crt
+      - --key
+      - /tls/leaf.key
+    volumes:
+      - ${HAVEN_CLIENT_TLS_DIRECTORY:?Leaf certificate/key and public API CA only}:/tls:ro
+    healthcheck:
+      test: [CMD, python, -c, "import socket; s=socket.create_connection(('127.0.0.1',8447),timeout=2); s.close()"]
+      interval: 15s
+      timeout: 3s
+      retries: 5
+      start_period: 10s

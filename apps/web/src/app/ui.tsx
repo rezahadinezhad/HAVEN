@@ -1,5 +1,11 @@
 "use client";
 import {
+  clientDelivery,
+  serviceOrigin,
+  readSharedLocation,
+  clientAssetURL,
+} from "@/lib/client-delivery";
+import {
   useCallback,
   useEffect,
   useRef,
@@ -345,7 +351,9 @@ export default function Haven() {
     const token = fragment.get("invite");
     if (fragment.has("connect")) {
       try {
-        setPendingContact(readContactLink(location.href, location.origin));
+        setPendingContact(
+          readContactLink(readSharedLocation(), serviceOrigin()),
+        );
         setScreen("connect");
       } catch (e) {
         setError(e instanceof Error ? e.message : "Invalid friend link");
@@ -445,9 +453,12 @@ export default function Haven() {
     if (
       isSecureContext &&
       location.protocol === "https:" &&
-      "serviceWorker" in navigator
+      "serviceWorker" in navigator &&
+      clientDelivery()?.mode !== "installed"
     )
-      navigator.serviceWorker.register("/sw.js").catch(() => {});
+      navigator.serviceWorker
+        .register(clientAssetURL("/sw.js"), { scope: "/" })
+        .catch(() => {});
     return () => {
       window.removeEventListener("offline", off);
       window.removeEventListener("online", on);
@@ -3015,7 +3026,7 @@ export default function Haven() {
                           <code>{newToken}</code>
                           <QR
                             t={t}
-                            value={`${location.origin}/#invite=${newToken}`}
+                            value={`${serviceOrigin()}/#invite=${newToken}`}
                           />
                           <small>
                             {t(
@@ -3183,6 +3194,16 @@ export default function Haven() {
                   <>
                     <section className="card">
                       <h2>{t("Connection & help")}</h2>
+                      {clientDelivery() && (
+                        <p>
+                          {t(
+                            clientDelivery()!.mode === "installed"
+                              ? "This client uses a verified local release. The messaging server supplies data only. Open invitations and friend links inside this client."
+                              : "This frontend is delivered independently of the messaging server. Its delivery host remains trusted.",
+                          )}{" "}
+                          · {t("Release")} {clientDelivery()!.sequence}
+                        </p>
+                      )}
                       <form
                         onSubmit={(e) => {
                           e.preventDefault();
@@ -3205,6 +3226,10 @@ export default function Haven() {
                             )
                               throw new Error(
                                 "Enter a trusted HTTPS IPv4 endpoint with no path, credentials or query.",
+                              );
+                            if (clientDelivery())
+                              throw new Error(
+                                "Create a separate trusted client profile for a standby server. This client never loads the messaging server’s website.",
                               );
                             location.assign(u.origin);
                           });
@@ -3231,7 +3256,7 @@ export default function Haven() {
                         {status}
                       </p>
                       <code>
-                        {typeof location !== "undefined" ? location.origin : ""}
+                        {typeof location !== "undefined" ? serviceOrigin() : ""}
                       </code>
                       <p>
                         {t(

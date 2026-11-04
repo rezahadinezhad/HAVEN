@@ -1,3 +1,4 @@
+import { serviceOrigin } from "./client-delivery";
 import { z } from "./schema";
 import { api, type Device } from "./api";
 
@@ -68,7 +69,7 @@ export async function lookupContact(value: string): Promise<Device> {
     /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
       value,
     );
-  const card = isId ? undefined : readContactLink(value, location.origin);
+  const card = isId ? undefined : readContactLink(value, serviceOrigin());
   const { device } = await api<{ device: Device }>(
     `crypto/key-packages/${card?.device_id ?? value}`,
     "GET",

@@ -15,3 +15,5 @@ Use these pages for the current product. Dated engineering reports preserve the 
 | Earlier status and release decisions | [Project history](history/README.md) |
 
 Keep current-facing status concise. Add new dated evidence under the relevant initiative; archive superseded status narratives with their source/date, and link them here rather than appending contradictory release summaries to the root pages. Preserve original failures, measured limits and independent-review requirements.
+
+- [Verified client delivery](security/client-delivery/README.md): installed signed client, independent frontend/API boundary, release operations and qualification.

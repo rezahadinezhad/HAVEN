@@ -867,6 +867,13 @@ const fa: Record<string, string> = {
   "Messaging unavailable": "پیام‌رسانی در دسترس نیست",
   "Messaging is temporarily unavailable. Check the service status or contact your administrator.":
     "پیام‌رسانی موقتاً در دسترس نیست. وضعیت سرویس را بررسی کنید یا با مدیر تماس بگیرید.",
+  "This client uses a verified local release. The messaging server supplies data only. Open invitations and friend links inside this client.":
+    "این کلاینت از نسخهٔ محلی تأییدشده استفاده می‌کند. سرور پیام‌رسان فقط داده فراهم می‌کند. دعوت‌ها و لینک دوستان را داخل همین کلاینت باز کنید.",
+  "Create a separate trusted client profile for a standby server. This client never loads the messaging server’s website.":
+    "برای سرور پشتیبان نمایهٔ جداگانه‌ای از کلاینت مطمئن بسازید. این کلاینت وب‌سایت سرور پیام‌رسان را بارگذاری نمی‌کند.",
+  Release: "نسخه",
+  "This frontend is delivered independently of the messaging server. Its delivery host remains trusted.":
+    "این رابط جدا از سرور پیام‌رسان ارائه می‌شود. همچنان باید به میزبان ارائهٔ رابط اعتماد داشت.",
   active: "فعال",
   rekey_required: "تغییر کلید لازم است",
   pending: "در انتظار تأیید",

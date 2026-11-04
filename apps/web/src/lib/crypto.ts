@@ -1,3 +1,4 @@
+import { clientAssetURL } from "./client-delivery";
 export type CryptoResult = {
   identity: string;
   public_key: string;
@@ -28,7 +29,9 @@ export function cryptoCall(
   if (!isSecureContext || location.protocol !== "https:")
     return Promise.reject(new Error("Trusted HTTPS required"));
   if (!worker) {
-    worker = new Worker("/crypto-worker.js", { type: "module" });
+    worker = new Worker(clientAssetURL("/crypto-worker.js"), {
+      type: "module",
+    });
     worker.onmessage = (e) => {
       const h = waiting.get(e.data.id);
       if (!h) return;

@@ -1,3 +1,4 @@
+import { clientAssetURL } from "./client-delivery";
 import { openDB } from "idb";
 import type { Certificate } from "./api";
 import type { ClosureArchive } from "./closure-protocol";
@@ -130,7 +131,7 @@ function work<T>(
   if (location.protocol !== "https:" || !isSecureContext)
     return Promise.reject(new Error("Trusted HTTPS required"));
   if (!worker) {
-    worker = new Worker("/vault-worker-v2.js");
+    worker = new Worker(clientAssetURL("/vault-worker-v2.js"));
     worker.onmessage = (e) => {
       const h = waiting.get(e.data.id);
       waiting.delete(e.data.id);

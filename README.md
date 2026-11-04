@@ -83,7 +83,7 @@ Delivered application ciphertext becomes eligible for retirement after every eli
 
 ### Boundaries that remain
 
-- **Browser code distribution is a trust boundary.** A compromised application origin can deliver code that steals plaintext or keys after unlock. CSP and local assets reduce exposure; they do not eliminate that risk.
+- **Browser code distribution is a trust boundary.** The ordinary website trusts its delivery origin. The [signed installed client and independent frontend gateway](docs/security/client-delivery/README.md) prevent the messaging API from replacing client assets. Installed releases pin independent publisher trust and reject tampering/rollback; the publisher/build, local OS and browser remain trusted.
 - **Encryption is not anonymity.** The service and network infrastructure can observe account/device relationships, routing, timing, sizes, and live network addresses. A stolen database still reveals metadata.
 - **View-once is a cooperating-client access control.** It cannot prevent screenshots, modified clients, retained recipient copies, or all memory/cache recovery.
 - **The complete integration is not independently audited.** Physical mobile testing, capacity and infrastructure qualification, remaining container OS findings, and independent application/cryptographic review are still outstanding.

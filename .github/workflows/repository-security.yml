@@ -158,3 +158,34 @@ jobs:
           done
           docker logs "$job_container"
           exit 1
+  verified-client:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Install pinned uv
+        uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2
+        with:
+          version: "0.13.1"
+          python-version: "3.12"
+          enable-cache: false
+      - name: Verify client boundary, tampering, installer and rollback behavior
+        run: |
+          set -euo pipefail
+          uv sync --project apps/api --frozen
+          apps/api/.venv/bin/ruff check apps/verified-client scripts/package-verified-client.py
+          apps/api/.venv/bin/ruff format --check apps/verified-client scripts/package-verified-client.py
+          PYTHONDONTWRITEBYTECODE=1 apps/api/.venv/bin/python -m unittest discover -s apps/verified-client/tests -v
+      - name: Build the complete standalone browser client with pinned Node
+        run: docker build --file apps/verified-client/Dockerfile.web-build --output type=local,dest=.local/verified-build .
+      - name: Exercise the exact production Python and hash-locked client dependencies
+        run: |
+          set -euo pipefail
+          runtime_image=$(sed -n '2s/^FROM //p' apps/verified-client/Dockerfile)
+          docker run --rm --cap-drop ALL --security-opt no-new-privileges:true \
+            -e PYTHONDONTWRITEBYTECODE=1 -v "$PWD:/workspace:ro" -w /workspace "$runtime_image" sh -ec '
+              pip install --no-cache-dir --require-hashes -r apps/verified-client/requirements.lock
+              python -m unittest discover -s apps/verified-client/tests -v
+            '
