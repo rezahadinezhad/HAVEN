@@ -4,11 +4,11 @@ These are engineering checks, not an independent penetration test or cryptograph
 
 | Check | Result and scope |
 |---|---|
-| Signed archive and hostile TLS API | 13 Python tests pass: wrong key, changed HTML/JS/worker/WASM/runtime/bootstrap, altered manifest, ZIP traversal/duplicates/compression, sequence replay/conflict, API HTML/JS/redirect/compression, strict Host/Origin/cookies/headers, TLS hostname checks and real TLS WebSocket bridge |
-| Actual installer | First-trust fingerprint required; authenticated runtime executes; changed disk executable rejected; live private browser blocks update; failed/replayed update preserves active release and separate dependency environment |
+| Signed archive and hostile TLS API | 14 Python tests pass: wrong key, changed HTML/JS/worker/WASM/runtime/bootstrap, altered manifest, ZIP traversal/duplicates/compression, sequence replay/conflict, API HTML/JS/redirect/compression, strict Host/Origin/cookies/headers, TLS hostname checks and real TLS WebSocket bridge |
+| Actual installer | First-trust fingerprint required; authenticated runtime executes; changed disk executable rejected; live private browser blocks update; runtime lock survives parent SIGKILL and normal termination reaps the child; authenticated launcher maintenance preserves the pinned root; failed/replayed update preserves active release and separate dependency environment |
 | Chromium | Real TLS, two synthetic accounts, native MLS enrollment/fingerprint pins, encrypted text and file upload/download, persisted vault reload and production UI unlock; hostile API switched on while unlocked; API-supplied script blocked, signed worker unchanged, no browser traffic to upstream |
 | Firefox | Same workflow and hostile-origin checks; dedicated test trust only, no TLS ignore flags |
-| Exact production Python | All 13 tests also pass on the pinned Python3.14.9 image with offline hash-locked wheels; the installer test tmpfs explicitly permits executable venv files |
+| Exact production Python | All 14 tests also pass on the pinned Python3.14.9 image with offline hash-locked wheels; the installer test tmpfs explicitly permits executable venv files |
 | Activated release | Signed release1 on both real endpoints: UI sign-in/sign-out, exact release digest, QA helper404, zero foreign browser requests/errors; container startup refuses a tampered worker |
 | Client build | Complete UI/workers/WASM/fonts build in pinned Node26.13.0 image; TypeScript check passes |
 | CI | New verified-client job runs boundary/installer checks, pinned standalone frontend build and tests using exact production Python3.14.9; separate client dependency graph included in advisory audit |

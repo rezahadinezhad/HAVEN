@@ -1,8 +1,8 @@
 
 Running 1 test using 1 worker
 
-(node:929166) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(node:958248) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
-  ✓  1 tests/verified-client.spec.ts:18:5 › signed local client preserves MLS, encrypted media and reload while API content stays data (6.1s)
+  ✓  1 tests/verified-client.spec.ts:18:5 › signed local client preserves MLS, encrypted media and reload while API content stays data (6.3s)
 
   1 passed (6.8s)

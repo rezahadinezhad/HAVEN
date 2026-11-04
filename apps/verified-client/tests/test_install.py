@@ -1,10 +1,15 @@
 """Exercise the actual independent launcher, including atomic updates and execution refusal."""
 
+import fcntl
 import io
 import json
+import os
+import select
+import signal
 import subprocess
 import sys
 import tempfile
+import time
 import unittest
 import zipfile
 from pathlib import Path
@@ -129,10 +134,24 @@ class InstalledLauncher(unittest.TestCase):
         newer = release(
             self.root,
             sequence=2,
-            files={**self.payload, "web/index.html": b"new trusted client"},
+            files={
+                **self.payload,
+                "web/index.html": b"new trusted client",
+                "bootstrap.py": self.payload["bootstrap.py"]
+                + b"\n# Authenticated launcher maintenance update\n",
+            },
             name="second.haven",
         )
         self.assertEqual(self.apply(newer).returncode, 0)
+        self.assertEqual(
+            (self.state / "launcher.py").read_bytes(),
+            self.payload["bootstrap.py"]
+            + b"\n# Authenticated launcher maintenance update\n",
+        )
+        self.assertEqual(
+            (self.state / "release.pub").read_bytes(),
+            (self.root / "release.pub").read_bytes(),
+        )
         before = (self.state / "active.json").read_bytes()
         active = json.loads(before)
         self.assertTrue(
@@ -154,6 +173,80 @@ class InstalledLauncher(unittest.TestCase):
                 )
         self.assertNotEqual(self.apply(tampered).returncode, 0)
         self.assertEqual((self.state / "active.json").read_bytes(), before)
+
+    def test_runtime_lock_survives_parent_death_and_normal_stop_reaps_child(self):
+        runtime = io.BytesIO()
+        with zipfile.ZipFile(runtime, "w") as archive:
+            archive.writestr(
+                "__main__.py",
+                'import os,time; print("READY "+str(os.getpid()),flush=True); time.sleep(60)',
+            )
+        live = release(
+            self.root,
+            sequence=2,
+            files={**self.payload, "runtime.pyz": runtime.getvalue()},
+            name="live.haven",
+        )
+        result = self.apply(live)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        for abrupt in (True, False):
+            child = None
+            pid = None
+            try:
+                child = subprocess.Popen(
+                    [
+                        sys.executable,
+                        str(self.state / "launcher.py"),
+                        "--state",
+                        str(self.state),
+                        "run",
+                    ],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    text=True,
+                )
+                self.assertTrue(
+                    select.select([child.stdout], [], [], 15)[0],
+                    "Runtime did not become ready",
+                )
+                ready = child.stdout.readline().strip()
+                self.assertTrue(ready.startswith("READY "), ready)
+                pid = int(ready.split()[1])
+                if abrupt:
+                    child.kill()
+                    child.wait(timeout=5)
+                    blocked = self.apply(live)
+                    self.assertNotEqual(blocked.returncode, 0)
+                    self.assertIn("Stop the installed client", blocked.stderr)
+                    os.kill(pid, signal.SIGTERM)
+                    # The orphan may briefly be a zombie; lock lifetime, rather
+                    # than process-table cleanup by init, is the security check.
+                    for _ in range(50):
+                        with (self.state / "client.lock").open("a") as lock:
+                            try:
+                                fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                                break
+                            except BlockingIOError:
+                                time.sleep(0.02)
+                    else:
+                        self.fail("Runtime retained its lock after termination")
+                else:
+                    child.terminate()
+                    child.communicate(timeout=10)
+                    with self.assertRaises(ProcessLookupError):
+                        os.kill(pid, 0)
+            finally:
+                if child and child.poll() is None:
+                    child.kill()
+                    child.wait(timeout=5)
+                if pid:
+                    try:
+                        os.kill(pid, signal.SIGTERM)
+                    except ProcessLookupError:
+                        pass
+                if child:
+                    child.stdout.close()
+                    child.stderr.close()
 
     def test_live_private_browser_blocks_an_update(self):
         self.assertEqual(self.apply(self.first).returncode, 0)

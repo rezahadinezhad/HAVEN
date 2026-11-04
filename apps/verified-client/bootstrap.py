@@ -9,6 +9,7 @@ import json
 import os
 import shlex
 import shutil
+import signal
 import subprocess
 import sys
 import tempfile
@@ -127,8 +128,9 @@ def install(state, bundle, key, expected, wheelhouse):
         timeout=180,
         stdout=subprocess.DEVNULL,
     )
-    if not (state / "launcher.py").exists():
-        atomic(state / "launcher.py", payload["bootstrap.py"])
+    # The existing verifier authenticates the replacement launcher under the
+    # pinned root; launcher fixes must be deliverable without changing that root.
+    atomic(state / "launcher.py", payload["bootstrap.py"])
     if not (state / "haven-client").exists():
         command = (
             "#!/bin/sh\nexec "
@@ -224,7 +226,7 @@ def main():
         args = options.arguments
         if args and args[0] == "--":
             args = args[1:]
-        subprocess.run(
+        process = subprocess.Popen(
             [
                 str(folder / "venv/bin/python"),
                 "-I",
@@ -237,8 +239,27 @@ def main():
                 str(state / "release.pub"),
                 *args,
             ],
-            check=True,
+            # Retain the same kernel lock if the parent is terminated abruptly.
+            pass_fds=(lock.fileno(),),
         )
+
+        def relay(number, _frame):
+            process.send_signal(number)
+
+        previous = {
+            number: signal.signal(number, relay)
+            for number in (signal.SIGTERM, signal.SIGINT)
+        }
+        try:
+            status = process.wait()
+        finally:
+            for number, handler in previous.items():
+                signal.signal(number, handler)
+            if process.poll() is None:
+                process.terminate()
+                process.wait(timeout=10)
+        if status:
+            raise subprocess.CalledProcessError(status, process.args)
 
 
 if __name__ == "__main__":

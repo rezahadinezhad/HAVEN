@@ -54,7 +54,7 @@ Close the dedicated browser and stop the client. Use the **already installed** l
 /private/haven-client/haven-client run -- serve --open
 ```
 
-The root key is pinned; no replacement key argument is necessary. Do not delete `active.json` or reinstall a new profile to bypass a rollback rejection. Recover a defective release by signing the reviewed repair with a higher sequence, even when it restores older source behavior. Keep the old release directory for diagnostics; it is not an authorized downgrade path. Full deletion/rollback of all local state is outside the monotonic-state guarantee, as is an attacker with local filesystem control.
+The root key is pinned; no replacement key argument is necessary. The existing verifier authenticates maintenance updates to the launcher itself under that same pinned key. No website supplies or replaces the root. Do not delete `active.json` or reinstall a new profile to bypass a rollback rejection. Recover a defective release by signing the reviewed repair with a higher sequence, even when it restores older source behavior. Keep the old release directory for diagnostics; it is not an authorized downgrade path. Full deletion/rollback of all local state is outside the monotonic-state guarantee, as is an attacker with local filesystem control.
 
 ## Independent frontend deployment
 
@@ -74,3 +74,7 @@ Use `infrastructure/compose.client.yml` on a separately administered host. Suppl
 Keep standard cap-drop, read-only filesystem, no-new-privileges and resource restrictions. An explicit loopback-only host compatibility override may omit no-new-privileges when the local Docker host cannot support it. That exception does not qualify public deployment. Transport-address overrides are for operator-configured networking only and retain logical upstream TLS hostname verification.
 
 For frontend updates, stop/switch the gateway image, retain the same frontend origin/TLS identity and let clients reload. The web edition uses release-versioned assets and a service worker; existing open pages may need a reload after a server upgrade. Installed clients update independently and are unaffected by a web-host image switch.
+
+### Initial release1 launcher maintenance
+
+Local release1 was installed before the runtime-lifetime fix. Its initial launcher did not replace itself during updates. The maintained operator installation is upgraded using the reviewed source bootstrap and the already pinned root to apply release2; the TLS/browser/vault profile stays in place. Release2 and later authenticate launcher maintenance updates as part of normal signed installation. The runtime inherits the kernel update lock, even if a parent is killed abruptly, and ordinary launcher termination forwards the signal and reaps the runtime.
