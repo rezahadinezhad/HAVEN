@@ -2,7 +2,7 @@
 
 The existing HAVEN service at `https://127.0.0.1:8444` and its account/vault state are preserved. No database migration or personal device enrollment is needed for this delivery change.
 
-**Signed release 5 is installed and running, after verified release1→2→3→4→5 updates.** Its reviewed source is `79051b5f49ae259ad9eff3ff21117156f3a5b3ad`. It ships the visibly flowing blue/mint/rose aurora over the rounded workspace. No QA helper is present in the production release. Earlier evidence retains its recorded release/revision.
+**Signed release 6 is installed and running, after verified release1→2→3→4→5→6 updates.** Its reviewed source is `32ec2636c78a99bbaaac0132cf34c5fcb7fe3f84`. It fixes composer focus after sending and prevents outgoing text from being saved again during a send. The rounded workspace and flowing aurora remain available. No QA helper is present in the production release. Earlier evidence retains its recorded release/revision.
 
 | Component | Maintained location |
 |---|---|
@@ -10,18 +10,18 @@ The existing HAVEN service at `https://127.0.0.1:8444` and its account/vault sta
 | User launcher | `/home/reza-hadinezhad/.local/bin/haven-verified-client`; application menu entry **HAVEN Verified Client** |
 | Protected installed state | `/home/reza-hadinezhad/.local/state/haven/verified-client` |
 | Independent frontend demo | `https://127.0.0.2:8447`, separate non-root/read-only container; only the existing ingress network, no DB network or backend secrets |
-| Distribution archive (local) | `.local/verified-client/HAVEN-verified-client-release-5.tar.gz`, signed archive, public verifier/key and license notices; contains no private signing key |
+| Distribution archive (local) | `.local/verified-client/HAVEN-verified-client-release-6.tar.gz`, signed archive, public verifier/key and license notices; contains no private signing key |
 | Frontend operator helper | `.local/manage-verified-frontend.sh` |
 
 Publisher public-key DER SHA-256: `2cecd962301f0292caca6089a23c0a2c8fb00fb055327342d09daa6abfaaaf99`.
 
-Manifest SHA-256: `5d8227e5333b1a3b283c6b0c559b05fda660a765a554afc951c8c9b2b731a49d`.
+Manifest SHA-256: `a49e8f9e060ed0cf233331825a3b22203f9a7a69d75df890a8ce99e74f3ade7c`.
 
 The fingerprint printed here is a record, not an additional independent trust authority. First-install trust must be anchored through the reviewed source/publisher channel, independently of the messaging server.
 
-Release5 passed trusted-TLS read-only checks at all three maintained endpoints. Both signed endpoints advertise sequence5 and the expected manifest, contain no QA helper, and installed mode registers no service worker. Sign-in screens and the three-color styles loaded with zero foreign requests/page errors. No operator credentials or personal vault were used for that smoke. See [release5 evidence](evidence/flowing-release5.json) and [flowing aurora verification](../../ui-ux/flowing-aurora-verification.md). Release3/4 snapshots remain historical.
+Release6 passed trusted-TLS read-only checks at all three maintained endpoints. Both signed endpoints advertise sequence6 and the expected manifest, contain no QA helper, and installed mode registers no service worker. Sign-in screens and the three-color styles loaded with zero foreign requests/page errors. No operator credentials or personal vault were used for that smoke. Chrome and Firefox also passed the encrypted composer regression workflow. See [release6 evidence](evidence/composer-release6.json) and [composer verification](../../ui-ux/composer-reliability.md). Existing tabs must reload to run the update; the operator's tab was left undisturbed. [Release5 evidence](evidence/flowing-release5.json) and earlier snapshots remain historical.
 
-The existing owner browser tab was separately observed running the old 22/28-second chat-panel effect. After refreshing, its DOM reports all three new animations running at 14/18/22 seconds on the new workspace canvas. Its vault had already locked due to inactivity and remains available for the owner's own local unlock. No personal passphrase was read or entered.
+During release5 verification, the existing owner browser tab was separately observed running the old 22/28-second chat-panel effect. After refreshing, its DOM reports all three new animations running at 14/18/22 seconds on the new workspace canvas. Its vault had already locked due to inactivity and remains available for the owner's own local unlock. No personal passphrase was read or entered.
 
 The earlier release2 verification passed trusted-TLS production UI sign-in/sign-out with zero foreign browser requests/page errors. No personal vault or MLS device was created. Installed mode has no registered service worker. The actual child runtime retains its update lock. Replaying authentic release1 through the installed release2 launcher was refused, with active release2 unchanged. TLS identity, origin, publisher root and browser state were preserved. The separate image refuses an altered signed worker before executing its runtime; production Python3.14.9 has only the four required packages and no pip/Django/pytest. [Public deployment checks and artifact digests](evidence/) contain no session cookies or credentials.
 
