@@ -10,7 +10,7 @@ import { LockSimpleIcon } from "@phosphor-icons/react/dist/csr/LockSimple";
 import { SignOutIcon } from "@phosphor-icons/react/dist/csr/SignOut";
 import { PlusIcon } from "@phosphor-icons/react/dist/csr/Plus";
 import { MagnifyingGlassIcon } from "@phosphor-icons/react/dist/csr/MagnifyingGlass";
-import { ArrowUpIcon } from "@phosphor-icons/react/dist/csr/ArrowUp";
+import { PaperPlaneTiltIcon } from "@phosphor-icons/react/dist/csr/PaperPlaneTilt";
 import { ArrowRightIcon } from "@phosphor-icons/react/dist/csr/ArrowRight";
 import { ArrowLeftIcon } from "@phosphor-icons/react/dist/csr/ArrowLeft";
 import { MicrophoneIcon } from "@phosphor-icons/react/dist/csr/Microphone";
@@ -51,7 +51,7 @@ const icons = {
   logout: SignOutIcon,
   plus: PlusIcon,
   search: MagnifyingGlassIcon,
-  send: ArrowUpIcon,
+  send: PaperPlaneTiltIcon,
   next: ArrowRightIcon,
   back: ArrowLeftIcon,
   microphone: MicrophoneIcon,

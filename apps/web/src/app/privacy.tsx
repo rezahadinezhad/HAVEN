@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Icon } from "./icons";
 import { api } from "@/lib/api";
 import type { components } from "@/lib/generated/schema";
 
@@ -29,7 +30,12 @@ export function ServerPrivacy({ t }: { t: (text: string) => string }) {
       className="card server-privacy"
       aria-labelledby="server-privacy-title"
     >
-      <h2 id="server-privacy-title">{t("What stays on the server")}</h2>
+      <h2 id="server-privacy-title" className="settings-section-heading">
+        <span className="section-glyph">
+          <Icon name="shield" size={22} />
+        </span>
+        {t("What stays on the server")}
+      </h2>
       <p>
         {t(
           "Messages and files are encrypted on your device. The server does not hold your message decryption keys.",

@@ -1221,6 +1221,9 @@ export default function Haven() {
         document.documentElement.dataset.interaction = "pointer";
       }}
     >
+      {user && (
+        <AuroraBackdrop active={composerTyping} motion={ambientMotion} />
+      )}
       <a className="skip-link" href="#main-content">
         {t("Skip to content")}
       </a>
@@ -1581,7 +1584,7 @@ export default function Haven() {
                       disabled={!enabled || busy}
                       onClick={() => setScreen("connect")}
                     >
-                      <Icon name="plus" size={22} />
+                      <Icon name="edit" size={22} />
                     </button>
                   </div>
                   <label className="search">
@@ -1719,10 +1722,6 @@ export default function Haven() {
                   </div>
                 </section>
                 <section className="chat-panel" data-composing={composerTyping}>
-                  <AuroraBackdrop
-                    active={composerTyping}
-                    motion={ambientMotion}
-                  />
                   {current ? (
                     <>
                       <header className="chat-header">
@@ -2829,7 +2828,12 @@ export default function Haven() {
                       </section>
                     )}
                     <section className="card">
-                      <h2>{t("Appearance & privacy")}</h2>
+                      <h2 className="settings-section-heading">
+                        <span className="section-glyph">
+                          <Icon name="settings" size={22} />
+                        </span>
+                        {t("Appearance & privacy")}
+                      </h2>
                       <label>
                         {t("Language")}
                         <select
@@ -2934,7 +2938,12 @@ export default function Haven() {
                       </p>
                     </section>
                     <section className="card">
-                      <h2>{t("Local data and account")}</h2>
+                      <h2 className="settings-section-heading">
+                        <span className="section-glyph" data-tone="teal">
+                          <Icon name="devices" size={22} />
+                        </span>
+                        {t("Local data and account")}
+                      </h2>
                       <button
                         disabled={disabled}
                         onClick={() =>

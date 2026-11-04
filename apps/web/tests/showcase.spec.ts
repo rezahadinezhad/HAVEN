@@ -242,6 +242,10 @@ test("public presentation: current encrypted conversation, desktop, dark and mob
       );
     }
     await expect(a.locator(".chat-heading")).toContainText("Nora");
+    const listBox = (await a.locator(".conversation-panel").boundingBox())!;
+    const headerBox = (await a.locator(".chat-header").boundingBox())!;
+    expect(listBox.x).toBeGreaterThan(0);
+    expect(headerBox.x - listBox.x - listBox.width).toBeGreaterThan(0);
     // Local feedback works with the privacy default: no remote frame is sent.
     await a
       .getByLabel("Message", { exact: true })
@@ -335,6 +339,15 @@ test("public presentation: current encrypted conversation, desktop, dark and mob
         .locator(".aurora-field-blue")
         .evaluate((el) => getComputedStyle(el).animationName),
     ).toBe("none");
+    await a.locator(".members-toggle").hover();
+    await a.mouse.down();
+    expect(
+      await a
+        .locator(".members-toggle")
+        .evaluate((el) => getComputedStyle(el).transform),
+    ).toBe("none");
+    await a.mouse.move(0, 0);
+    await a.mouse.up();
     await a.emulateMedia({ reducedMotion: "no-preference" });
     await navigate(a, "Settings");
     await a.getByLabel("Animated chat background", { exact: true }).check();
@@ -361,12 +374,36 @@ test("public presentation: current encrypted conversation, desktop, dark and mob
           .map((animation) => animation.finished.catch(() => {})),
       );
     });
+    const menuBox = (await a.locator(".workspace-menu").boundingBox())!;
+    expect(menuBox.x).toBeGreaterThan(0);
+    expect(menuBox.y).toBeGreaterThan(0);
+    expect(menuBox.y + menuBox.height).toBeLessThan(a.viewportSize()!.height);
     await a.screenshot({ path: "../../.local/aurora/navigation.png" });
     await a.keyboard.press("Escape");
     await expect(a.locator(".workspace-menu")).not.toBeVisible();
     await expect(
       a.getByRole("button", { name: "Open menu", exact: true }),
     ).toBeFocused();
+    await a.keyboard.press("Enter");
+    await expect(a.locator(".workspace-menu")).toBeVisible();
+    await a.mouse.click(1400, 90);
+    await expect(a.locator(".workspace-menu")).not.toBeVisible();
+    await navigate(a, "Settings");
+    await a.locator(".page-content").evaluate(async (node) => {
+      await Promise.all(
+        node
+          .getAnimations()
+          .map((animation) => animation.finished.catch(() => {})),
+      );
+    });
+    const cardWidths = await a
+      .locator(".page-content > .card")
+      .evaluateAll((nodes) =>
+        nodes.map((el) => el.getBoundingClientRect().width),
+      );
+    expect(Math.max(...cardWidths) - Math.min(...cardWidths)).toBeLessThan(2);
+    await a.screenshot({ path: "../../.local/floating/settings.png" });
+    await navigate(a, "Messages");
     expect(
       await a.evaluate(
         async () =>
@@ -439,7 +476,8 @@ test("public presentation: current encrypted conversation, desktop, dark and mob
         a
           .locator(".workspace-menu")
           .evaluate(
-            (el) => Math.abs(el.getBoundingClientRect().right - innerWidth) < 2,
+            (el) =>
+              Math.abs(el.getBoundingClientRect().right - (innerWidth - 8)) < 2,
           ),
       )
       .toBe(true);
