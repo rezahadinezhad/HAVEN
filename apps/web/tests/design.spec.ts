@@ -1,4 +1,4 @@
-import { test, expect } from "./fixtures";
+import { test, expect, navigate } from "./fixtures";
 import fs from "node:fs";
 import path from "node:path";
 const credentials = JSON.parse(
@@ -38,7 +38,10 @@ test("redesigned real account: responsive navigation, setup, themes, RTL, reduce
     ).toBeVisible();
     await page.evaluate(async () => {
       await Promise.all(
-        document.getAnimations().map((a) => a.finished.catch(() => {})),
+        document
+          .getAnimations()
+          .filter((a) => a.effect?.getComputedTiming().iterations !== Infinity)
+          .map((a) => a.finished.catch(() => {})),
       );
     });
     await page.screenshot({
@@ -63,7 +66,10 @@ test("redesigned real account: responsive navigation, setup, themes, RTL, reduce
     ).toBeEnabled();
     await page.evaluate(async () => {
       await Promise.all(
-        document.getAnimations().map((a) => a.finished.catch(() => {})),
+        document
+          .getAnimations()
+          .filter((a) => a.effect?.getComputedTiming().iterations !== Infinity)
+          .map((a) => a.finished.catch(() => {})),
       );
     });
     await page.screenshot({
@@ -77,7 +83,7 @@ test("redesigned real account: responsive navigation, setup, themes, RTL, reduce
     await expect(
       page.getByLabel("Unlock passphrase", { exact: true }),
     ).toBeVisible();
-    await page.getByRole("button", { name: "Settings", exact: true }).click();
+    await navigate(page, "Settings");
     await expect(
       page.getByRole("heading", { name: "What stays on the server" }),
     ).toBeVisible();
@@ -100,7 +106,10 @@ test("redesigned real account: responsive navigation, setup, themes, RTL, reduce
     await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
     await page.evaluate(async () => {
       await Promise.all(
-        document.getAnimations().map((a) => a.finished.catch(() => {})),
+        document
+          .getAnimations()
+          .filter((a) => a.effect?.getComputedTiming().iterations !== Infinity)
+          .map((a) => a.finished.catch(() => {})),
       );
     });
     await page.screenshot({
@@ -108,7 +117,7 @@ test("redesigned real account: responsive navigation, setup, themes, RTL, reduce
       fullPage: true,
     });
     await page.getByLabel("Theme", { exact: true }).selectOption("light");
-    await page.getByRole("button", { name: "Messages", exact: true }).click();
+    await navigate(page, "Messages");
     for (const width of [1440, 1024, 900, 768, 760, 430, 390, 320]) {
       await page.setViewportSize({ width, height: width > 760 ? 960 : 844 });
       expect(
@@ -118,7 +127,7 @@ test("redesigned real account: responsive navigation, setup, themes, RTL, reduce
       ).toBe(true);
       if (width <= 760) {
         await expect(
-          page.getByRole("button", { name: "More", exact: true }),
+          page.getByRole("button", { name: "Open menu", exact: true }),
         ).toBeVisible();
         await expect(page.locator(".mobile-setup")).toBeVisible();
       }
@@ -126,18 +135,19 @@ test("redesigned real account: responsive navigation, setup, themes, RTL, reduce
     await page.setViewportSize({ width: 390, height: 844 });
     await page.evaluate(async () => {
       await Promise.all(
-        document.getAnimations().map((a) => a.finished.catch(() => {})),
+        document
+          .getAnimations()
+          .filter((a) => a.effect?.getComputedTiming().iterations !== Infinity)
+          .map((a) => a.finished.catch(() => {})),
       );
     });
     await page.screenshot({
       path: screenshotPath("mobile"),
       fullPage: true,
     });
-    await page.getByRole("button", { name: "More", exact: true }).click();
-    await expect(page.locator("#mobile-more")).toBeVisible();
-    await page
-      .getByRole("button", { name: "Recovery kit", exact: true })
-      .click();
+    await page.getByRole("button", { name: "Open menu", exact: true }).click();
+    await expect(page.locator(".workspace-menu")).toBeVisible();
+    await navigate(page, "Recovery kit");
     await expect(
       page.getByRole("heading", {
         name: "Recovery kit",
@@ -145,11 +155,11 @@ test("redesigned real account: responsive navigation, setup, themes, RTL, reduce
         level: 1,
       }),
     ).toBeVisible();
-    await expect(page.locator("#mobile-more")).not.toBeVisible();
-    await page.getByRole("button", { name: "More", exact: true }).click();
+    await expect(page.locator(".workspace-menu")).not.toBeVisible();
+    await page.getByRole("button", { name: "Open menu", exact: true }).click();
     await page.keyboard.press("Escape");
-    await expect(page.locator("#mobile-more")).not.toBeVisible();
-    await page.getByRole("button", { name: "Settings", exact: true }).click();
+    await expect(page.locator(".workspace-menu")).not.toBeVisible();
+    await navigate(page, "Settings");
     await page.getByLabel("Language", { exact: true }).selectOption("fa");
     await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
     await expect(
@@ -175,7 +185,10 @@ test("redesigned real account: responsive navigation, setup, themes, RTL, reduce
     expect(font).toEqual({ used: true, loaded: true });
     await page.evaluate(async () => {
       await Promise.all(
-        document.getAnimations().map((a) => a.finished.catch(() => {})),
+        document
+          .getAnimations()
+          .filter((a) => a.effect?.getComputedTiming().iterations !== Infinity)
+          .map((a) => a.finished.catch(() => {})),
       );
     });
     await page.screenshot({
@@ -190,9 +203,9 @@ test("redesigned real account: responsive navigation, setup, themes, RTL, reduce
     await page.emulateMedia({ reducedMotion: "reduce" });
     expect(
       await page
-        .locator(".nav-indicator")
-        .evaluate((el) => getComputedStyle(el).transitionDuration),
-    ).toBe("0s");
+        .locator(".workspace-menu")
+        .evaluate((el) => getComputedStyle(el).animationName),
+    ).toBe("none");
     expect(foreign).toEqual([]);
     expect(violations).toEqual([]);
   } finally {

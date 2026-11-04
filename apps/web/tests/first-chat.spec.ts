@@ -1,4 +1,4 @@
-import { test, expect, loginBootstrap } from "./fixtures";
+import { test, expect, loginBootstrap, navigate } from "./fixtures";
 import fs from "node:fs";
 import path from "node:path";
 import nodeCrypto from "node:crypto";
@@ -56,7 +56,7 @@ test("ordinary members: guided setup, private invitation, explicit mutual verifi
       { credentials, account },
     );
     await a.goto(origin);
-    await a.locator(".connect-entry").click();
+    await navigate(a, "Start a chat");
     await expect(
       a.getByRole("heading", { name: "Set up this browser", exact: true }),
     ).toBeVisible();
@@ -146,13 +146,13 @@ test("ordinary members: guided setup, private invitation, explicit mutual verifi
       .getByLabel("Message", { exact: true })
       .fill("Hello Alice, from the guided flow.");
     await b.getByRole("button", { name: "Send", exact: true }).click();
-    await b.locator(".connect-entry").click();
+    await navigate(b, "Start a chat");
     await b.getByText("My security code", { exact: true }).click();
     const bCode = await b
       .locator(".connect-own-code .security-code")
       .innerText();
 
-    await a.getByRole("button", { name: "Messages", exact: true }).click();
+    await navigate(a, "Messages");
     await expect(a.locator(".conversation-row")).toHaveCount(1, {
       timeout: 20000,
     });
@@ -185,7 +185,7 @@ test("ordinary members: guided setup, private invitation, explicit mutual verifi
       .getByLabel("Message", { exact: true })
       .fill("Hello Bob. It works both ways.");
     await a.getByRole("button", { name: "Send", exact: true }).click();
-    await b.getByRole("button", { name: "Messages", exact: true }).click();
+    await navigate(b, "Messages");
     await b.locator(".conversation-row").click();
     await expect(b.locator(".message-log")).toContainText(
       "Hello Bob. It works both ways.",
@@ -201,7 +201,7 @@ test("ordinary members: guided setup, private invitation, explicit mutual verifi
       async () => (await (await fetch("/api/v1/devices")).json())[0].id,
     );
     await a.reload();
-    await a.locator(".connect-entry").click();
+    await navigate(a, "Start a chat");
     await expect(
       a.getByRole("heading", { name: "Unlock this browser", exact: true }),
     ).toBeVisible();
@@ -220,12 +220,12 @@ test("ordinary members: guided setup, private invitation, explicit mutual verifi
     );
     expect(devices).toHaveLength(1);
     expect(devices[0].id).toBe(originalDevice);
-    await a.getByRole("button", { name: "Messages", exact: true }).click();
+    await navigate(a, "Messages");
     await a.locator(".conversation-row").click();
     await expect(a.locator(".message-log")).toContainText(
       "Hello Bob. It works both ways.",
     );
-    await a.locator(".connect-entry").click();
+    await navigate(a, "Start a chat");
     await a
       .getByRole("button", { name: "Invite a friend", exact: true })
       .click();
@@ -357,7 +357,7 @@ test("friend links reject foreign origins, mismatched fingerprints, changed pins
       await other.close();
     }
     await page.goto(origin);
-    await page.locator(".connect-entry").click();
+    await navigate(page, "Start a chat");
     await page
       .getByLabel("Unlock passphrase", { exact: true })
       .fill("link test unrelated words secret 123");
@@ -429,7 +429,7 @@ test("friend links reject foreign origins, mismatched fingerprints, changed pins
       v.lock();
     }, peer.device);
     await page.goto(origin);
-    await page.locator(".connect-entry").click();
+    await navigate(page, "Start a chat");
     await page
       .getByLabel("Unlock passphrase", { exact: true })
       .fill("link test unrelated words secret 123");

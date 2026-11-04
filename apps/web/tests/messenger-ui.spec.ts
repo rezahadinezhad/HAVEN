@@ -1,4 +1,4 @@
-import { test, expect, loginBootstrap } from "./fixtures";
+import { test, expect, loginBootstrap, navigate } from "./fixtures";
 import fs from "node:fs";
 import path from "node:path";
 import nodeCrypto from "node:crypto";
@@ -42,7 +42,7 @@ test("real UI: vault enrollment, fingerprint verification, MLS group, text, offl
       });
     }, invites[i].token);
     await p.goto("https://127.0.0.1:8445/");
-    await p.getByRole("button", { name: "Devices", exact: true }).click();
+    await navigate(p, "Devices");
     await p
       .getByLabel("Local unlock passphrase", { exact: true })
       .fill(secrets[i]);
@@ -85,9 +85,7 @@ test("real UI: vault enrollment, fingerprint verification, MLS group, text, offl
             .digest("hex"),
         }),
       });
-    await p
-      .getByRole("button", { name: "People & trust", exact: true })
-      .click();
+    await navigate(p, "People & trust");
     await p
       .getByLabel("Friend link or known device ID", { exact: true })
       .fill(link);
@@ -109,7 +107,7 @@ test("real UI: vault enrollment, fingerprint verification, MLS group, text, offl
       .getByRole("button", { name: "Verify fingerprint", exact: true })
       .click();
   }
-  await a.getByRole("button", { name: "Messages", exact: true }).click();
+  await navigate(a, "Messages");
   await a
     .getByRole("button", { name: "New conversation", exact: true })
     .click();
@@ -118,23 +116,22 @@ test("real UI: vault enrollment, fingerprint verification, MLS group, text, offl
   await a
     .getByRole("button", { name: "Create conversation manually", exact: true })
     .click();
+  await expect(a.locator(".chat-heading")).toContainText("Private group");
   await a.getByRole("button", { name: "Group & members", exact: true }).click();
-  await a
-    .getByLabel("Friend link or known device ID", { exact: true })
-    .fill(
-      "https://127.0.0.1:8445/#" +
-        new URLSearchParams({
-          connect: JSON.stringify({
-            v: 1,
-            device_id: devices[1].id,
-            introduction: devices[1].contact_token,
-            fingerprint: nodeCrypto
-              .createHash("sha256")
-              .update(Buffer.from(devices[1].public_key, "base64"))
-              .digest("hex"),
-          }),
+  await a.getByLabel("Friend link or known device ID", { exact: true }).fill(
+    "https://127.0.0.1:8445/#" +
+      new URLSearchParams({
+        connect: JSON.stringify({
+          v: 1,
+          device_id: devices[1].id,
+          introduction: devices[1].contact_token,
+          fingerprint: nodeCrypto
+            .createHash("sha256")
+            .update(Buffer.from(devices[1].public_key, "base64"))
+            .digest("hex"),
         }),
-    );
+      }),
+  );
   await a
     .locator(".member-controls")
     .getByRole("button", { name: "Verify fingerprint", exact: true })
@@ -142,7 +139,7 @@ test("real UI: vault enrollment, fingerprint verification, MLS group, text, offl
   await expect(
     a.getByRole("heading", { name: "People & trust", exact: true }),
   ).toBeVisible();
-  await a.getByRole("button", { name: "Messages", exact: true }).click();
+  await navigate(a, "Messages");
   if (!(await a.locator(".member-controls").isVisible()))
     await a
       .getByRole("button", { name: "Group & members", exact: true })
@@ -152,7 +149,7 @@ test("real UI: vault enrollment, fingerprint verification, MLS group, text, offl
     .filter({ has: a.getByText(devices[1].id, { exact: true }) })
     .getByRole("button", { name: "Add member", exact: true })
     .click();
-  await b.getByRole("button", { name: "Messages", exact: true }).click();
+  await navigate(b, "Messages");
   await expect(b.locator(".conversation-row")).toHaveCount(1, {
     timeout: 15000,
   });
@@ -263,12 +260,12 @@ test("real UI: vault enrollment, fingerprint verification, MLS group, text, offl
   });
   await contexts[1].setOffline(true);
   await b.reload();
-  await b.getByRole("button", { name: "Devices", exact: true }).click();
+  await navigate(b, "Devices");
   await b
     .getByLabel("Local unlock passphrase", { exact: true })
     .fill(secrets[1]);
   await b.getByRole("button", { name: "Unlock vault", exact: true }).click();
-  await b.getByRole("button", { name: "Messages", exact: true }).click();
+  await navigate(b, "Messages");
   await b.locator(".conversation-row").click();
   await expect(b.locator(".message-log")).toContainText(
     "UI encrypted message سلام",

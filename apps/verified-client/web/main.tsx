@@ -4,6 +4,7 @@ import Haven from "../../web/src/app/ui";
 import { configureClientDelivery } from "../../web/src/lib/client-delivery";
 import "../../web/src/app/style.css";
 import "../../web/src/app/chat.css";
+import "../../web/src/app/workspace.css";
 import "./fonts.css";
 async function start() {
   if (

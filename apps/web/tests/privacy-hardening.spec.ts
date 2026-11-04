@@ -1,4 +1,4 @@
-import { test, expect, loginBootstrap } from "./fixtures";
+import { test, expect, loginBootstrap, navigate } from "./fixtures";
 import fs from "node:fs";
 import path from "node:path";
 import nodeCrypto from "node:crypto";
@@ -208,7 +208,7 @@ test("locked storage, UUID-only offline unlock, privacy profile and generic shar
     "'unsafe-eval'",
   );
   await expect(
-    page.getByRole("button", { name: "Settings", exact: true }),
+    page.getByRole("button", { name: "Open menu", exact: true }),
   ).toBeVisible();
   const stored = await page.evaluate(() => ({ ...localStorage }));
   expect(stored["haven-local-user"]).toBeUndefined();
@@ -219,7 +219,7 @@ test("locked storage, UUID-only offline unlock, privacy profile and generic shar
     account.display_name,
   );
   await expect(page.locator(".profile")).not.toContainText(account.username);
-  await page.getByRole("button", { name: "Settings", exact: true }).click();
+  await navigate(page, "Settings");
   await page
     .getByRole("button", { name: "Use high-privacy settings", exact: true })
     .click();
@@ -248,14 +248,14 @@ test("locked storage, UUID-only offline unlock, privacy profile and generic shar
   // A failed HTTP bootstrap can locate, unlock and show encrypted local data without cached authority.
   await page.context().setOffline(true);
   await page.reload();
-  await page.getByRole("button", { name: "Start a chat", exact: true }).click();
+  await navigate(page, "Start a chat");
   await page.getByLabel("Unlock passphrase", { exact: true }).fill(secret);
   await page
     .getByRole("button", { name: "Unlock and continue", exact: true })
     .click();
   await expect(
     page.getByRole("button", { name: "Lock vault", exact: true }),
-  ).toBeVisible();
+  ).toHaveCount(1);
   await page.context().setOffline(false);
 });
 

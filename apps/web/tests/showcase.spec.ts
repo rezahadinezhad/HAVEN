@@ -10,7 +10,7 @@ import os from "node:os";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
 import configuration from "../playwright.config";
-import { loginBootstrap } from "./fixtures";
+import { loginBootstrap, navigate } from "./fixtures";
 const profile = process.env.HAVEN_VERIFIED_PROFILE;
 const endpoint = process.env.HAVEN_VERIFIED_URL || "https://127.0.0.1:9455";
 test.skip(
@@ -98,6 +98,16 @@ test("public presentation: current encrypted conversation, desktop, dark and mob
     const pages = await Promise.all(contexts.map((c) => c.newPage()));
     const foreign: string[] = [],
       errors: string[] = [];
+    const typingFrames: string[][] = [[], []];
+    pages.forEach((page, index) =>
+      page.on("websocket", (socket) =>
+        socket.on("framesent", (event) => {
+          const payload = String(event.payload);
+          if (payload.includes("ephemeral.typing"))
+            typingFrames[index].push(payload);
+        }),
+      ),
+    );
     for (const page of pages) {
       page.on("pageerror", (e) => errors.push(e.message));
       page.on("request", (r) => {
@@ -212,20 +222,151 @@ test("public presentation: current encrypted conversation, desktop, dark and mob
     expect(
       statements.every((text) => !bodies.some((body) => body.includes(text))),
     ).toBe(true);
-    await a.evaluate(() => (window as any).m.lock());
-    await a.reload();
-    await a.getByRole("button", { name: "Devices", exact: true }).click();
-    await a
-      .getByLabel("Local unlock passphrase", { exact: true })
-      .fill(secrets[0]);
-    await a.getByRole("button", { name: "Unlock vault", exact: true }).click();
-    await expect(a.locator(".key-state")).toContainText(
-      "Verified devices only",
-    );
-    await a.getByRole("button", { name: "Messages", exact: true }).click();
-    await a.locator(".conversation-row").click();
+    for (const [index, page] of pages.entries()) {
+      await page.evaluate(() => (window as any).m.lock());
+      await page.reload();
+      await navigate(page, "Devices");
+      await page
+        .getByLabel("Local unlock passphrase", { exact: true })
+        .fill(secrets[index]);
+      await page
+        .getByRole("button", { name: "Unlock vault", exact: true })
+        .click();
+      await expect(page.locator(".key-state")).toContainText(
+        "Verified devices only",
+      );
+      await navigate(page, "Messages");
+      await page.locator(".conversation-row").click();
+      await expect(page.locator(".message-log")).toContainText(
+        statements.at(-1)!,
+      );
+    }
     await expect(a.locator(".chat-heading")).toContainText("Nora");
-    await expect(a.locator(".message-log")).toContainText(statements.at(-1)!);
+    // Local feedback works with the privacy default: no remote frame is sent.
+    await a
+      .getByLabel("Message", { exact: true })
+      .fill("A private unsent draft");
+    await expect(a.locator(".chat-panel")).toHaveAttribute(
+      "data-composing",
+      "true",
+    );
+    await expect(a.locator(".chat-panel")).toHaveAttribute(
+      "data-composing",
+      "false",
+      { timeout: 2500 },
+    );
+    expect(typingFrames).toEqual([[], []]);
+    await expect(b.locator(".typing-indicator")).toHaveCount(0);
+    await a.getByLabel("Message", { exact: true }).fill("");
+    // Both participants explicitly enable the existing authenticated signal.
+    for (const page of pages) {
+      await navigate(page, "Settings");
+      await expect(
+        page.getByLabel("Typing indicators", { exact: true }),
+      ).not.toBeChecked();
+      await page.getByLabel("Typing indicators", { exact: true }).check();
+      await expect(page.locator(".conversation-panel")).toHaveCount(0);
+      await navigate(page, "Messages");
+    }
+    // Wait for the reconfigured socket; filling repeatedly models ongoing typing.
+    await expect
+      .poll(
+        async () => {
+          await b
+            .getByLabel("Message", { exact: true })
+            .fill("An unsent remote draft " + Date.now());
+          return typingFrames[1].length;
+        },
+        { timeout: 8000 },
+      )
+      .toBeGreaterThan(0);
+    await expect(a.locator(".typing-indicator")).toContainText(
+      "Another participant is typing",
+    );
+    const arrived = Date.now();
+    await expect(a.locator(".typing-indicator")).toHaveCount(0, {
+      timeout: 6500,
+    });
+    expect(Date.now() - arrived).toBeGreaterThan(3500);
+    expect(
+      typingFrames[1].every((frame) => {
+        const packet = JSON.parse(frame);
+        return (
+          packet.kind === "ephemeral.typing" &&
+          packet.conversation_id === cid &&
+          Object.keys(packet).sort().join(",") === "conversation_id,kind,v"
+        );
+      }),
+    ).toBe(true);
+    // Disabling the preference stops outgoing signals and clears received state.
+    await navigate(b, "Settings");
+    await b.getByLabel("Typing indicators", { exact: true }).uncheck();
+    await navigate(b, "Messages");
+    const sentBefore = typingFrames[1].length;
+    await b
+      .getByLabel("Message", { exact: true })
+      .fill("Still local after opting out");
+    await expect(b.locator(".chat-panel")).toHaveAttribute(
+      "data-composing",
+      "false",
+      { timeout: 2500 },
+    );
+    expect(typingFrames[1]).toHaveLength(sentBefore);
+    await b.getByLabel("Message", { exact: true }).fill("");
+    await navigate(a, "Settings");
+    await a.getByLabel("Typing indicators", { exact: true }).uncheck();
+    await a.getByLabel("Animated chat background", { exact: true }).uncheck();
+    await navigate(a, "Messages");
+    await expect(a.locator(".aurora-backdrop")).toHaveAttribute(
+      "data-animated",
+      "false",
+    );
+    expect(
+      await a
+        .locator(".aurora-field-blue")
+        .evaluate((el) => getComputedStyle(el).animationPlayState),
+    ).toBe("paused");
+    expect(
+      await a.evaluate(() => localStorage.getItem("haven-ambient-motion")),
+    ).toBe("off");
+    await a.emulateMedia({ reducedMotion: "reduce" });
+    expect(
+      await a
+        .locator(".aurora-field-blue")
+        .evaluate((el) => getComputedStyle(el).animationName),
+    ).toBe("none");
+    await a.emulateMedia({ reducedMotion: "no-preference" });
+    await navigate(a, "Settings");
+    await a.getByLabel("Animated chat background", { exact: true }).check();
+    await navigate(a, "Messages");
+    await expect(a.locator(".aurora-backdrop")).toHaveAttribute(
+      "data-animated",
+      "true",
+    );
+    // Native modal navigation traps focus, dismisses with Escape, restores trigger.
+    await a.getByRole("button", { name: "Open menu", exact: true }).click();
+    await expect(
+      a.getByRole("dialog", { name: "Navigation menu" }),
+    ).toBeVisible();
+    await a.keyboard.press("Tab");
+    expect(
+      await a
+        .locator(".workspace-menu")
+        .evaluate((el) => el.contains(document.activeElement)),
+    ).toBe(true);
+    await a.locator(".workspace-menu").evaluate(async (node) => {
+      await Promise.all(
+        node
+          .getAnimations()
+          .map((animation) => animation.finished.catch(() => {})),
+      );
+    });
+    await a.screenshot({ path: "../../.local/aurora/navigation.png" });
+    await a.keyboard.press("Escape");
+    await expect(a.locator(".workspace-menu")).not.toBeVisible();
+    await expect(
+      a.getByRole("button", { name: "Open menu", exact: true }),
+    ).toBeFocused();
     expect(
       await a.evaluate(
         async () =>
@@ -236,23 +377,81 @@ test("public presentation: current encrypted conversation, desktop, dark and mob
     expect(errors).toEqual([]);
     await a.getByLabel("Message", { exact: true }).fill("");
     await a.locator(".chat-heading").click();
+    await a.evaluate(async () => {
+      await document.fonts.ready;
+      await Promise.all(
+        document
+          .getAnimations()
+          .filter((a) => a.effect?.getComputedTiming().iterations !== Infinity)
+          .map((a) => a.finished.catch(() => {})),
+      );
+    });
     await a.screenshot({
       path: "../../.github/assets/conversation-desktop.png",
       fullPage: true,
     });
     await a.getByRole("button", { name: "Switch to dark mode" }).click();
     await expect(a.locator("html")).toHaveAttribute("data-theme", "dark");
+    await a.evaluate(async () => {
+      await document.fonts.ready;
+      await Promise.all(
+        document
+          .getAnimations()
+          .filter((a) => a.effect?.getComputedTiming().iterations !== Infinity)
+          .map((a) => a.finished.catch(() => {})),
+      );
+    });
     await a.screenshot({
       path: "../../.github/assets/conversation-dark.png",
       fullPage: true,
     });
-    await a.getByRole("button", { name: "Switch to light mode" }).click();
     await a.setViewportSize({ width: 390, height: 844 });
     await expect(a.locator(".message-log")).toContainText(statements.at(-1)!);
+    await a.evaluate(async () => {
+      await document.fonts.ready;
+      await Promise.all(
+        document
+          .getAnimations()
+          .filter((a) => a.effect?.getComputedTiming().iterations !== Infinity)
+          .map((a) => a.finished.catch(() => {})),
+      );
+    });
     await a.screenshot({
       path: "../../.github/assets/conversation-mobile.png",
       fullPage: true,
     });
+    // Small viewport, RTL drawer, and full-width settings stay inside the viewport.
+    for (const width of [320, 390, 760, 768, 1024]) {
+      await a.setViewportSize({ width, height: 844 });
+      expect(
+        await a.evaluate(
+          () => document.documentElement.scrollWidth <= innerWidth,
+        ),
+      ).toBe(true);
+    }
+    await a.setViewportSize({ width: 390, height: 844 });
+    await navigate(a, "Settings");
+    await a.getByLabel("Language", { exact: true }).selectOption("fa");
+    await a.getByRole("button", { name: "باز کردن منو", exact: true }).click();
+    await expect(a.getByRole("dialog")).toBeVisible();
+    await expect
+      .poll(() =>
+        a
+          .locator(".workspace-menu")
+          .evaluate(
+            (el) => Math.abs(el.getBoundingClientRect().right - innerWidth) < 2,
+          ),
+      )
+      .toBe(true);
+    await a.screenshot({ path: "../../.local/aurora/navigation-rtl.png" });
+    await a.keyboard.press("Escape");
+    expect(
+      await a.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBe(true);
+    expect(errors).toEqual([]);
+    expect(foreign).toEqual([]);
     expect(
       secrets.some((secret) => bodies.some((body) => body.includes(secret))),
     ).toBe(false);

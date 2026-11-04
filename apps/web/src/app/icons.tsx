@@ -37,7 +37,9 @@ import { ImageIcon } from "@phosphor-icons/react/dist/csr/Image";
 import { PlayIcon } from "@phosphor-icons/react/dist/csr/Play";
 import { MusicNoteIcon } from "@phosphor-icons/react/dist/csr/MusicNote";
 import { FileIcon } from "@phosphor-icons/react/dist/csr/File";
+import { ListIcon } from "@phosphor-icons/react/dist/csr/List";
 const icons = {
+  menu: ListIcon,
   messages: ChatCircleDotsIcon,
   people: UsersIcon,
   devices: DevicesIcon,

@@ -22,6 +22,8 @@ Its design follows the life of a conversation: who can join, where keys live, ho
 
 Direct chats and groups share the same conversation interface: replies, edits, reactions, local search, voice notes, and encrypted photos, videos, audio, and files. Local previews make it clear what you are about to send. Delivery indicators describe observed state; server acceptance does not imply that another person has read a message.
 
+The conversation workspace uses two panes, with settings and account tools in a temporary menu drawer. A blue/teal aurora moves behind readable message bubbles and can be paused; local typing receives subtle visual feedback. Optional remote typing indicators are off by default and expire after five seconds.
+
 The interface supports English and Persian, right-to-left and mixed-direction text, light and dark themes, keyboard navigation, reduced motion, and layouts for smaller screens. Local history remains available after it has been saved and the vault is unlocked; remote delivery still needs a connection.
 
 <details>

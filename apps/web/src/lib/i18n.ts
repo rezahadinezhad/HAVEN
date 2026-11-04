@@ -1,5 +1,14 @@
 export type Language = "en" | "fa";
 const fa: Record<string, string> = {
+  "Open menu": "باز کردن منو",
+  "Close menu": "بستن منو",
+  "Navigation menu": "منوی ناوبری",
+  "Animated chat background": "پس‌زمینهٔ متحرک گفتگو",
+  "Pause the aurora at any time. Reduced motion preferences are always respected.":
+    "هر زمان می‌توانید حرکت شفق را متوقف کنید. تنظیمات کاهش حرکت همیشه رعایت می‌شود.",
+  "Optional typing signals reveal live activity to the service and conversation participants. They contain no message text and expire after five seconds.":
+    "نشانگر اختیاری تایپ، فعالیت زنده را برای سرویس و اعضای گفتگو آشکار می‌کند. این سیگنال‌ها متن پیام ندارند و پس از پنج ثانیه منقضی می‌شوند.",
+
   "Saved local messages": "پیام‌های محلی ذخیره‌شده",
   "Saved files": "فایل‌های ذخیره‌شده",
   "Unconfirmed local messages": "پیام‌های محلی تأییدنشده",

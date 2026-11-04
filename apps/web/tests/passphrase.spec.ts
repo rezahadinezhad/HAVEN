@@ -1,4 +1,4 @@
-import { test, expect, loginBootstrap } from "./fixtures";
+import { test, expect, loginBootstrap, navigate } from "./fixtures";
 import fs from "node:fs";
 import path from "node:path";
 const credentials = JSON.parse(
@@ -25,7 +25,7 @@ async function member(page: import("@playwright/test").Page) {
     ).user;
   });
   await page.goto(origin);
-  await page.locator(".connect-entry").click();
+  await navigate(page, "Start a chat");
   await expect(
     page.getByRole("heading", { name: "Set up this browser", exact: true }),
   ).toBeVisible();
@@ -271,7 +271,7 @@ test("new vault: generate, reveal/copy, regenerate/manual reset, save confirmati
       async () => (await (await fetch("/api/v1/devices")).json())[0],
     );
     await page.reload();
-    await page.locator(".connect-entry").click();
+    await navigate(page, "Start a chat");
     await expect(
       page.getByRole("heading", { name: "Unlock this browser", exact: true }),
     ).toBeVisible();
@@ -312,7 +312,7 @@ test("new vault: generate, reveal/copy, regenerate/manual reset, save confirmati
       async () => await (await fetch("/api/v1/devices")).json(),
     );
     expect(after.length === 1 && after[0].id === device.id).toBe(true);
-    await page.locator('.sidebar .nav-item[aria-label="Settings"]').click();
+    await navigate(page, "Settings");
     await expect(
       page.getByRole("heading", { name: "Unlock with this device" }),
     ).toBeVisible();
@@ -437,8 +437,8 @@ test("generator failure and clipboard denial remain usable; cancellation discard
     });
     await page.getByRole("button", { name: "English", exact: true }).click();
     await page.setViewportSize({ width: 1440, height: 960 });
-    await page.getByRole("button", { name: "Messages", exact: true }).click();
-    await page.locator(".connect-entry").click();
+    await navigate(page, "Messages");
+    await navigate(page, "Start a chat");
     await expect(
       page.getByRole("button", {
         name: "Generate a secure passphrase",
@@ -455,7 +455,7 @@ test("generator failure and clipboard denial remain usable; cancellation discard
       ),
     ).toBe(0);
     await page.goto("https://127.0.0.1:8443/");
-    await page.locator(".connect-entry").click();
+    await navigate(page, "Start a chat");
     await expect(
       page.getByRole("button", {
         name: "Generate a secure passphrase",

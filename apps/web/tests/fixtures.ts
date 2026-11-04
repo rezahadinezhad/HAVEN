@@ -38,6 +38,26 @@ export async function loginBootstrap(
   }
   throw new Error("QA bootstrap remained rate limited after its retry window");
 }
+// Follow the same temporary navigation drawer a person uses. Older test builds
+// with a visible route button remain supported by this helper.
+export async function navigate(page: Page, name: string) {
+  const target = page.getByRole("button", { name, exact: true });
+  if (await target.isVisible()) {
+    await target.click();
+    return;
+  }
+  const menu = page.getByRole("button", { name: /^(Open menu|باز کردن منو)$/ });
+  if (!(await menu.isVisible())) {
+    const back = page.locator(".mobile-back");
+    if (await back.isVisible()) await back.click();
+  }
+  await menu.click();
+  await page
+    .locator(".workspace-menu")
+    .getByRole("button", { name, exact: true })
+    .click();
+}
+
 // Firefox loads private CA roots from an NSS profile. Each test context gets a separate
 // temporary profile containing only the independently prepared TEST root trust database.
 export const test = base.extend({

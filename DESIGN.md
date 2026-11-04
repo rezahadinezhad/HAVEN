@@ -1,18 +1,26 @@
-# HAVEN interface — Liquid Calm
+# HAVEN interface — Aurora
 
-Private messaging for a small trusted community. People should find their next conversation or safely unlock this device without reading implementation details. Existing protocol, key approvals, explicit security warnings, and offline behavior remain authoritative.
+HAVEN is a private messenger for a small trusted community. Conversations lead the interface. Device approval, identity checks, offline behavior and explicit security warnings remain authoritative.
 
-A person uses HAVEN at a desk or on a phone under changing ambient light, possibly under stress. Default to a bright, readable surface; retain an equally deliberate dark theme and existing theme preferences. Apple iOS 27 / Liquid Glass is an aesthetic reference, implemented with browser CSS rather than an official Apple component library.
+## Structure
 
-Palette: glacier `#f3f6fb`, porcelain `#ffffff`, ink `#182332`, blue `#1769f4`, muted ink `#596879`, signal amber `#8a5309`. Blue identifies actions, amber identifies unreviewed security, and green is limited to network reachability. Glass belongs to navigation and controls; message content and forms stay legible.
+Desktop uses two panes: a conversation list and the selected thread. A compact menu opens a temporary native modal drawer for settings, trust, devices, recovery and operator tools. Auxiliary pages use the available width and provide a clear return to conversations. On phones, the list and thread occupy separate screens with a visible back action. There is no permanent settings rail or floating navigation dock competing with the conversation.
 
-Use platform system typography for English, locally bundled OFL Vazirmatn for Persian. A 4/8px spacing rhythm, compact header, restrained frosted sidebar, split conversation surface, and a floating mobile navigation dock replace the previous oversized beige interface. Empty states explain the next real action. Never insert fake people/messages/activity into actual user views.
+Telegram informs the familiar navigation pattern; the owner's Gemini references inform the atmospheric blue/teal chat canvas and rounded composer. These are visual references, not dependencies or brand assets. Existing theme preferences remain intact. Light mode uses a pale aurora; dark mode blends blue and teal into a near-black thread. Opaque bubbles preserve text contrast over the moving background.
 
-Motion: press 120ms, control 180ms, sheet 260ms; `cubic-bezier(.22,1,.36,1)` and iOS-like drawer `.32,.72,0,1`. Transform/opacity, interruptible transitions, hover only on fine pointers. No endless ornament, no interaction delays; reduced motion, reduced transparency, forced colors, touch targets, RTL and keyboard focus are required.
+## Visual language
 
-Frontend guidance copied from Neshino into `.agents/skills`, with provenance in `skills-lock.json`. Applied for this pass: frontend-design, emil-design-eng, motion-design, next-best-practices and vercel-react-best-practices. Other installed skills are available when relevant; installing them does not require replacing the existing application stack or invoking unrelated workflows.
+Keep HAVEN's blue action color, quiet borders, platform English typography and locally bundled OFL Vazirmatn for Persian. Use logical spacing for RTL, a 4/8px rhythm, round message corners and compact circular chat actions. Read states describe observed facts; server acceptance never implies a person read a message. Empty states explain the next real action. Never fabricate people, messages or activity in the product.
 
-References: https://developer.apple.com/design/human-interface-guidelines/materials and https://support.apple.com/en-ie/guide/iphone/iphfed2c4091/27/ios/27. All assets are served locally; no runtime request to these references is introduced.
+## Motion and activity
+
+The aurora uses two CSS radial gradients animated through transforms and opacity. No canvas loop, external assets, third-party requests or message content drives it. It pauses when the document is hidden and can be paused in Settings. Reduced motion removes ambient, drawer and typing-dot animation; forced colors removes the aurora. Controls respond in 160–220ms; the backdrop moves slowly over 22–28 seconds.
+
+Local input briefly strengthens the composer border and aurora, even with remote activity disabled. A peer's typing appears as three staggered dots and an accessible status label, in a reserved space that does not move the composer. Signals expire after five seconds. Typing indicators are off by default; enabling them permits sending and displaying content-free activity through the existing authenticated WebSocket channel. This reveals activity to the service and conversation participants. It does not carry text, enter conversation history or create a read receipt.
+
+Native dialog navigation supports keyboard focus containment, Escape, outside dismissal and focus restoration. Full-width settings, 320px layouts, English/Persian and reduced motion are checked in the browser. Native dialogs/popovers remain the containment boundary for private media; no snapshot-based transition captures message or view-once pixels.
+
+Frontend guidance lives in `.agents/skills`, with provenance in `skills-lock.json`. The current pass applies frontend-design, impeccable, motion-design and vercel-react-best-practices to the existing React/Next.js stack. Further behavior details remain in [the conversation experience guide](docs/ui-ux/conversation-experience.md).
 
 View-once media uses a per-attachment control inside the selected photo/video confirmation box, followed by a numbered placeholder without a thumbnail. The ordinary chat footer has no viewing-mode control. New or replacement selections default to ordinary mode; removal and sending discard the selection and its mode. A native full-screen modal keeps photo/video pixels out of conversation history, removes content immediately on dismissal, and avoids snapshot-based transitions of private pixels. Capture/interruption and server-opening metadata limits appear before opening. The sender sees the actual queue/send state; each recipient sees their own consumed state.
 
