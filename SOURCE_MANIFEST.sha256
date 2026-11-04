@@ -451,7 +451,7 @@ df4d0710f8c66223e34b4f0f99260e08b934c3dd3e1ed2c4e62e0ac8a1d126f2  apps/web/scrip
 3714acfca962c5205573fa5ff3ae28ba611a0bab963901b31de46fc56ca9f0fd  apps/web/scripts/patch-next-announcer.mjs
 60410cbbef5378914b026cabd95b1a325ed6503df21bfc4a7aa211e68bff1cc5  apps/web/scripts/test-offline-shell.mjs
 8ded6111dae296a78411340eaa485e362b9b9ad741874f927d8dff3e71e1be00  apps/web/src/app/aurora.tsx
-b08cfa7d302894b061a3342bb54b74f7be9ec227fe13a900488b59ca32d9a51a  apps/web/src/app/chat-composer.tsx
+b7e55fc6538500e24c54135cd0c5b34b6cb57cc3898b26f97dc5df5957455f78  apps/web/src/app/chat-composer.tsx
 290c77ec7b92ce71de35e5a5f98e3c23d12d4dcec6c8af695c8d79e04f9ab081  apps/web/src/app/chat-thread.tsx
 c0d731e3f3ce1cf23b09a3acdf92522fae698250a50a454596fe8d9fca3dcef2  apps/web/src/app/chat.css
 76f31448fee3db01bb71c0bc543a37a07e16d9f50031936c340718ba26750145  apps/web/src/app/connect.tsx
@@ -466,7 +466,7 @@ b3124d1e8fe2e9d4aeb251a1913160623feaa94d2dde1ce4302e7fccee73ba33  apps/web/src/a
 91700e355f434654d7f7f93bfed3cbc07d9f85a8c9cfcbc0eab51a69d1e6eddf  apps/web/src/app/recovery.tsx
 23428f85c4749d220297b3bd3c85a9f21182d6b9c712a67258b205418f40831a  apps/web/src/app/selected-file-preview.tsx
 6d0db99cd742c1607aca69bb9e752f7ed6c22b7480373bdff8ad56b421201e8b  apps/web/src/app/style.css
-3265ad7a99e8a9237fce2ee839fd784ab400b5db0783c0d8a1f1581590247d0c  apps/web/src/app/ui.tsx
+92819eb2a6e98a617734ac825380567b713beb7f36db2904973c125c5be8897b  apps/web/src/app/ui.tsx
 170a3c58cdc00c924eb288ceb1d1555ffd0f5fb6c444ae53b46aea489db9d0a9  apps/web/src/app/view-once.tsx
 a7d2acc9c3f3f5c10c7a4b64f32fc61568e473955322dc9335fe7df2819c8fc0  apps/web/src/app/workspace.css
 cc50b5507bb0b8b5aa0db64a9b58ed3f3e57c8fe805f1096773374e7a8545622  apps/web/src/lib/api.ts
@@ -484,7 +484,7 @@ e9a0def67b99ac93b43d3891ac579b621832e9e62b66f38e7c1987b0421410db  apps/web/src/l
 1d165783ead30944edccae203d806fbbd36d3b43835f12373a49f7dc7ca06ebf  apps/web/src/lib/generated/schema.ts
 bb60ffca28b0baeb0449600d1a3a60797c4c4c759e4d06273ba6cc8bf060f699  apps/web/src/lib/i18n.ts
 4877e51fa4d9710173090042e57045390bbf71ac13c82a5ca5b88f350030840f  apps/web/src/lib/media.ts
-c38c195cfbbc03b70ff24e87b8b217cbc4a2bc39648a0a9dc03d172dc3747ab6  apps/web/src/lib/messenger.ts
+232691a19922a4562d2e065214f76feb50995f542641d96806708d90a5d04a1f  apps/web/src/lib/messenger.ts
 5c40acdc76894dc78fa26498ef6d9646baa7cbf9d6043e7c82e8b1e7a6d520f7  apps/web/src/lib/passphrase.ts
 11d59ddf96fb45e91bb6712cc40fcc82f222631c5da1e0b1e26fadd6c18be436  apps/web/src/lib/schema.ts
 9f4f37732111fd11a0a6e5be406b81df08c887689a038e1b3fa900b44694b240  apps/web/src/lib/ui-error.ts
@@ -492,7 +492,7 @@ d028344d3c0aae08400a9e8acbdba87f1871832756e507b14c1fe8ba361a3212  apps/web/src/l
 de41c2ab7c2741057a9d8baed198b40a64ecc8d98c7cfb7af1fecf25df6ace8d  apps/web/src/lib/vault.ts
 6bf609f05eb4d28f84c5113d4d3335177985eebc3d84fc804107c928ce9c60cb  apps/web/src/lib/ws.ts
 5f4f59959c0dfd629f8a2029667312bdbb0884016a9d7f20be619895216b25d4  apps/web/src/proxy.ts
-bac769e5a872f18dae581b6827a5716c9879f41063bb9ef8118d10c8d0ed8df2  apps/web/tests/chat-experience.spec.ts
+a727f02d97b5b9427c1d9e96998d084814a6aece9cdd70dfcb4c30bec1219454  apps/web/tests/chat-experience.spec.ts
 e849394e880030481796cc7becba6d47c74670ed521c8ff87b616f082bb47362  apps/web/tests/conversation-closure.spec.ts
 6238abfedfa78236484fe12edb6ae4f6802ce36afb3152d0178ed14ca6abb9e2  apps/web/tests/crypto.spec.ts
 42b8f9d0624d9f283b0230ff2923a9b11394ed04be6aa431d7579f8761ef3ff8  apps/web/tests/design.spec.ts
@@ -777,8 +777,8 @@ c62b1341ce04ea654fe2de8998827e85322332a74353cd01a3e004f99383be6d  docs/security/
 e8abd413c071cf5b9d6d6cef2fb36f2ad92f137c0f473567c1d298902001a158  docs/security/server-data-retention.md
 ceb45f4fd556f7261fbe2b070669a62615280e2b74a4a6c7780d52e6a0a89170  docs/threat-model/README.md
 8f56296979914f7df84ad83bbc86ef2cbe7eafc3f1e20a427cf0179e6102c8eb  docs/ui-ux/aurora-verification.md
-5233be1b6493452b97fdaa27e6cddfb6493dfcdb9c2e69c90f9f5abed6b136fd  docs/ui-ux/composer-reliability.md
-aec84f9fa21d64aed4357fa7798464004c822736c1e543c65b394623a9150a69  docs/ui-ux/conversation-experience.md
+b16f014844b5fd71eeab1384f6064d3dbbbb1e6f700c48a2a1b4a0fc85f290d5  docs/ui-ux/composer-reliability.md
+f245127aa0e9cf7d4f7767c6cafbc1e0490e62ab47ad2f6c7f06b761dd5f02a6  docs/ui-ux/conversation-experience.md
 f6f1ce97957efb121760e3bb1101b2daab240f57cd7c4520ab9dd1446e14fc63  docs/ui-ux/floating-workspace-verification.md
 47d8c0f6eb5d7357553fbe1cf220c263a99b18932a3895f0b273184246ab3079  docs/ui-ux/flowing-aurora-verification.md
 d51cd8daff67e1028ac194ca036e1a5493c16f343495c0ea6f3e7a175a037356  docs/user-onboarding/README.md

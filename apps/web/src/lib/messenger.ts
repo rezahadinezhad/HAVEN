@@ -1592,6 +1592,7 @@ export class Messenger {
       LocalEvent,
       "id" | "conversation_id" | "sender" | "time" | "state"
     >,
+    onQueued?: () => void,
   ) {
     return this.serial(async () => {
       this.noPendingCommit();
@@ -1672,6 +1673,9 @@ export class Messenger {
         },
       };
       await this.persist(n);
+      // Local acceptance and network delivery are distinct. Notify the
+      // composer only after the encrypted event and outbox are durable.
+      onQueued?.();
       // Network failure keeps exactly one durable encrypted send. The UI can clear its draft safely.
       await this.flushInternal().catch(() => {});
     });

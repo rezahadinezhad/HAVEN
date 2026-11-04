@@ -1,34 +1,48 @@
 # Composer draft and keyboard reliability
 
-Sending previously disabled the textarea through the shared busy flag. This
-removed keyboard focus. A blur could also queue a draft write behind the send
-that had consumed that text, making it appear again when opening the chat.
+The first fix kept focus by making the textarea read-only during pending work.
+Its keyboard test waited for delivery before typing again, so it missed typing
+while delivery was still pending. That interval could silently ignore keystrokes.
 
-The composer now distinguishes unavailable messaging from pending operations.
-Pending work keeps the textarea focused and temporarily read-only; unavailable
-messaging and recording still disable it. Enter and the Send button share the
-same submission path, which focuses immediately. Delivery completion never
-requests focus, so switching chats cannot pull the cursor back.
+The textarea now stays editable whenever messaging is available and recording is
+inactive. Enter and the Send button share the same submission path and focus the
+field synchronously. Delivery completion never requests focus. The locally accepted clear is committed
+synchronously, preventing a browser key event from reading and restoring the old
+DOM value before React applies the clear.
 
-An in-flight guard prevents repeated text submissions and suppresses blur saves
-of the outgoing draft until the send completes. The encrypted send/outbox
-transaction still determines when a text draft is consumed. Edits restore the
-unrelated draft, and reactions and attachments preserve it. A count of pending
-operations keeps controls busy until overlapping sends and navigation finish.
+`Messenger.send` exposes a local-acceptance callback after the encrypted event
+and outbox have been persisted. The composer consumes the submitted text then,
+without waiting for the network. Keystrokes entered during encryption remain in
+the next draft. Delivery completion updates events without clearing that draft.
+The existing send promise still awaits the delivery attempt for other callers;
+network failures still leave the durable encrypted outbox available for retry.
+A failure before local acceptance leaves the text in the composer.
 
-The real encrypted two-account conversation workflow checks:
+Text sends do not block the interface through the shared busy flag. Per-chat
+preparation guards prevent duplicate submissions before local acceptance, and
+Messenger's existing serialization and security checks still apply. Other
+controls retain their operation-specific disabled states.
 
-- Enter sends followed by keyboard-only typing and another send.
-- Switching between two chats after sending, with an unsent draft in the other.
-- Switching during a deliberately held encrypted POST, preserving the other
-  draft and leaving focus where navigation put it.
-- Clicking Send and immediately typing again.
-- Existing reload, editing, cancellation, reaction, IME, mobile newline, RTL,
-  attachment, strict-CSP and encrypted-request checks.
+An in-memory draft cache binds writing to its conversation while persistence is
+queued. Selecting a chat switches its composer before fetching network detail;
+synchronization cannot reset writing entered during that fetch. Superseded
+conversation-detail responses are ignored. The cache clears on vault lock and
+does not restore retired or archived drafts. Blur saves use the current cached
+draft, rather than an outgoing snapshot.
 
-These checks use synthetic accounts and trusted test TLS. They do not access
-the operator's credentials or personal browser vault.
+The real encrypted two-account workflow checks:
 
-Chrome and Firefox passed the updated workflow on November 4, 2026. The earlier
-frontend failed the added focus assertion in both browsers. TypeScript and the
-regular and standalone production builds also passed.
+- Keyboard-only typing immediately after Enter, before waiting for delivery.
+- Typing while an encrypted POST is deliberately held open.
+- Switching between two chats during that held request, preserving both drafts.
+- Delivery completion leaving the next draft intact and focus where the user put it.
+- Clicking Send and typing again, plus existing reload, edits, cancellation,
+  reactions, IME, mobile newline, RTL, attachment and strict-CSP checks.
+
+Tests use synthetic accounts and trusted test TLS. They do not access the
+operator's credentials or personal browser vault.
+
+Chrome and Firefox passed the updated workflow on November 5, 2026 (Asia/Tehran).
+The previous release failed the held-delivery check. Firefox additionally exposed
+the asynchronous DOM-clear race; the final synchronous-clear implementation
+passed in both browsers. TypeScript and both pinned Node production builds passed.

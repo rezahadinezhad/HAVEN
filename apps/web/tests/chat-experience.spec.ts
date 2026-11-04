@@ -168,13 +168,16 @@ test("conversation UX: encrypted messages, keyboard/IME, drafts, replies, scroll
     await input.type("Second line");
     await expect(input).toHaveValue("First line\nSecond line");
     await input.press("Enter");
+    // Start typing immediately, without waiting for encryption or delivery.
+    await a.keyboard.type("A second message, without clicking the composer");
+    await expect(input).toHaveValue(
+      "A second message, without clicking the composer",
+    );
     await expect(b.locator(".message-log")).toContainText(
       "First line\nSecond line",
       { timeout: 20000 },
     );
-    await expect(input).toHaveValue("");
     await expect(input).toBeFocused();
-    await a.keyboard.type("A second message, without clicking the composer");
     await a.keyboard.press("Enter");
     await expect(b.locator(".message-log")).toContainText(
       "A second message, without clicking the composer",
@@ -200,13 +203,10 @@ test("conversation UX: encrypted messages, keyboard/IME, drafts, replies, scroll
     const sendGate = new Promise<void>((resolve) => {
       releaseSend = resolve;
     });
-    let sending!: () => void;
-    const sendStarted = new Promise<void>((resolve) => {
-      sending = resolve;
-    });
+    let sendStarted = false;
     await a.route(`**/api/v1/conversations/${cid}/messages`, async (route) => {
       if (route.request().method() === "POST") {
-        sending();
+        sendStarted = true;
         await sendGate;
       }
       await route.continue();
@@ -214,9 +214,17 @@ test("conversation UX: encrypted messages, keyboard/IME, drafts, replies, scroll
     await input.fill("Send this once, even when I switch chats");
     await input.press("Enter");
     try {
-      await sendStarted;
+      await expect(a.locator(".toast.error")).toHaveCount(0);
+      await expect.poll(() => sendStarted).toBe(true);
       await expect(input).toBeFocused();
-      await expect(input).toHaveJSProperty("readOnly", true);
+      await expect(input).toHaveValue("");
+      // Do not wait for delivery, click the field, or use fill(): physical
+      // keyboard input must work while the previous request is still held.
+      await a.keyboard.type("My next draft while delivery is pending");
+      await expect(input).toHaveValue(
+        "My next draft while delivery is pending",
+      );
+      await expect(input).toBeFocused();
       await otherChat.click();
       await expect(a.locator(".chat-heading")).not.toContainText("Nora");
     } finally {
@@ -229,7 +237,7 @@ test("conversation UX: encrypted messages, keyboard/IME, drafts, replies, scroll
     await expect(input).toHaveValue("An unsent draft in another chat");
     await expect(input).not.toBeFocused();
     await noraChat.click();
-    await expect(input).toHaveValue("");
+    await expect(input).toHaveValue("My next draft while delivery is pending");
     await input.fill("A mouse send also keeps the keyboard ready");
     await a.getByRole("button", { name: "Send", exact: true }).click();
     await expect(input).toHaveValue("");
