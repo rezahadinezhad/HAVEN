@@ -6,7 +6,7 @@ HAVEN is a private messenger for a small trusted community. Conversations lead t
 
 Desktop uses two panes over a continuous aurora canvas. The conversation list is an inset rounded surface; the chat header and composer float independently at the same readable thread width. A compact rounded native navigation panel opens below the menu trigger for settings, trust, devices, recovery and operator tools. Auxiliary pages replace the conversation workspace and provide a clear return. Settings use consistently sized groups in a readable centered column. On phones, the list and thread occupy separate screens with a visible back action. There is no permanent settings rail or floating navigation dock competing with the conversation.
 
-Telegram informs the familiar navigation pattern; the owner's Gemini references inform the atmospheric blue/teal chat canvas and rounded composer. These are visual references, not dependencies or brand assets. Existing theme preferences remain intact. Light mode uses a pale aurora; dark mode blends blue and teal into a near-black thread. Opaque bubbles preserve text contrast over the moving background.
+Telegram informs the familiar navigation pattern; the owner's Gemini references inform the atmospheric blue/teal chat canvas and rounded composer. These are visual references, not dependencies or brand assets. Existing theme preferences remain intact. Light mode uses a pale aurora; dark mode blends blue, mint/teal and rose/coral over a near-black canvas. Opaque bubbles preserve text contrast over the moving background.
 
 ## Visual language
 
@@ -14,7 +14,7 @@ Keep HAVEN's blue action color, quiet borders, platform English typography and l
 
 ## Motion and activity
 
-The aurora uses two CSS radial gradients animated through transforms and opacity. No canvas loop, external assets, third-party requests or message content drives it. It pauses when the document is hidden and can be paused in Settings. Reduced motion removes ambient, drawer and typing-dot animation; forced colors removes the aurora. Controls respond in 140–200ms; menus settle through a short upward scale transition and auxiliary pages enter over 200ms; the backdrop moves slowly over 22–28 seconds.
+The aurora uses three locally rendered gradient layers, with broad blue, mint/teal and rose/coral bands travelling up, down and across the full canvas through transforms. No canvas loop, external assets, third-party requests or message content drives it. It pauses when the document is hidden and can be paused in Settings. Reduced motion removes ambient, drawer and typing-dot animation; forced colors removes the aurora. Controls respond in 140–200ms; menus settle through a short upward scale transition and auxiliary pages enter over 200ms; the three continuous motion paths loop over 14, 18 and 22 seconds. Their broad travel and light edge vignette keep color visible throughout the chat rather than hiding it below a dark fade.
 
 Local input briefly strengthens the composer border and aurora, even with remote activity disabled. A peer's typing appears as three staggered dots and an accessible status label, in a reserved space that does not move the composer. Signals expire after five seconds. Typing indicators are off by default; enabling them permits sending and displaying content-free activity through the existing authenticated WebSocket channel. This reveals activity to the service and conversation participants. It does not carry text, enter conversation history or create a read receipt.
 

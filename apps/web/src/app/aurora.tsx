@@ -26,6 +26,7 @@ export function AuroraBackdrop({
     >
       <div className="aurora-field aurora-field-blue" />
       <div className="aurora-field aurora-field-teal" />
+      <div className="aurora-field aurora-field-rose" />
       <div className="aurora-shade" />
     </div>
   );

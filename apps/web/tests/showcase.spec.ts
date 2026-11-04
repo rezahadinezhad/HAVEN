@@ -92,6 +92,14 @@ test("public presentation: current encrypted conversation, desktop, dark and mob
               ? firefox.executablePath()
               : "/usr/bin/google-chrome",
           ...(binary === "chromium" ? { chromiumSandbox: true } : {}),
+          ...(process.env.HAVEN_CAPTURE_AURORA === "1" && i === 0
+            ? {
+                recordVideo: {
+                  dir: path.join(root, ".local/flowing/raw-video"),
+                  size: { width: 1440, height: 940 },
+                },
+              }
+            : {}),
         }),
       );
     }
@@ -242,6 +250,22 @@ test("public presentation: current encrypted conversation, desktop, dark and mob
       );
     }
     await expect(a.locator(".chat-heading")).toContainText("Nora");
+    // Check actual running motion, rather than only the presence of keyframe CSS.
+    const initialTransforms = await a
+      .locator(".aurora-field")
+      .evaluateAll((nodes) =>
+        nodes.map((el) => getComputedStyle(el).transform),
+      );
+    await expect
+      .poll(() =>
+        a
+          .locator(".aurora-field")
+          .evaluateAll((nodes) =>
+            nodes.map((el) => getComputedStyle(el).transform),
+          ),
+      )
+      .not.toEqual(initialTransforms);
+
     const listBox = (await a.locator(".conversation-panel").boundingBox())!;
     const headerBox = (await a.locator(".chat-header").boundingBox())!;
     expect(listBox.x).toBeGreaterThan(0);
@@ -333,6 +357,20 @@ test("public presentation: current encrypted conversation, desktop, dark and mob
     expect(
       await a.evaluate(() => localStorage.getItem("haven-ambient-motion")),
     ).toBe("off");
+    const pausedTransforms = await a
+      .locator(".aurora-field")
+      .evaluateAll((nodes) =>
+        nodes.map((el) => getComputedStyle(el).transform),
+      );
+    // Observation interval: a paused backdrop must remain still in wall-clock time.
+    await a.waitForTimeout(250);
+    expect(
+      await a
+        .locator(".aurora-field")
+        .evaluateAll((nodes) =>
+          nodes.map((el) => getComputedStyle(el).transform),
+        ),
+    ).toEqual(pausedTransforms);
     await a.emulateMedia({ reducedMotion: "reduce" });
     expect(
       await a
@@ -493,6 +531,44 @@ test("public presentation: current encrypted conversation, desktop, dark and mob
     expect(
       secrets.some((secret) => bodies.some((body) => body.includes(secret))),
     ).toBe(false);
+    if (process.env.HAVEN_CAPTURE_AURORA === "1") {
+      await a.setViewportSize({ width: 1440, height: 940 });
+      await a.getByLabel("زبان", { exact: true }).selectOption("en");
+      await a.getByLabel("Theme", { exact: true }).selectOption("dark");
+      await navigate(a, "Messages");
+      await a.locator(".conversation-row").click();
+      await a.getByLabel("Message", { exact: true }).fill("");
+      await a.locator(".chat-heading").click();
+      await a.evaluate(async () => {
+        await document.fonts.ready;
+        await Promise.all(
+          document
+            .getAnimations()
+            .filter(
+              (animation) =>
+                animation.effect?.getComputedTiming().iterations !== Infinity,
+            )
+            .map((animation) => animation.finished.catch(() => {})),
+        );
+      });
+      const bounds = await a.locator(".chat-panel").boundingBox();
+      fs.writeFileSync(
+        path.join(root, ".local/flowing/motion-bounds.json"),
+        JSON.stringify(bounds),
+      );
+      for (let frame = 0; frame < 4; frame++) {
+        await a.screenshot({
+          path: path.join(root, `.local/flowing/motion-${frame}.png`),
+        });
+        await a.waitForTimeout(3000);
+      }
+      const video = a.video()!;
+      const saving = video.saveAs(
+        path.join(root, ".local/flowing/qa-motion-full.webm"),
+      );
+      await a.close();
+      await saving;
+    }
   } finally {
     for (const c of contexts) await c.close();
     fs.rmSync(temp, { recursive: true, force: true });
