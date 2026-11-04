@@ -1,0 +1,26 @@
+{
+  "checks": [
+    {
+      "mode": "installed",
+      "origin": "https://127.0.0.1:9443",
+      "release": 1,
+      "digest": "77cbcc43015cc191a48c6a6d2de15bae288ce94e054400be9870f63bb0215977",
+      "secureContext": true,
+      "loginAndLogout": "passed",
+      "qaHarness": "absent",
+      "foreignBrowserRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "mode": "independent-web",
+      "origin": "https://127.0.0.2:8447",
+      "release": 1,
+      "digest": "77cbcc43015cc191a48c6a6d2de15bae288ce94e054400be9870f63bb0215977",
+      "secureContext": true,
+      "loginAndLogout": "passed",
+      "qaHarness": "absent",
+      "foreignBrowserRequests": 0,
+      "pageErrors": 0
+    }
+  ]
+}

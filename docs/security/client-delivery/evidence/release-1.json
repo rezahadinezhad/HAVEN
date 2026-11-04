@@ -1,0 +1,24 @@
+{
+  "sequence": 1,
+  "source": "d38d934243d31199a02a8965d795a22be0414c40",
+  "manifest_sha256": "77cbcc43015cc191a48c6a6d2de15bae288ce94e054400be9870f63bb0215977",
+  "archive_sha256": "12ba4222e82e4f7aca7e85083ab015d496319a0813b4f0f3096aa34a4d5ee391",
+  "distribution_sha256": "089810b0f4b856b1c7fc8ed08381e441a999369c1ff5138310a6c6ec2d4b3fbd",
+  "publisher_der_sha256": "2cecd962301f0292caca6089a23c0a2c8fb00fb055327342d09daa6abfaaaf99",
+  "payload_files": [
+    "bootstrap.py",
+    "requirements.lock",
+    "runtime.pyz",
+    "web/assets/Vazirmatn-Variable-J7YSMCQ3.woff2",
+    "web/assets/client-EJUTAX5X.css",
+    "web/assets/client-HHKSAV2W.js",
+    "web/crypto-worker.js",
+    "web/crypto/haven_crypto.js",
+    "web/crypto/haven_crypto_bg.wasm",
+    "web/index.html",
+    "web/sw.js",
+    "web/vault-worker-v2.js"
+  ],
+  "qa_harness_present": false,
+  "installed_runtime_service": "active"
+}

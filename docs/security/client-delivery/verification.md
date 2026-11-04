@@ -8,8 +8,12 @@ These are engineering checks, not an independent penetration test or cryptograph
 | Actual installer | First-trust fingerprint required; authenticated runtime executes; changed disk executable rejected; live private browser blocks update; failed/replayed update preserves active release and separate dependency environment |
 | Chromium | Real TLS, two synthetic accounts, native MLS enrollment/fingerprint pins, encrypted text and file upload/download, persisted vault reload and production UI unlock; hostile API switched on while unlocked; API-supplied script blocked, signed worker unchanged, no browser traffic to upstream |
 | Firefox | Same workflow and hostile-origin checks; dedicated test trust only, no TLS ignore flags |
+| Exact production Python | All 13 tests also pass on the pinned Python3.14.9 image with offline hash-locked wheels; the installer test tmpfs explicitly permits executable venv files |
+| Activated release | Signed release1 on both real endpoints: UI sign-in/sign-out, exact release digest, QA helper404, zero foreign browser requests/errors; container startup refuses a tampered worker |
 | Client build | Complete UI/workers/WASM/fonts build in pinned Node26.13.0 image; TypeScript check passes |
 | CI | New verified-client job runs boundary/installer checks, pinned standalone frontend build and tests using exact production Python3.14.9; separate client dependency graph included in advisory audit |
+
+The first restricted Docker test attempt used a default noexec tmpfs, so copied venv interpreters could not execute. Repeating the installer qualification with an explicitly executable **test-only** tmpfs passed; the deployed gateway retains a noexec tmpfs. No verifier bypass or dependency downgrade was used.
 
 Public logs and synthetic screenshots are in [evidence](evidence/). The browser harness uses a separately signed disposable QA release containing an explicit integration helper. That helper is refused by production packaging and is absent from the real published release. The controlled hostile proxy is a loopback-only test fixture and is never copied into a production image.
 

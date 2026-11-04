@@ -1,0 +1,1 @@
+PASS: image startup refused altered signed worker (exit 1)

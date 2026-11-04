@@ -1,0 +1,3 @@
+PASS: cannot contain test harnesses
+PASS: build is stale
+PASS: publisher ledger rejected rollback

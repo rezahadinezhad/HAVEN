@@ -1,0 +1,23 @@
+{
+  "image_id": "sha256:4018e862305223f9509e8569515c335d78838fdd8f2533701a363afaecc1d91b",
+  "user": "10001:10001",
+  "read_only_rootfs": true,
+  "cap_drop": [
+    "ALL"
+  ],
+  "pids_limit": 128,
+  "memory_bytes": 268435456,
+  "networks": [
+    "haven_ingress"
+  ],
+  "mounts": [
+    {
+      "type": "volume",
+      "destination": "/tls",
+      "writable": false
+    }
+  ],
+  "host_compatibility_exception": "no-new-privileges omitted only in explicit local override",
+  "database_credentials": "absent",
+  "signing_private_key": "absent"
+}
