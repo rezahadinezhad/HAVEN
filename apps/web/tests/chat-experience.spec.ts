@@ -131,6 +131,7 @@ test("conversation UX: encrypted messages, keyboard/IME, drafts, replies, scroll
           text: `Planning note ${i + 1}: Let’s take the path by the water. We can find a quiet spot and catch up before heading home.`,
         });
     }, cid);
+    await a.evaluate(async () => (window as any).m.create("group"));
     async function unlock(page: typeof a, secret: string) {
       await navigate(page, "Start a chat");
       await page.getByLabel("Unlock passphrase", { exact: true }).fill(secret);
@@ -141,7 +142,10 @@ test("conversation UX: encrypted messages, keyboard/IME, drafts, replies, scroll
         page.getByText("This browser is ready", { exact: true }),
       ).toBeVisible();
       await navigate(page, "Messages");
-      await page.locator(".conversation-row").click();
+      await page
+        .locator(".conversation-row")
+        .filter({ hasText: page === a ? "Nora" : "Maya" })
+        .click();
       await expect(page.getByLabel("Message", { exact: true })).toBeEnabled();
     }
     for (const [i, page] of [a, b].entries()) {
@@ -169,6 +173,69 @@ test("conversation UX: encrypted messages, keyboard/IME, drafts, replies, scroll
       { timeout: 20000 },
     );
     await expect(input).toHaveValue("");
+    await expect(input).toBeFocused();
+    await a.keyboard.type("A second message, without clicking the composer");
+    await a.keyboard.press("Enter");
+    await expect(b.locator(".message-log")).toContainText(
+      "A second message, without clicking the composer",
+    );
+    await expect(input).toHaveValue("");
+    await expect(input).toBeFocused();
+    const noraChat = a.locator(".conversation-row").filter({ hasText: "Nora" });
+    const otherChat = a
+      .locator(".conversation-row")
+      .filter({ hasNotText: "Nora" });
+    await otherChat.click();
+    await input.fill("An unsent draft in another chat");
+    await noraChat.click();
+    await expect(input).toHaveValue("");
+    await otherChat.click();
+    await expect(input).toHaveValue("An unsent draft in another chat");
+    await noraChat.click();
+    await expect(input).toHaveValue("");
+
+    // A real delayed encrypted POST keeps the send pending while the user
+    // leaves the chat. Its blur must never re-save the outgoing snapshot.
+    let releaseSend!: () => void;
+    const sendGate = new Promise<void>((resolve) => {
+      releaseSend = resolve;
+    });
+    let sending!: () => void;
+    const sendStarted = new Promise<void>((resolve) => {
+      sending = resolve;
+    });
+    await a.route(`**/api/v1/conversations/${cid}/messages`, async (route) => {
+      if (route.request().method() === "POST") {
+        sending();
+        await sendGate;
+      }
+      await route.continue();
+    });
+    await input.fill("Send this once, even when I switch chats");
+    await input.press("Enter");
+    try {
+      await sendStarted;
+      await expect(input).toBeFocused();
+      await expect(input).toHaveJSProperty("readOnly", true);
+      await otherChat.click();
+      await expect(a.locator(".chat-heading")).not.toContainText("Nora");
+    } finally {
+      releaseSend();
+    }
+    await expect(b.locator(".message-log")).toContainText(
+      "Send this once, even when I switch chats",
+    );
+    await a.unroute(`**/api/v1/conversations/${cid}/messages`);
+    await expect(input).toHaveValue("An unsent draft in another chat");
+    await expect(input).not.toBeFocused();
+    await noraChat.click();
+    await expect(input).toHaveValue("");
+    await input.fill("A mouse send also keeps the keyboard ready");
+    await a.getByRole("button", { name: "Send", exact: true }).click();
+    await expect(input).toHaveValue("");
+    await expect(input).toBeFocused();
+    await a.keyboard.type("And I can immediately type again");
+    await expect(input).toHaveValue("And I can immediately type again");
     await input.fill("IME confirmation stays a draft");
     await input.dispatchEvent("compositionstart", { data: "" });
     await input.press("Enter");
@@ -721,7 +788,7 @@ test("conversation UX: encrypted messages, keyboard/IME, drafts, replies, scroll
       .getByRole("button", { name: "Back to conversations", exact: true })
       .click();
     await a.getByRole("button", { name: "فارسی", exact: true }).click();
-    await a.locator(".conversation-row").click();
+    await a.locator(".conversation-row").filter({ hasText: "Nora" }).click();
     await expect(a.locator("html")).toHaveAttribute("dir", "rtl");
     await a.getByLabel("پیام", { exact: true }).fill("سلام، فردا می‌بینمت 🌱");
     await a.evaluate(() => document.fonts.ready.then(() => {}));

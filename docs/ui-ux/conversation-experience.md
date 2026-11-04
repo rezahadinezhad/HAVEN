@@ -82,6 +82,10 @@ and Persian RTL. See [Aurora verification](aurora-verification.md).
   IME composition confirmations never send. On touch keyboards, Return remains a
   newline; the send button sends. A small desktop emoji palette inserts at the
   selection; phones use the keyboard's emoji support.
+- Sending keeps keyboard focus in the composer, including a click on Send.
+  Pending work makes it temporarily read-only instead of disabling the textarea.
+  Leaving during a send cannot re-save the outgoing text as a draft or move focus
+  back after navigation. See [composer regression checks](composer-reliability.md).
 - File messages retain the selected reply reference without consuming an unrelated
   text draft. Files are confirmed before encryption/upload. The existing 25 MiB cap remains.
   Voice recording stops to send, has an explicit discard action and is discarded
