@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Icon } from "./icons";
 import { Messenger } from "@/lib/messenger";
 import {
   deviceUnlockEnvironment,
@@ -72,7 +73,12 @@ export function DeviceUnlockSettings({
       className="card device-unlock-settings"
       aria-labelledby="device-unlock-title"
     >
-      <h2 id="device-unlock-title">{t("Unlock with this device")}</h2>
+      <h2 id="device-unlock-title" className="settings-section-heading">
+        <span className="section-glyph">
+          <Icon name="key" size={22} />
+        </span>
+        {t("Unlock with this device")}
+      </h2>
       <p>
         {t(
           "After you unlock with your vault passphrase, you can set up a device prompt for future visits. HAVEN encrypts a local copy of the passphrase with a passkey PRF; it never sends it to the server.",

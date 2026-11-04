@@ -5,6 +5,16 @@ uses a conversation list and thread, with settings and account tools in a tempor
 menu drawer. It retains the established identity checks and familiar chat interactions. It adds no runtime
 service, package dependency, server schema or cryptographic primitive.
 
+## Floating surfaces · November 4, 2026
+
+The current shell follows the supplied Telegram references: the conversation list,
+chat header, composer and navigation panel have rounded boundaries and visible
+canvas space between them. The aurora continues behind the entire authenticated
+workspace. Settings groups share a readable column width and colored category
+icons; circular 44px actions use the established icon family. Brief control,
+menu and auxiliary-page transitions respect reduced motion and never capture
+private media into transition snapshots. See [floating workspace verification](floating-workspace-verification.md).
+
 ## Aurora update · November 4, 2026
 
 The desktop has two panes; phones show the list or thread with a back action.
