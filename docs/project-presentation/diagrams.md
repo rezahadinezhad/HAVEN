@@ -88,7 +88,7 @@ sequenceDiagram
   Note over S,A: Lost reply: retry the same saved request bytes
   R->>A: Authenticated HTTP synchronization
   A-->>R: Encrypted envelopes and signed public history
-  R->>R: Verify order, sender and MLS state; decrypt
+  R->>R: Verify order, sender and MLS state, then decrypt
   R->>RV: Commit encrypted local state/history
   RV-->>R: Local commit succeeds
   R->>A: Acknowledge durable local state
