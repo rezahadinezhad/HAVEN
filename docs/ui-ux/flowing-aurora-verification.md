@@ -61,3 +61,12 @@ middle and bottom of the chat; the trimmed WebM shows only the final synthetic
 conversation. A first recording export attempted to save after closing its
 persistent browser; it was corrected to save while the browser remained alive,
 then rerun successfully. No private browser recording is involved.
+
+## Maintained installation
+
+Signed release5 and the regular frontend are active at the same three endpoints.
+Publisher/TLS roots, browser origins and user state are preserved. A trusted-TLS
+read-only smoke passed with no QA helper, foreign requests or page errors.
+The owner's existing tab was refreshed and its three new layers were observed
+running. Its already-locked vault can be unlocked by the owner; no personal
+passphrase was accessed. See [the installation record](../security/client-delivery/local-installation.md).

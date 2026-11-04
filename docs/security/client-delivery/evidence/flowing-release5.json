@@ -1,0 +1,53 @@
+{
+  "date": "2026-11-04",
+  "source": "79051b5f49ae259ad9eff3ff21117156f3a5b3ad",
+  "checks": [
+    {
+      "mode": "installed",
+      "origin": "https://127.0.0.1:9443",
+      "release": 5,
+      "digest": "5d8227e5333b1a3b283c6b0c559b05fda660a765a554afc951c8c9b2b731a49d",
+      "secureContext": true,
+      "flowingAuroraStyles": true,
+      "foreignBrowserRequests": 0,
+      "pageErrors": 0,
+      "signInScreen": true
+    },
+    {
+      "mode": "independent-web",
+      "origin": "https://127.0.0.2:8447",
+      "release": 5,
+      "digest": "5d8227e5333b1a3b283c6b0c559b05fda660a765a554afc951c8c9b2b731a49d",
+      "secureContext": true,
+      "flowingAuroraStyles": true,
+      "foreignBrowserRequests": 0,
+      "pageErrors": 0,
+      "signInScreen": true
+    },
+    {
+      "mode": "same-origin",
+      "origin": "https://127.0.0.1:8444",
+      "secureContext": true,
+      "flowingAuroraStyles": true,
+      "foreignBrowserRequests": 0,
+      "pageErrors": 0,
+      "signInScreen": true
+    }
+  ],
+  "scope": "Trusted-TLS read-only smoke; disposable profiles; no operator credentials or personal vault used.",
+  "existing_tab": {
+    "refreshed": true,
+    "aurora_parent": "app-frame",
+    "running_layers": [
+      "blue",
+      "teal",
+      "rose"
+    ],
+    "durations_seconds": [
+      14,
+      18,
+      22
+    ],
+    "personal_passphrase_accessed": false
+  }
+}
