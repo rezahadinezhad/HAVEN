@@ -2,7 +2,7 @@
 
 The existing HAVEN service at `https://127.0.0.1:8444` and its account/vault state are preserved. No database migration or personal device enrollment is needed for this delivery change.
 
-**Signed release 4 is installed and running, after verified release1→2→3→4 updates.** Its reviewed source is `0432377b2faf041cd7bb1b504ecba7b1f90ef6e0`. It ships rounded floating surfaces and a compact navigation panel. No QA helper is present in the production release. Earlier activation evidence retains its recorded release/revision.
+**Signed release 5 is installed and running, after verified release1→2→3→4→5 updates.** Its reviewed source is `79051b5f49ae259ad9eff3ff21117156f3a5b3ad`. It ships the visibly flowing blue/mint/rose aurora over the rounded workspace. No QA helper is present in the production release. Earlier evidence retains its recorded release/revision.
 
 | Component | Maintained location |
 |---|---|
@@ -10,16 +10,18 @@ The existing HAVEN service at `https://127.0.0.1:8444` and its account/vault sta
 | User launcher | `/home/reza-hadinezhad/.local/bin/haven-verified-client`; application menu entry **HAVEN Verified Client** |
 | Protected installed state | `/home/reza-hadinezhad/.local/state/haven/verified-client` |
 | Independent frontend demo | `https://127.0.0.2:8447`, separate non-root/read-only container; only the existing ingress network, no DB network or backend secrets |
-| Public distribution | `.local/verified-client/HAVEN-verified-client-release-4.tar.gz`, signed archive, public verifier/key and license notices; contains no private signing key |
+| Distribution archive (local) | `.local/verified-client/HAVEN-verified-client-release-5.tar.gz`, signed archive, public verifier/key and license notices; contains no private signing key |
 | Frontend operator helper | `.local/manage-verified-frontend.sh` |
 
 Publisher public-key DER SHA-256: `2cecd962301f0292caca6089a23c0a2c8fb00fb055327342d09daa6abfaaaf99`.
 
-Manifest SHA-256: `3047700fb3a6c61a3a430c29fc6ba9acf47d0f6c410e958f3d9b86365e250229`.
+Manifest SHA-256: `5d8227e5333b1a3b283c6b0c559b05fda660a765a554afc951c8c9b2b731a49d`.
 
 The fingerprint printed here is a record, not an additional independent trust authority. First-install trust must be anchored through the reviewed source/publisher channel, independently of the messaging server.
 
-Release4 passed trusted-TLS read-only checks at the installed client, independent frontend and regular Next.js frontend. Sign-in screens and the signed Aurora CSS loaded with zero foreign requests/page errors; both signed endpoints advertise sequence4 and the recorded manifest digest, contain no QA helper, and installed mode registers no service worker. No operator credentials or personal vault were used. See [release4 deployment evidence](evidence/floating-release4.json) and [floating workspace verification](../../ui-ux/floating-workspace-verification.md). Release3's [deployment snapshot](evidence/aurora-release3.json) remains historical.
+Release5 passed trusted-TLS read-only checks at all three maintained endpoints. Both signed endpoints advertise sequence5 and the expected manifest, contain no QA helper, and installed mode registers no service worker. Sign-in screens and the three-color styles loaded with zero foreign requests/page errors. No operator credentials or personal vault were used for that smoke. See [release5 evidence](evidence/flowing-release5.json) and [flowing aurora verification](../../ui-ux/flowing-aurora-verification.md). Release3/4 snapshots remain historical.
+
+The existing owner browser tab was separately observed running the old 22/28-second chat-panel effect. After refreshing, its DOM reports all three new animations running at 14/18/22 seconds on the new workspace canvas. Its vault had already locked due to inactivity and remains available for the owner's own local unlock. No personal passphrase was read or entered.
 
 The earlier release2 verification passed trusted-TLS production UI sign-in/sign-out with zero foreign browser requests/page errors. No personal vault or MLS device was created. Installed mode has no registered service worker. The actual child runtime retains its update lock. Replaying authentic release1 through the installed release2 launcher was refused, with active release2 unchanged. TLS identity, origin, publisher root and browser state were preserved. The separate image refuses an altered signed worker before executing its runtime; production Python3.14.9 has only the four required packages and no pip/Django/pytest. [Public deployment checks and artifact digests](evidence/) contain no session cookies or credentials.
 
