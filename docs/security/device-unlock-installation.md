@@ -122,3 +122,8 @@ cannot supply endpoint overrides through a URL or the installed `serve` CLI.
 This keeps cookies, origin-bound storage and live MLS identities intact while
 changing only the TLS transport. The four profile regression tests and the real
 TLS boundary suite verify this distinction.
+
+The legacy IP certificate is byte-for-byte preserved and retains its original
+expiry, 2026-11-07T02:03:18+03:30. Complete approval/history export there
+while it is valid; the hostname and new TLS transport have their own renewable
+certificate and do not depend on that legacy certificate.
