@@ -3,8 +3,8 @@
     {
       "mode": "installed",
       "origin": "https://127.0.0.1:9443",
-      "release": 1,
-      "digest": "77cbcc43015cc191a48c6a6d2de15bae288ce94e054400be9870f63bb0215977",
+      "release": 2,
+      "digest": "7b76ad5ce912f133786b7f627c2c8d9c55405afb47b9b6af8b481dd35250b4c1",
       "secureContext": true,
       "loginAndLogout": "passed",
       "qaHarness": "absent",
@@ -14,8 +14,8 @@
     {
       "mode": "independent-web",
       "origin": "https://127.0.0.2:8447",
-      "release": 1,
-      "digest": "77cbcc43015cc191a48c6a6d2de15bae288ce94e054400be9870f63bb0215977",
+      "release": 2,
+      "digest": "7b76ad5ce912f133786b7f627c2c8d9c55405afb47b9b6af8b481dd35250b4c1",
       "secureContext": true,
       "loginAndLogout": "passed",
       "qaHarness": "absent",

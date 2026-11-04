@@ -1,5 +1,5 @@
 {
-  "image_id": "sha256:4018e862305223f9509e8569515c335d78838fdd8f2533701a363afaecc1d91b",
+  "image_id": "sha256:baa8410fe8bd095b4bbdf0ff971e3b397f3665eca4e5ef0a73d3f161f13117f7",
   "user": "10001:10001",
   "read_only_rootfs": true,
   "cap_drop": [

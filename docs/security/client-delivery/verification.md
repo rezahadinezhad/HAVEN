@@ -9,7 +9,7 @@ These are engineering checks, not an independent penetration test or cryptograph
 | Chromium | Real TLS, two synthetic accounts, native MLS enrollment/fingerprint pins, encrypted text and file upload/download, persisted vault reload and production UI unlock; hostile API switched on while unlocked; API-supplied script blocked, signed worker unchanged, no browser traffic to upstream |
 | Firefox | Same workflow and hostile-origin checks; dedicated test trust only, no TLS ignore flags |
 | Exact production Python | All 14 tests also pass on the pinned Python3.14.9 image with offline hash-locked wheels; the installer test tmpfs explicitly permits executable venv files |
-| Activated release | Signed release1 on both real endpoints: UI sign-in/sign-out, exact release digest, QA helper404, zero foreign browser requests/errors; container startup refuses a tampered worker |
+| Activated release | Signed release2 (after a real1→2 update) on both real endpoints: UI sign-in/sign-out, exact release digest, QA helper404, zero foreign browser requests/errors; container startup refuses a tampered worker |
 | Client build | Complete UI/workers/WASM/fonts build in pinned Node26.13.0 image; TypeScript check passes |
 | CI | New verified-client job runs boundary/installer checks, pinned standalone frontend build and tests using exact production Python3.14.9; separate client dependency graph included in advisory audit |
 
@@ -29,3 +29,5 @@ PYTHONDONTWRITEBYTECODE=1 apps/api/.venv/bin/python \
 ```
 
 The browser test `apps/web/tests/verified-client.spec.ts` skips unless `HAVEN_VERIFIED_PROFILE` points at a configured signed QA client. It expects an isolated test backend, existing synthetic administrator credentials in `.local/ui-credentials.json`, and `/qa-client.js` in a disposable signed release. `HAVEN_TEST_ATTACK_FILE` enables the explicit loopback adversarial fixture; the fixture's TLS/API ports are independently configurable. Never use a real publisher key or a user's personal profile for that harness.
+
+The final cleanup audit found a leftover pre-fix QA gateway whose launcher had been terminated. Earlier successful boundary/browser observations remain valid for the original gateway, but were not accepted as final-source coverage. That process was stopped, the launcher lifetime/lock regression was added, the full Chrome/Firefox workflows were rerun against an explicitly checked QA release6 digest, and the authentic production update/rollback checks were then run on release2. The final evidence contains those refreshed runs.

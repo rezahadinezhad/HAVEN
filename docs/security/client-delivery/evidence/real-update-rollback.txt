@@ -1,0 +1,3 @@
+PASS: installed signed release1 upgraded to release2 with the same root/profile
+PASS: actual runtime inherits the update lock
+PASS: replay of authentic release1 refused; active release2 preserved
