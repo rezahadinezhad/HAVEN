@@ -61,3 +61,12 @@ The [current captures](../../.github/assets/README.md) demonstrate real applicat
 behavior with synthetic accounts. Viewports are not physical-phone qualification.
 These checks do not replace independent security review or relabel older assurance
 reports as tests of this revision.
+
+## Maintained installation
+
+The regular frontend and both signed-client endpoints were upgraded in place.
+Signed release3 uses the existing publisher root, TLS identities and browser origins.
+The production bundle contains no QA helper. A trusted-TLS read-only smoke loaded
+all three sign-in screens and the shipped Aurora styles without foreign requests
+or page errors. No operator login, personal device enrollment or database migration
+was needed. See [the installation record](../security/client-delivery/local-installation.md).
