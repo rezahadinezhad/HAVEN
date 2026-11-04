@@ -831,3 +831,8 @@ html[dir="rtl"] .send-button > .icon {
     border: 1px solid ButtonText;
   }
 }
+
+.device-unlock-route small {
+  display: block;
+  margin-block-start: 0.5rem;
+}

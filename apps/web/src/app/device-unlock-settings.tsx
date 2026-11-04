@@ -5,16 +5,20 @@ import { Icon } from "./icons";
 import { Messenger } from "@/lib/messenger";
 import {
   deviceUnlockEnvironment,
+  deviceUnlockError,
   loadDeviceUnlock,
   type DeviceUnlockEnvironment,
 } from "@/lib/device-unlock";
+import { DeviceUnlockRoute } from "./device-unlock-route";
 
 export function DeviceUnlockSettings({
   vault,
   t,
+  hostname = "",
 }: {
   vault: Messenger;
   t: (text: string) => string;
+  hostname?: string;
 }) {
   const [environment, setEnvironment] =
     useState<DeviceUnlockEnvironment>("unsupported");
@@ -58,11 +62,7 @@ export function DeviceUnlockSettings({
         );
       }
     } catch (e) {
-      setError(
-        e instanceof Error
-          ? e.message
-          : "Could not change device unlock settings",
-      );
+      setError(deviceUnlockError(e));
     } finally {
       setBusy(false);
     }
@@ -81,7 +81,7 @@ export function DeviceUnlockSettings({
       </h2>
       <p>
         {t(
-          "After you unlock with your vault passphrase, you can set up a device prompt for future visits. HAVEN encrypts a local copy of the passphrase with a passkey PRF; it never sends it to the server.",
+          "Set up a passkey to unlock your encrypted messages with your device or passkey provider. Your vault passphrase remains the backup.",
         )}
       </p>
       {environment === "ready" ? (
@@ -90,7 +90,7 @@ export function DeviceUnlockSettings({
             {t(
               enrolled
                 ? "Device unlock is set up on this browser."
-                : "Set up device unlock to use fingerprint, face, or device PIN verification where your device supports it.",
+                : "Your browser will offer available passkey providers, devices, or security keys. Choose one that supports secure vault unlock.",
             )}
           </p>
           <button type="button" disabled={busy} onClick={() => void change()}>
@@ -113,11 +113,14 @@ export function DeviceUnlockSettings({
             )}
           </p>
           {environment === "ip-address" && (
-            <p>
-              {t(
-                "Opening HAVEN at a new hostname creates separate browser storage. Keep this trusted IP tab open to approve the new browser; old message history does not move automatically.",
-              )}
-            </p>
+            <>
+              <p>
+                {t(
+                  "Opening HAVEN at a new hostname creates separate browser storage. Keep this trusted IP tab open to approve the new browser; old message history does not move automatically.",
+                )}
+              </p>
+              <DeviceUnlockRoute hostname={hostname} t={t} />
+            </>
           )}
         </>
       )}

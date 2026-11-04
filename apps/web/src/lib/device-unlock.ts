@@ -15,10 +15,7 @@ type DeviceUnlockRecord = {
 };
 
 export type DeviceUnlockEnvironment =
-  | "ready"
-  | "ip-address"
-  | "insecure"
-  | "unsupported";
+  "ready" | "ip-address" | "insecure" | "unsupported";
 
 const random = (size: number) => crypto.getRandomValues(new Uint8Array(size));
 const bytes = (value: BufferSource) =>
@@ -79,15 +76,19 @@ function trustedHost() {
 }
 
 export async function deviceUnlockEnvironment(): Promise<DeviceUnlockEnvironment> {
-  const state = trustedHost();
-  if (state !== "ready") return state;
-  try {
-    return (await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable())
-      ? "ready"
-      : "unsupported";
-  } catch {
-    return "unsupported";
+  // Platform availability does not describe security keys, passkey providers
+  // or a nearby device. The actual ceremony must prove UV and PRF support.
+  return trustedHost();
+}
+
+export function deviceUnlockError(error: unknown): string {
+  if (error instanceof DOMException) {
+    if (error.name === "NotAllowedError" || error.name === "AbortError")
+      return "Device verification was cancelled or unavailable. Your vault passphrase still works.";
+    if (error.name === "NotSupportedError")
+      return "This browser or passkey provider cannot unlock this vault. Try a compatible provider or use your vault passphrase.";
   }
+  return error instanceof Error ? error.message : "Could not use device unlock";
 }
 
 async function db() {
@@ -165,7 +166,7 @@ function checkedResult(
       const result = credential.getClientExtensionResults().prf?.results?.first;
       if (!result || bytes(result).byteLength !== 32)
         throw new Error(
-          "This authenticator does not support secure device unlock (PRF)",
+          "This passkey cannot unlock encrypted messages. Choose another provider or security key, or use your vault passphrase.",
         );
       return new Uint8Array(bytes(result));
     });
@@ -223,7 +224,6 @@ export async function enrollDeviceUnlock(
         user: { id: userId, name: "HAVEN vault", displayName: "HAVEN vault" },
         pubKeyCredParams: [{ type: "public-key", alg: -7 }],
         authenticatorSelection: {
-          authenticatorAttachment: "platform",
           residentKey: "required",
           userVerification: "required",
         },

@@ -14,6 +14,7 @@ import { Messenger, fingerprintOf } from "@/lib/messenger";
 import { loadVault } from "@/lib/vault";
 import {
   deviceUnlockEnvironment,
+  deviceUnlockError,
   loadDeviceUnlock,
   type DeviceUnlockEnvironment,
 } from "@/lib/device-unlock";
@@ -27,6 +28,7 @@ import {
 } from "@/lib/contact-link";
 import type { components } from "@/lib/generated/schema";
 import { Icon } from "./icons";
+import { DeviceUnlockRoute } from "./device-unlock-route";
 
 type Translate = (text: string) => string;
 type Access = components["schemas"]["InvitationAccess"];
@@ -37,11 +39,13 @@ function BrowserSetup({
   ready,
   enabled,
   t,
+  hostname = "",
 }: {
   user: User;
   ready: (vault: Messenger) => Promise<void>;
   enabled: boolean;
   t: Translate;
+  hostname?: string;
 }) {
   const [exists, setExists] = useState<boolean | null>(null);
   const [secret, setSecret] = useState("");
@@ -147,12 +151,7 @@ function BrowserSetup({
       }
       await ready(result);
     } catch (e) {
-      if (active.current)
-        setError(
-          e instanceof Error
-            ? e.message
-            : "Device unlock failed. Use your vault passphrase",
-        );
+      if (active.current) setError(deviceUnlockError(e));
     } finally {
       if (active.current) setWorking(false);
     }
@@ -388,12 +387,15 @@ function BrowserSetup({
                   : "Use at least 20 characters. A few unrelated words are easier to remember.",
               )}
             </small>
-            {exists && deviceEnvironment === "ip-address" && (
-              <small>
-                {t(
-                  "Built-in device unlock needs a trusted hostname. Direct IP addresses cannot use browser passkeys; your vault remains protected by its passphrase.",
-                )}
-              </small>
+            {deviceEnvironment === "ip-address" && (
+              <>
+                <small>
+                  {t(
+                    "Built-in device unlock needs a trusted hostname. Direct IP addresses cannot use browser passkeys; your vault remains protected by its passphrase.",
+                  )}
+                </small>
+                <DeviceUnlockRoute hostname={hostname} t={t} />
+              </>
             )}
             {exists === false && (
               <label>
@@ -630,6 +632,7 @@ function VerifyCode({
 }
 
 export function ConnectFlow({
+  deviceUnlockHostname = "",
   user,
   vault,
   enabled,
@@ -642,6 +645,7 @@ export function ConnectFlow({
   changeConversationType,
   t,
 }: {
+  deviceUnlockHostname?: string;
   user: User;
   vault: Messenger | null;
   enabled: boolean;
@@ -779,7 +783,13 @@ export function ConnectFlow({
   if (!vault)
     return (
       <div className="connect-flow">
-        <BrowserSetup user={user} ready={ready} enabled={enabled} t={t} />
+        <BrowserSetup
+          user={user}
+          ready={ready}
+          enabled={enabled}
+          t={t}
+          hostname={deviceUnlockHostname}
+        />
       </div>
     );
   if (!self)

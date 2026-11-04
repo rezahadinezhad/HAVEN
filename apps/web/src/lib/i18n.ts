@@ -128,6 +128,19 @@ const fa: Record<string, string> = {
     "اگر دستگاه پشتیبانی کند، باز کردن با اثر انگشت، چهره یا پین دستگاه را تنظیم کنید.",
   "Remove device unlock": "حذف باز کردن با دستگاه",
   "Set up device unlock": "تنظیم باز کردن با دستگاه",
+  "Set up a passkey to unlock your encrypted messages with your device or passkey provider. Your vault passphrase remains the backup.":
+    "یک کلید عبور تنظیم کنید تا پیام‌های رمزگذاری‌شده را با دستگاه یا ارائه‌دهندهٔ کلید عبور باز کنید. عبارت ورود مخزن همچنان راه پشتیبان است.",
+  "Your browser will offer available passkey providers, devices, or security keys. Choose one that supports secure vault unlock.":
+    "مرورگر ارائه‌دهندگان کلید عبور، دستگاه‌ها یا کلیدهای امنیتی در دسترس را نشان می‌دهد. گزینه‌ای سازگار با باز کردن امن مخزن انتخاب کنید.",
+  "Device verification was cancelled or unavailable. Your vault passphrase still works.":
+    "تأیید دستگاه لغو شد یا در دسترس نبود. عبارت ورود مخزن همچنان کار می‌کند.",
+  "This browser or passkey provider cannot unlock this vault. Try a compatible provider or use your vault passphrase.":
+    "این مرورگر یا ارائه‌دهندهٔ کلید عبور نمی‌تواند مخزن را باز کند. گزینه‌ای سازگار یا عبارت ورود مخزن را امتحان کنید.",
+  "This passkey cannot unlock encrypted messages. Choose another provider or security key, or use your vault passphrase.":
+    "این کلید عبور نمی‌تواند پیام‌های رمزگذاری‌شده را باز کند. ارائه‌دهنده یا کلید امنیتی دیگری انتخاب کنید یا از عبارت ورود مخزن استفاده کنید.",
+  "Open the device-unlock address": "باز کردن نشانی پشتیبانِ تأیید دستگاه",
+  "Sign in there, set up this browser, and approve it from an existing trusted browser. Your current history stays here.":
+    "در آن نشانی وارد حساب شوید، مرورگر را راه‌اندازی و با یک مرورگر مورد اعتمادِ فعلی تأیید کنید. تاریخچهٔ فعلی شما در این نشانی باقی می‌ماند.",
   "This IP-only address cannot use browser passkeys. Use your password manager to fill the vault passphrase; a trusted hostname is required for built-in device unlock.":
     "این نشانی آی‌پی مستقیم نمی‌تواند از کلید عبور مرورگر استفاده کند. عبارت مخزن را با مدیر رمز عبور وارد کنید؛ برای باز کردن داخلی با دستگاه، نام میزبان مورد اعتماد لازم است.",
   "Opening HAVEN at a new hostname creates separate browser storage. Keep this trusted IP tab open to approve the new browser; old message history does not move automatically.":

@@ -186,7 +186,9 @@ function AudioAttachment({
     </div>
   );
 }
-export default function Haven() {
+export default function Haven({
+  deviceUnlockHostname = "",
+}: { deviceUnlockHostname?: string } = {}) {
   const [preferencesLoaded, setPreferencesLoaded] = useState(false);
   const [language, setLanguage] = useState<Language>("en"),
     [theme, setTheme] = useState("light");
@@ -2367,6 +2369,7 @@ export default function Haven() {
                 </h1>
                 {screen === "connect" && (
                   <ConnectFlow
+                    deviceUnlockHostname={deviceUnlockHostname}
                     key={`${user.id}:${renderGeneration}`}
                     user={user}
                     vault={vault}
@@ -2908,7 +2911,13 @@ export default function Haven() {
                 )}
                 {screen === "settings" && (
                   <>
-                    {vault && <DeviceUnlockSettings vault={vault} t={t} />}
+                    {vault && (
+                      <DeviceUnlockSettings
+                        vault={vault}
+                        t={t}
+                        hostname={deviceUnlockHostname}
+                      />
+                    )}
                     <ServerPrivacy t={t} />
                     {vault && (
                       <section className="card">
