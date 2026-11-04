@@ -81,7 +81,7 @@ export function ChatComposer({
   const viewOnce = supportsViewOnce && selectionFile?.viewOnce === true;
   const [fileError, setFileError] = useState("");
   const submit = () => {
-    if (disabled || recording || !draft.trim()) return;
+    if (unavailable || recording || !draft.trim()) return;
     // Keep keyboard entry ready for both Enter and a click on Send. Focus now,
     // rather than after awaiting delivery, so navigation never steals it back.
     input.current?.focus({ preventScroll: true });
@@ -408,7 +408,6 @@ export function ChatComposer({
           )}
           aria-label={t("Message")}
           disabled={unavailable || recording}
-          readOnly={busy}
           onCompositionStart={() => {
             composing.current = true;
           }}
@@ -501,7 +500,7 @@ export function ChatComposer({
           className="primary send-button icon-button"
           title={t(reply?.editing ? "Save edit" : "Send")}
           aria-label={t("Send")}
-          disabled={disabled || recording || !draft.trim()}
+          disabled={unavailable || recording || !draft.trim()}
         >
           <Icon name={reply?.editing ? "check" : "send"} size={22} />
         </button>

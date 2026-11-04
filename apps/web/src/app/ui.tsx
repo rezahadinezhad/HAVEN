@@ -13,6 +13,7 @@ import {
   useState,
   type FormEvent,
 } from "react";
+import { flushSync } from "react-dom";
 import QRCode from "qrcode";
 import { Icon, HavenEmblem, type IconName } from "./icons";
 import { ViewOnceMedia } from "./view-once";
@@ -239,7 +240,7 @@ export default function Haven() {
     [members, setMembers] = useState<Device[]>([]),
     [events, setEvents] = useState<LocalEvent[]>([]),
     [query, setQuery] = useState(""),
-    [draft, setDraft] = useState(""),
+    [draft, setDraftState] = useState(""),
     [reply, setReply] = useState<string | undefined>();
   const [invitations, setInvitations] = useState<Invite[]>([]),
     [users, setUsers] = useState<AdminUser[]>([]),
@@ -266,7 +267,26 @@ export default function Haven() {
   const [chatSearch, setChatSearch] = useState(false);
   const [listFilter, setListFilter] = useState<"all" | "unread">("all");
   const currentId = useRef(current?.id);
+  const conversationRequest = useRef(0);
   currentId.current = current?.id;
+  const draftValue = useRef("");
+  const draftCache = useRef(new Map<string, string>());
+  const composerContext = useRef(reply);
+  composerContext.current = reply;
+  function setDraft(text: string) {
+    draftValue.current = text;
+    setDraftState(text);
+  }
+  function rememberedDraft(id: string) {
+    if (
+      vault?.state.closure_archives?.[id] ||
+      vault?.state.retired_history?.[id]
+    ) {
+      draftCache.current.delete(id);
+      return "";
+    }
+    return draftCache.current.get(id) ?? vault?.state.drafts[id] ?? "";
+  }
   const pendingApproval =
     !!vault &&
     devices.some(
@@ -277,11 +297,11 @@ export default function Haven() {
   const busy = pendingOperations > 0;
   const sendingDrafts = useRef(new Set<string>());
   const appName = health?.name || "HAVEN";
-  const perform = async (fn: () => Promise<void>) => {
+  const perform = async (fn: () => Promise<void>, blocking = true) => {
     const generation = vaultGeneration.current;
     setError("");
     setNotice("");
-    setPendingOperations((count) => count + 1);
+    if (blocking) setPendingOperations((count) => count + 1);
     try {
       await fn();
     } catch (e) {
@@ -294,7 +314,7 @@ export default function Haven() {
             : uiError(e),
         );
     } finally {
-      setPendingOperations((count) => count - 1);
+      if (blocking) setPendingOperations((count) => count - 1);
     }
   };
   const lock = useCallback(() => {
@@ -314,6 +334,8 @@ export default function Haven() {
     setEvents([]);
     setUnlock("");
     setDraft("");
+    draftCache.current.clear();
+    sendingDrafts.current.clear();
     setRecovery("");
     setResetPassword("");
     setQuery("");
@@ -761,6 +783,18 @@ export default function Haven() {
   }
   async function openConversation(c: Conversation) {
     const generation = vaultGeneration.current;
+    const request = ++conversationRequest.current;
+    // Bind typing to the selected chat before awaiting its network detail.
+    // Later synchronization must not reset text entered during that wait.
+    setMembers([]);
+    setCurrent(c);
+    setPeerPresence(0);
+    setPeerTyping(0);
+    setReply(undefined);
+    setChatSearch(false);
+    setThreadAtBottom(true);
+    setDraft(rememberedDraft(c.id));
+    setGroupOpen(false);
     await perform(async () => {
       const detail = await api<
         Conversation & { members: { device: Device }[] }
@@ -783,16 +817,13 @@ export default function Haven() {
           })),
         };
       });
-      if (generation !== vaultGeneration.current) return;
+      if (
+        generation !== vaultGeneration.current ||
+        request !== conversationRequest.current
+      )
+        return;
       setMembers(detail.members.map((x) => x.device));
       setCurrent(detail);
-      setPeerPresence(0);
-      setPeerTyping(0);
-      setReply(undefined);
-      setChatSearch(false);
-      setThreadAtBottom(true);
-      setDraft(vault?.state.drafts[c.id] || "");
-      setGroupOpen(false);
       if (vault && !document.hidden) await vault.markRead(c.id);
       if (vault && online) {
         await vault.sync(detail);
@@ -870,40 +901,86 @@ export default function Haven() {
   }
   async function send(
     type: LocalEvent["type"] = "text",
-    text = draft,
+    text = draftValue.current,
     target?: string,
     emoji?: string,
   ) {
     if (!vault || !current) return;
     const conversation = current;
-    const consumesDraft = type === "text" || type === "edit";
-    if (consumesDraft && sendingDrafts.current.has(conversation.id)) return;
-    if (consumesDraft) sendingDrafts.current.add(conversation.id);
-    try {
-      await perform(async () => {
-        await vault.send(conversation, {
-          type,
-          text,
-          target,
-          emoji,
-          reply:
-            type === "text" && !reply?.startsWith("edit:") ? reply : undefined,
-        });
-        if (vaultRef.current !== vault) return;
-        if (
-          (type === "text" || type === "edit") &&
-          currentId.current === conversation.id
-        ) {
-          setDraft(
-            type === "edit" ? vault.state.drafts[conversation.id] || "" : "",
-          );
-          setReply(undefined);
-        }
-        setEvents([...vault.state.events]);
-      });
-    } finally {
-      if (consumesDraft) sendingDrafts.current.delete(conversation.id);
-    }
+    const updatesComposer = type === "text" || type === "edit";
+    const submissionReply = reply;
+    if (updatesComposer && sendingDrafts.current.has(conversation.id)) return;
+    if (updatesComposer) sendingDrafts.current.add(conversation.id);
+    if (type === "text") draftCache.current.set(conversation.id, text);
+    await perform(async () => {
+      try {
+        await vault.send(
+          conversation,
+          {
+            type,
+            text,
+            target,
+            emoji,
+            reply:
+              type === "text" && !submissionReply?.startsWith("edit:")
+                ? submissionReply
+                : undefined,
+          },
+          () => {
+            if (vaultRef.current !== vault) return;
+            if (updatesComposer) sendingDrafts.current.delete(conversation.id);
+            if (type === "text") {
+              // Keystrokes entered during encryption belong to the next draft.
+              // Remove only the submitted prefix, never clear a later draft.
+              const latest = rememberedDraft(conversation.id);
+              const next = latest.startsWith(text)
+                ? latest.slice(text.length)
+                : latest;
+              draftCache.current.set(conversation.id, next);
+              if (
+                currentId.current === conversation.id &&
+                !composerContext.current?.startsWith("edit:")
+              ) {
+                // Commit before the browser processes another key; otherwise
+                // a key can append to the old DOM value and reintroduce it.
+                flushSync(() => {
+                  setDraft(next);
+                  if (composerContext.current === submissionReply)
+                    setReply(undefined);
+                });
+              }
+              if (next)
+                void vault.draft(conversation.id, next).catch((e) => {
+                  if (vaultRef.current === vault) setError(uiError(e));
+                });
+            } else if (
+              type === "edit" &&
+              currentId.current === conversation.id &&
+              composerContext.current === submissionReply
+            ) {
+              const latest = draftValue.current;
+              const extra = latest.startsWith(text)
+                ? latest.slice(text.length)
+                : latest;
+              const next = rememberedDraft(conversation.id) + extra;
+              draftCache.current.set(conversation.id, next);
+              flushSync(() => {
+                setDraft(next);
+                setReply(undefined);
+              });
+            }
+            setEvents([...vault.state.events]);
+          },
+        );
+        if (vaultRef.current === vault) setEvents([...vault.state.events]);
+      } catch (e) {
+        // Before local acceptance, the original text stays in the editable
+        // composer/cache. A rejected send never consumes the user's writing.
+        if (updatesComposer && vaultRef.current === vault)
+          sendingDrafts.current.delete(conversation.id);
+        throw e;
+      }
+    }, !updatesComposer);
   }
 
   async function attach(file: File, asViewOnce = false) {
@@ -1107,8 +1184,15 @@ export default function Haven() {
   function messageAction(action: MessageAction, message: Message) {
     if (action === "reply") setReply(message.event.id);
     if (action === "edit") {
-      if (!reply?.startsWith("edit:") && vault && current)
-        void vault.draft(current.id, draft).catch((e) => setError(uiError(e)));
+      if (
+        !reply?.startsWith("edit:") &&
+        vault &&
+        current &&
+        !sendingDrafts.current.has(current.id)
+      )
+        void vault
+          .draft(current.id, rememberedDraft(current.id))
+          .catch((e) => setError(uiError(e)));
       setReply("edit:" + message.event.id);
       setDraft(message.text);
     }
@@ -2084,6 +2168,8 @@ export default function Haven() {
                         draft={draft}
                         change={(text) => {
                           setDraft(text);
+                          if (!reply?.startsWith("edit:"))
+                            draftCache.current.set(current.id, text);
                           composerActivity(!!text.trim());
                           if (
                             typing &&
@@ -2109,7 +2195,7 @@ export default function Haven() {
                             !sendingDrafts.current.has(current.id)
                           )
                             void vault
-                              .draft(current.id, draft)
+                              .draft(current.id, rememberedDraft(current.id))
                               .catch((e) => setError(uiError(e)));
                         }}
                         send={() => {
@@ -2130,7 +2216,7 @@ export default function Haven() {
                         reply={replyContext}
                         cancelReply={() => {
                           if (reply?.startsWith("edit:"))
-                            setDraft(vault?.state.drafts[current.id] || "");
+                            setDraft(rememberedDraft(current.id));
                           setReply(undefined);
                         }}
                         online={online}
