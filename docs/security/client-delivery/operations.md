@@ -78,3 +78,15 @@ For frontend updates, stop/switch the gateway image, retain the same frontend or
 ### Initial release1 launcher maintenance
 
 Local release1 was installed before the runtime-lifetime fix. Its initial launcher did not replace itself during updates. The maintained operator installation is upgraded using the reviewed source bootstrap and the already pinned root to apply release2; the TLS/browser/vault profile stays in place. Release2 and later authenticate launcher maintenance updates as part of normal signed installation. The runtime inherits the kernel update lock, even if a parent is killed abruptly, and ordinary launcher termination forwards the signal and reaps the runtime.
+
+
+### Installed transport override
+
+An operator may set `--upstream-address` and `--upstream-port` during `configure`,
+or preserve an existing protected profile's `api_origin` while explicitly setting
+those two optional fields with the client stopped. The transport port is an
+integer in1..65535. Certificate and request identity remain the logical API origin;
+the separate address/port only select the socket destination. Installed `serve`
+still refuses endpoint overrides on its command line. See the maintained
+[device-unlock installation](../device-unlock-installation.md) for the local
+compatibility listener. No website or API response can reconfigure these fields.
