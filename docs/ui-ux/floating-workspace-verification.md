@@ -34,3 +34,13 @@ TypeScript and both pinned production builds passed. The regular-web design/CSP 
 The refreshed README captures show real delivered synthetic conversations.
 Viewports do not qualify physical devices, and these checks do not replace
 independent security review. Earlier assurance reports retain their dated scope.
+
+## Maintained installation
+
+Signed release4 and the regular frontend are active at the existing three local
+endpoints. Trusted-TLS read-only checks loaded the sign-in screens and release
+styles without foreign requests or page errors. The installed/independent modes
+advertise sequence4 with the expected signed manifest and no QA helper. Existing
+origins, publisher/TLS roots and browser state are preserved. The public archive
+contains only the signed release, public verifier/key and license notices.
+See [the installation record](../security/client-delivery/local-installation.md).
