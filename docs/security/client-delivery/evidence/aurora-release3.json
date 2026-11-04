@@ -1,0 +1,38 @@
+{
+  "date": "2026-11-04",
+  "source": "cbd76fce4a777d29130911662a397400173086d4",
+  "checks": [
+    {
+      "mode": "installed",
+      "origin": "https://127.0.0.1:9443",
+      "release": 3,
+      "digest": "2f4f891c9f0b26a7faa7ee08ef0f4f8a22c6265578edaf66b2e3ebd539a3d398",
+      "secureContext": true,
+      "auroraStyles": true,
+      "foreignBrowserRequests": 0,
+      "pageErrors": 0,
+      "signInScreen": true
+    },
+    {
+      "mode": "independent-web",
+      "origin": "https://127.0.0.2:8447",
+      "release": 3,
+      "digest": "2f4f891c9f0b26a7faa7ee08ef0f4f8a22c6265578edaf66b2e3ebd539a3d398",
+      "secureContext": true,
+      "auroraStyles": true,
+      "foreignBrowserRequests": 0,
+      "pageErrors": 0,
+      "signInScreen": true
+    },
+    {
+      "mode": "same-origin",
+      "origin": "https://127.0.0.1:8444",
+      "secureContext": true,
+      "auroraStyles": true,
+      "foreignBrowserRequests": 0,
+      "pageErrors": 0,
+      "signInScreen": true
+    }
+  ],
+  "scope": "Read-only smoke in disposable trusted browser profiles; no operator credentials or personal vault used."
+}
