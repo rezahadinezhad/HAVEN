@@ -5,6 +5,13 @@ uses a conversation list and thread, with settings and account tools in a tempor
 menu drawer. It retains the established identity checks and familiar chat interactions. It adds no runtime
 service, package dependency, server schema or cryptographic primitive.
 
+## Flowing aurora · November 4, 2026
+
+Three blue, mint and rose/coral bands now travel through the entire canvas,
+including the lower chat area. Visible movement is checked against wall-clock
+frames, and Pause holds the layers still. Reduced motion and hidden-document
+pausing remain supported. See [flowing aurora verification](flowing-aurora-verification.md).
+
 ## Floating surfaces · November 4, 2026
 
 The current shell follows the supplied Telegram references: the conversation list,

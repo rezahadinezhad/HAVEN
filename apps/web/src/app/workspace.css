@@ -365,96 +365,145 @@ html[data-theme="dark"] .chat-panel {
 }
 .aurora-field {
   position: absolute;
-  inset-inline-start: -25%;
-  top: -26%;
-  width: 150%;
-  height: 125%;
-  max-height: 1300px;
-  opacity: 0.38;
-  transform-origin: 50% 35%;
-  transition: opacity 700ms ease;
+  inset-inline-start: -20%;
+  top: -20%;
+  width: 140%;
+  height: 140%;
+  max-width: 2400px;
+  max-height: 1800px;
+  opacity: 0.64;
+  transform-origin: center;
+  transition: opacity 600ms ease;
   animation-play-state: paused;
 }
 .aurora-field-blue {
-  background: radial-gradient(
-    ellipse at 58% 12%,
-    #79aaff 0%,
-    #a6baff99 28%,
-    #a8d6ff44 48%,
-    transparent 67%
-  );
-  animation: aurora-blue 22s cubic-bezier(0.4, 0, 0.6, 1) infinite alternate;
+  background:
+    radial-gradient(
+      ellipse 42% 30% at 44% 42%,
+      #80a9ffdc,
+      #a2acff88 36%,
+      transparent 74%
+    ),
+    radial-gradient(ellipse 42% 20% at 68% 50%, #9d9bff88, transparent 76%);
+  animation: aurora-blue 14s cubic-bezier(0.45, 0, 0.55, 1) infinite;
   animation-play-state: paused;
 }
 .aurora-field-teal {
-  background: radial-gradient(
-    ellipse at 20% 35%,
-    #70d6cebb 0%,
-    #92dce966 26%,
-    transparent 59%
-  );
-  animation: aurora-teal 28s cubic-bezier(0.4, 0, 0.6, 1) infinite alternate;
+  background:
+    radial-gradient(
+      ellipse 40% 32% at 48% 50%,
+      #64dcbcbf,
+      #83e4d176 38%,
+      transparent 76%
+    ),
+    radial-gradient(ellipse 45% 18% at 36% 46%, #7bcfe966, transparent 78%);
+  animation: aurora-teal 18s cubic-bezier(0.45, 0, 0.55, 1) -5s infinite;
+  animation-play-state: paused;
+}
+.aurora-field-rose {
+  background:
+    radial-gradient(
+      ellipse 40% 28% at 52% 46%,
+      #ed9ac7bc,
+      #ebafcf66 36%,
+      transparent 76%
+    ),
+    radial-gradient(ellipse 42% 20% at 38% 50%, #f1ac9c88, transparent 76%);
+  animation: aurora-rose 22s cubic-bezier(0.45, 0, 0.55, 1) -9s infinite;
   animation-play-state: paused;
 }
 .aurora-backdrop[data-animated="true"] .aurora-field {
   animation-play-state: running;
 }
 .aurora-backdrop[data-active="true"] .aurora-field {
-  opacity: 0.62;
+  opacity: 0.84;
 }
 .aurora-shade {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    180deg,
-    transparent 5%,
-    #eef4fb18 32%,
-    #eef4fbdf 88%
+  background: radial-gradient(
+    ellipse at center,
+    transparent 30%,
+    #edf4fc24 100%
   );
+}
+html[data-theme="dark"] .aurora-field {
+  opacity: 0.82;
 }
 html[data-theme="dark"] .aurora-field-blue {
-  background: radial-gradient(
-    ellipse at 58% 8%,
-    #225eced6 0%,
-    #162b774d 38%,
-    transparent 65%
-  );
-  opacity: 0.68;
+  background:
+    radial-gradient(
+      ellipse 42% 30% at 44% 42%,
+      #316dffda,
+      #4245db88 36%,
+      transparent 74%
+    ),
+    radial-gradient(ellipse 42% 20% at 68% 50%, #6a3ddc88, transparent 76%);
 }
 html[data-theme="dark"] .aurora-field-teal {
-  background: radial-gradient(
-    ellipse at 20% 29%,
-    #087d7299 0%,
-    #083d5944 30%,
-    transparent 58%
-  );
-  opacity: 0.62;
+  background:
+    radial-gradient(
+      ellipse 40% 32% at 48% 50%,
+      #10ad89c2,
+      #168c8b66 38%,
+      transparent 76%
+    ),
+    radial-gradient(ellipse 45% 18% at 36% 46%, #227fc488, transparent 78%);
+}
+html[data-theme="dark"] .aurora-field-rose {
+  background:
+    radial-gradient(
+      ellipse 40% 28% at 52% 46%,
+      #c242a5ad,
+      #b5498c66 36%,
+      transparent 76%
+    ),
+    radial-gradient(ellipse 42% 20% at 38% 50%, #e2605f8c, transparent 76%);
 }
 html[data-theme="dark"] .aurora-backdrop[data-active="true"] .aurora-field {
-  opacity: 0.95;
+  opacity: 0.96;
 }
 html[data-theme="dark"] .aurora-shade {
-  background: linear-gradient(
-    180deg,
-    transparent 2%,
-    #05090f10 30%,
-    #05090fea 85%
+  background: radial-gradient(
+    ellipse at center,
+    transparent 30%,
+    #05090f38 100%
   );
 }
 @keyframes aurora-blue {
-  from {
-    transform: translate3d(-3%, -2%, 0) rotate(-7deg) scale(1);
+  0%,
+  100% {
+    transform: translate3d(-16%, -20%, 0) rotate(-16deg) scale(1.08);
   }
-  to {
-    transform: translate3d(6%, 5%, 0) rotate(7deg) scale(1.08);
+  33% {
+    transform: translate3d(12%, 23%, 0) rotate(14deg) scale(1.18);
+  }
+  66% {
+    transform: translate3d(-8%, 35%, 0) rotate(-8deg) scale(1.12);
   }
 }
 @keyframes aurora-teal {
-  from {
-    transform: translate3d(-3%, 7%, 0) rotate(6deg) scale(1.02);
+  0%,
+  100% {
+    transform: translate3d(12%, 24%, 0) rotate(18deg) scale(1.12);
   }
-  to {
-    transform: translate3d(8%, -5%, 0) rotate(-5deg) scale(1.08);
+  33% {
+    transform: translate3d(-18%, -18%, 0) rotate(-14deg) scale(1.2);
+  }
+  66% {
+    transform: translate3d(16%, -28%, 0) rotate(12deg) scale(1.08);
+  }
+}
+@keyframes aurora-rose {
+  0%,
+  100% {
+    transform: translate3d(20%, -22%, 0) rotate(-12deg) scale(1.12);
+  }
+  33% {
+    transform: translate3d(-15%, 18%, 0) rotate(16deg) scale(1.18);
+  }
+  66% {
+    transform: translate3d(-18%, -24%, 0) rotate(-18deg) scale(1.08);
   }
 }
 .chat-panel .chat-header {
