@@ -1,4 +1,4 @@
-import { test, expect } from "./fixtures";
+import { test, expect, navigate } from "./fixtures";
 import { chromium } from "@playwright/test";
 import fs from "node:fs";
 import path from "node:path";
@@ -27,13 +27,9 @@ test("trusted TLS, login, invitation and operator account flows, bilingual mobil
   await page.getByLabel("Username", { exact: true }).fill(credentials.username);
   await page.getByLabel("Password", { exact: true }).fill(credentials.password);
   await page.locator("form button.primary").click();
-  await expect(
-    page.getByRole("button", { name: "Operator console", exact: true }),
-  ).toBeVisible();
+  await expect(page.getByRole("button", { name: "Open menu" })).toBeVisible();
   await expect(page.locator(".gate")).toHaveCount(0);
-  await page
-    .getByRole("button", { name: "Operator console", exact: true })
-    .click();
+  await navigate(page, "Operator console");
   await page
     .getByRole("button", { name: "Create invitation", exact: true })
     .click();
@@ -49,11 +45,11 @@ test("trusted TLS, login, invitation and operator account flows, bilingual mobil
     .first()
     .getByRole("button", { name: "Revoke", exact: true })
     .click();
-  await page.getByRole("button", { name: "Devices", exact: true }).click();
+  await navigate(page, "Devices");
   await expect(
     page.getByRole("button", { name: "Create device vault", exact: true }),
   ).toBeEnabled();
-  await page.getByRole("button", { name: "Settings", exact: true }).click();
+  await navigate(page, "Settings");
   await page.getByLabel("Theme", { exact: true }).selectOption("light");
   await page.getByLabel("Language", { exact: true }).selectOption("fa");
   await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
@@ -68,7 +64,7 @@ test("trusted TLS, login, invitation and operator account flows, bilingual mobil
   expect(overflow).toBeFalsy();
   await page.getByLabel("زبان", { exact: true }).selectOption("en");
   await page.setViewportSize({ width: 320, height: 720 });
-  await page.getByRole("button", { name: "Messages", exact: true }).click();
+  await navigate(page, "Messages");
   await page.screenshot({
     path: "../../docs/evidence/mobile-messages.png",
     fullPage: true,

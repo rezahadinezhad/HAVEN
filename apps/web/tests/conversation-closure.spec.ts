@@ -1,4 +1,4 @@
-import { test, expect, loginBootstrap } from "./fixtures";
+import { test, expect, loginBootstrap, navigate } from "./fixtures";
 import fs from "node:fs";
 import { execFileSync } from "node:child_process";
 import path from "node:path";
@@ -533,15 +533,15 @@ test("mutual closure persists complete encrypted archives before consent and sur
       await p.context().setOffline(false);
     }
     await a.goto("https://127.0.0.1:8445/");
-    await a.getByRole("button", { name: "Start a chat", exact: true }).click();
+    await navigate(a, "Start a chat");
     await a.getByLabel("Unlock passphrase", { exact: true }).fill(uiSecret);
     await a
       .getByRole("button", { name: "Unlock and continue", exact: true })
       .click();
     await expect(
       a.getByRole("button", { name: "Lock vault", exact: true }),
-    ).toBeVisible();
-    await a.getByRole("button", { name: "Messages", exact: true }).click();
+    ).toHaveCount(1);
+    await navigate(a, "Messages");
     await a.locator(".conversation-row").first().click();
     await expect(
       a.getByRole("button", { name: "Add attachment", exact: true }),
@@ -557,7 +557,7 @@ test("mutual closure persists complete encrypted archives before consent and sur
       path: "../../docs/security/account-closure/evidence/closure-en.png",
       fullPage: true,
     });
-    await a.getByRole("button", { name: "Recovery kit", exact: true }).click();
+    await navigate(a, "Recovery kit");
     await expect(
       a.getByRole("heading", {
         name: "Closed conversation archives",

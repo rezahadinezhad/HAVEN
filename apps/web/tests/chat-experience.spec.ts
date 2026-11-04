@@ -1,4 +1,10 @@
-import { test, expect, loginBootstrap, selectAttachment } from "./fixtures";
+import {
+  test,
+  expect,
+  loginBootstrap,
+  selectAttachment,
+  navigate,
+} from "./fixtures";
 import fs from "node:fs";
 import path from "node:path";
 const credentials = JSON.parse(
@@ -126,7 +132,7 @@ test("conversation UX: encrypted messages, keyboard/IME, drafts, replies, scroll
         });
     }, cid);
     async function unlock(page: typeof a, secret: string) {
-      await page.locator(".connect-entry").click();
+      await navigate(page, "Start a chat");
       await page.getByLabel("Unlock passphrase", { exact: true }).fill(secret);
       await page
         .getByRole("button", { name: "Unlock and continue", exact: true })
@@ -134,7 +140,7 @@ test("conversation UX: encrypted messages, keyboard/IME, drafts, replies, scroll
       await expect(
         page.getByText("This browser is ready", { exact: true }),
       ).toBeVisible();
-      await page.getByRole("button", { name: "Messages", exact: true }).click();
+      await navigate(page, "Messages");
       await page.locator(".conversation-row").click();
       await expect(page.getByLabel("Message", { exact: true })).toBeEnabled();
     }
@@ -771,7 +777,7 @@ test("conversation UX: encrypted messages, keyboard/IME, drafts, replies, scroll
       .toBe(480);
     const lockURL = await lockImage.getAttribute("src"),
       lockNode = await lockImage.elementHandle();
-    await a.getByRole("button", { name: "قفل کردن مخزن", exact: true }).click();
+    await navigate(a, "قفل کردن مخزن");
     await expect(a.locator(".attachment-confirmation")).toHaveCount(0);
     expect(await lockNode!.getAttribute("src")).toBeNull();
     expect(

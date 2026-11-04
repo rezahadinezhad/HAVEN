@@ -1,4 +1,4 @@
-import { test, expect, loginBootstrap } from "./fixtures";
+import { test, expect, loginBootstrap, navigate } from "./fixtures";
 import fs from "node:fs";
 import path from "node:path";
 import { randomBytes } from "node:crypto";
@@ -54,7 +54,7 @@ test("opt-in hostname: real vault setup, PRF enrollment, reload unlock and remov
       ).user;
     });
     await page.goto(origin!);
-    await page.locator(".connect-entry").click();
+    await navigate(page, "Start a chat");
     await expect(
       page.getByRole("heading", { name: "Set up this browser" }),
     ).toBeVisible();
@@ -69,7 +69,7 @@ test("opt-in hostname: real vault setup, PRF enrollment, reload unlock and remov
     const before = await page.evaluate(
       async () => (await (await fetch("/api/v1/devices")).json())[0].id,
     );
-    await page.locator('.sidebar .nav-item[aria-label="Settings"]').click();
+    await navigate(page, "Settings");
     await expect(
       page.getByRole("button", { name: "Set up device unlock" }),
     ).toBeVisible();
@@ -106,7 +106,7 @@ test("opt-in hostname: real vault setup, PRF enrollment, reload unlock and remov
       fullPage: true,
     });
     await page.reload();
-    await page.locator(".connect-entry").click();
+    await navigate(page, "Start a chat");
     await expect(
       page.getByRole("heading", { name: "Unlock this browser" }),
     ).toBeVisible();
@@ -122,7 +122,7 @@ test("opt-in hostname: real vault setup, PRF enrollment, reload unlock and remov
       async () => (await (await fetch("/api/v1/devices")).json())[0].id,
     );
     expect(after).toBe(before);
-    await page.locator('.sidebar .nav-item[aria-label="Settings"]').click();
+    await navigate(page, "Settings");
     await page.getByRole("button", { name: "Remove device unlock" }).click();
     await expect(
       page.getByText(
@@ -130,7 +130,7 @@ test("opt-in hostname: real vault setup, PRF enrollment, reload unlock and remov
       ),
     ).toBeVisible();
     await page.reload();
-    await page.locator(".connect-entry").click();
+    await navigate(page, "Start a chat");
     await expect(
       page.getByRole("button", { name: "Unlock with this device" }),
     ).toHaveCount(0);

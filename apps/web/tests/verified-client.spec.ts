@@ -10,7 +10,7 @@ import os from "node:os";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
 import configuration from "../playwright.config";
-import { loginBootstrap } from "./fixtures";
+import { loginBootstrap, navigate } from "./fixtures";
 const profile = process.env.HAVEN_VERIFIED_PROFILE;
 const endpoint = process.env.HAVEN_VERIFIED_URL || "https://127.0.0.1:9455";
 test.skip(!profile, "Explicit signed QA release/profile required");
@@ -244,7 +244,7 @@ test("signed local client preserves MLS, encrypted media and reload while API co
     await expect(
       b.getByRole("heading", { name: "Conversations", exact: true }),
     ).toBeVisible();
-    await b.getByRole("button", { name: "Devices", exact: true }).click();
+    await navigate(b, "Devices");
     await b
       .getByLabel("Local unlock passphrase", { exact: true })
       .fill(restored.secret);

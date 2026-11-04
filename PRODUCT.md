@@ -17,8 +17,9 @@ verified identities, durable delivery and clear security limitations.
 
 ## Brand Personality
 
-Calm, precise, approachable. The owner's iOS-inspired direction is captured in
-DESIGN.md and the existing interface; preserve that system.
+Calm, precise, approachable. Conversation-first navigation and a blue/teal aurora
+express the owner’s Telegram/Gemini references through HAVEN’s own visual identity.
+DESIGN.md records the current structure, motion and privacy choices.
 
 ## Anti-references
 

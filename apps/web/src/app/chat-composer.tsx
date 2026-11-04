@@ -27,6 +27,7 @@ export function ChatComposer({
   draft,
   change,
   saveDraft,
+  inactive,
   send,
   attach,
   voice,
@@ -43,6 +44,7 @@ export function ChatComposer({
   draft: string;
   change: (text: string) => void;
   saveDraft: () => void;
+  inactive: () => void;
   send: () => void;
   attach: (file: File, viewOnce: boolean) => void;
   voice: () => void;
@@ -403,7 +405,10 @@ export function ChatComposer({
             composing.current = false;
           }}
           onChange={(e) => change(e.target.value)}
-          onBlur={saveDraft}
+          onBlur={() => {
+            saveDraft();
+            inactive();
+          }}
           onSelect={(e) => {
             selection.current = {
               start: e.currentTarget.selectionStart,

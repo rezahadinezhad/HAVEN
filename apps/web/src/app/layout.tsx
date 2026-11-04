@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./style.css";
 import "./chat.css";
+import "./workspace.css";
 import localFont from "next/font/local";
 const persian = localFont({
   src: "./fonts/Vazirmatn-Variable.woff2",

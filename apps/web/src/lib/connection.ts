@@ -62,6 +62,7 @@ export function connectionLoop(
       }, 20000);
     };
     socket.onmessage = (e) => {
+      if (stopped) return;
       try {
         if (typeof e.data !== "string" || e.data.length > 2048) {
           socket?.close(1009);
@@ -99,7 +100,12 @@ export function connectionLoop(
   let lastTyping = 0;
   const typing = (e: Event) => {
     const cid = (e as CustomEvent<string>).detail;
-    if (Date.now() - lastTyping < 3000 || socket?.readyState !== WebSocket.OPEN)
+    if (
+      stopped ||
+      document.hidden ||
+      Date.now() - lastTyping < 3000 ||
+      socket?.readyState !== WebSocket.OPEN
+    )
       return;
     lastTyping = Date.now();
     socket.send(

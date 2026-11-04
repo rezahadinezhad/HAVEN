@@ -1,4 +1,4 @@
-import { test, expect, loginBootstrap } from "./fixtures";
+import { test, expect, loginBootstrap, navigate } from "./fixtures";
 import fs from "node:fs";
 import path from "node:path";
 import nodeCrypto from "node:crypto";
@@ -59,7 +59,7 @@ test("guide preserves pending browser keys; administrator invitation controls an
     await second.getByLabel("Username", { exact: true }).fill(account.username);
     await second.getByLabel("Password", { exact: true }).fill(account.password);
     await second.locator("form button.primary").click();
-    await second.locator(".connect-entry").click();
+    await navigate(second, "Start a chat");
     await second.getByLabel("Unlock passphrase", { exact: true }).fill(secret);
     await second
       .getByLabel("Confirm unlock passphrase", { exact: true })
@@ -82,7 +82,7 @@ test("guide preserves pending browser keys; administrator invitation controls an
     );
     expect(pending).toBeTruthy();
     await second.reload();
-    await second.locator(".connect-entry").click();
+    await navigate(second, "Start a chat");
     await expect(
       second.getByRole("heading", { name: "Unlock this browser", exact: true }),
     ).toBeVisible();
@@ -143,9 +143,7 @@ test("guide preserves pending browser keys; administrator invitation controls an
     );
 
     await admin.goto(origin);
-    await admin
-      .getByRole("button", { name: "Operator console", exact: true })
-      .click();
+    await navigate(admin, "Operator console");
     await admin
       .getByRole("button", { name: "Disable member invitations", exact: true })
       .click();
@@ -155,8 +153,8 @@ test("guide preserves pending browser keys; administrator invitation controls an
         exact: true,
       }),
     ).toBeVisible();
-    await second.getByRole("button", { name: "Messages", exact: true }).click();
-    await second.locator(".connect-entry").click();
+    await navigate(second, "Messages");
+    await navigate(second, "Start a chat");
     await expect(
       second.getByText(
         "Ask the administrator for a signup invitation. You can still share a friend link with an existing member.",
@@ -181,7 +179,7 @@ test("guide preserves pending browser keys; administrator invitation controls an
       }),
     );
     await second.goto("https://127.0.0.1:8443/");
-    await second.locator(".connect-entry").click();
+    await navigate(second, "Start a chat");
     await expect(
       second.getByText(
         "Messaging is unavailable until security qualification is complete. An administrator cannot bypass this gate.",

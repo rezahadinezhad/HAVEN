@@ -1,9 +1,33 @@
-# Conversation experience — 2026-10-25–29
+# Conversation experience
 
-HAVEN's conversation is the primary working surface. This revision preserves the
-existing Liquid Calm palette and security checks, with a denser conversation
-list, quiet message bubbles and familiar chat interactions. It adds no runtime
+HAVEN's conversation is the primary working surface. The current Aurora layout
+uses a conversation list and thread, with settings and account tools in a temporary
+menu drawer. It retains the established identity checks and familiar chat interactions. It adds no runtime
 service, package dependency, server schema or cryptographic primitive.
+
+## Aurora update · November 4, 2026
+
+The desktop has two panes; phones show the list or thread with a back action.
+Settings use the full content area. A native modal drawer contains navigation,
+account tools and vault locking, supports Escape/outside dismissal, and restores
+focus on close. It replaces the permanent rail and floating mobile dock.
+
+Two transform/opacity gradient layers create a blue/teal aurora, with an opaque
+composer and message bubbles above it. Settings can pause the background;
+hidden tabs pause it automatically, and reduced motion disables its animation.
+Local typing briefly strengthens the composer and backdrop. Remote typing uses
+three animated dots and a status label without moving the composer.
+
+Remote indicators remain off by default. Enabling them permits sending and
+receiving the existing authenticated, rate-limited WebSocket hint. Each hint is
+content-free and expires after five seconds; it is not stored as a message.
+The service and conversation participants can observe the activity. Turning the
+option off clears the local indicator and stops outgoing hints. No new server
+protocol or cryptographic primitive was introduced.
+
+The opt-in signed-client capture now also exercises both privacy defaults, real
+remote hints/expiry, motion controls, drawer focus/dismissal, 320–1024px layouts
+and Persian RTL. See [Aurora verification](aurora-verification.md).
 
 ## Review and resulting changes
 

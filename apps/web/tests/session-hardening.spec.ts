@@ -1,4 +1,4 @@
-import { test, expect, loginBootstrap } from "./fixtures";
+import { test, expect, loginBootstrap, navigate } from "./fixtures";
 import fs from "node:fs";
 import path from "node:path";
 import { randomBytes } from "node:crypto";
@@ -33,20 +33,20 @@ test("real vault: pagehide, suspended inactivity, offline access and confirmed r
       });
     });
     await page.goto(origin);
-    await page.locator(".connect-entry").click();
+    await navigate(page, "Start a chat");
     await page.getByLabel("Unlock passphrase", { exact: true }).fill(secret);
     await page
       .getByLabel("Confirm unlock passphrase", { exact: true })
       .fill(secret);
     await page.getByRole("button", { name: "Set up and continue" }).click();
-    const shortcut = page.locator(".sidebar .vault-shortcut");
+    const shortcut = page.locator(".workspace-menu .vault-shortcut");
     await expect(shortcut).toHaveText("Lock vault");
     const devices = await page.evaluate(async () =>
       (await (await fetch("/api/v1/devices")).json()).map((d: any) => d.id),
     );
 
     async function unlock() {
-      await page.locator(".connect-entry").click();
+      await navigate(page, "Start a chat");
       await page.getByLabel("Unlock passphrase", { exact: true }).fill(secret);
       await page.getByRole("button", { name: "Unlock and continue" }).click();
       await expect(shortcut).toHaveText("Lock vault");

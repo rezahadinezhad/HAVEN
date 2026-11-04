@@ -18,6 +18,7 @@ import { Icon, HavenEmblem, type IconName } from "./icons";
 import { ViewOnceMedia } from "./view-once";
 import { ChatThread, type MessageAction } from "./chat-thread";
 import { ChatComposer } from "./chat-composer";
+import { AuroraBackdrop, TypingIndicator } from "./aurora";
 import { MediaPreview, canPreview } from "./media-preview";
 import {
   conversationMessages,
@@ -189,6 +190,25 @@ export default function Haven() {
   const [language, setLanguage] = useState<Language>("en"),
     [theme, setTheme] = useState("light");
   const t = (s: string) => translate(language, s);
+  const navigation = useRef<HTMLDialogElement>(null);
+  const [ambientMotion, setAmbientMotion] = useState(true);
+  const [composerTyping, setComposerTyping] = useState(false);
+  const composingTimer = useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined,
+  );
+  const composerActivity = useCallback((active: boolean) => {
+    clearTimeout(composingTimer.current);
+    setComposerTyping(active);
+    if (active)
+      composingTimer.current = setTimeout(() => setComposerTyping(false), 1200);
+  }, []);
+  const navigate = (next: Screen) => {
+    navigation.current?.close();
+    setScreen(next);
+    requestAnimationFrame(() =>
+      document.getElementById("main-content")?.focus({ preventScroll: true }),
+    );
+  };
   const accountGeneration = useRef(0);
   const [user, setUser] = useState<User | null>(null),
     [screen, setScreen] = useState<Screen>("messages");
@@ -344,6 +364,7 @@ export default function Haven() {
     setReceipts(privacy.receipts === true);
     setTyping(privacy.typing === true);
     setPresence(privacy.presence === true);
+    setAmbientMotion(localStorage.getItem("haven-ambient-motion") !== "off");
     setPreferencesLoaded(true);
     const color = localStorage.getItem("haven-theme");
     if (color === "light" || color === "dark") setTheme(color);
@@ -665,6 +686,35 @@ export default function Haven() {
         .then(() => setEvents([...vault.state.events]))
         .catch(() => {});
   }, [events, current, receipts, online, vault, screen, threadAtBottom, query]);
+  useEffect(() => {
+    if (preferencesLoaded)
+      localStorage.setItem(
+        "haven-ambient-motion",
+        ambientMotion ? "on" : "off",
+      );
+  }, [ambientMotion, preferencesLoaded]);
+  useEffect(() => {
+    composerActivity(false);
+    setPeerTyping(0);
+    setPeerPresence(0);
+    return () => clearTimeout(composingTimer.current);
+  }, [current?.id, screen, vault, typing, composerActivity]);
+  useEffect(() => {
+    if (!peerTyping) return;
+    const timer = setTimeout(
+      () => setPeerTyping(0),
+      Math.min(5000, Math.max(0, peerTyping - Date.now())),
+    );
+    return () => clearTimeout(timer);
+  }, [peerTyping]);
+  useEffect(() => {
+    if (!peerPresence) return;
+    const timer = setTimeout(
+      () => setPeerPresence(0),
+      Math.min(50000, Math.max(0, peerPresence - Date.now())),
+    );
+    return () => clearTimeout(timer);
+  }, [peerPresence]);
   async function adminRefresh() {
     const [i, u, s] = await Promise.all([
       api<Invite[]>("admin/invitations"),
@@ -807,13 +857,9 @@ export default function Haven() {
     setConversations(list);
     if (navigator.storage.persist) await navigator.storage.persist();
   }
-  async function createManualConversation(closureCapable = true) {
+  async function createManualConversation() {
     if (!vault) return;
-    const id = await vault.create(
-      closureCapable ? "direct" : kind,
-      undefined,
-      closureCapable,
-    );
+    const id = await vault.create(kind);
     const list = await api<Conversation[]>("conversations");
     if (vaultRef.current !== vault) return;
     setConversations(list);
@@ -1179,7 +1225,30 @@ export default function Haven() {
         {t("Skip to content")}
       </a>
       <header className="topbar">
-        <a className="brand" href="/" aria-label={appName}>
+        {user && (
+          <button
+            className="quiet icon-button workspace-menu-trigger"
+            aria-label={t("Open menu")}
+            aria-haspopup="dialog"
+            aria-controls="workspace-navigation"
+            onClick={() => navigation.current?.showModal()}
+          >
+            <Icon name="menu" size={23} />
+          </button>
+        )}
+        <a
+          className="brand"
+          href="/"
+          aria-label={appName}
+          onClick={
+            user
+              ? (event) => {
+                  event.preventDefault();
+                  navigate("messages");
+                }
+              : undefined
+          }
+        >
           <span className="brand-mark">
             <Icon name="messages" size={25} filled />
           </span>
@@ -1370,7 +1439,33 @@ export default function Haven() {
         </main>
       ) : (
         <div className="workspace">
-          <aside className="sidebar">
+          <dialog
+            ref={navigation}
+            id="workspace-navigation"
+            className="workspace-menu"
+            aria-label={t("Navigation menu")}
+            onClick={(event) => {
+              if (event.target !== event.currentTarget) return;
+              const bounds = event.currentTarget.getBoundingClientRect();
+              if (
+                event.clientX < bounds.left ||
+                event.clientX > bounds.right ||
+                event.clientY < bounds.top ||
+                event.clientY > bounds.bottom
+              )
+                event.currentTarget.close();
+            }}
+          >
+            <div className="workspace-menu-heading">
+              <h2>{t("Your space")}</h2>
+              <button
+                className="quiet icon-button"
+                aria-label={t("Close menu")}
+                onClick={() => navigation.current?.close()}
+              >
+                <Icon name="close" />
+              </button>
+            </div>
             <div className="profile">
               <div className="avatar">
                 {vault
@@ -1387,16 +1482,15 @@ export default function Haven() {
               </div>
             </div>
             <button
-              className="primary connect-entry"
+              className="primary menu-start-chat"
               title={t("Start a chat")}
               aria-label={t("Start a chat")}
-              onClick={() => setScreen("connect")}
+              onClick={() => navigate("connect")}
             >
               <Icon name="plus" size={18} />
               <span className="connect-label">{t("Start a chat")}</span>
             </button>
             <nav aria-label={t("Main navigation")}>
-              <span className="nav-indicator" aria-hidden="true" />
               {nav.map(([key, icon, label]) => (
                 <button
                   key={key}
@@ -1404,7 +1498,7 @@ export default function Haven() {
                   aria-label={t(label)}
                   aria-current={screen === key ? "page" : undefined}
                   title={t(label)}
-                  onClick={() => setScreen(key)}
+                  onClick={() => navigate(key)}
                 >
                   <Icon name={icon} />
                   <span className="nav-label">{t(label)}</span>
@@ -1417,79 +1511,13 @@ export default function Haven() {
                       ? "nav-item nav-secondary selected"
                       : "nav-item nav-secondary"
                   }
-                  onClick={() => setScreen("admin")}
+                  onClick={() => navigate("admin")}
                 >
                   <Icon name="admin" />
                   <span className="nav-label">{t("Operator console")}</span>
                 </button>
               )}
-              <button
-                className="nav-item mobile-more-trigger"
-                popoverTarget="mobile-more"
-                aria-label={t("More")}
-              >
-                <Icon name="more" />
-                <span className="nav-label">{t("More")}</span>
-              </button>
             </nav>
-            <div id="mobile-more" popover="auto" className="mobile-more">
-              <div className="more-heading">
-                <strong>{t("Your space")}</strong>
-                <button
-                  className="quiet icon-button"
-                  popoverTarget="mobile-more"
-                  popoverTargetAction="hide"
-                  aria-label={t("Close")}
-                >
-                  <Icon name="close" />
-                </button>
-              </div>
-              {[
-                ...nav.filter(([key]) => ["backup", "help"].includes(key)),
-                ...(isAdmin
-                  ? [
-                      ["admin", "admin", "Operator console"] as [
-                        Screen,
-                        IconName,
-                        string,
-                      ],
-                    ]
-                  : []),
-              ].map(([key, icon, label]) => (
-                <button
-                  key={key}
-                  className="nav-item"
-                  onClick={() => {
-                    setScreen(key);
-                    document.getElementById("mobile-more")?.hidePopover();
-                  }}
-                >
-                  <Icon name={icon} />
-                  {t(label)}
-                </button>
-              ))}
-              <button
-                className="nav-item"
-                onClick={() => {
-                  if (vault) lock();
-                  else setScreen("devices");
-                  document.getElementById("mobile-more")?.hidePopover();
-                }}
-              >
-                <Icon name="lock" />
-                {t(vault ? "Lock vault" : "Open your vault")}
-              </button>
-              <button
-                className="nav-item danger"
-                onClick={() => {
-                  document.getElementById("mobile-more")?.hidePopover();
-                  void perform(logout);
-                }}
-              >
-                <Icon name="logout" />
-                {t("Log out")}
-              </button>
-            </div>
             <div className="sidebar-bottom">
               <span className="key-state">
                 <Icon name="lock" size={14} />
@@ -1497,7 +1525,11 @@ export default function Haven() {
               </span>
               <button
                 className="quiet vault-shortcut"
-                onClick={() => (vault ? lock() : setScreen("devices"))}
+                onClick={() => {
+                  navigation.current?.close();
+                  if (vault) lock();
+                  else navigate("devices");
+                }}
               >
                 <Icon name={vault ? "lock" : "key"} size={17} />
                 {t(vault ? "Lock vault" : "Open your vault")}
@@ -1514,8 +1546,24 @@ export default function Haven() {
                 {t("Log out")}
               </button>
             </div>
-          </aside>
+          </dialog>
           <main className="content" id="main-content" tabIndex={-1}>
+            {screen !== "messages" && (
+              <div className="section-navigation">
+                <button className="quiet" onClick={() => navigate("messages")}>
+                  <Icon name="back" size={18} />
+                  {t("Back to conversations")}
+                </button>
+                <span>
+                  {t(
+                    nav.find(([key]) => key === screen)?.[2] ||
+                      (screen === "admin"
+                        ? "Operator console"
+                        : "Start a chat"),
+                  )}
+                </span>
+              </div>
+            )}
             {screen === "messages" && (
               <div className="messenger" data-chat-open={!!current}>
                 <section className="conversation-panel">
@@ -1527,6 +1575,7 @@ export default function Haven() {
                       </span>
                     </div>
                     <button
+                      className="connect-entry new-conversation"
                       title={t("New conversation")}
                       aria-label={t("New conversation")}
                       disabled={!enabled || busy}
@@ -1669,7 +1718,11 @@ export default function Haven() {
                     {t("Search stays on this device")}
                   </div>
                 </section>
-                <section className="chat-panel">
+                <section className="chat-panel" data-composing={composerTyping}>
+                  <AuroraBackdrop
+                    active={composerTyping}
+                    motion={ambientMotion}
+                  />
                   {current ? (
                     <>
                       <header className="chat-header">
@@ -1715,11 +1768,14 @@ export default function Haven() {
                           aria-expanded={groupOpen}
                           onClick={() => setGroupOpen(!groupOpen)}
                         >
-                          {t(
-                            current.kind === "group"
-                              ? "Group & members"
-                              : "Chat details",
-                          )}
+                          <span className="sr-only">
+                            {t(
+                              current.kind === "group"
+                                ? "Group & members"
+                                : "Chat details",
+                            )}
+                          </span>
+                          <Icon name="more" size={24} />
                         </button>
                       </header>
                       {vault && (
@@ -2000,30 +2056,39 @@ export default function Haven() {
                         }}
                         t={t}
                       />
-                      {presence && peerPresence > Date.now() && (
-                        <small className="peer-hint">
-                          {t(
-                            "Another participant has a reachable active tab (server hint)",
-                          )}
-                        </small>
-                      )}
-                      {typing && peerTyping > Date.now() && (
-                        <small className="peer-hint">
-                          {t("Another participant is typing…")}
-                        </small>
-                      )}
+                      <div className="chat-activity" aria-atomic="true">
+                        {typing && peerTyping > Date.now() ? (
+                          <TypingIndicator
+                            label={t("Another participant is typing…")}
+                          />
+                        ) : presence && peerPresence > Date.now() ? (
+                          <small className="peer-hint">
+                            {t(
+                              "Another participant has a reachable active tab (server hint)",
+                            )}
+                          </small>
+                        ) : null}
+                      </div>
                       <ChatComposer
                         key={`composer:${current.id}`}
                         draft={draft}
                         change={(text) => {
                           setDraft(text);
-                          if (typing)
+                          composerActivity(!!text.trim());
+                          if (
+                            typing &&
+                            text.trim() &&
+                            !document.hidden &&
+                            vault &&
+                            !pendingApproval
+                          )
                             window.dispatchEvent(
                               new CustomEvent("haven:typing", {
                                 detail: current.id,
                               }),
                             );
                         }}
+                        inactive={() => composerActivity(false)}
                         saveDraft={() => {
                           if (vault && !reply?.startsWith("edit:"))
                             void vault
@@ -2789,6 +2854,21 @@ export default function Haven() {
                           <option value="light">{t("Light")}</option>
                         </select>
                       </label>
+                      <label className="checkbox">
+                        <input
+                          type="checkbox"
+                          checked={ambientMotion}
+                          onChange={(event) =>
+                            setAmbientMotion(event.target.checked)
+                          }
+                        />
+                        {t("Animated chat background")}
+                      </label>
+                      <p className="fine">
+                        {t(
+                          "Pause the aurora at any time. Reduced motion preferences are always respected.",
+                        )}
+                      </p>
                       <button
                         type="button"
                         onClick={() => {
@@ -2841,11 +2921,17 @@ export default function Haven() {
                         <input
                           type="checkbox"
                           checked={typing}
+                          aria-label={t("Typing indicators")}
                           disabled={!enabled}
                           onChange={(e) => setTyping(e.target.checked)}
                         />
-                        {t("Typing indicators")}
+                        {t("Typing indicators")} · {t("Off by default")}
                       </label>
+                      <p className="fine">
+                        {t(
+                          "Optional typing signals reveal live activity to the service and conversation participants. They contain no message text and expire after five seconds.",
+                        )}
+                      </p>
                     </section>
                     <section className="card">
                       <h2>{t("Local data and account")}</h2>

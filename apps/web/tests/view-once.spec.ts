@@ -1,4 +1,10 @@
-import { test, expect, loginBootstrap, selectAttachment } from "./fixtures";
+import {
+  test,
+  expect,
+  loginBootstrap,
+  selectAttachment,
+  navigate,
+} from "./fixtures";
 import fs from "node:fs";
 import path from "node:path";
 const credentials = JSON.parse(
@@ -172,14 +178,14 @@ test("view-once real UI: encrypted photo/video, account-wide consume, independen
     console.log("View-once: synthetic photo/video fixtures generated");
     for (const [i, page] of pages.entries()) {
       await page.goto("https://127.0.0.1:8445/");
-      await page.getByRole("button", { name: "Devices", exact: true }).click();
+      await navigate(page, "Devices");
       await page
         .getByLabel("Local unlock passphrase", { exact: true })
         .fill(secrets[i]);
       await page
         .getByRole("button", { name: "Unlock vault", exact: true })
         .click();
-      await page.getByRole("button", { name: "Messages", exact: true }).click();
+      await navigate(page, "Messages");
       await page.locator(".conversation-row").first().click();
     }
     await expect(
@@ -373,12 +379,12 @@ test("view-once real UI: encrypted photo/video, account-wide consume, independen
     await expect(b.getByRole("dialog")).not.toBeVisible({ timeout: 15000 });
     // Reload cannot resurrect the opened photo/video.
     await b.reload();
-    await b.getByRole("button", { name: "Devices", exact: true }).click();
+    await navigate(b, "Devices");
     await b
       .getByLabel("Local unlock passphrase", { exact: true })
       .fill(secrets[1]);
     await b.getByRole("button", { name: "Unlock vault", exact: true }).click();
-    await b.getByRole("button", { name: "Messages", exact: true }).click();
+    await navigate(b, "Messages");
     await b.locator(".conversation-row").first().click();
     await expect(b.locator(".view-once-card")).toHaveCount(2);
     for (const card of await b.locator(".view-once-card").all())
@@ -388,7 +394,7 @@ test("view-once real UI: encrypted photo/video, account-wide consume, independen
       .getByRole("button", { name: "Back to conversations", exact: true })
       .click();
     // Real history export has no view-once entries or file keys.
-    await b.getByRole("button", { name: "Settings", exact: true }).click();
+    await navigate(b, "Settings");
     b.once("dialog", (d) => d.accept());
     const downloadPromise = b.waitForEvent("download");
     await b

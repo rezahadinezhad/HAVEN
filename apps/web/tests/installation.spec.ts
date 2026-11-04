@@ -1,4 +1,4 @@
-import { test, expect } from "./fixtures";
+import { test, expect, navigate } from "./fixtures";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -70,7 +70,7 @@ test("installed product uses trusted TLS, clean operational UI and contextual se
   await expect(page.locator("footer")).not.toContainText(
     /UNREVIEWED|CRYPTO_NOT_READY/,
   );
-  await page.getByRole("button", { name: "Settings", exact: true }).click();
+  await navigate(page, "Settings");
   await expect(
     page.getByRole("heading", { name: "What stays on the server" }),
   ).toBeVisible();
