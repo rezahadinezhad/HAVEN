@@ -2,7 +2,7 @@
 
 The existing HAVEN service at `https://127.0.0.1:8444` and its account/vault state are preserved. No database migration or personal device enrollment is needed for this delivery change.
 
-**Signed release 6 is installed and running, after verified release1→2→3→4→5→6 updates.** Its reviewed source is `32ec2636c78a99bbaaac0132cf34c5fcb7fe3f84`. It fixes composer focus after sending and prevents outgoing text from being saved again during a send. The rounded workspace and flowing aurora remain available. No QA helper is present in the production release. Earlier evidence retains its recorded release/revision.
+**Signed release 7 is installed and running, after verified release1→2→3→4→5→6→7 updates.** Its reviewed source is `374ffd426509e223911deeb3e8463bbe304e5448`. The composer stays editable while sending. It clears submitted text after durable local acceptance, commits that DOM clear synchronously, and preserves subsequent typing through delivery and chat switches. The rounded workspace and flowing aurora remain available. No QA helper is present in the production release. Earlier evidence retains its recorded release/revision.
 
 | Component | Maintained location |
 |---|---|
@@ -10,16 +10,16 @@ The existing HAVEN service at `https://127.0.0.1:8444` and its account/vault sta
 | User launcher | `/home/reza-hadinezhad/.local/bin/haven-verified-client`; application menu entry **HAVEN Verified Client** |
 | Protected installed state | `/home/reza-hadinezhad/.local/state/haven/verified-client` |
 | Independent frontend demo | `https://127.0.0.2:8447`, separate non-root/read-only container; only the existing ingress network, no DB network or backend secrets |
-| Distribution archive (local) | `.local/verified-client/HAVEN-verified-client-release-6.tar.gz`, signed archive, public verifier/key and license notices; contains no private signing key |
+| Distribution archive (local) | `.local/verified-client/HAVEN-verified-client-release-7.tar.gz`, signed archive, public verifier/key and license notices; contains no private signing key |
 | Frontend operator helper | `.local/manage-verified-frontend.sh` |
 
 Publisher public-key DER SHA-256: `2cecd962301f0292caca6089a23c0a2c8fb00fb055327342d09daa6abfaaaf99`.
 
-Manifest SHA-256: `a49e8f9e060ed0cf233331825a3b22203f9a7a69d75df890a8ce99e74f3ade7c`.
+Manifest SHA-256: `d4b86957c5a24daf8976d78cdd39bb47dc70be2e24dec106a2c8fc3dbf4b80b7`.
 
 The fingerprint printed here is a record, not an additional independent trust authority. First-install trust must be anchored through the reviewed source/publisher channel, independently of the messaging server.
 
-Release6 passed trusted-TLS read-only checks at all three maintained endpoints. Both signed endpoints advertise sequence6 and the expected manifest, contain no QA helper, and installed mode registers no service worker. Sign-in screens and the three-color styles loaded with zero foreign requests/page errors. No operator credentials or personal vault were used for that smoke. Chrome and Firefox also passed the encrypted composer regression workflow. See [release6 evidence](evidence/composer-release6.json) and [composer verification](../../ui-ux/composer-reliability.md). Existing tabs must reload to run the update; the operator's tab was left undisturbed. [Release5 evidence](evidence/flowing-release5.json) and earlier snapshots remain historical.
+Release7 passed trusted-TLS read-only checks at all three maintained endpoints. Both signed endpoints advertise sequence7 and the expected manifest, contain no QA helper, and installed mode registers no service worker. Sign-in screens and the three-color styles loaded with zero foreign requests/page errors. No operator credentials or personal vault were used for that smoke. Chrome and Firefox also passed the stronger composer workflow, typing immediately after Enter and while an encrypted POST is held open. See [release7 evidence](evidence/continuous-release7.json) and [composer verification](../../ui-ux/composer-reliability.md). Existing tabs must reload to run the update; the operator's tab was left undisturbed. [Release6 evidence](evidence/composer-release6.json), [release5 evidence](evidence/flowing-release5.json) and earlier snapshots remain historical. Release6's keyboard check waited for delivery, missing the read-only interval reported afterward; release7 tests that interval directly.
 
 During release5 verification, the existing owner browser tab was separately observed running the old 22/28-second chat-panel effect. After refreshing, its DOM reports all three new animations running at 14/18/22 seconds on the new workspace canvas. Its vault had already locked due to inactivity and remains available for the owner's own local unlock. No personal passphrase was read or entered.
 
