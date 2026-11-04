@@ -1,0 +1,63 @@
+{
+  "checks": [
+    {
+      "mode": "installed",
+      "origin": "https://127.0.0.1:9443",
+      "release": 7,
+      "digest": "d4b86957c5a24daf8976d78cdd39bb47dc70be2e24dec106a2c8fc3dbf4b80b7",
+      "secureContext": true,
+      "flowingAuroraStyles": true,
+      "signIn": true,
+      "foreignBrowserRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "mode": "independent-web",
+      "origin": "https://127.0.0.2:8447",
+      "release": 7,
+      "digest": "d4b86957c5a24daf8976d78cdd39bb47dc70be2e24dec106a2c8fc3dbf4b80b7",
+      "secureContext": true,
+      "flowingAuroraStyles": true,
+      "signIn": true,
+      "foreignBrowserRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "mode": "same-origin",
+      "origin": "https://127.0.0.1:8444",
+      "secureContext": true,
+      "flowingAuroraStyles": true,
+      "signIn": true,
+      "foreignBrowserRequests": 0,
+      "pageErrors": 0
+    }
+  ],
+  "date": "2026-11-05",
+  "timezone": "Asia/Tehran",
+  "source": "374ffd426509e223911deeb3e8463bbe304e5448",
+  "scope": "Trusted-TLS read-only smoke in disposable profiles; no operator credentials or personal vault. Existing browser tabs were not reloaded.",
+  "composer_regressions": {
+    "chromium": {
+      "startTime": "2026-11-04T20:49:45.482Z",
+      "duration": 31290.948,
+      "expected": 1,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "firefox": {
+      "startTime": "2026-11-04T20:48:40.142Z",
+      "duration": 47537.711,
+      "expected": 1,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    }
+  },
+  "timing_cases": [
+    "raw typing immediately after Enter",
+    "raw typing during a held encrypted POST",
+    "next draft survives delivery and conversation switching",
+    "synchronous DOM clear to prevent Firefox stale-value restoration"
+  ]
+}
