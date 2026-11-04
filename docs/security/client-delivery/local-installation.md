@@ -1,25 +1,28 @@
 # Maintained local client installation
 
-The existing HAVEN service at `https://127.0.0.1:8444` and its account/vault state are preserved. No database migration or personal device enrollment is needed for this delivery change.
+The existing IP vault and account state are preserved. Device unlock uses `https://localhost:8444` in a dedicated trusted Chrome profile; that origin needs its own browser enrollment and approval. No private keys or live MLS identity are silently copied between origins.
 
-**Signed release 7 is installed and running, after verified release1→2→3→4→5→6→7 updates.** Its reviewed source is `374ffd426509e223911deeb3e8463bbe304e5448`. The composer stays editable while sending. It clears submitted text after durable local acceptance, commits that DOM clear synchronously, and preserves subsequent typing through delivery and chat switches. The rounded workspace and flowing aurora remain available. No QA helper is present in the production release. Earlier evidence retains its recorded release/revision.
+**Signed release 9 is installed and running, after verified release1→2→3→4→5→6→7→8→9 updates.** Its reviewed source is `f89ecd0dce57592ea037fd5cae1d9121c58ca745`. Device unlock now offers compatible passkey providers and security keys as well as built-in authenticators, on the maintained hostname. The signed runtime also preserves its logical API identity while using an independently configured TLS transport. No QA helper is present in the production release. Earlier evidence retains its recorded release/revision.
 
 | Component | Maintained location |
 |---|---|
+| Device-unlock browser | `https://localhost:8444`; application menu **HAVEN Device Unlock**, launcher `~/.local/bin/haven-device-unlock`; isolated Chrome/NSS profile |
 | Installed client | `https://127.0.0.1:9443`, loopback only; automatic user service `haven-verified-client.service` |
 | User launcher | `/home/reza-hadinezhad/.local/bin/haven-verified-client`; application menu entry **HAVEN Verified Client** |
 | Protected installed state | `/home/reza-hadinezhad/.local/state/haven/verified-client` |
 | Independent frontend demo | `https://127.0.0.2:8447`, separate non-root/read-only container; only the existing ingress network, no DB network or backend secrets |
-| Distribution archive (local) | `.local/verified-client/HAVEN-verified-client-release-7.tar.gz`, signed archive, public verifier/key and license notices; contains no private signing key |
+| Distribution archive (local) | `.local/verified-client/HAVEN-verified-client-release-9.tar.gz`, signed archive, public verifier/key and license notices; contains no private signing key |
 | Frontend operator helper | `.local/manage-verified-frontend.sh` |
 
 Publisher public-key DER SHA-256: `2cecd962301f0292caca6089a23c0a2c8fb00fb055327342d09daa6abfaaaf99`.
 
-Manifest SHA-256: `d4b86957c5a24daf8976d78cdd39bb47dc70be2e24dec106a2c8fc3dbf4b80b7`.
+Manifest SHA-256: `ebca22bd1921feb2cf65640671600abe6006bf084f86c35c40c3505576c3a126`.
 
 The fingerprint printed here is a record, not an additional independent trust authority. First-install trust must be anchored through the reviewed source/publisher channel, independently of the messaging server.
 
-Release7 passed trusted-TLS read-only checks at all three maintained endpoints. Both signed endpoints advertise sequence7 and the expected manifest, contain no QA helper, and installed mode registers no service worker. Sign-in screens and the three-color styles loaded with zero foreign requests/page errors. No operator credentials or personal vault were used for that smoke. Chrome and Firefox also passed the stronger composer workflow, typing immediately after Enter and while an encrypted POST is held open. See [release7 evidence](evidence/continuous-release7.json) and [composer verification](../../ui-ux/composer-reliability.md). Existing tabs must reload to run the update; the operator's tab was left undisturbed. [Release6 evidence](evidence/composer-release6.json), [release5 evidence](evidence/flowing-release5.json) and earlier snapshots remain historical. Release6's keyboard check waited for delivery, missing the read-only interval reported afterward; release7 tests that interval directly.
+Release9 passed trusted-TLS read-only checks at the installed client, independent frontend, original IP and new hostname. Each also returned a healthy cryptographic API response, including both independently bridged routes. The signed endpoints advertise sequence9 and the expected manifest, contain no QA helper, and installed mode registers no service worker. No operator credential was read or entered by the assistant. A fresh Chrome qualification profile loaded the actual hostname with valid TLS and PRF API support. Physical enrollment is the owner's own ceremony. See [release9 evidence](evidence/device-unlock-release9.json) and [the device-unlock setup guide](../device-unlock-installation.md). [Release7](evidence/continuous-release7.json) and earlier snapshots remain historical.
+
+The default IP listener retains its exact original certificate and expiry for compatibility with the existing browser. The hostname, separate API TLS transport (container444 / loopback8449) and independent frontend use a dedicated local service CA. The installed client's logical API origin, browser origin, publisher root and own browser TLS root remain unchanged. The normal user's browser profiles and OS trust store were not changed. The new Chrome launcher scopes local trust to its dedicated browser home. A daily user timer renews the 90-day hostname/frontend leaves below30 days; forced renewal and the systemd no-renewal path both passed. The old IP certificate is a legacy compatibility path, not the long-lived hostname certificate.
 
 During release5 verification, the existing owner browser tab was separately observed running the old 22/28-second chat-panel effect. After refreshing, its DOM reports all three new animations running at 14/18/22 seconds on the new workspace canvas. Its vault had already locked due to inactivity and remains available for the owner's own local unlock. No personal passphrase was read or entered.
 
@@ -33,4 +36,4 @@ The local administrator credential was refreshed and prior sessions revoked afte
 
 The local frontend demonstration uses a distinct loopback IP/origin, TLS leaf and container without backend database credentials or the database network. It shares the development Docker host and therefore does not establish resilience to host-root compromise. The installed client uses an independent local CA and dedicated browser profile; it makes no system trust changes.
 
-The existing backend TEST CA expires November 8, 2026. The existing backend leaf expires November 6, 2026. These are local evaluation certificates; neither new client delivery mode turns them into publicly trusted production TLS. Renew backend/local demonstration leaves before expiry without replacing the trusted roots or changing browser origins. Public deployment needs the independently administered host/signer and trusted TLS described in [operations](operations.md).
+Isolated QA retains its separate short-lived TEST CA. The maintained hostname certificate expires `2027-02-03T01:30:53+03:30` and is automatically renewable under the dedicated local CA. The legacy IP certificate retains its original expiry `2026-11-07T02:03:18+03:30`; use the hostname for regular access and complete any existing-browser approval/history export while that legacy certificate is valid. This is a loopback local deployment, not a publicly trusted public service. Public hosting still needs the independently administered delivery and TLS described in [operations](operations.md).

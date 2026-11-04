@@ -1,0 +1,104 @@
+{
+  "checks": [
+    {
+      "mode": "installed",
+      "origin": "https://127.0.0.1:9443",
+      "release": 9,
+      "digest": "ebca22bd1921feb2cf65640671600abe6006bf084f86c35c40c3505576c3a126",
+      "secureContext": true,
+      "apiHealth": true,
+      "flowingAuroraStyles": true,
+      "signIn": true,
+      "foreignBrowserRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "mode": "independent-web",
+      "origin": "https://127.0.0.2:8447",
+      "release": 9,
+      "digest": "ebca22bd1921feb2cf65640671600abe6006bf084f86c35c40c3505576c3a126",
+      "secureContext": true,
+      "apiHealth": true,
+      "flowingAuroraStyles": true,
+      "signIn": true,
+      "foreignBrowserRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "mode": "same-origin",
+      "origin": "https://127.0.0.1:8444",
+      "secureContext": true,
+      "apiHealth": true,
+      "flowingAuroraStyles": true,
+      "signIn": true,
+      "foreignBrowserRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "mode": "same-origin-hostname",
+      "origin": "https://localhost:8444",
+      "secureContext": true,
+      "apiHealth": true,
+      "flowingAuroraStyles": true,
+      "signIn": true,
+      "foreignBrowserRequests": 0,
+      "pageErrors": 0
+    }
+  ],
+  "date": "2026-11-05",
+  "timezone": "Asia/Tehran",
+  "source": "f89ecd0dce57592ea037fd5cae1d9121c58ca745",
+  "scope": "Read-only trusted-TLS checks in disposable profiles. No operator credentials read/entered, no personal vault cloned or modified; physical enrollment is left to the owner.",
+  "browserSetup": {
+    "launcherInstalled": true,
+    "applicationName": "HAVEN Device Unlock",
+    "isolatedChromeTrust": true,
+    "systemTrustModified": false,
+    "personalProfilesModified": false,
+    "browserPRFSupport": true,
+    "hardwareEnrollmentPerformed": false
+  },
+  "verification": {
+    "cryptoCases": 6,
+    "realApplicationVirtualAuthenticatorCases": 3,
+    "apiConfigurationCases": 11,
+    "independentClientCases": 18,
+    "firefoxPassed": 1,
+    "firefoxExpectedCDPSkips": 5
+  },
+  "certificates": {
+    "dedicatedCA": {
+      "expires": "2036-11-02T01:10:29+03:30",
+      "sha256": "5b1d6911479c9b0b3749c054d1eaebff7bbaee54b133974414b7a7df6a4b4a36"
+    },
+    "hostname": {
+      "expires": "2027-02-03T01:30:53+03:30",
+      "sha256": "6eb3b67d37f000b477d39f9fb9374ffc65cd9e6060a6597ec977cedb11abab66"
+    },
+    "independentFrontend": {
+      "expires": "2027-02-03T01:30:53+03:30",
+      "sha256": "81032baf478025da5573e8dfc8ed92b3ee0d1001e0d358c27ee4d55732db1265"
+    },
+    "legacyIP": {
+      "expires": "2026-11-07T02:03:18+03:30",
+      "sha256": "62a299ec215f7e79030b1a61429ea6dca900a77a06a1db5855fe7ea833b3bc43"
+    },
+    "legacyCertificateUnchanged": true
+  },
+  "renewal": {
+    "timer": "haven-local-tls-renew.timer",
+    "dailyCheck": true,
+    "renewBelowDays": 30,
+    "leafDays": 90,
+    "forcedRenewalPassed": true,
+    "noRenewalServicePassed": true
+  },
+  "transport": {
+    "logicalAPIOrigin": "https://127.0.0.1:8444",
+    "installedAddress": "127.0.0.1",
+    "installedPort": 8449,
+    "independentContainerPort": 444,
+    "tlsIdentityPreserved": true,
+    "webRootStatus": 404
+  }
+}
