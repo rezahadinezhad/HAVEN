@@ -2,7 +2,7 @@
 
 The existing HAVEN service at `https://127.0.0.1:8444` and its account/vault state are preserved. No database migration or personal device enrollment is needed for this delivery change.
 
-**Signed release 3 is installed and running, after verified release1→2→3 updates.** Its reviewed source is `cbd76fce4a777d29130911662a397400173086d4`. It ships the Aurora workspace and temporary navigation drawer. No QA helper is present in the production release. Earlier activation evidence retains its recorded release/revision.
+**Signed release 4 is installed and running, after verified release1→2→3→4 updates.** Its reviewed source is `0432377b2faf041cd7bb1b504ecba7b1f90ef6e0`. It ships rounded floating surfaces and a compact navigation panel. No QA helper is present in the production release. Earlier activation evidence retains its recorded release/revision.
 
 | Component | Maintained location |
 |---|---|
@@ -10,16 +10,16 @@ The existing HAVEN service at `https://127.0.0.1:8444` and its account/vault sta
 | User launcher | `/home/reza-hadinezhad/.local/bin/haven-verified-client`; application menu entry **HAVEN Verified Client** |
 | Protected installed state | `/home/reza-hadinezhad/.local/state/haven/verified-client` |
 | Independent frontend demo | `https://127.0.0.2:8447`, separate non-root/read-only container; only the existing ingress network, no DB network or backend secrets |
-| Public distribution | `.local/verified-client/HAVEN-verified-client-release-3.tar.gz`, signed archive, public verifier/key and license notices; contains no private signing key |
+| Public distribution | `.local/verified-client/HAVEN-verified-client-release-4.tar.gz`, signed archive, public verifier/key and license notices; contains no private signing key |
 | Frontend operator helper | `.local/manage-verified-frontend.sh` |
 
 Publisher public-key DER SHA-256: `2cecd962301f0292caca6089a23c0a2c8fb00fb055327342d09daa6abfaaaf99`.
 
-Manifest SHA-256: `2f4f891c9f0b26a7faa7ee08ef0f4f8a22c6265578edaf66b2e3ebd539a3d398`.
+Manifest SHA-256: `3047700fb3a6c61a3a430c29fc6ba9acf47d0f6c410e958f3d9b86365e250229`.
 
 The fingerprint printed here is a record, not an additional independent trust authority. First-install trust must be anchored through the reviewed source/publisher channel, independently of the messaging server.
 
-Release3 passed trusted-TLS checks at all three maintained endpoints: the installed client, independent frontend and regular Next.js frontend. Sign-in screens and the shipped Aurora CSS loaded with zero foreign requests/page errors; both signed endpoints advertise sequence3 and the recorded manifest digest, contain no QA helper, and installed mode registers no service worker. This read-only smoke did not use operator credentials or create a personal vault. See [release3 deployment evidence](evidence/aurora-release3.json) and [Aurora browser verification](../../ui-ux/aurora-verification.md).
+Release4 passed trusted-TLS read-only checks at the installed client, independent frontend and regular Next.js frontend. Sign-in screens and the signed Aurora CSS loaded with zero foreign requests/page errors; both signed endpoints advertise sequence4 and the recorded manifest digest, contain no QA helper, and installed mode registers no service worker. No operator credentials or personal vault were used. See [release4 deployment evidence](evidence/floating-release4.json) and [floating workspace verification](../../ui-ux/floating-workspace-verification.md). Release3's [deployment snapshot](evidence/aurora-release3.json) remains historical.
 
 The earlier release2 verification passed trusted-TLS production UI sign-in/sign-out with zero foreign browser requests/page errors. No personal vault or MLS device was created. Installed mode has no registered service worker. The actual child runtime retains its update lock. Replaying authentic release1 through the installed release2 launcher was refused, with active release2 unchanged. TLS identity, origin, publisher root and browser state were preserved. The separate image refuses an altered signed worker before executing its runtime; production Python3.14.9 has only the four required packages and no pip/Django/pytest. [Public deployment checks and artifact digests](evidence/) contain no session cookies or credentials.
 
