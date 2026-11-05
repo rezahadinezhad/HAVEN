@@ -2,7 +2,7 @@
 
 The existing IP vault and account state are preserved. Device unlock uses `https://localhost:8444` in a dedicated trusted Chrome profile; that origin needs its own browser enrollment and approval. No private keys or live MLS identity are silently copied between origins.
 
-**Signed release 9 is installed and running, after verified release1→2→3→4→5→6→7→8→9 updates.** Its reviewed source is `f89ecd0dce57592ea037fd5cae1d9121c58ca745`. Device unlock now offers compatible passkey providers and security keys as well as built-in authenticators, on the maintained hostname. The signed runtime also preserves its logical API identity while using an independently configured TLS transport. No QA helper is present in the production release. Earlier evidence retains its recorded release/revision.
+**Signed release 10 is installed and running, after verified release1→2→3→4→5→6→7→8→9→10 updates.** Its reviewed source is `695cd50550f93005d402765cb4f1bdd1baa66d6c`. The unified toolbar groups navigation, branding, live connection state and appearance/language actions on one floating surface. Device unlock retains compatible passkey-provider/security-key support on the maintained hostname. The signed runtime preserves its logical API identity while using the independently configured TLS transport. No QA helper is present in the production release. Earlier evidence retains its recorded release/revision.
 
 | Component | Maintained location |
 |---|---|
@@ -11,16 +11,16 @@ The existing IP vault and account state are preserved. Device unlock uses `https
 | User launcher | `/home/reza-hadinezhad/.local/bin/haven-verified-client`; application menu entry **HAVEN Verified Client** |
 | Protected installed state | `/home/reza-hadinezhad/.local/state/haven/verified-client` |
 | Independent frontend demo | `https://127.0.0.2:8447`, separate non-root/read-only container; only the existing ingress network, no DB network or backend secrets |
-| Distribution archive (local) | `.local/verified-client/HAVEN-verified-client-release-9.tar.gz`, signed archive, public verifier/key and license notices; contains no private signing key |
+| Distribution archive (local) | `.local/verified-client/HAVEN-verified-client-release-10.tar.gz`, signed archive, public verifier/key and license notices; contains no private signing key |
 | Frontend operator helper | `.local/manage-verified-frontend.sh` |
 
 Publisher public-key DER SHA-256: `2cecd962301f0292caca6089a23c0a2c8fb00fb055327342d09daa6abfaaaf99`.
 
-Manifest SHA-256: `ebca22bd1921feb2cf65640671600abe6006bf084f86c35c40c3505576c3a126`.
+Manifest SHA-256: `df121cc98f07b2311a4782d41944316f3d626699b748c16d3c6f204b1cc75cf4`.
 
 The fingerprint printed here is a record, not an additional independent trust authority. First-install trust must be anchored through the reviewed source/publisher channel, independently of the messaging server.
 
-Release9 passed trusted-TLS read-only checks at the installed client, independent frontend, original IP and new hostname. Each also returned a healthy cryptographic API response, including both independently bridged routes. The signed endpoints advertise sequence9 and the expected manifest, contain no QA helper, and installed mode registers no service worker. No operator credential was read or entered by the assistant. A fresh Chrome qualification profile loaded the actual hostname with valid TLS and PRF API support. Physical enrollment is the owner's own ceremony. See [release9 evidence](evidence/device-unlock-release9.json) and [the device-unlock setup guide](../device-unlock-installation.md). [Release7](evidence/continuous-release7.json) and earlier snapshots remain historical.
+Release10 passed trusted-TLS read-only checks at the installed client, independent frontend, original IP and maintained hostname. Each returned a healthy cryptographic API response and current toolbar assets. The signed endpoints advertise sequence10 and the expected manifest, contain no QA helper, and installed mode registers no service worker. Chromium and Firefox design regressions passed, alongside 28 toolbar layout combinations in both themes and languages. No operator credential was read or entered. See [release10 evidence](evidence/toolbar-release10.json), [toolbar design and verification](../../ui-ux/toolbar.md), and [the device-unlock setup guide](../device-unlock-installation.md). [Release9](evidence/device-unlock-release9.json), [release7](evidence/continuous-release7.json) and earlier snapshots remain historical.
 
 The default IP listener retains its exact original certificate and expiry for compatibility with the existing browser. The hostname, separate API TLS transport (container444 / loopback8449) and independent frontend use a dedicated local service CA. The installed client's logical API origin, browser origin, publisher root and own browser TLS root remain unchanged. The normal user's browser profiles and OS trust store were not changed. The new Chrome launcher scopes local trust to its dedicated browser home. A daily user timer renews the 90-day hostname/frontend leaves below30 days; forced renewal and the systemd no-renewal path both passed. The old IP certificate is a legacy compatibility path, not the long-lived hostname certificate.
 
