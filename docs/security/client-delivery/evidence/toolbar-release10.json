@@ -1,0 +1,93 @@
+{
+  "source": "695cd50550f93005d402765cb4f1bdd1baa66d6c",
+  "sequence": 10,
+  "manifest_sha256": "df121cc98f07b2311a4782d41944316f3d626699b748c16d3c6f204b1cc75cf4",
+  "checks": [
+    {
+      "mode": "installed",
+      "origin": "https://127.0.0.1:9443",
+      "release": 10,
+      "digest": "df121cc98f07b2311a4782d41944316f3d626699b748c16d3c6f204b1cc75cf4",
+      "secureContext": true,
+      "apiHealth": true,
+      "flowingAuroraStyles": true,
+      "unifiedToolbarStyles": true,
+      "signIn": true,
+      "foreignBrowserRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "mode": "independent-web",
+      "origin": "https://127.0.0.2:8447",
+      "release": 10,
+      "digest": "df121cc98f07b2311a4782d41944316f3d626699b748c16d3c6f204b1cc75cf4",
+      "secureContext": true,
+      "apiHealth": true,
+      "flowingAuroraStyles": true,
+      "unifiedToolbarStyles": true,
+      "signIn": true,
+      "foreignBrowserRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "mode": "same-origin",
+      "origin": "https://127.0.0.1:8444",
+      "secureContext": true,
+      "apiHealth": true,
+      "flowingAuroraStyles": true,
+      "unifiedToolbarStyles": true,
+      "signIn": true,
+      "foreignBrowserRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "mode": "same-origin-hostname",
+      "origin": "https://localhost:8444",
+      "secureContext": true,
+      "apiHealth": true,
+      "flowingAuroraStyles": true,
+      "unifiedToolbarStyles": true,
+      "signIn": true,
+      "foreignBrowserRequests": 0,
+      "pageErrors": 0
+    }
+  ],
+  "qualification": {
+    "chromium_design_tests": 2,
+    "firefox_design_tests": 2,
+    "toolbar_layout_combinations": 28,
+    "viewport_widths": [
+      1480,
+      1024,
+      768,
+      760,
+      430,
+      390,
+      320
+    ],
+    "themes": [
+      "dark",
+      "light"
+    ],
+    "languages": [
+      "en",
+      "fa"
+    ],
+    "all_controls_at_least_44px": true,
+    "no_control_overlap_or_horizontal_overflow": true,
+    "menu_escape_focus_restoration": true,
+    "reduced_motion": true,
+    "offline_status": true,
+    "typecheck": true,
+    "regular_and_standalone_production_builds": true
+  },
+  "preserved": [
+    "browser origins",
+    "vault and MLS identities",
+    "authentication state",
+    "device verification",
+    "publisher root",
+    "TLS identities"
+  ],
+  "operator_credentials_used": false
+}
