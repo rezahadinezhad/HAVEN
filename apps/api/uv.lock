@@ -494,7 +494,7 @@ requires-dist = [
     { name = "cryptography", specifier = ">=50.0.2,<51" },
     { name = "django", specifier = ">=5.2,<5.3" },
     { name = "djangorestframework", specifier = ">=3.18.3,<3.19" },
-    { name = "psycopg", extras = ["binary", "pool"], specifier = ">=3.2,<3.4" },
+    { name = "psycopg", extras = ["binary", "pool"], specifier = ">=3.3.6,<3.4" },
     { name = "redis", specifier = ">=8.1.0,<9" },
     { name = "rfc8785", specifier = "==0.1.4" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.54.0,<1" },
