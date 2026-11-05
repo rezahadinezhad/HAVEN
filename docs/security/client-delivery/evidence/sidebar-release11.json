@@ -1,0 +1,101 @@
+{
+  "source": "e24031d3b560ac93d3bbc9bdc35ca47df0400cc6",
+  "sequence": 11,
+  "manifest_sha256": "de2f92242737e5f01360223a6ad0dff0ffe2b2ee5e081ffcbac9973c6b536ab3",
+  "checks": [
+    {
+      "mode": "installed",
+      "origin": "https://127.0.0.1:9443",
+      "release": 11,
+      "digest": "de2f92242737e5f01360223a6ad0dff0ffe2b2ee5e081ffcbac9973c6b536ab3",
+      "secureContext": true,
+      "apiHealth": true,
+      "flowingAuroraStyles": true,
+      "unifiedSidebarStyles": true,
+      "signIn": true,
+      "foreignBrowserRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "mode": "independent-web",
+      "origin": "https://127.0.0.2:8447",
+      "release": 11,
+      "digest": "de2f92242737e5f01360223a6ad0dff0ffe2b2ee5e081ffcbac9973c6b536ab3",
+      "secureContext": true,
+      "apiHealth": true,
+      "flowingAuroraStyles": true,
+      "unifiedSidebarStyles": true,
+      "signIn": true,
+      "foreignBrowserRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "mode": "same-origin",
+      "origin": "https://127.0.0.1:8444",
+      "secureContext": true,
+      "apiHealth": true,
+      "flowingAuroraStyles": true,
+      "unifiedSidebarStyles": true,
+      "signIn": true,
+      "foreignBrowserRequests": 0,
+      "pageErrors": 0
+    },
+    {
+      "mode": "same-origin-hostname",
+      "origin": "https://localhost:8444",
+      "secureContext": true,
+      "apiHealth": true,
+      "flowingAuroraStyles": true,
+      "unifiedSidebarStyles": true,
+      "signIn": true,
+      "foreignBrowserRequests": 0,
+      "pageErrors": 0
+    }
+  ],
+  "qualification": {
+    "chromium_selected_cases": 5,
+    "firefox_selected_cases": 5,
+    "cases": [
+      "encrypted chat, immediate keyboard send, drafts, media and mobile RTL",
+      "responsive design, preferences, navigation and keyboard focus",
+      "CSP and announcer boundary",
+      "friend-link rejection and mobile RTL guide",
+      "passphrase generation, clipboard fallback, cancellation, RTL and unavailable-service UI gate"
+    ],
+    "layout_combinations": 28,
+    "widths": [
+      1480,
+      1024,
+      768,
+      760,
+      430,
+      390,
+      320
+    ],
+    "themes": [
+      "dark",
+      "light"
+    ],
+    "languages": [
+      "en",
+      "fa"
+    ],
+    "toolbar_absent_after_sign_in": true,
+    "preferences_in_sidebar_and_native_menu": true,
+    "touch_targets_44px": true,
+    "menu_escape_and_focus_restoration": true,
+    "reduced_motion": true,
+    "offline_status": true,
+    "typecheck": true,
+    "regular_and_standalone_production_builds": true
+  },
+  "preserved": [
+    "accounts and sessions",
+    "browser origins",
+    "vault and MLS identities",
+    "publisher and TLS trust",
+    "device unlock"
+  ],
+  "operator_credentials_used": false,
+  "screenshots": "isolated test environment"
+}
