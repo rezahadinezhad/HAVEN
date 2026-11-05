@@ -20,6 +20,7 @@ import { ViewOnceMedia } from "./view-once";
 import { ChatThread, type MessageAction } from "./chat-thread";
 import { ChatComposer } from "./chat-composer";
 import { AuroraBackdrop, TypingIndicator } from "./aurora";
+import { WorkspaceIdentity, WorkspacePreferences } from "./workspace-sidebar";
 import { MediaPreview, canPreview } from "./media-preview";
 import {
   conversationMessages,
@@ -1305,6 +1306,66 @@ export default function Haven({
           )),
   );
 
+  const navigationLinks = (
+    <nav aria-label={t("Main navigation")}>
+      {nav.map(([key, icon, label]) => (
+        <button
+          key={key}
+          className={`nav-item ${screen === key ? "selected" : ""} ${["backup", "help"].includes(key) ? "nav-secondary" : ""}`}
+          aria-label={t(label)}
+          aria-current={screen === key ? "page" : undefined}
+          title={t(label)}
+          onClick={() => navigate(key)}
+        >
+          <Icon name={icon} />
+          <span className="nav-label">{t(label)}</span>
+        </button>
+      ))}
+      {isAdmin && (
+        <button
+          className={
+            screen === "admin"
+              ? "nav-item nav-secondary selected"
+              : "nav-item nav-secondary"
+          }
+          onClick={() => navigate("admin")}
+        >
+          <Icon name="admin" />
+          <span className="nav-label">{t("Operator console")}</span>
+        </button>
+      )}
+    </nav>
+  );
+  const accountControls = (
+    <div className="sidebar-bottom">
+      <span className="key-state">
+        <Icon name="lock" size={14} />
+        {t(vault ? "Verified devices only" : "Key state locked")}
+      </span>
+      <button
+        className="quiet vault-shortcut"
+        onClick={() => {
+          navigation.current?.close();
+          if (vault) lock();
+          else navigate("devices");
+        }}
+      >
+        <Icon name={vault ? "lock" : "key"} size={17} />
+        {t(vault ? "Lock vault" : "Open your vault")}
+      </button>
+      <button
+        className="quiet"
+        onClick={() =>
+          void perform(async () => {
+            await logout();
+          })
+        }
+      >
+        <Icon name="logout" size={17} />
+        {t("Log out")}
+      </button>
+    </div>
+  );
   return (
     <div
       className="app-frame"
@@ -1324,70 +1385,61 @@ export default function Haven({
       <a className="skip-link" href="#main-content">
         {t("Skip to content")}
       </a>
-      <header className="topbar">
-        {user && (
-          <button
-            className="quiet icon-button workspace-menu-trigger"
-            aria-label={t("Open menu")}
-            aria-haspopup="dialog"
-            aria-controls="workspace-navigation"
-            onClick={() => navigation.current?.showModal()}
+      {!user && (
+        <header className="topbar">
+          <a
+            className="brand"
+            href="/"
+            aria-label={appName}
+            onClick={
+              user
+                ? (event) => {
+                    event.preventDefault();
+                    navigate("messages");
+                  }
+                : undefined
+            }
           >
-            <Icon name="menu" size={23} />
-          </button>
-        )}
-        <a
-          className="brand"
-          href="/"
-          aria-label={appName}
-          onClick={
-            user
-              ? (event) => {
-                  event.preventDefault();
-                  navigate("messages");
-                }
-              : undefined
-          }
-        >
-          <span className="brand-mark">
-            <Icon name="messages" size={25} filled />
-          </span>
-          <span className="brand-copy">
-            <span className="brand-name">{appName}</span>
-            <span className="brand-sub">{t("Private community")}</span>
-          </span>
-        </a>
-        <div className="top-actions">
-          <span
-            className={online ? "connection" : "connection disconnected"}
-            role="status"
-            title={status}
-          >
-            <i aria-hidden="true" />
-            <span>{status}</span>
-          </span>
-          <button
-            className="quiet icon-button theme-switch"
-            aria-label={t(
-              theme === "light"
-                ? "Switch to dark mode"
-                : "Switch to light mode",
-            )}
-            onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-          >
-            <span className="theme-glyph" key={theme} aria-hidden="true">
-              <Icon name={theme === "light" ? "moon" : "sun"} />
+            <span className="brand-mark">
+              <Icon name="messages" size={25} filled />
             </span>
-          </button>
-          <button
-            className="quiet language-switch"
-            lang={language === "en" ? "fa" : "en"}
-            onClick={() => setLanguage(language === "en" ? "fa" : "en")}
-          >
-            {language === "en" ? "فارسی" : "English"}
-          </button>
-        </div>
-      </header>
+            <span className="brand-copy">
+              <span className="brand-name">{appName}</span>
+              <span className="brand-sub">{t("Private community")}</span>
+            </span>
+          </a>
+          <div className="top-actions">
+            <span
+              className={online ? "connection" : "connection disconnected"}
+              role="status"
+              title={status}
+            >
+              <i aria-hidden="true" />
+              <span>{status}</span>
+            </span>
+            <button
+              className="quiet icon-button theme-switch"
+              aria-label={t(
+                theme === "light"
+                  ? "Switch to dark mode"
+                  : "Switch to light mode",
+              )}
+              onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+            >
+              <span className="theme-glyph" key={theme} aria-hidden="true">
+                <Icon name={theme === "light" ? "moon" : "sun"} />
+              </span>
+            </button>
+            <button
+              className="quiet language-switch"
+              lang={language === "en" ? "fa" : "en"}
+              onClick={() => setLanguage(language === "en" ? "fa" : "en")}
+            >
+              {language === "en" ? "فارسی" : "English"}
+            </button>
+          </div>
+        </header>
+      )}
       {health && !health.crypto_ready && (
         <div className="gate" role="status">
           <Icon name="warning" size={17} />
@@ -1599,413 +1651,891 @@ export default function Haven({
               <Icon name="plus" size={18} />
               <span className="connect-label">{t("Start a chat")}</span>
             </button>
-            <nav aria-label={t("Main navigation")}>
-              {nav.map(([key, icon, label]) => (
-                <button
-                  key={key}
-                  className={`nav-item ${screen === key ? "selected" : ""} ${["backup", "help"].includes(key) ? "nav-secondary" : ""}`}
-                  aria-label={t(label)}
-                  aria-current={screen === key ? "page" : undefined}
-                  title={t(label)}
-                  onClick={() => navigate(key)}
-                >
-                  <Icon name={icon} />
-                  <span className="nav-label">{t(label)}</span>
-                </button>
-              ))}
-              {isAdmin && (
-                <button
-                  className={
-                    screen === "admin"
-                      ? "nav-item nav-secondary selected"
-                      : "nav-item nav-secondary"
-                  }
-                  onClick={() => navigate("admin")}
-                >
-                  <Icon name="admin" />
-                  <span className="nav-label">{t("Operator console")}</span>
-                </button>
-              )}
-            </nav>
-            <div className="sidebar-bottom">
-              <span className="key-state">
-                <Icon name="lock" size={14} />
-                {t(vault ? "Verified devices only" : "Key state locked")}
-              </span>
-              <button
-                className="quiet vault-shortcut"
-                onClick={() => {
-                  navigation.current?.close();
-                  if (vault) lock();
-                  else navigate("devices");
-                }}
-              >
-                <Icon name={vault ? "lock" : "key"} size={17} />
-                {t(vault ? "Lock vault" : "Open your vault")}
-              </button>
-              <button
-                className="quiet"
-                onClick={() =>
-                  void perform(async () => {
-                    await logout();
-                  })
-                }
-              >
-                <Icon name="logout" size={17} />
-                {t("Log out")}
-              </button>
-            </div>
+            {navigationLinks}
+            {accountControls}
+            <WorkspacePreferences
+              theme={theme}
+              language={language}
+              onTheme={setTheme}
+              onLanguage={setLanguage}
+              t={t}
+            />
           </dialog>
           <main className="content" id="main-content" tabIndex={-1}>
-            {screen !== "messages" && (
-              <div className="section-navigation">
-                <button className="quiet" onClick={() => navigate("messages")}>
-                  <Icon name="back" size={18} />
-                  {t("Back to conversations")}
-                </button>
-                <span>
-                  {t(
-                    nav.find(([key]) => key === screen)?.[2] ||
-                      (screen === "admin"
-                        ? "Operator console"
-                        : "Start a chat"),
-                  )}
-                </span>
-              </div>
-            )}
-            {screen === "messages" && (
-              <div className="messenger" data-chat-open={!!current}>
-                <section className="conversation-panel">
-                  <div className="section-heading">
-                    <div>
-                      <h1>{t("Conversations")}</h1>
-                      <span className="conversation-subtitle">
-                        {t("A little closer, wherever you are.")}
-                      </span>
-                    </div>
-                    <button
-                      className="connect-entry new-conversation"
-                      title={t("New conversation")}
-                      aria-label={t("New conversation")}
-                      disabled={!enabled || busy}
-                      onClick={() => setScreen("connect")}
-                    >
-                      <Icon name="edit" size={22} />
-                    </button>
-                  </div>
-                  <label className="search">
-                    <Icon name="search" size={19} />
-                    <input
-                      placeholder={t("Search on this device")}
-                      value={query}
-                      onChange={(e) => setQuery(e.target.value)}
-                      aria-label={t("Search on this device")}
-                    />
-                  </label>
-                  <div
-                    className="list-controls chat-filters"
-                    aria-label={t("Filter conversations")}
-                  >
-                    <button
-                      type="button"
-                      aria-pressed={listFilter === "all"}
-                      onClick={() => setListFilter("all")}
-                    >
-                      {t("All chats")}
-                    </button>
-                    <button
-                      type="button"
-                      aria-pressed={listFilter === "unread"}
-                      onClick={() => setListFilter("unread")}
-                    >
-                      {t("Unread")}
-                    </button>
-                  </div>
-                  {visibleConversations.length ? (
-                    visibleConversations.map((c) => {
-                      const list = messagesByConversation.get(c.id) || [];
-                      const last = list.at(-1);
-                      const unread = list.filter(
-                        (message) =>
-                          message.event.sender !== vault?.state.device_id &&
-                          (message.event.seq || 0) >
-                            (vault?.state.read_seq?.[c.id] || 0),
-                      ).length;
-                      return (
-                        <button
-                          key={c.id}
-                          className={`conversation-row ${current?.id === c.id ? "selected" : ""}`}
-                          aria-current={
-                            current?.id === c.id ? "true" : undefined
-                          }
-                          onClick={() => void openConversation(c)}
-                        >
-                          <span className="avatar">
-                            <Icon
-                              name={c.kind === "group" ? "people" : "messages"}
-                              size={23}
-                            />
-                          </span>
-                          <span className="conversation-copy">
-                            <span className="conversation-title">
-                              <strong>{conversationLabel(c)}</strong>
-                              {last && (
-                                <time dateTime={last.event.time}>
-                                  <bdi>
-                                    {new Date(
-                                      last.event.time,
-                                    ).toLocaleTimeString(
-                                      language === "fa" ? "fa-IR" : "en",
-                                      { hour: "2-digit", minute: "2-digit" },
-                                    )}
-                                  </bdi>
-                                </time>
-                              )}
-                            </span>
-                            <span className="conversation-preview">
-                              <span dir="auto">
-                                {!vault?.state.heads[c.id]
-                                  ? t("Verify to start")
-                                  : last
-                                    ? messagePreview(last, t)
-                                    : t("Say hello")}
-                              </span>
-                              {unread > 0 && (
-                                <span
-                                  className="unread-count"
-                                  aria-label={`${unread} ${t("unread")}`}
-                                >
-                                  {unread > 99 ? "99+" : unread}
-                                </span>
-                              )}
-                            </span>
-                          </span>
-                        </button>
-                      );
-                    })
-                  ) : (
-                    <div className="empty-list">
-                      <span className="empty-list-icon">
-                        <Icon name="messages" size={29} />
-                      </span>
-                      <strong>
-                        {t(
-                          query
-                            ? "No matching conversations"
-                            : listFilter === "unread"
-                              ? "You’re all caught up"
-                              : "No conversations yet",
-                        )}
-                      </strong>
-                      <p>
-                        {t(
-                          query
-                            ? "Try a name or a word from a message on this device."
-                            : listFilter === "unread"
-                              ? "New unread messages will appear here."
-                              : !enabled
-                                ? "Encryption is unavailable until the integrated security gates pass."
-                                : !vault
-                                  ? "Unlock this device to find your conversations."
-                                  : "Start a conversation and invite a verified device. Your messages stay between you.",
-                        )}
-                      </p>
-                      {!vault && (
-                        <button
-                          className="primary mobile-setup"
-                          disabled={!enabled}
-                          onClick={() => setScreen("connect")}
-                        >
-                          <Icon name="key" size={17} />
-                          {t("Set up this device")}
-                        </button>
-                      )}
-                    </div>
-                  )}
-                  <div className="panel-note">
-                    <Icon name="lock" size={13} />{" "}
-                    {t("Search stays on this device")}
-                  </div>
-                </section>
-                <section className="chat-panel" data-composing={composerTyping}>
-                  {current ? (
-                    <>
-                      <header className="chat-header">
-                        <button
-                          className="quiet icon-button mobile-back"
-                          aria-label={t("Back to conversations")}
-                          onClick={() => setCurrent(null)}
-                        >
-                          <Icon name="back" />
-                        </button>
-                        <span className="chat-avatar avatar">
-                          <Icon
-                            name={
-                              current.kind === "group" ? "people" : "messages"
-                            }
-                            size={23}
-                          />
+            <div className="workspace-layout">
+              <aside className="workspace-sidebar" aria-label={t("Your space")}>
+                <WorkspaceIdentity
+                  name={appName}
+                  status={status}
+                  online={online}
+                  t={t}
+                  onHome={() => navigate("messages")}
+                  onMenu={() => navigation.current?.showModal()}
+                />
+                {screen === "messages" ? (
+                  <section className="conversation-panel">
+                    <div className="section-heading">
+                      <div>
+                        <h1>{t("Conversations")}</h1>
+                        <span className="conversation-subtitle">
+                          {t("A little closer, wherever you are.")}
                         </span>
-                        <div className="chat-heading">
-                          <h2>{conversationLabel(current)}</h2>
-                          <small>
-                            <Icon name="lock" size={12} />
-                            {t(
-                              pendingApproval
-                                ? "Browser approval needed"
-                                : vault?.state.heads[current.id]
-                                  ? "End-to-end encrypted"
-                                  : "Security code comparison needed",
-                            )}
-                          </small>
-                        </div>
-                        <button
-                          type="button"
-                          className="quiet icon-button chat-search-toggle"
-                          aria-label={t("Search this conversation")}
-                          title={t("Search this conversation")}
-                          onClick={() => setChatSearch(!chatSearch)}
-                        >
-                          <Icon name="search" />
-                        </button>
-                        <button
-                          className="quiet members-toggle"
-                          aria-expanded={groupOpen}
-                          onClick={() => setGroupOpen(!groupOpen)}
-                        >
-                          <span className="sr-only">
-                            {t(
-                              current.kind === "group"
-                                ? "Group & members"
-                                : "Chat details",
-                            )}
-                          </span>
-                          <Icon name="more" size={24} />
-                        </button>
-                      </header>
-                      {vault && (
-                        <ConversationVerification
-                          conversation={current}
-                          vault={vault}
-                          t={t}
-                          verified={async () => {
-                            await vault.sync(current);
-                            if (vaultRef.current !== vault) return;
-                            setEvents([...vault.state.events]);
-                            setError("");
-                          }}
-                        />
-                      )}
-                      {groupOpen && (
-                        <section className="member-controls">
-                          <h3>
-                            {t(
-                              current.kind === "group"
-                                ? "Group & members"
-                                : "Chat details",
-                            )}
-                          </h3>
-                          <p>
-                            {t("Epoch")}{" "}
-                            {vault?.state.heads[current.id]?.epoch ??
-                              current.epoch}{" "}
-                            · {current.status}
-                          </p>
+                      </div>
+                      <button
+                        className="connect-entry new-conversation"
+                        title={t("New conversation")}
+                        aria-label={t("New conversation")}
+                        disabled={!enabled || busy}
+                        onClick={() => setScreen("connect")}
+                      >
+                        <Icon name="edit" size={22} />
+                      </button>
+                    </div>
+                    <label className="search">
+                      <Icon name="search" size={19} />
+                      <input
+                        placeholder={t("Search on this device")}
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                        aria-label={t("Search on this device")}
+                      />
+                    </label>
+                    <div
+                      className="list-controls chat-filters"
+                      aria-label={t("Filter conversations")}
+                    >
+                      <button
+                        type="button"
+                        aria-pressed={listFilter === "all"}
+                        onClick={() => setListFilter("all")}
+                      >
+                        {t("All chats")}
+                      </button>
+                      <button
+                        type="button"
+                        aria-pressed={listFilter === "unread"}
+                        onClick={() => setListFilter("unread")}
+                      >
+                        {t("Unread")}
+                      </button>
+                    </div>
+                    {visibleConversations.length ? (
+                      visibleConversations.map((c) => {
+                        const list = messagesByConversation.get(c.id) || [];
+                        const last = list.at(-1);
+                        const unread = list.filter(
+                          (message) =>
+                            message.event.sender !== vault?.state.device_id &&
+                            (message.event.seq || 0) >
+                              (vault?.state.read_seq?.[c.id] || 0),
+                        ).length;
+                        return (
                           <button
-                            disabled={chatDisabled}
-                            onClick={() =>
-                              void perform(async () => {
-                                await vault!.leave(current);
-                                setNotice(
-                                  "Departure requested. An owner or moderator must complete MLS removal before writes resume.",
-                                );
-                              })
+                            key={c.id}
+                            className={`conversation-row ${current?.id === c.id ? "selected" : ""}`}
+                            aria-current={
+                              current?.id === c.id ? "true" : undefined
                             }
+                            onClick={() => void openConversation(c)}
                           >
-                            {t("Leave conversation")}
-                          </button>
-                          <button
-                            disabled={chatDisabled}
-                            onClick={() =>
-                              void perform(async () => {
-                                const self = members.find(
-                                  (d) => d.id === vault!.state.device_id,
-                                );
-                                if (!self)
-                                  throw new Error(
-                                    "Current device is not a group member",
-                                  );
-                                await vault!.changeMember(
-                                  current,
-                                  self,
-                                  "update",
-                                );
-                                setNotice(
-                                  "MLS epoch refreshed through an authenticated path update.",
-                                );
-                              })
-                            }
-                          >
-                            {t("Refresh cryptographic epoch")}
-                          </button>
-                          {Object.values(vault?.state.outbox || {}).some(
-                            (p) => p.candidate,
-                          ) && (
-                            <button
-                              onClick={() =>
-                                void perform(async () => {
-                                  await vault!.cancelPendingControl(current);
-                                  setNotice(
-                                    "Pending membership request cancelled locally and signed group history checked. Review the roster before retrying.",
-                                  );
-                                })
-                              }
-                            >
-                              {t(
-                                "Cancel pending membership request and check state",
-                              )}
-                            </button>
-                          )}
-                          {vault &&
-                            health?.experimental_closure &&
-                            vault.state.heads[current.id]?.closure_policy && (
-                              <ClosureControls
-                                vault={vault}
-                                conversation={current}
-                                t={t}
-                                changed={() => {
-                                  setEvents([...vault.state.events]);
-                                  void api<Conversation[]>(
-                                    "conversations",
-                                  ).then((list) => {
-                                    setConversations(list);
-                                    setCurrent(
-                                      list.find((c) => c.id === current.id) ||
-                                        current,
-                                    );
-                                  });
-                                }}
+                            <span className="avatar">
+                              <Icon
+                                name={
+                                  c.kind === "group" ? "people" : "messages"
+                                }
+                                size={23}
                               />
-                            )}
-                          <label>
-                            {t("Group title")}
-                            <input id="group-title" disabled={chatDisabled} />
-                          </label>
-                          <button
-                            disabled={chatDisabled}
-                            onClick={() =>
-                              void send(
-                                "title",
-                                (
-                                  document.getElementById(
-                                    "group-title",
-                                  ) as HTMLInputElement
-                                ).value,
-                              )
-                            }
-                          >
-                            {t("Save")}
+                            </span>
+                            <span className="conversation-copy">
+                              <span className="conversation-title">
+                                <strong>{conversationLabel(c)}</strong>
+                                {last && (
+                                  <time dateTime={last.event.time}>
+                                    <bdi>
+                                      {new Date(
+                                        last.event.time,
+                                      ).toLocaleTimeString(
+                                        language === "fa" ? "fa-IR" : "en",
+                                        { hour: "2-digit", minute: "2-digit" },
+                                      )}
+                                    </bdi>
+                                  </time>
+                                )}
+                              </span>
+                              <span className="conversation-preview">
+                                <span dir="auto">
+                                  {!vault?.state.heads[c.id]
+                                    ? t("Verify to start")
+                                    : last
+                                      ? messagePreview(last, t)
+                                      : t("Say hello")}
+                                </span>
+                                {unread > 0 && (
+                                  <span
+                                    className="unread-count"
+                                    aria-label={`${unread} ${t("unread")}`}
+                                  >
+                                    {unread > 99 ? "99+" : unread}
+                                  </span>
+                                )}
+                              </span>
+                            </span>
                           </button>
+                        );
+                      })
+                    ) : (
+                      <div className="empty-list">
+                        <span className="empty-list-icon">
+                          <Icon name="messages" size={29} />
+                        </span>
+                        <strong>
+                          {t(
+                            query
+                              ? "No matching conversations"
+                              : listFilter === "unread"
+                                ? "You’re all caught up"
+                                : "No conversations yet",
+                          )}
+                        </strong>
+                        <p>
+                          {t(
+                            query
+                              ? "Try a name or a word from a message on this device."
+                              : listFilter === "unread"
+                                ? "New unread messages will appear here."
+                                : !enabled
+                                  ? "Encryption is unavailable until the integrated security gates pass."
+                                  : !vault
+                                    ? "Unlock this device to find your conversations."
+                                    : "Start a conversation and invite a verified device. Your messages stay between you.",
+                          )}
+                        </p>
+                        {!vault && (
+                          <button
+                            className="primary mobile-setup"
+                            disabled={!enabled}
+                            onClick={() => setScreen("connect")}
+                          >
+                            <Icon name="key" size={17} />
+                            {t("Set up this device")}
+                          </button>
+                        )}
+                      </div>
+                    )}
+                  </section>
+                ) : (
+                  <div className="sidebar-navigation">
+                    <div className="sidebar-section-label">
+                      {t("Your space")}
+                    </div>
+                    {navigationLinks}
+                    {accountControls}
+                  </div>
+                )}
+                <footer className="sidebar-footer">
+                  <WorkspacePreferences
+                    theme={theme}
+                    language={language}
+                    onTheme={setTheme}
+                    onLanguage={setLanguage}
+                    t={t}
+                  />
+                  <span className="sidebar-privacy">
+                    <Icon name="lock" size={12} />
+                    {t("Private community")}
+                  </span>
+                </footer>
+              </aside>
+              <div className="workspace-main">
+                {screen !== "messages" && (
+                  <div className="section-navigation">
+                    <button
+                      className="quiet icon-button section-menu-trigger"
+                      aria-label={t("Open menu")}
+                      aria-haspopup="dialog"
+                      aria-controls="workspace-navigation"
+                      onClick={() => navigation.current?.showModal()}
+                    >
+                      <Icon name="menu" size={22} />
+                    </button>
+
+                    <button
+                      className="quiet"
+                      onClick={() => navigate("messages")}
+                    >
+                      <Icon name="back" size={18} />
+                      {t("Back to conversations")}
+                    </button>
+                    <span>
+                      {t(
+                        nav.find(([key]) => key === screen)?.[2] ||
+                          (screen === "admin"
+                            ? "Operator console"
+                            : "Start a chat"),
+                      )}
+                    </span>
+                  </div>
+                )}
+                {screen === "messages" && (
+                  <div className="messenger" data-chat-open={!!current}>
+                    <section
+                      className="chat-panel"
+                      data-composing={composerTyping}
+                    >
+                      {current ? (
+                        <>
+                          <header className="chat-header">
+                            <button
+                              className="quiet icon-button mobile-back"
+                              aria-label={t("Back to conversations")}
+                              onClick={() => setCurrent(null)}
+                            >
+                              <Icon name="back" />
+                            </button>
+                            <span className="chat-avatar avatar">
+                              <Icon
+                                name={
+                                  current.kind === "group"
+                                    ? "people"
+                                    : "messages"
+                                }
+                                size={23}
+                              />
+                            </span>
+                            <div className="chat-heading">
+                              <h2>{conversationLabel(current)}</h2>
+                              <small>
+                                <Icon name="lock" size={12} />
+                                {t(
+                                  pendingApproval
+                                    ? "Browser approval needed"
+                                    : vault?.state.heads[current.id]
+                                      ? "End-to-end encrypted"
+                                      : "Security code comparison needed",
+                                )}
+                              </small>
+                            </div>
+                            <button
+                              type="button"
+                              className="quiet icon-button chat-search-toggle"
+                              aria-label={t("Search this conversation")}
+                              title={t("Search this conversation")}
+                              onClick={() => setChatSearch(!chatSearch)}
+                            >
+                              <Icon name="search" />
+                            </button>
+                            <button
+                              className="quiet members-toggle"
+                              aria-expanded={groupOpen}
+                              onClick={() => setGroupOpen(!groupOpen)}
+                            >
+                              <span className="sr-only">
+                                {t(
+                                  current.kind === "group"
+                                    ? "Group & members"
+                                    : "Chat details",
+                                )}
+                              </span>
+                              <Icon name="more" size={24} />
+                            </button>
+                          </header>
+                          {vault && (
+                            <ConversationVerification
+                              conversation={current}
+                              vault={vault}
+                              t={t}
+                              verified={async () => {
+                                await vault.sync(current);
+                                if (vaultRef.current !== vault) return;
+                                setEvents([...vault.state.events]);
+                                setError("");
+                              }}
+                            />
+                          )}
+                          {groupOpen && (
+                            <section className="member-controls">
+                              <h3>
+                                {t(
+                                  current.kind === "group"
+                                    ? "Group & members"
+                                    : "Chat details",
+                                )}
+                              </h3>
+                              <p>
+                                {t("Epoch")}{" "}
+                                {vault?.state.heads[current.id]?.epoch ??
+                                  current.epoch}{" "}
+                                · {current.status}
+                              </p>
+                              <button
+                                disabled={chatDisabled}
+                                onClick={() =>
+                                  void perform(async () => {
+                                    await vault!.leave(current);
+                                    setNotice(
+                                      "Departure requested. An owner or moderator must complete MLS removal before writes resume.",
+                                    );
+                                  })
+                                }
+                              >
+                                {t("Leave conversation")}
+                              </button>
+                              <button
+                                disabled={chatDisabled}
+                                onClick={() =>
+                                  void perform(async () => {
+                                    const self = members.find(
+                                      (d) => d.id === vault!.state.device_id,
+                                    );
+                                    if (!self)
+                                      throw new Error(
+                                        "Current device is not a group member",
+                                      );
+                                    await vault!.changeMember(
+                                      current,
+                                      self,
+                                      "update",
+                                    );
+                                    setNotice(
+                                      "MLS epoch refreshed through an authenticated path update.",
+                                    );
+                                  })
+                                }
+                              >
+                                {t("Refresh cryptographic epoch")}
+                              </button>
+                              {Object.values(vault?.state.outbox || {}).some(
+                                (p) => p.candidate,
+                              ) && (
+                                <button
+                                  onClick={() =>
+                                    void perform(async () => {
+                                      await vault!.cancelPendingControl(
+                                        current,
+                                      );
+                                      setNotice(
+                                        "Pending membership request cancelled locally and signed group history checked. Review the roster before retrying.",
+                                      );
+                                    })
+                                  }
+                                >
+                                  {t(
+                                    "Cancel pending membership request and check state",
+                                  )}
+                                </button>
+                              )}
+                              {vault &&
+                                health?.experimental_closure &&
+                                vault.state.heads[current.id]
+                                  ?.closure_policy && (
+                                  <ClosureControls
+                                    vault={vault}
+                                    conversation={current}
+                                    t={t}
+                                    changed={() => {
+                                      setEvents([...vault.state.events]);
+                                      void api<Conversation[]>(
+                                        "conversations",
+                                      ).then((list) => {
+                                        setConversations(list);
+                                        setCurrent(
+                                          list.find(
+                                            (c) => c.id === current.id,
+                                          ) || current,
+                                        );
+                                      });
+                                    }}
+                                  />
+                                )}
+                              <label>
+                                {t("Group title")}
+                                <input
+                                  id="group-title"
+                                  disabled={chatDisabled}
+                                />
+                              </label>
+                              <button
+                                disabled={chatDisabled}
+                                onClick={() =>
+                                  void send(
+                                    "title",
+                                    (
+                                      document.getElementById(
+                                        "group-title",
+                                      ) as HTMLInputElement
+                                    ).value,
+                                  )
+                                }
+                              >
+                                {t("Save")}
+                              </button>
+                              <label>
+                                {t("Friend link or known device ID")}
+                                <input
+                                  value={targetDevice}
+                                  maxLength={4096}
+                                  onChange={(e) =>
+                                    setTargetDevice(e.target.value)
+                                  }
+                                />
+                              </label>
+                              <button
+                                disabled={chatDisabled}
+                                onClick={() =>
+                                  void perform(async () => {
+                                    const device =
+                                      await lookupContact(targetDevice);
+                                    setMembers([...members, device]);
+                                    setScreen("trust");
+                                  })
+                                }
+                              >
+                                {t("Verify fingerprint")}
+                              </button>
+                              {members.map((d) => (
+                                <div key={d.id}>
+                                  <b>
+                                    {vault?.state.contact_names?.[d.id] ||
+                                      d.label ||
+                                      t("Participant")}
+                                  </b>
+                                  <code>{d.id}</code>
+                                  <button
+                                    disabled={chatDisabled}
+                                    onClick={() =>
+                                      void perform(async () => {
+                                        await vault!.changeMember(
+                                          current,
+                                          d,
+                                          "add",
+                                        );
+                                      })
+                                    }
+                                  >
+                                    {t("Add member")}
+                                  </button>
+                                  <button
+                                    disabled={chatDisabled}
+                                    onClick={() =>
+                                      void perform(async () => {
+                                        await vault!.changeMember(
+                                          current,
+                                          d,
+                                          "remove",
+                                        );
+                                      })
+                                    }
+                                  >
+                                    {t("Remove member")}
+                                  </button>
+                                  <button
+                                    disabled={chatDisabled}
+                                    onClick={() =>
+                                      void perform(async () => {
+                                        await vault!.changeMember(
+                                          current,
+                                          d,
+                                          "transfer",
+                                        );
+                                        setNotice(
+                                          "Ownership transferred through a signed MLS epoch update.",
+                                        );
+                                      })
+                                    }
+                                  >
+                                    {t("Transfer ownership")}
+                                  </button>
+                                  <button
+                                    disabled={chatDisabled}
+                                    onClick={() =>
+                                      void perform(async () => {
+                                        await vault!.changeMember(
+                                          current,
+                                          d,
+                                          "role",
+                                          "moderator",
+                                        );
+                                        setNotice(
+                                          "Moderator appointed through a signed MLS epoch update.",
+                                        );
+                                      })
+                                    }
+                                  >
+                                    {t("Make moderator")}
+                                  </button>
+                                </div>
+                              ))}
+                            </section>
+                          )}
+                          {chatSearch && (
+                            <div className="chat-search">
+                              <Icon name="search" size={18} />
+                              <input
+                                autoFocus
+                                aria-label={t("Search this conversation")}
+                                placeholder={t("Search this conversation")}
+                                value={query}
+                                onChange={(e) => setQuery(e.target.value)}
+                              />
+                              <span>
+                                {shown.length} {t("results")}
+                              </span>
+                              <button
+                                type="button"
+                                className="quiet icon-button"
+                                aria-label={t("Close search")}
+                                onClick={() => {
+                                  setChatSearch(false);
+                                  setQuery("");
+                                }}
+                              >
+                                <Icon name="close" size={18} />
+                              </button>
+                            </div>
+                          )}
+                          <ChatThread
+                            key={`thread:${current.id}`}
+                            messages={shown}
+                            allMessages={thread}
+                            receiptIds={receiptIds}
+                            self={vault?.state.device_id}
+                            language={language}
+                            query={query}
+                            senderName={senderName}
+                            attachment={renderAttachment}
+                            disabled={chatDisabled || recording}
+                            action={messageAction}
+                            feedback={setNotice}
+                            bottomChanged={(bottom) => {
+                              setThreadAtBottom(bottom);
+                              if (
+                                bottom &&
+                                vault &&
+                                !query &&
+                                !document.hidden &&
+                                (vault.state.read_seq?.[current.id] || 0) <
+                                  (vault.state.cursor[current.id] || 0)
+                              )
+                                void vault
+                                  .markRead(current.id)
+                                  .then(() => {
+                                    if (vaultRef.current === vault)
+                                      setEvents([...vault.state.events]);
+                                  })
+                                  .catch(() => {});
+                            }}
+                            t={t}
+                          />
+                          <div className="chat-activity" aria-atomic="true">
+                            {typing && peerTyping > Date.now() ? (
+                              <TypingIndicator
+                                label={t("Another participant is typing…")}
+                              />
+                            ) : presence && peerPresence > Date.now() ? (
+                              <small className="peer-hint">
+                                {t(
+                                  "Another participant has a reachable active tab (server hint)",
+                                )}
+                              </small>
+                            ) : null}
+                          </div>
+                          <ChatComposer
+                            key={`composer:${current.id}`}
+                            draft={draft}
+                            change={(text) => {
+                              setDraft(text);
+                              if (!reply?.startsWith("edit:"))
+                                draftCache.current.set(current.id, text);
+                              composerActivity(!!text.trim());
+                              if (
+                                typing &&
+                                text.trim() &&
+                                !document.hidden &&
+                                vault &&
+                                !pendingApproval
+                              )
+                                window.dispatchEvent(
+                                  new CustomEvent("haven:typing", {
+                                    detail: current.id,
+                                  }),
+                                );
+                            }}
+                            inactive={() => composerActivity(false)}
+                            saveDraft={() => {
+                              // A blur while navigating during a send must not queue
+                              // the outgoing text behind the send that consumes it.
+                              if (
+                                vault &&
+                                vaultRef.current === vault &&
+                                !reply?.startsWith("edit:") &&
+                                !sendingDrafts.current.has(current.id)
+                              )
+                                void vault
+                                  .draft(
+                                    current.id,
+                                    rememberedDraft(current.id),
+                                  )
+                                  .catch((e) => setError(uiError(e)));
+                            }}
+                            send={() => {
+                              if (reply?.startsWith("edit:"))
+                                void send("edit", draft, reply.slice(5));
+                              else void send();
+                            }}
+                            attach={(file, once) => void attach(file, once)}
+                            voice={() => void voice()}
+                            discardRecording={discardRecording}
+                            recording={recording}
+                            disabled={chatUnavailable}
+                            busy={busy}
+                            textOnly={
+                              vault?.state.heads[current.id]?.closure_policy ===
+                              "mutual-local-archive-v1"
+                            }
+                            reply={replyContext}
+                            cancelReply={() => {
+                              if (reply?.startsWith("edit:"))
+                                setDraft(rememberedDraft(current.id));
+                              setReply(undefined);
+                            }}
+                            online={online}
+                            blockedReason={
+                              !enabled
+                                ? "Messaging is unavailable until security qualification is complete."
+                                : !vault
+                                  ? "Unlock this browser to write a message."
+                                  : pendingApproval
+                                    ? "Approve this browser before messaging."
+                                    : vault.state.closure_archives?.[
+                                          current.id
+                                        ] ||
+                                        current.status === "closing" ||
+                                        current.status === "closed"
+                                      ? "Conversation closure paused sending. Keep your encrypted archive."
+                                      : !vault.state.heads[current.id]
+                                        ? "Compare security codes above to start chatting."
+                                        : ""
+                            }
+                            t={t}
+                          />
+                          {vault &&
+                            Object.values(vault.state.uploads || {})
+                              .filter((x) => x.conversation_id === current.id)
+                              .map((meta) => (
+                                <div className="card" key={meta.id}>
+                                  <span>
+                                    {meta.name}
+                                    {t("— encrypted upload pending")}
+                                  </span>
+                                  <button
+                                    onClick={() =>
+                                      void perform(async () => {
+                                        const signal = new AbortController()
+                                          .signal;
+                                        await vault.resumeAttachment(
+                                          meta.id,
+                                          (n) =>
+                                            setProgress(
+                                              Math.round(n * 100) + "%",
+                                            ),
+                                          signal,
+                                        );
+                                        await vault.send(current, {
+                                          type: "file",
+                                          file: meta,
+                                        });
+                                        await vault.finishAttachment(meta.id);
+                                        setEvents([...vault.state.events]);
+                                        setProgress("");
+                                      })
+                                    }
+                                  >
+                                    {t("Resume encrypted upload")}
+                                  </button>
+                                  <button
+                                    onClick={() =>
+                                      void perform(async () => {
+                                        await vault.cancelAttachment(meta.id);
+                                        setEvents([...vault.state.events]);
+                                      })
+                                    }
+                                  >
+                                    {t("Cancel")}
+                                  </button>
+                                </div>
+                              ))}
+                          {progress && (
+                            <div>
+                              {progress}
+                              <button onClick={() => upload.current?.abort()}>
+                                {t("Cancel")}
+                              </button>
+                            </div>
+                          )}
+                        </>
+                      ) : (
+                        <div className="welcome">
+                          <HavenEmblem />
+                          <h2>
+                            {t(
+                              vault
+                                ? "Your people. Your space."
+                                : "Make yourself at home.",
+                            )}
+                          </h2>
+                          <p>
+                            {t(
+                              vault
+                                ? "Pick a conversation or start something new. A quieter way to stay close to the people who matter."
+                                : "Unlock your private space to reconnect with your people. Your keys stay right here, on this device.",
+                            )}
+                          </p>
+                          <div className="welcome-actions">
+                            {!vault ? (
+                              <button
+                                className="primary"
+                                disabled={!enabled}
+                                onClick={() => setScreen("connect")}
+                              >
+                                <Icon name="key" size={18} />
+                                {t("Set up this device")}
+                                <Icon name="next" size={17} />
+                              </button>
+                            ) : (
+                              <button
+                                className="primary"
+                                onClick={() => setScreen("connect")}
+                              >
+                                <Icon name="people" size={18} />
+                                {t("Start a chat")}
+                              </button>
+                            )}
+                            <button
+                              className="quiet welcome-help"
+                              onClick={() => setScreen("help")}
+                            >
+                              {t("How HAVEN works")}
+                              <Icon name="next" size={16} />
+                            </button>
+                          </div>
+                          <div className="welcome-tags">
+                            <span>
+                              <Icon name="lock" size={14} />
+                              {t("Keys stay on your devices")}
+                            </span>
+                            <span>{t("Invite-only community")}</span>
+                          </div>
+                        </div>
+                      )}
+                    </section>
+                  </div>
+                )}
+                {screen !== "messages" && (
+                  <div className="page-content" key={screen}>
+                    <span className="eyebrow">
+                      {appName} /{" "}
+                      {t(
+                        screen === "connect"
+                          ? "Start a chat"
+                          : nav.find((x) => x[0] === screen)?.[2] ||
+                              "Operator console",
+                      )}
+                    </span>
+                    <h1>
+                      {t(
+                        screen === "connect"
+                          ? "Start a chat"
+                          : nav.find((x) => x[0] === screen)?.[2] ||
+                              "Operator console",
+                      )}
+                    </h1>
+                    {screen === "connect" && (
+                      <ConnectFlow
+                        deviceUnlockHostname={deviceUnlockHostname}
+                        key={`${user.id}:${renderGeneration}`}
+                        user={user}
+                        vault={vault}
+                        enabled={enabled}
+                        initialContact={pendingContact}
+                        t={t}
+                        ready={(v) => acceptGuidedVault(v, renderGeneration)}
+                        advanced={() => setScreen("devices")}
+                        manual={() => createManualConversation()}
+                        conversationType={kind}
+                        changeConversationType={setKind}
+                        opened={async (c) => {
+                          const list =
+                            await api<Conversation[]>("conversations");
+                          if (
+                            renderGeneration !== vaultGeneration.current ||
+                            !vaultRef.current
+                          )
+                            return;
+                          setPendingContact(null);
+                          setConversations(list);
+                          setScreen("messages");
+                          await openConversation(c);
+                        }}
+                      />
+                    )}
+                    {(screen === "devices" || screen === "backup") && (
+                      <section className="card">
+                        <h2>{t(vault ? "Lock vault" : "Unlock vault")}</h2>
+                        <p>
+                          {t(
+                            "Browser storage can be erased or evicted. A server password cannot restore your keys.",
+                          )}
+                        </p>
+                        {!vault ? (
+                          <>
+                            <label>
+                              {t("Local unlock passphrase")}
+                              <input
+                                type="password"
+                                value={unlock}
+                                onChange={(e) => setUnlock(e.target.value)}
+                                autoComplete="off"
+                                minLength={20}
+                              />
+                            </label>
+                            <label>
+                              {t("Device label")}
+                              <input
+                                value={deviceLabel}
+                                onChange={(e) => setDeviceLabel(e.target.value)}
+                              />
+                            </label>
+                            <div className="button-row">
+                              <button
+                                disabled={!enabled || busy}
+                                onClick={() => void openVault()}
+                              >
+                                {t("Unlock vault")}
+                              </button>
+                              <button
+                                disabled={!enabled || busy}
+                                onClick={() => void openVault(true)}
+                              >
+                                {t("Create device vault")}
+                              </button>
+                            </div>
+                          </>
+                        ) : (
+                          <button onClick={lock}>{t("Lock vault")}</button>
+                        )}
+                      </section>
+                    )}
+                    {screen === "trust" && (
+                      <>
+                        <p>
+                          {t(
+                            "Compare this fingerprint through an independent channel before verifying.",
+                          )}
+                        </p>
+                        {!members.length && (
+                          <div className="card">{t("No devices enrolled")}</div>
+                        )}
+                        <section className="card">
                           <label>
                             {t("Friend link or known device ID")}
                             <input
@@ -2015,696 +2545,223 @@ export default function Haven({
                             />
                           </label>
                           <button
-                            disabled={chatDisabled}
+                            disabled={disabled}
                             onClick={() =>
                               void perform(async () => {
                                 const device =
                                   await lookupContact(targetDevice);
-                                setMembers([...members, device]);
-                                setScreen("trust");
+                                setMembers((old) => [
+                                  ...old.filter((d) => d.id !== device.id),
+                                  device,
+                                ]);
                               })
                             }
                           >
-                            {t("Verify fingerprint")}
+                            {t("Look up a known device")}
                           </button>
-                          {members.map((d) => (
-                            <div key={d.id}>
-                              <b>
+                        </section>
+                        {[
+                          ...new Map(
+                            [...devices, ...members].map((d) => [d.id, d]),
+                          ).values(),
+                        ].map((d) => (
+                          <section className="card" key={d.id}>
+                            {vault?.state.pins[d.id] &&
+                              vault.state.pins[d.id] !== d.public_key && (
+                                <p role="alert">
+                                  {t(
+                                    "Identity key changed. Stop and independently verify this device before continuing.",
+                                  )}
+                                </p>
+                              )}
+                            {(d.revoked_at || d.trust_state === "revoked") && (
+                              <p role="status">
+                                {t(
+                                  "Revoked device: verify historical signatures only. This does not authorize new membership.",
+                                )}
+                              </p>
+                            )}
+                            <small>
+                              {vault?.state.pins[d.id] === d.public_key
+                                ? t("Verified devices only")
+                                : t("Crypto verification needed")}
+                            </small>
+                            <h2>
+                              {vault?.state.contact_names?.[d.id] ||
+                                d.label ||
+                                t("Participant")}
+                            </h2>
+                            <code>{d.identity}</code>
+                            <code className="fingerprint">
+                              {fingerprints[d.id]}
+                            </code>
+                            <QR
+                              t={t}
+                              value={`haven:device:v1:${d.id}:${fingerprints[d.id]}`}
+                            />
+                            <label>
+                              {t("Confirm fingerprint")}
+                              <input
+                                value={comparison}
+                                onChange={(e) => setComparison(e.target.value)}
+                              />
+                            </label>
+                            <button
+                              disabled={disabled}
+                              onClick={() =>
+                                void perform(async () => {
+                                  await vault!.pin(d, comparison);
+                                  setComparison("");
+                                  setNotice(t("Verified devices only"));
+                                })
+                              }
+                            >
+                              {t("Verify fingerprint")}
+                            </button>
+                          </section>
+                        ))}
+                      </>
+                    )}
+                    {screen === "devices" && (
+                      <section className="card">
+                        <div className="section-heading">
+                          <h2>{t("Devices")}</h2>
+                          <button
+                            onClick={() =>
+                              void perform(async () =>
+                                setDevices(await api<Device[]>("devices")),
+                              )
+                            }
+                          >
+                            {t("Refresh")}
+                          </button>
+                        </div>
+                        {!devices.length && <p>{t("No devices enrolled")}</p>}
+                        {devices.map((d) => (
+                          <div className="device-row" key={d.id}>
+                            <div>
+                              <strong>
                                 {vault?.state.contact_names?.[d.id] ||
                                   d.label ||
                                   t("Participant")}
-                              </b>
+                              </strong>
                               <code>{d.id}</code>
+                              <small>{t(d.trust_state)}</small>
+                              <code className="fingerprint">
+                                {fingerprints[d.id]}
+                              </code>
+                            </div>
+                            <div className="button-row">
                               <button
-                                disabled={chatDisabled}
+                                disabled={disabled}
                                 onClick={() =>
                                   void perform(async () => {
-                                    await vault!.changeMember(
-                                      current,
-                                      d,
-                                      "add",
-                                    );
+                                    await vault!.approve(d);
+                                    setDevices(await api<Device[]>("devices"));
                                   })
                                 }
                               >
-                                {t("Add member")}
+                                {t("Approve enrollment")}
                               </button>
                               <button
-                                disabled={chatDisabled}
+                                disabled={disabled}
+                                className="danger"
                                 onClick={() =>
                                   void perform(async () => {
-                                    await vault!.changeMember(
-                                      current,
-                                      d,
-                                      "remove",
+                                    if (
+                                      !confirm(
+                                        "Revoke this device? All affected groups pause until cryptographic rekey.",
+                                      )
+                                    )
+                                      return;
+                                    await api(
+                                      `devices/${d.id}/revoke`,
+                                      "POST",
+                                      {},
                                     );
+                                    setDevices(await api<Device[]>("devices"));
                                   })
                                 }
                               >
-                                {t("Remove member")}
-                              </button>
-                              <button
-                                disabled={chatDisabled}
-                                onClick={() =>
-                                  void perform(async () => {
-                                    await vault!.changeMember(
-                                      current,
-                                      d,
-                                      "transfer",
-                                    );
-                                    setNotice(
-                                      "Ownership transferred through a signed MLS epoch update.",
-                                    );
-                                  })
-                                }
-                              >
-                                {t("Transfer ownership")}
-                              </button>
-                              <button
-                                disabled={chatDisabled}
-                                onClick={() =>
-                                  void perform(async () => {
-                                    await vault!.changeMember(
-                                      current,
-                                      d,
-                                      "role",
-                                      "moderator",
-                                    );
-                                    setNotice(
-                                      "Moderator appointed through a signed MLS epoch update.",
-                                    );
-                                  })
-                                }
-                              >
-                                {t("Make moderator")}
+                                {t("Revoke device")}
                               </button>
                             </div>
-                          ))}
-                        </section>
-                      )}
-                      {chatSearch && (
-                        <div className="chat-search">
-                          <Icon name="search" size={18} />
-                          <input
-                            autoFocus
-                            aria-label={t("Search this conversation")}
-                            placeholder={t("Search this conversation")}
-                            value={query}
-                            onChange={(e) => setQuery(e.target.value)}
-                          />
-                          <span>
-                            {shown.length} {t("results")}
-                          </span>
-                          <button
-                            type="button"
-                            className="quiet icon-button"
-                            aria-label={t("Close search")}
-                            onClick={() => {
-                              setChatSearch(false);
-                              setQuery("");
-                            }}
-                          >
-                            <Icon name="close" size={18} />
-                          </button>
-                        </div>
-                      )}
-                      <ChatThread
-                        key={`thread:${current.id}`}
-                        messages={shown}
-                        allMessages={thread}
-                        receiptIds={receiptIds}
-                        self={vault?.state.device_id}
-                        language={language}
-                        query={query}
-                        senderName={senderName}
-                        attachment={renderAttachment}
-                        disabled={chatDisabled || recording}
-                        action={messageAction}
-                        feedback={setNotice}
-                        bottomChanged={(bottom) => {
-                          setThreadAtBottom(bottom);
-                          if (
-                            bottom &&
-                            vault &&
-                            !query &&
-                            !document.hidden &&
-                            (vault.state.read_seq?.[current.id] || 0) <
-                              (vault.state.cursor[current.id] || 0)
-                          )
-                            void vault
-                              .markRead(current.id)
-                              .then(() => {
-                                if (vaultRef.current === vault)
-                                  setEvents([...vault.state.events]);
-                              })
-                              .catch(() => {});
-                        }}
-                        t={t}
-                      />
-                      <div className="chat-activity" aria-atomic="true">
-                        {typing && peerTyping > Date.now() ? (
-                          <TypingIndicator
-                            label={t("Another participant is typing…")}
-                          />
-                        ) : presence && peerPresence > Date.now() ? (
-                          <small className="peer-hint">
-                            {t(
-                              "Another participant has a reachable active tab (server hint)",
-                            )}
-                          </small>
-                        ) : null}
-                      </div>
-                      <ChatComposer
-                        key={`composer:${current.id}`}
-                        draft={draft}
-                        change={(text) => {
-                          setDraft(text);
-                          if (!reply?.startsWith("edit:"))
-                            draftCache.current.set(current.id, text);
-                          composerActivity(!!text.trim());
-                          if (
-                            typing &&
-                            text.trim() &&
-                            !document.hidden &&
-                            vault &&
-                            !pendingApproval
-                          )
-                            window.dispatchEvent(
-                              new CustomEvent("haven:typing", {
-                                detail: current.id,
-                              }),
-                            );
-                        }}
-                        inactive={() => composerActivity(false)}
-                        saveDraft={() => {
-                          // A blur while navigating during a send must not queue
-                          // the outgoing text behind the send that consumes it.
-                          if (
-                            vault &&
-                            vaultRef.current === vault &&
-                            !reply?.startsWith("edit:") &&
-                            !sendingDrafts.current.has(current.id)
-                          )
-                            void vault
-                              .draft(current.id, rememberedDraft(current.id))
-                              .catch((e) => setError(uiError(e)));
-                        }}
-                        send={() => {
-                          if (reply?.startsWith("edit:"))
-                            void send("edit", draft, reply.slice(5));
-                          else void send();
-                        }}
-                        attach={(file, once) => void attach(file, once)}
-                        voice={() => void voice()}
-                        discardRecording={discardRecording}
-                        recording={recording}
-                        disabled={chatUnavailable}
-                        busy={busy}
-                        textOnly={
-                          vault?.state.heads[current.id]?.closure_policy ===
-                          "mutual-local-archive-v1"
-                        }
-                        reply={replyContext}
-                        cancelReply={() => {
-                          if (reply?.startsWith("edit:"))
-                            setDraft(rememberedDraft(current.id));
-                          setReply(undefined);
-                        }}
-                        online={online}
-                        blockedReason={
-                          !enabled
-                            ? "Messaging is unavailable until security qualification is complete."
-                            : !vault
-                              ? "Unlock this browser to write a message."
-                              : pendingApproval
-                                ? "Approve this browser before messaging."
-                                : vault.state.closure_archives?.[current.id] ||
-                                    current.status === "closing" ||
-                                    current.status === "closed"
-                                  ? "Conversation closure paused sending. Keep your encrypted archive."
-                                  : !vault.state.heads[current.id]
-                                    ? "Compare security codes above to start chatting."
-                                    : ""
-                        }
-                        t={t}
-                      />
-                      {vault &&
-                        Object.values(vault.state.uploads || {})
-                          .filter((x) => x.conversation_id === current.id)
-                          .map((meta) => (
-                            <div className="card" key={meta.id}>
-                              <span>
-                                {meta.name}
-                                {t("— encrypted upload pending")}
-                              </span>
-                              <button
-                                onClick={() =>
-                                  void perform(async () => {
-                                    const signal = new AbortController().signal;
-                                    await vault.resumeAttachment(
-                                      meta.id,
-                                      (n) =>
-                                        setProgress(Math.round(n * 100) + "%"),
-                                      signal,
-                                    );
-                                    await vault.send(current, {
-                                      type: "file",
-                                      file: meta,
-                                    });
-                                    await vault.finishAttachment(meta.id);
-                                    setEvents([...vault.state.events]);
-                                    setProgress("");
-                                  })
-                                }
-                              >
-                                {t("Resume encrypted upload")}
-                              </button>
-                              <button
-                                onClick={() =>
-                                  void perform(async () => {
-                                    await vault.cancelAttachment(meta.id);
-                                    setEvents([...vault.state.events]);
-                                  })
-                                }
-                              >
-                                {t("Cancel")}
-                              </button>
-                            </div>
-                          ))}
-                      {progress && (
-                        <div>
-                          {progress}
-                          <button onClick={() => upload.current?.abort()}>
-                            {t("Cancel")}
-                          </button>
-                        </div>
-                      )}
-                    </>
-                  ) : (
-                    <div className="welcome">
-                      <HavenEmblem />
-                      <h2>
-                        {t(
-                          vault
-                            ? "Your people. Your space."
-                            : "Make yourself at home.",
-                        )}
-                      </h2>
-                      <p>
-                        {t(
-                          vault
-                            ? "Pick a conversation or start something new. A quieter way to stay close to the people who matter."
-                            : "Unlock your private space to reconnect with your people. Your keys stay right here, on this device.",
-                        )}
-                      </p>
-                      <div className="welcome-actions">
-                        {!vault ? (
-                          <button
-                            className="primary"
-                            disabled={!enabled}
-                            onClick={() => setScreen("connect")}
-                          >
-                            <Icon name="key" size={18} />
-                            {t("Set up this device")}
-                            <Icon name="next" size={17} />
-                          </button>
-                        ) : (
-                          <button
-                            className="primary"
-                            onClick={() => setScreen("connect")}
-                          >
-                            <Icon name="people" size={18} />
-                            {t("Start a chat")}
-                          </button>
-                        )}
-                        <button
-                          className="quiet welcome-help"
-                          onClick={() => setScreen("help")}
-                        >
-                          {t("How HAVEN works")}
-                          <Icon name="next" size={16} />
-                        </button>
-                      </div>
-                      <div className="welcome-tags">
-                        <span>
-                          <Icon name="lock" size={14} />
-                          {t("Keys stay on your devices")}
-                        </span>
-                        <span>{t("Invite-only community")}</span>
-                      </div>
-                    </div>
-                  )}
-                </section>
-              </div>
-            )}
-            {screen !== "messages" && (
-              <div className="page-content" key={screen}>
-                <span className="eyebrow">
-                  {appName} /{" "}
-                  {t(
-                    screen === "connect"
-                      ? "Start a chat"
-                      : nav.find((x) => x[0] === screen)?.[2] ||
-                          "Operator console",
-                  )}
-                </span>
-                <h1>
-                  {t(
-                    screen === "connect"
-                      ? "Start a chat"
-                      : nav.find((x) => x[0] === screen)?.[2] ||
-                          "Operator console",
-                  )}
-                </h1>
-                {screen === "connect" && (
-                  <ConnectFlow
-                    deviceUnlockHostname={deviceUnlockHostname}
-                    key={`${user.id}:${renderGeneration}`}
-                    user={user}
-                    vault={vault}
-                    enabled={enabled}
-                    initialContact={pendingContact}
-                    t={t}
-                    ready={(v) => acceptGuidedVault(v, renderGeneration)}
-                    advanced={() => setScreen("devices")}
-                    manual={() => createManualConversation()}
-                    conversationType={kind}
-                    changeConversationType={setKind}
-                    opened={async (c) => {
-                      const list = await api<Conversation[]>("conversations");
-                      if (
-                        renderGeneration !== vaultGeneration.current ||
-                        !vaultRef.current
-                      )
-                        return;
-                      setPendingContact(null);
-                      setConversations(list);
-                      setScreen("messages");
-                      await openConversation(c);
-                    }}
-                  />
-                )}
-                {(screen === "devices" || screen === "backup") && (
-                  <section className="card">
-                    <h2>{t(vault ? "Lock vault" : "Unlock vault")}</h2>
-                    <p>
-                      {t(
-                        "Browser storage can be erased or evicted. A server password cannot restore your keys.",
-                      )}
-                    </p>
-                    {!vault ? (
-                      <>
-                        <label>
-                          {t("Local unlock passphrase")}
-                          <input
-                            type="password"
-                            value={unlock}
-                            onChange={(e) => setUnlock(e.target.value)}
-                            autoComplete="off"
-                            minLength={20}
-                          />
-                        </label>
-                        <label>
-                          {t("Device label")}
-                          <input
-                            value={deviceLabel}
-                            onChange={(e) => setDeviceLabel(e.target.value)}
-                          />
-                        </label>
-                        <div className="button-row">
-                          <button
-                            disabled={!enabled || busy}
-                            onClick={() => void openVault()}
-                          >
-                            {t("Unlock vault")}
-                          </button>
-                          <button
-                            disabled={!enabled || busy}
-                            onClick={() => void openVault(true)}
-                          >
-                            {t("Create device vault")}
-                          </button>
-                        </div>
-                      </>
-                    ) : (
-                      <button onClick={lock}>{t("Lock vault")}</button>
-                    )}
-                  </section>
-                )}
-                {screen === "trust" && (
-                  <>
-                    <p>
-                      {t(
-                        "Compare this fingerprint through an independent channel before verifying.",
-                      )}
-                    </p>
-                    {!members.length && (
-                      <div className="card">{t("No devices enrolled")}</div>
-                    )}
-                    <section className="card">
-                      <label>
-                        {t("Friend link or known device ID")}
-                        <input
-                          value={targetDevice}
-                          maxLength={4096}
-                          onChange={(e) => setTargetDevice(e.target.value)}
-                        />
-                      </label>
-                      <button
-                        disabled={disabled}
-                        onClick={() =>
-                          void perform(async () => {
-                            const device = await lookupContact(targetDevice);
-                            setMembers((old) => [
-                              ...old.filter((d) => d.id !== device.id),
-                              device,
-                            ]);
-                          })
-                        }
-                      >
-                        {t("Look up a known device")}
-                      </button>
-                    </section>
-                    {[
-                      ...new Map(
-                        [...devices, ...members].map((d) => [d.id, d]),
-                      ).values(),
-                    ].map((d) => (
-                      <section className="card" key={d.id}>
-                        {vault?.state.pins[d.id] &&
-                          vault.state.pins[d.id] !== d.public_key && (
-                            <p role="alert">
-                              {t(
-                                "Identity key changed. Stop and independently verify this device before continuing.",
-                              )}
-                            </p>
-                          )}
-                        {(d.revoked_at || d.trust_state === "revoked") && (
-                          <p role="status">
-                            {t(
-                              "Revoked device: verify historical signatures only. This does not authorize new membership.",
-                            )}
-                          </p>
-                        )}
-                        <small>
-                          {vault?.state.pins[d.id] === d.public_key
-                            ? t("Verified devices only")
-                            : t("Crypto verification needed")}
-                        </small>
-                        <h2>
-                          {vault?.state.contact_names?.[d.id] ||
-                            d.label ||
-                            t("Participant")}
-                        </h2>
-                        <code>{d.identity}</code>
-                        <code className="fingerprint">
-                          {fingerprints[d.id]}
-                        </code>
-                        <QR
-                          t={t}
-                          value={`haven:device:v1:${d.id}:${fingerprints[d.id]}`}
-                        />
-                        <label>
-                          {t("Confirm fingerprint")}
-                          <input
-                            value={comparison}
-                            onChange={(e) => setComparison(e.target.value)}
-                          />
-                        </label>
-                        <button
-                          disabled={disabled}
-                          onClick={() =>
-                            void perform(async () => {
-                              await vault!.pin(d, comparison);
-                              setComparison("");
-                              setNotice(t("Verified devices only"));
-                            })
-                          }
-                        >
-                          {t("Verify fingerprint")}
-                        </button>
+                          </div>
+                        ))}
                       </section>
-                    ))}
-                  </>
-                )}
-                {screen === "devices" && (
-                  <section className="card">
-                    <div className="section-heading">
-                      <h2>{t("Devices")}</h2>
-                      <button
-                        onClick={() =>
-                          void perform(async () =>
-                            setDevices(await api<Device[]>("devices")),
-                          )
-                        }
-                      >
-                        {t("Refresh")}
-                      </button>
-                    </div>
-                    {!devices.length && <p>{t("No devices enrolled")}</p>}
-                    {devices.map((d) => (
-                      <div className="device-row" key={d.id}>
-                        <div>
-                          <strong>
-                            {vault?.state.contact_names?.[d.id] ||
-                              d.label ||
-                              t("Participant")}
-                          </strong>
-                          <code>{d.id}</code>
-                          <small>{t(d.trust_state)}</small>
-                          <code className="fingerprint">
-                            {fingerprints[d.id]}
-                          </code>
-                        </div>
-                        <div className="button-row">
-                          <button
-                            disabled={disabled}
-                            onClick={() =>
-                              void perform(async () => {
-                                await vault!.approve(d);
-                                setDevices(await api<Device[]>("devices"));
-                              })
-                            }
-                          >
-                            {t("Approve enrollment")}
-                          </button>
-                          <button
-                            disabled={disabled}
-                            className="danger"
-                            onClick={() =>
-                              void perform(async () => {
-                                if (
-                                  !confirm(
-                                    "Revoke this device? All affected groups pause until cryptographic rekey.",
-                                  )
-                                )
-                                  return;
-                                await api(`devices/${d.id}/revoke`, "POST", {});
-                                setDevices(await api<Device[]>("devices"));
-                              })
-                            }
-                          >
-                            {t("Revoke device")}
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </section>
-                )}
-                {screen === "backup" && (
-                  <>
-                    {vault &&
-                      Object.entries(vault.state.retired_history || {}).map(
-                        ([id, history]) => (
-                          <section className="card" key={id}>
-                            <h2>
-                              {t("Closed conversations saved on this device")}
-                            </h2>
-                            <code>{id.slice(0, 8)}</code>
-                            <p>
-                              {t(
-                                "This conversation stays closed. Local recovered history, drafts and unconfirmed sends are preserved in your encrypted recovery kit.",
-                              )}
-                            </p>
-                            {history.events.map((event) => (
-                              <p key={event.id}>{event.text || event.type}</p>
-                            ))}
-                            {history.draft && <p>{history.draft}</p>}
-                          </section>
-                        ),
-                      )}
-                    {vault && (
-                      <ClosureInbox
-                        vault={vault}
-                        t={t}
-                        changed={() => setEvents([...vault.state.events])}
-                      />
                     )}
-                    {vault && (
-                      <ClosureArchiveImport
-                        vault={vault}
-                        t={t}
-                        changed={() => {
-                          setEvents([...vault.state.events]);
-                          setNotice(
-                            t(
-                              "Encrypted conversation archive restored locally.",
-                            ),
-                          );
-                        }}
-                      />
-                    )}
-                    {vault &&
-                      Object.keys(vault.state.closure_archives || {}).length >
-                        0 && (
-                        <section className="card">
-                          <h2>{t("Closed conversation archives")}</h2>
-                          <p>
-                            {t(
-                              "These copies stay encrypted in this vault. Export a backup before clearing browser data.",
-                            )}
-                          </p>
-                          {Object.entries(
-                            vault.state.closure_archives || {},
-                          ).map(([id, archive]) => (
-                            <details key={id}>
-                              <summary>
-                                {id.slice(0, 8)} ·{" "}
-                                {t(
-                                  archive.certificate?.state === "finalized"
-                                    ? "Finalized"
-                                    : "Awaiting mutual closure",
-                                )}
-                              </summary>
-                              {archive.events.map((event) => (
-                                <p key={event.id} dir="auto">
-                                  {event.text || event.type}
-                                  {event.file &&
-                                    archive.files?.[event.file.id] && (
-                                      <button
-                                        onClick={() =>
-                                          download(
-                                            vault.archivedFile(
-                                              id,
-                                              event.file!.id,
-                                            ),
-                                            event.file!.name,
-                                          )
-                                        }
-                                      >
-                                        {t("Download")}
-                                      </button>
-                                    )}
+                    {screen === "backup" && (
+                      <>
+                        {vault &&
+                          Object.entries(vault.state.retired_history || {}).map(
+                            ([id, history]) => (
+                              <section className="card" key={id}>
+                                <h2>
+                                  {t(
+                                    "Closed conversations saved on this device",
+                                  )}
+                                </h2>
+                                <code>{id.slice(0, 8)}</code>
+                                <p>
+                                  {t(
+                                    "This conversation stays closed. Local recovered history, drafts and unconfirmed sends are preserved in your encrypted recovery kit.",
+                                  )}
                                 </p>
-                              ))}
-                              {!!archive.unsent?.length && (
-                                <>
-                                  <h3>{t("Unconfirmed local messages")}</h3>
-                                  {archive.unsent.map((event) => (
+                                {history.events.map((event) => (
+                                  <p key={event.id}>
+                                    {event.text || event.type}
+                                  </p>
+                                ))}
+                                {history.draft && <p>{history.draft}</p>}
+                              </section>
+                            ),
+                          )}
+                        {vault && (
+                          <ClosureInbox
+                            vault={vault}
+                            t={t}
+                            changed={() => setEvents([...vault.state.events])}
+                          />
+                        )}
+                        {vault && (
+                          <ClosureArchiveImport
+                            vault={vault}
+                            t={t}
+                            changed={() => {
+                              setEvents([...vault.state.events]);
+                              setNotice(
+                                t(
+                                  "Encrypted conversation archive restored locally.",
+                                ),
+                              );
+                            }}
+                          />
+                        )}
+                        {vault &&
+                          Object.keys(vault.state.closure_archives || {})
+                            .length > 0 && (
+                            <section className="card">
+                              <h2>{t("Closed conversation archives")}</h2>
+                              <p>
+                                {t(
+                                  "These copies stay encrypted in this vault. Export a backup before clearing browser data.",
+                                )}
+                              </p>
+                              {Object.entries(
+                                vault.state.closure_archives || {},
+                              ).map(([id, archive]) => (
+                                <details key={id}>
+                                  <summary>
+                                    {id.slice(0, 8)} ·{" "}
+                                    {t(
+                                      archive.certificate?.state === "finalized"
+                                        ? "Finalized"
+                                        : "Awaiting mutual closure",
+                                    )}
+                                  </summary>
+                                  {archive.events.map((event) => (
                                     <p key={event.id} dir="auto">
-                                      {event.text ||
-                                        event.file?.name ||
-                                        event.type}
+                                      {event.text || event.type}
                                       {event.file &&
                                         archive.files?.[event.file.id] && (
                                           <button
@@ -2723,814 +2780,865 @@ export default function Haven({
                                         )}
                                     </p>
                                   ))}
-                                </>
-                              )}
-                              {archive.draft && (
-                                <p dir="auto">{archive.draft}</p>
-                              )}
-                              <button
-                                onClick={() =>
-                                  void perform(async () =>
-                                    download(
-                                      await vault.exportClosureArchive(id),
-                                      `haven-closed-${id}.json`,
-                                    ),
-                                  )
-                                }
-                              >
-                                {t("Export encrypted archive")}
-                              </button>
-                              {archive.certificate?.state === "finalized" && (
-                                <button
-                                  onClick={() => {
-                                    if (
-                                      confirm(
-                                        t(
-                                          "Remove this local archive copy? First verify your encrypted export and keep its passphrase. The server cannot restore these files.",
+                                  {!!archive.unsent?.length && (
+                                    <>
+                                      <h3>{t("Unconfirmed local messages")}</h3>
+                                      {archive.unsent.map((event) => (
+                                        <p key={event.id} dir="auto">
+                                          {event.text ||
+                                            event.file?.name ||
+                                            event.type}
+                                          {event.file &&
+                                            archive.files?.[event.file.id] && (
+                                              <button
+                                                onClick={() =>
+                                                  download(
+                                                    vault.archivedFile(
+                                                      id,
+                                                      event.file!.id,
+                                                    ),
+                                                    event.file!.name,
+                                                  )
+                                                }
+                                              >
+                                                {t("Download")}
+                                              </button>
+                                            )}
+                                        </p>
+                                      ))}
+                                    </>
+                                  )}
+                                  {archive.draft && (
+                                    <p dir="auto">{archive.draft}</p>
+                                  )}
+                                  <button
+                                    onClick={() =>
+                                      void perform(async () =>
+                                        download(
+                                          await vault.exportClosureArchive(id),
+                                          `haven-closed-${id}.json`,
                                         ),
                                       )
-                                    )
-                                      void perform(async () => {
-                                        await vault.removeLocalClosureArchive(
-                                          id,
-                                        );
-                                        setEvents([...vault.state.events]);
-                                      });
-                                  }}
-                                >
-                                  {t("Remove this local archive copy")}
-                                </button>
-                              )}
-                            </details>
-                          ))}
-                        </section>
-                      )}
-
-                    {archivedIds.length > 0 && (
-                      <section className="card">
-                        <h2>{t("Recovered local history")}</h2>
-                        <p>
-                          {t(
-                            "These conversations belong to your previous device. Their MLS state is never resumed.",
-                          )}
-                        </p>
-                        {archivedIds.map((id) => (
-                          <details key={id}>
-                            <summary>{id.slice(0, 8)}</summary>
-                            {events
-                              .filter((e) => e.conversation_id === id)
-                              .map((e) => (
-                                <p dir="auto" key={e.id}>
-                                  {e.text || e.file?.name || e.type}
-                                </p>
-                              ))}
-                          </details>
-                        ))}
-                      </section>
-                    )}
-                    <section className="card">
-                      <h2>{t("Recovery kit")}</h2>
-                      <p>
-                        {t(
-                          "Store the key separately from the encrypted kit. Losing both permanently loses local history.",
-                        )}
-                      </p>
-                      <label>
-                        {t("Local unlock passphrase")}
-                        <input
-                          type="password"
-                          value={unlock}
-                          onChange={(e) => setUnlock(e.target.value)}
-                        />
-                      </label>
-                      <button
-                        disabled={disabled}
-                        onClick={() =>
-                          void perform(async () => {
-                            const accountRecovery =
-                              await vault!.provisionRecovery();
-                            if (!accountRecovery)
-                              setNotice(
-                                "History-only kit: account recovery remains with the original recovery kit.",
-                              );
-                            const kit = await recoveryKit(
-                              user.id,
-                              unlock,
-                              vault!.state,
-                            );
-                            setRecovery(kit.recovery);
-                            download(kit.kit, "haven-encrypted-recovery.json");
-                          })
-                        }
-                      >
-                        {t("Download encrypted kit")}
-                      </button>
-                      {recovery && (
-                        <div className="warning">
-                          <strong>{t("Recovery key")}</strong>
-                          <code>{recovery}</code>
-                        </div>
-                      )}
-                      <hr />
-                      <p>
-                        {t(
-                          "Recovery restores saved history only. A fresh device and explicit peer verification are required.",
-                        )}
-                      </p>
-                      <label>
-                        {t("Recovery key")}
-                        <input
-                          type="password"
-                          value={recovery}
-                          onChange={(e) => setRecovery(e.target.value)}
-                        />
-                      </label>
-                      <label>
-                        {t("New account password after security reset")}
-                        <input
-                          type="password"
-                          value={resetPassword}
-                          onChange={(e) => setResetPassword(e.target.value)}
-                          autoComplete="new-password"
-                        />
-                      </label>
-                      <p>
-                        {t(
-                          "Recovery always creates a fresh MLS identity and revokes old devices. Keep the kit and its separate key secure. Enter a new unlock secret on the Devices screen first.",
-                        )}
-                      </p>
-                      <label>
-                        {t("Restore encrypted kit")}
-                        <input
-                          type="file"
-                          accept="application/json"
-                          disabled={!enabled || busy}
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file)
-                              void perform(async () => {
-                                if (file.size > 256 * 1024 * 1024)
-                                  throw new Error("Kit too large");
-                                const kit = JSON.parse(await file.text()) as {
-                                  format: string;
-                                  scope: string;
-                                  sealed: Sealed;
-                                };
-                                if (
-                                  kit.format !==
-                                    "haven-recovery-v2-history-only" ||
-                                  kit.scope !== user.id
-                                )
-                                  throw new Error("Kit account mismatch");
-                                const state = await unseal<VaultState>(
-                                  recovery,
-                                  user.id,
-                                  kit.sealed,
-                                );
-                                if (vault) {
-                                  await vault.importHistory(state);
-                                  setEvents([...vault.state.events]);
-                                  setNotice(
-                                    "Saved history imported locally. Live device keys and pending messages were preserved.",
-                                  );
-                                  return;
-                                }
-                                const fresh = await Messenger.recover(
-                                  user.id,
-                                  unlock,
-                                  state,
-                                  resetPassword,
-                                  deviceLabel || "Recovered browser",
-                                );
-                                vaultRef.current = fresh;
-                                setVault(fresh);
-                                setEvents([...fresh.state.events]);
-                                setRecovery("");
-                                setResetPassword("");
-                                setUnlock("");
-                                setNotice(
-                                  "Account security reset completed. All old devices are revoked. Restored history is local-only; contacts must verify this fresh device and explicitly re-add it.",
-                                );
-                              });
-                          }}
-                        />
-                      </label>
-                    </section>
-                  </>
-                )}
-                {screen === "settings" && (
-                  <>
-                    {vault && (
-                      <DeviceUnlockSettings
-                        vault={vault}
-                        t={t}
-                        hostname={deviceUnlockHostname}
-                      />
-                    )}
-                    <ServerPrivacy t={t} />
-                    {vault && (
-                      <section className="card">
-                        <p>
-                          {t("Device ID:")}
-                          <code>{vault.state.device_id}</code>
-                        </p>
-                        <button
-                          onClick={() =>
-                            void perform(async () => {
-                              await vault.connect();
-                              await vault.package();
-                              setDevices(await api<Device[]>("devices"));
-                              setNotice(
-                                "Approved device connected; a fresh key package is available.",
-                              );
-                            })
-                          }
-                        >
-                          {t("Complete approved device enrollment")}
-                        </button>
-                      </section>
-                    )}
-                    <section className="card">
-                      <h2 className="settings-section-heading">
-                        <span className="section-glyph">
-                          <Icon name="settings" size={22} />
-                        </span>
-                        {t("Appearance & privacy")}
-                      </h2>
-                      <label>
-                        {t("Language")}
-                        <select
-                          aria-label={t("Language")}
-                          value={language}
-                          onChange={(e) =>
-                            setLanguage(e.target.value as Language)
-                          }
-                        >
-                          <option value="en">English</option>
-                          <option value="fa">فارسی</option>
-                        </select>
-                      </label>
-                      <label>
-                        {t("Theme")}
-                        <select
-                          aria-label={t("Theme")}
-                          value={theme}
-                          onChange={(e) => setTheme(e.target.value)}
-                        >
-                          <option value="dark">{t("Dark")}</option>
-                          <option value="light">{t("Light")}</option>
-                        </select>
-                      </label>
-                      <label className="checkbox">
-                        <input
-                          type="checkbox"
-                          checked={ambientMotion}
-                          onChange={(event) =>
-                            setAmbientMotion(event.target.checked)
-                          }
-                        />
-                        {t("Animated chat background")}
-                      </label>
-                      <p className="fine">
-                        {t(
-                          "Pause the aurora at any time. Reduced motion preferences are always respected.",
-                        )}
-                      </p>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setNotifications(false);
-                          setReceipts(false);
-                          setPresence(false);
-                          setTyping(false);
-                          setPeerPresence(0);
-                          setPeerTyping(0);
-                        }}
-                      >
-                        {t("Use high-privacy settings")}
-                      </button>
-                      <p className="fine">
-                        {t(
-                          "Turns off optional activity signals and notifications. Delivery acknowledgments stay enabled. This does not provide anonymity.",
-                        )}
-                      </p>
-                      <label className="checkbox">
-                        <input
-                          type="checkbox"
-                          checked={notifications}
-                          onChange={(e) => {
-                            setNotifications(e.target.checked);
-                            if (e.target.checked && "Notification" in window)
-                              void Notification.requestPermission();
-                          }}
-                        />
-                        {t("Notifications")} · {t("Off by default")}
-                      </label>
-                      <label className="checkbox">
-                        <input
-                          type="checkbox"
-                          checked={receipts}
-                          disabled={!enabled}
-                          onChange={(e) => setReceipts(e.target.checked)}
-                        />
-                        {t("Read receipts")}
-                      </label>
-                      <label className="checkbox">
-                        <input
-                          type="checkbox"
-                          checked={presence}
-                          disabled={!enabled}
-                          onChange={(e) => setPresence(e.target.checked)}
-                        />
-                        {t("Online indicators")} · {t("Off by default")}
-                      </label>
-                      <label className="checkbox">
-                        <input
-                          type="checkbox"
-                          checked={typing}
-                          aria-label={t("Typing indicators")}
-                          disabled={!enabled}
-                          onChange={(e) => setTyping(e.target.checked)}
-                        />
-                        {t("Typing indicators")} · {t("Off by default")}
-                      </label>
-                      <p className="fine">
-                        {t(
-                          "Optional typing signals reveal live activity to the service and conversation participants. They contain no message text and expire after five seconds.",
-                        )}
-                      </p>
-                    </section>
-                    <section className="card">
-                      <h2 className="settings-section-heading">
-                        <span className="section-glyph" data-tone="teal">
-                          <Icon name="devices" size={22} />
-                        </span>
-                        {t("Local data and account")}
-                      </h2>
-                      <button
-                        disabled={disabled}
-                        onClick={() =>
-                          void perform(async () => {
-                            if (
-                              !confirm(
-                                t(
-                                  "Permanently clear delivered local history and drafts? Export a recovery kit first. Pending sends and live device keys are preserved.",
-                                ),
-                              )
-                            )
-                              return;
-                            await vault!.clearDeliveredHistory();
-                            setEvents([...vault!.state.events]);
-                          })
-                        }
-                      >
-                        {t("Clear delivered local history")}
-                      </button>
-
-                      <button
-                        disabled={!vault}
-                        onClick={() => {
-                          if (
-                            vault &&
-                            confirm(
-                              t(
-                                "Export decrypted message history to this device? The downloaded file contains sensitive plaintext.",
-                              ),
-                            )
-                          )
-                            download(
-                              JSON.stringify({
-                                format: "haven-history-v1",
-                                events: historyForExport(vault.state).events,
-                              }),
-                              "haven-local-history.json",
-                            );
-                        }}
-                      >
-                        {t("Export decrypted local history")}
-                      </button>
-                      <button onClick={() => setScreen("backup")}>
-                        {t("Create an encrypted recovery kit")}
-                      </button>
-                      <p>
-                        {t(
-                          "Disabling your account revokes every session and device and pauses group delivery until authorized MLS removal. Recipients retain their copies. Ciphertext and opaque audit records follow retention policy.",
-                        )}
-                      </p>
-                      {user.role !== "superadmin" && (
-                        <form
-                          onSubmit={(e) => {
-                            e.preventDefault();
-                            const f = new FormData(e.currentTarget);
-                            void perform(async () => {
-                              await api("auth/disable", "POST", {
-                                password: f.get("password"),
-                                confirmation: "DISABLE",
-                              });
-                              lock();
-                              setUser(null);
-                              localStorage.removeItem("haven-local-user");
-                              localStorage.removeItem("haven-account-id");
-                            });
-                          }}
-                        >
-                          <label>
-                            {t("Confirm password to disable account")}
-                            <input
-                              name="password"
-                              type="password"
-                              required
-                              autoComplete="current-password"
-                            />
-                          </label>
-                          <button className="danger" disabled={disabled}>
-                            {t("Disable my account")}
-                          </button>
-                        </form>
-                      )}
-                    </section>
-                    <section className="card">
-                      <h2>{t("Change password")}</h2>
-                      <form
-                        onSubmit={(e) => {
-                          e.preventDefault();
-                          const f = new FormData(e.currentTarget);
-                          void perform(async () => {
-                            await api("auth/change-password", "POST", {
-                              old_password: f.get("old"),
-                              new_password: f.get("new"),
-                            });
-                            lock();
-                            setUser(null);
-                          });
-                        }}
-                      >
-                        <label>
-                          {t("Current password")}
-                          <input
-                            name="old"
-                            type="password"
-                            required
-                            autoComplete="current-password"
-                          />
-                        </label>
-                        <label>
-                          {t("New password")}
-                          <input
-                            name="new"
-                            type="password"
-                            minLength={14}
-                            required
-                            autoComplete="new-password"
-                          />
-                        </label>
-                        <button>{t("Change password")}</button>
-                      </form>
-                      <button
-                        className="danger"
-                        onClick={() =>
-                          void perform(async () => {
-                            await logout(true);
-                          })
-                        }
-                      >
-                        {t("Log out all sessions")}
-                      </button>
-                    </section>
-                  </>
-                )}
-                {screen === "admin" && isAdmin && (
-                  <>
-                    <div className="section-heading">
-                      <p>{t("No decrypted message access")}</p>
-                      <button onClick={() => void perform(adminRefresh)}>
-                        {t("Refresh")}
-                      </button>
-                    </div>
-                    <div className="stat-grid">
-                      {["users", "approved_devices", "envelopes", "outbox"].map(
-                        (k) => (
-                          <div className="stat" key={k}>
-                            <small>{k.replaceAll("_", " ")}</small>
-                            <strong>{String(system[k] ?? "—")}</strong>
-                          </div>
-                        ),
-                      )}
-                    </div>
-                    <section className="card">
-                      <h2>{t("Invitations")}</h2>
-                      <button
-                        className="primary"
-                        onClick={() =>
-                          void perform(async () => {
-                            const inv = await api<{ token: string }>(
-                              "admin/invitations",
-                              "POST",
-                              { hours: 24 },
-                            );
-                            setNewToken(inv.token);
-                            await adminRefresh();
-                          })
-                        }
-                      >
-                        {t("Create invitation")}
-                      </button>
-                      {newToken && (
-                        <div className="invite-output">
-                          <p>
-                            {t("Single use · 24h ·")}
-                            {t("Invitation token")}
-                          </p>
-                          <code>{newToken}</code>
-                          <QR
-                            t={t}
-                            value={`${serviceOrigin()}/#invite=${newToken}`}
-                          />
-                          <small>
-                            {t(
-                              "Share through an independently trusted channel.",
-                            )}
-                          </small>
-                        </div>
-                      )}
-                      <div className="table-wrap">
-                        <table>
-                          <thead>
-                            <tr>
-                              <th>{t("ID")}</th>
-                              <th>{t("Status")}</th>
-                              <th>{t("Revoke")}</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {invitations.map((i) => (
-                              <tr key={i.id}>
-                                <td>
-                                  <code>{i.id.slice(0, 8)}</code>
-                                </td>
-                                <td>
-                                  {i.consumed_at
-                                    ? "consumed"
-                                    : i.revoked_at
-                                      ? "revoked"
-                                      : new Date(i.expires_at) < new Date()
-                                        ? "expired"
-                                        : "available"}
-                                </td>
-                                <td>
-                                  <button
-                                    disabled={!!i.revoked_at || !!i.consumed_at}
-                                    onClick={() =>
-                                      void perform(async () => {
-                                        await api(
-                                          `admin/invitations/${i.id}/revoke`,
-                                          "POST",
-                                          {},
-                                        );
-                                        await adminRefresh();
-                                      })
                                     }
                                   >
-                                    {t("Revoke")}
+                                    {t("Export encrypted archive")}
                                   </button>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </section>
-                    <section className="card">
-                      <h2>{t("Accounts")}</h2>
-                      {users.map((u) => (
-                        <div className="account-row" key={u.id}>
-                          <div>
-                            <strong>{u.username}</strong>
-                            {user.role === "superadmin" &&
-                              u.role !== "superadmin" && (
-                                <select
-                                  aria-label={`Role for ${u.username}`}
-                                  value={u.role}
-                                  onChange={(e) =>
-                                    void perform(async () => {
-                                      await api(
-                                        `admin/users/${u.id}`,
-                                        "PATCH",
-                                        { role: e.target.value },
-                                      );
-                                      await adminRefresh();
-                                    })
-                                  }
-                                >
-                                  <option value="member">{t("Member")}</option>
-                                  <option value="community_admin">
-                                    {t("Community admin")}
-                                  </option>
-                                </select>
+                                  {archive.certificate?.state ===
+                                    "finalized" && (
+                                    <button
+                                      onClick={() => {
+                                        if (
+                                          confirm(
+                                            t(
+                                              "Remove this local archive copy? First verify your encrypted export and keep its passphrase. The server cannot restore these files.",
+                                            ),
+                                          )
+                                        )
+                                          void perform(async () => {
+                                            await vault.removeLocalClosureArchive(
+                                              id,
+                                            );
+                                            setEvents([...vault.state.events]);
+                                          });
+                                      }}
+                                    >
+                                      {t("Remove this local archive copy")}
+                                    </button>
+                                  )}
+                                </details>
+                              ))}
+                            </section>
+                          )}
+
+                        {archivedIds.length > 0 && (
+                          <section className="card">
+                            <h2>{t("Recovered local history")}</h2>
+                            <p>
+                              {t(
+                                "These conversations belong to your previous device. Their MLS state is never resumed.",
                               )}
-                            <small>
-                              @{u.username} · {u.role}
-                            </small>
-                          </div>
+                            </p>
+                            {archivedIds.map((id) => (
+                              <details key={id}>
+                                <summary>{id.slice(0, 8)}</summary>
+                                {events
+                                  .filter((e) => e.conversation_id === id)
+                                  .map((e) => (
+                                    <p dir="auto" key={e.id}>
+                                      {e.text || e.file?.name || e.type}
+                                    </p>
+                                  ))}
+                              </details>
+                            ))}
+                          </section>
+                        )}
+                        <section className="card">
+                          <h2>{t("Recovery kit")}</h2>
+                          <p>
+                            {t(
+                              "Store the key separately from the encrypted kit. Losing both permanently loses local history.",
+                            )}
+                          </p>
+                          <label>
+                            {t("Local unlock passphrase")}
+                            <input
+                              type="password"
+                              value={unlock}
+                              onChange={(e) => setUnlock(e.target.value)}
+                            />
+                          </label>
                           <button
-                            disabled={
-                              u.role === "superadmin" ||
-                              user.role !== "superadmin"
-                            }
+                            disabled={disabled}
                             onClick={() =>
                               void perform(async () => {
-                                await api(`admin/users/${u.id}`, "PATCH", {
-                                  is_active: !u.is_active,
+                                const accountRecovery =
+                                  await vault!.provisionRecovery();
+                                if (!accountRecovery)
+                                  setNotice(
+                                    "History-only kit: account recovery remains with the original recovery kit.",
+                                  );
+                                const kit = await recoveryKit(
+                                  user.id,
+                                  unlock,
+                                  vault!.state,
+                                );
+                                setRecovery(kit.recovery);
+                                download(
+                                  kit.kit,
+                                  "haven-encrypted-recovery.json",
+                                );
+                              })
+                            }
+                          >
+                            {t("Download encrypted kit")}
+                          </button>
+                          {recovery && (
+                            <div className="warning">
+                              <strong>{t("Recovery key")}</strong>
+                              <code>{recovery}</code>
+                            </div>
+                          )}
+                          <hr />
+                          <p>
+                            {t(
+                              "Recovery restores saved history only. A fresh device and explicit peer verification are required.",
+                            )}
+                          </p>
+                          <label>
+                            {t("Recovery key")}
+                            <input
+                              type="password"
+                              value={recovery}
+                              onChange={(e) => setRecovery(e.target.value)}
+                            />
+                          </label>
+                          <label>
+                            {t("New account password after security reset")}
+                            <input
+                              type="password"
+                              value={resetPassword}
+                              onChange={(e) => setResetPassword(e.target.value)}
+                              autoComplete="new-password"
+                            />
+                          </label>
+                          <p>
+                            {t(
+                              "Recovery always creates a fresh MLS identity and revokes old devices. Keep the kit and its separate key secure. Enter a new unlock secret on the Devices screen first.",
+                            )}
+                          </p>
+                          <label>
+                            {t("Restore encrypted kit")}
+                            <input
+                              type="file"
+                              accept="application/json"
+                              disabled={!enabled || busy}
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file)
+                                  void perform(async () => {
+                                    if (file.size > 256 * 1024 * 1024)
+                                      throw new Error("Kit too large");
+                                    const kit = JSON.parse(
+                                      await file.text(),
+                                    ) as {
+                                      format: string;
+                                      scope: string;
+                                      sealed: Sealed;
+                                    };
+                                    if (
+                                      kit.format !==
+                                        "haven-recovery-v2-history-only" ||
+                                      kit.scope !== user.id
+                                    )
+                                      throw new Error("Kit account mismatch");
+                                    const state = await unseal<VaultState>(
+                                      recovery,
+                                      user.id,
+                                      kit.sealed,
+                                    );
+                                    if (vault) {
+                                      await vault.importHistory(state);
+                                      setEvents([...vault.state.events]);
+                                      setNotice(
+                                        "Saved history imported locally. Live device keys and pending messages were preserved.",
+                                      );
+                                      return;
+                                    }
+                                    const fresh = await Messenger.recover(
+                                      user.id,
+                                      unlock,
+                                      state,
+                                      resetPassword,
+                                      deviceLabel || "Recovered browser",
+                                    );
+                                    vaultRef.current = fresh;
+                                    setVault(fresh);
+                                    setEvents([...fresh.state.events]);
+                                    setRecovery("");
+                                    setResetPassword("");
+                                    setUnlock("");
+                                    setNotice(
+                                      "Account security reset completed. All old devices are revoked. Restored history is local-only; contacts must verify this fresh device and explicitly re-add it.",
+                                    );
+                                  });
+                              }}
+                            />
+                          </label>
+                        </section>
+                      </>
+                    )}
+                    {screen === "settings" && (
+                      <>
+                        {vault && (
+                          <DeviceUnlockSettings
+                            vault={vault}
+                            t={t}
+                            hostname={deviceUnlockHostname}
+                          />
+                        )}
+                        <ServerPrivacy t={t} />
+                        {vault && (
+                          <section className="card">
+                            <p>
+                              {t("Device ID:")}
+                              <code>{vault.state.device_id}</code>
+                            </p>
+                            <button
+                              onClick={() =>
+                                void perform(async () => {
+                                  await vault.connect();
+                                  await vault.package();
+                                  setDevices(await api<Device[]>("devices"));
+                                  setNotice(
+                                    "Approved device connected; a fresh key package is available.",
+                                  );
+                                })
+                              }
+                            >
+                              {t("Complete approved device enrollment")}
+                            </button>
+                          </section>
+                        )}
+                        <section className="card">
+                          <h2 className="settings-section-heading">
+                            <span className="section-glyph">
+                              <Icon name="settings" size={22} />
+                            </span>
+                            {t("Appearance & privacy")}
+                          </h2>
+                          <label>
+                            {t("Language")}
+                            <select
+                              aria-label={t("Language")}
+                              value={language}
+                              onChange={(e) =>
+                                setLanguage(e.target.value as Language)
+                              }
+                            >
+                              <option value="en">English</option>
+                              <option value="fa">فارسی</option>
+                            </select>
+                          </label>
+                          <label>
+                            {t("Theme")}
+                            <select
+                              aria-label={t("Theme")}
+                              value={theme}
+                              onChange={(e) => setTheme(e.target.value)}
+                            >
+                              <option value="dark">{t("Dark")}</option>
+                              <option value="light">{t("Light")}</option>
+                            </select>
+                          </label>
+                          <label className="checkbox">
+                            <input
+                              type="checkbox"
+                              checked={ambientMotion}
+                              onChange={(event) =>
+                                setAmbientMotion(event.target.checked)
+                              }
+                            />
+                            {t("Animated chat background")}
+                          </label>
+                          <p className="fine">
+                            {t(
+                              "Pause the aurora at any time. Reduced motion preferences are always respected.",
+                            )}
+                          </p>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setNotifications(false);
+                              setReceipts(false);
+                              setPresence(false);
+                              setTyping(false);
+                              setPeerPresence(0);
+                              setPeerTyping(0);
+                            }}
+                          >
+                            {t("Use high-privacy settings")}
+                          </button>
+                          <p className="fine">
+                            {t(
+                              "Turns off optional activity signals and notifications. Delivery acknowledgments stay enabled. This does not provide anonymity.",
+                            )}
+                          </p>
+                          <label className="checkbox">
+                            <input
+                              type="checkbox"
+                              checked={notifications}
+                              onChange={(e) => {
+                                setNotifications(e.target.checked);
+                                if (
+                                  e.target.checked &&
+                                  "Notification" in window
+                                )
+                                  void Notification.requestPermission();
+                              }}
+                            />
+                            {t("Notifications")} · {t("Off by default")}
+                          </label>
+                          <label className="checkbox">
+                            <input
+                              type="checkbox"
+                              checked={receipts}
+                              disabled={!enabled}
+                              onChange={(e) => setReceipts(e.target.checked)}
+                            />
+                            {t("Read receipts")}
+                          </label>
+                          <label className="checkbox">
+                            <input
+                              type="checkbox"
+                              checked={presence}
+                              disabled={!enabled}
+                              onChange={(e) => setPresence(e.target.checked)}
+                            />
+                            {t("Online indicators")} · {t("Off by default")}
+                          </label>
+                          <label className="checkbox">
+                            <input
+                              type="checkbox"
+                              checked={typing}
+                              aria-label={t("Typing indicators")}
+                              disabled={!enabled}
+                              onChange={(e) => setTyping(e.target.checked)}
+                            />
+                            {t("Typing indicators")} · {t("Off by default")}
+                          </label>
+                          <p className="fine">
+                            {t(
+                              "Optional typing signals reveal live activity to the service and conversation participants. They contain no message text and expire after five seconds.",
+                            )}
+                          </p>
+                        </section>
+                        <section className="card">
+                          <h2 className="settings-section-heading">
+                            <span className="section-glyph" data-tone="teal">
+                              <Icon name="devices" size={22} />
+                            </span>
+                            {t("Local data and account")}
+                          </h2>
+                          <button
+                            disabled={disabled}
+                            onClick={() =>
+                              void perform(async () => {
+                                if (
+                                  !confirm(
+                                    t(
+                                      "Permanently clear delivered local history and drafts? Export a recovery kit first. Pending sends and live device keys are preserved.",
+                                    ),
+                                  )
+                                )
+                                  return;
+                                await vault!.clearDeliveredHistory();
+                                setEvents([...vault!.state.events]);
+                              })
+                            }
+                          >
+                            {t("Clear delivered local history")}
+                          </button>
+
+                          <button
+                            disabled={!vault}
+                            onClick={() => {
+                              if (
+                                vault &&
+                                confirm(
+                                  t(
+                                    "Export decrypted message history to this device? The downloaded file contains sensitive plaintext.",
+                                  ),
+                                )
+                              )
+                                download(
+                                  JSON.stringify({
+                                    format: "haven-history-v1",
+                                    events: historyForExport(vault.state)
+                                      .events,
+                                  }),
+                                  "haven-local-history.json",
+                                );
+                            }}
+                          >
+                            {t("Export decrypted local history")}
+                          </button>
+                          <button onClick={() => setScreen("backup")}>
+                            {t("Create an encrypted recovery kit")}
+                          </button>
+                          <p>
+                            {t(
+                              "Disabling your account revokes every session and device and pauses group delivery until authorized MLS removal. Recipients retain their copies. Ciphertext and opaque audit records follow retention policy.",
+                            )}
+                          </p>
+                          {user.role !== "superadmin" && (
+                            <form
+                              onSubmit={(e) => {
+                                e.preventDefault();
+                                const f = new FormData(e.currentTarget);
+                                void perform(async () => {
+                                  await api("auth/disable", "POST", {
+                                    password: f.get("password"),
+                                    confirmation: "DISABLE",
+                                  });
+                                  lock();
+                                  setUser(null);
+                                  localStorage.removeItem("haven-local-user");
+                                  localStorage.removeItem("haven-account-id");
+                                });
+                              }}
+                            >
+                              <label>
+                                {t("Confirm password to disable account")}
+                                <input
+                                  name="password"
+                                  type="password"
+                                  required
+                                  autoComplete="current-password"
+                                />
+                              </label>
+                              <button className="danger" disabled={disabled}>
+                                {t("Disable my account")}
+                              </button>
+                            </form>
+                          )}
+                        </section>
+                        <section className="card">
+                          <h2>{t("Change password")}</h2>
+                          <form
+                            onSubmit={(e) => {
+                              e.preventDefault();
+                              const f = new FormData(e.currentTarget);
+                              void perform(async () => {
+                                await api("auth/change-password", "POST", {
+                                  old_password: f.get("old"),
+                                  new_password: f.get("new"),
+                                });
+                                lock();
+                                setUser(null);
+                              });
+                            }}
+                          >
+                            <label>
+                              {t("Current password")}
+                              <input
+                                name="old"
+                                type="password"
+                                required
+                                autoComplete="current-password"
+                              />
+                            </label>
+                            <label>
+                              {t("New password")}
+                              <input
+                                name="new"
+                                type="password"
+                                minLength={14}
+                                required
+                                autoComplete="new-password"
+                              />
+                            </label>
+                            <button>{t("Change password")}</button>
+                          </form>
+                          <button
+                            className="danger"
+                            onClick={() =>
+                              void perform(async () => {
+                                await logout(true);
+                              })
+                            }
+                          >
+                            {t("Log out all sessions")}
+                          </button>
+                        </section>
+                      </>
+                    )}
+                    {screen === "admin" && isAdmin && (
+                      <>
+                        <div className="section-heading">
+                          <p>{t("No decrypted message access")}</p>
+                          <button onClick={() => void perform(adminRefresh)}>
+                            {t("Refresh")}
+                          </button>
+                        </div>
+                        <div className="stat-grid">
+                          {[
+                            "users",
+                            "approved_devices",
+                            "envelopes",
+                            "outbox",
+                          ].map((k) => (
+                            <div className="stat" key={k}>
+                              <small>{k.replaceAll("_", " ")}</small>
+                              <strong>{String(system[k] ?? "—")}</strong>
+                            </div>
+                          ))}
+                        </div>
+                        <section className="card">
+                          <h2>{t("Invitations")}</h2>
+                          <button
+                            className="primary"
+                            onClick={() =>
+                              void perform(async () => {
+                                const inv = await api<{ token: string }>(
+                                  "admin/invitations",
+                                  "POST",
+                                  { hours: 24 },
+                                );
+                                setNewToken(inv.token);
+                                await adminRefresh();
+                              })
+                            }
+                          >
+                            {t("Create invitation")}
+                          </button>
+                          {newToken && (
+                            <div className="invite-output">
+                              <p>
+                                {t("Single use · 24h ·")}
+                                {t("Invitation token")}
+                              </p>
+                              <code>{newToken}</code>
+                              <QR
+                                t={t}
+                                value={`${serviceOrigin()}/#invite=${newToken}`}
+                              />
+                              <small>
+                                {t(
+                                  "Share through an independently trusted channel.",
+                                )}
+                              </small>
+                            </div>
+                          )}
+                          <div className="table-wrap">
+                            <table>
+                              <thead>
+                                <tr>
+                                  <th>{t("ID")}</th>
+                                  <th>{t("Status")}</th>
+                                  <th>{t("Revoke")}</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {invitations.map((i) => (
+                                  <tr key={i.id}>
+                                    <td>
+                                      <code>{i.id.slice(0, 8)}</code>
+                                    </td>
+                                    <td>
+                                      {i.consumed_at
+                                        ? "consumed"
+                                        : i.revoked_at
+                                          ? "revoked"
+                                          : new Date(i.expires_at) < new Date()
+                                            ? "expired"
+                                            : "available"}
+                                    </td>
+                                    <td>
+                                      <button
+                                        disabled={
+                                          !!i.revoked_at || !!i.consumed_at
+                                        }
+                                        onClick={() =>
+                                          void perform(async () => {
+                                            await api(
+                                              `admin/invitations/${i.id}/revoke`,
+                                              "POST",
+                                              {},
+                                            );
+                                            await adminRefresh();
+                                          })
+                                        }
+                                      >
+                                        {t("Revoke")}
+                                      </button>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </section>
+                        <section className="card">
+                          <h2>{t("Accounts")}</h2>
+                          {users.map((u) => (
+                            <div className="account-row" key={u.id}>
+                              <div>
+                                <strong>{u.username}</strong>
+                                {user.role === "superadmin" &&
+                                  u.role !== "superadmin" && (
+                                    <select
+                                      aria-label={`Role for ${u.username}`}
+                                      value={u.role}
+                                      onChange={(e) =>
+                                        void perform(async () => {
+                                          await api(
+                                            `admin/users/${u.id}`,
+                                            "PATCH",
+                                            { role: e.target.value },
+                                          );
+                                          await adminRefresh();
+                                        })
+                                      }
+                                    >
+                                      <option value="member">
+                                        {t("Member")}
+                                      </option>
+                                      <option value="community_admin">
+                                        {t("Community admin")}
+                                      </option>
+                                    </select>
+                                  )}
+                                <small>
+                                  @{u.username} · {u.role}
+                                </small>
+                              </div>
+                              <button
+                                disabled={
+                                  u.role === "superadmin" ||
+                                  user.role !== "superadmin"
+                                }
+                                onClick={() =>
+                                  void perform(async () => {
+                                    await api(`admin/users/${u.id}`, "PATCH", {
+                                      is_active: !u.is_active,
+                                    });
+                                    await adminRefresh();
+                                  })
+                                }
+                              >
+                                {t(u.is_active ? "Suspend" : "Activate")}
+                              </button>
+                            </div>
+                          ))}
+                        </section>
+                        <section className="card">
+                          <h2>{t("Service controls")}</h2>
+                          <button
+                            onClick={() =>
+                              void perform(async () => {
+                                await api("admin/system-status", "PATCH", {
+                                  member_invitations:
+                                    !system.member_invitations,
                                 });
                                 await adminRefresh();
                               })
                             }
                           >
-                            {t(u.is_active ? "Suspend" : "Activate")}
+                            {t(
+                              system.member_invitations
+                                ? "Disable member invitations"
+                                : "Enable member invitations",
+                            )}
                           </button>
-                        </div>
-                      ))}
-                    </section>
-                    <section className="card">
-                      <h2>{t("Service controls")}</h2>
-                      <button
-                        onClick={() =>
-                          void perform(async () => {
-                            await api("admin/system-status", "PATCH", {
-                              member_invitations: !system.member_invitations,
-                            });
-                            await adminRefresh();
-                          })
-                        }
-                      >
-                        {t(
-                          system.member_invitations
-                            ? "Disable member invitations"
-                            : "Enable member invitations",
-                        )}
-                      </button>
-                      <button
-                        onClick={() =>
-                          void perform(async () => {
-                            await api("admin/system-status", "PATCH", {
-                              invitations_paused: !system.invitations_paused,
-                            });
-                            await adminRefresh();
-                          })
-                        }
-                      >
-                        {system.invitations_paused
-                          ? "Resume invitations"
-                          : "Pause invitations"}
-                      </button>
-                      <form
-                        onSubmit={(e) => {
-                          e.preventDefault();
-                          const f = new FormData(e.currentTarget);
-                          void perform(async () => {
-                            await api("admin/system-status", "PATCH", {
-                              maintenance: f.get("maintenance"),
-                            });
-                            await adminRefresh();
-                          });
-                        }}
-                      >
-                        <label>
-                          {t("Maintenance banner")}
-                          <input name="maintenance" maxLength={300} />
-                        </label>
-                        <button>{t("Save maintenance banner")}</button>
-                      </form>
-                    </section>
-                    <section className="card">
-                      <h2>{t("System status")}</h2>
-                      <pre>{JSON.stringify(system, null, 2)}</pre>
-                    </section>
-                  </>
-                )}
-                {screen === "help" && (
-                  <>
-                    <section className="card">
-                      <h2>{t("Connection & help")}</h2>
-                      {clientDelivery() && (
-                        <p>
-                          {t(
-                            clientDelivery()!.mode === "installed"
-                              ? "This client uses a verified local release. The messaging server supplies data only. Open invitations and friend links inside this client."
-                              : "This frontend is delivered independently of the messaging server. Its delivery host remains trusted.",
-                          )}{" "}
-                          · {t("Release")} {clientDelivery()!.sequence}
-                        </p>
-                      )}
-                      <form
-                        onSubmit={(e) => {
-                          e.preventDefault();
-                          const value = String(
-                            new FormData(e.currentTarget).get("endpoint"),
-                          );
-                          void perform(async () => {
-                            const u = new URL(value);
-                            if (
-                              u.protocol !== "https:" ||
-                              u.username ||
-                              u.password ||
-                              u.pathname !== "/" ||
-                              u.search ||
-                              u.hash ||
-                              !/^([0-9]{1,3}\.){3}[0-9]{1,3}$/.test(
-                                u.hostname,
-                              ) ||
-                              u.hostname.split(".").some((x) => Number(x) > 255)
-                            )
-                              throw new Error(
-                                "Enter a trusted HTTPS IPv4 endpoint with no path, credentials or query.",
-                              );
-                            if (clientDelivery())
-                              throw new Error(
-                                "Create a separate trusted client profile for a standby server. This client never loads the messaging server’s website.",
-                              );
-                            location.assign(u.origin);
-                          });
-                        }}
-                      >
-                        <label>
-                          {t("Independently verified standby IP URL")}
-                          <input
-                            name="endpoint"
-                            type="url"
-                            placeholder="https://203.0.113.10"
-                            required
-                          />
-                        </label>
-                        <p>
-                          {t(
-                            "A different origin has separate browser keys. Prepare and verify a trusted device before switching endpoints. Use only an independently verified server address.",
+                          <button
+                            onClick={() =>
+                              void perform(async () => {
+                                await api("admin/system-status", "PATCH", {
+                                  invitations_paused:
+                                    !system.invitations_paused,
+                                });
+                                await adminRefresh();
+                              })
+                            }
+                          >
+                            {system.invitations_paused
+                              ? "Resume invitations"
+                              : "Pause invitations"}
+                          </button>
+                          <form
+                            onSubmit={(e) => {
+                              e.preventDefault();
+                              const f = new FormData(e.currentTarget);
+                              void perform(async () => {
+                                await api("admin/system-status", "PATCH", {
+                                  maintenance: f.get("maintenance"),
+                                });
+                                await adminRefresh();
+                              });
+                            }}
+                          >
+                            <label>
+                              {t("Maintenance banner")}
+                              <input name="maintenance" maxLength={300} />
+                            </label>
+                            <button>{t("Save maintenance banner")}</button>
+                          </form>
+                        </section>
+                        <section className="card">
+                          <h2>{t("System status")}</h2>
+                          <pre>{JSON.stringify(system, null, 2)}</pre>
+                        </section>
+                      </>
+                    )}
+                    {screen === "help" && (
+                      <>
+                        <section className="card">
+                          <h2>{t("Connection & help")}</h2>
+                          {clientDelivery() && (
+                            <p>
+                              {t(
+                                clientDelivery()!.mode === "installed"
+                                  ? "This client uses a verified local release. The messaging server supplies data only. Open invitations and friend links inside this client."
+                                  : "This frontend is delivered independently of the messaging server. Its delivery host remains trusted.",
+                              )}{" "}
+                              · {t("Release")} {clientDelivery()!.sequence}
+                            </p>
                           )}
-                        </p>
-                        <button>{t("Open verified endpoint")}</button>
-                      </form>
-                      <p className="connection">
-                        <i />
-                        {status}
-                      </p>
-                      <code>
-                        {typeof location !== "undefined" ? serviceOrigin() : ""}
-                      </code>
-                      <p>
-                        {t(
-                          "Use a trusted HTTPS IP address. Never bypass a certificate warning.",
-                        )}
-                      </p>
-                      <p>
-                        {t(
-                          "Connection lost. Encrypted pending messages remain on this device.",
-                        )}
-                      </p>
-                    </section>
-                    <section className="card">
-                      <h2>{t("Chat controls")}</h2>
-                      <p>
-                        {t(
-                          "On a computer, Enter sends and Shift + Enter adds a line. On a phone, Return adds a line; tap the arrow to send.",
-                        )}
-                      </p>
-                      <p>
-                        {t(
-                          "Use the paperclip to choose Photos & videos, Audio, or File. Check the local preview before sending. Files can be up to 25 MiB.",
-                        )}
-                      </p>
-                      <p>
-                        {t(
-                          "One check means the server accepted your message. A read indicator appears only when a participant shares a read receipt.",
-                        )}
-                      </p>
-                      <p>
-                        {t(
-                          "Search and drafts stay on this device. Copied messages can remain in clipboard history.",
-                        )}
-                      </p>
-                    </section>
-                    <section className="card">
-                      <h2>{t("Certificate trust")}</h2>
-                      <p>
-                        {t(
-                          "Use only an independently verified IP endpoint. Public IP certificates expire and need renewal. A private root must be independently verified and installed before connecting; iOS also requires explicit full trust. An invalid certificate blocks the whole page, so this page cannot diagnose it reliably. Keep your verified connection instructions.",
-                        )}
-                      </p>
-                    </section>
-                    <section className="card">
-                      <h2>{t("Connection guide")}</h2>
-                      <p>
-                        {t(
-                          "There is no remote delivery without a working network route. A compromised device or application origin can disclose messages. Administration cannot recover lost E2EE keys. Standby promotion requires fencing and a separately trusted origin; do not switch to an address sent by an unverified party.",
-                        )}
-                      </p>
-                      <strong>{t("Security qualification pending")}</strong>
-                    </section>
-                  </>
+                          <form
+                            onSubmit={(e) => {
+                              e.preventDefault();
+                              const value = String(
+                                new FormData(e.currentTarget).get("endpoint"),
+                              );
+                              void perform(async () => {
+                                const u = new URL(value);
+                                if (
+                                  u.protocol !== "https:" ||
+                                  u.username ||
+                                  u.password ||
+                                  u.pathname !== "/" ||
+                                  u.search ||
+                                  u.hash ||
+                                  !/^([0-9]{1,3}\.){3}[0-9]{1,3}$/.test(
+                                    u.hostname,
+                                  ) ||
+                                  u.hostname
+                                    .split(".")
+                                    .some((x) => Number(x) > 255)
+                                )
+                                  throw new Error(
+                                    "Enter a trusted HTTPS IPv4 endpoint with no path, credentials or query.",
+                                  );
+                                if (clientDelivery())
+                                  throw new Error(
+                                    "Create a separate trusted client profile for a standby server. This client never loads the messaging server’s website.",
+                                  );
+                                location.assign(u.origin);
+                              });
+                            }}
+                          >
+                            <label>
+                              {t("Independently verified standby IP URL")}
+                              <input
+                                name="endpoint"
+                                type="url"
+                                placeholder="https://203.0.113.10"
+                                required
+                              />
+                            </label>
+                            <p>
+                              {t(
+                                "A different origin has separate browser keys. Prepare and verify a trusted device before switching endpoints. Use only an independently verified server address.",
+                              )}
+                            </p>
+                            <button>{t("Open verified endpoint")}</button>
+                          </form>
+                          <p className="connection">
+                            <i />
+                            {status}
+                          </p>
+                          <code>
+                            {typeof location !== "undefined"
+                              ? serviceOrigin()
+                              : ""}
+                          </code>
+                          <p>
+                            {t(
+                              "Use a trusted HTTPS IP address. Never bypass a certificate warning.",
+                            )}
+                          </p>
+                          <p>
+                            {t(
+                              "Connection lost. Encrypted pending messages remain on this device.",
+                            )}
+                          </p>
+                        </section>
+                        <section className="card">
+                          <h2>{t("Chat controls")}</h2>
+                          <p>
+                            {t(
+                              "On a computer, Enter sends and Shift + Enter adds a line. On a phone, Return adds a line; tap the arrow to send.",
+                            )}
+                          </p>
+                          <p>
+                            {t(
+                              "Use the paperclip to choose Photos & videos, Audio, or File. Check the local preview before sending. Files can be up to 25 MiB.",
+                            )}
+                          </p>
+                          <p>
+                            {t(
+                              "One check means the server accepted your message. A read indicator appears only when a participant shares a read receipt.",
+                            )}
+                          </p>
+                          <p>
+                            {t(
+                              "Search and drafts stay on this device. Copied messages can remain in clipboard history.",
+                            )}
+                          </p>
+                        </section>
+                        <section className="card">
+                          <h2>{t("Certificate trust")}</h2>
+                          <p>
+                            {t(
+                              "Use only an independently verified IP endpoint. Public IP certificates expire and need renewal. A private root must be independently verified and installed before connecting; iOS also requires explicit full trust. An invalid certificate blocks the whole page, so this page cannot diagnose it reliably. Keep your verified connection instructions.",
+                            )}
+                          </p>
+                        </section>
+                        <section className="card">
+                          <h2>{t("Connection guide")}</h2>
+                          <p>
+                            {t(
+                              "There is no remote delivery without a working network route. A compromised device or application origin can disclose messages. Administration cannot recover lost E2EE keys. Standby promotion requires fencing and a separately trusted origin; do not switch to an address sent by an unverified party.",
+                            )}
+                          </p>
+                          <strong>{t("Security qualification pending")}</strong>
+                        </section>
+                      </>
+                    )}
+                  </div>
                 )}
               </div>
-            )}
+            </div>
           </main>
         </div>
       )}

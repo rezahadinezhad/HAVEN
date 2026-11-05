@@ -58,6 +58,25 @@ export async function navigate(page: Page, name: string) {
     .click();
 }
 
+// Preferences live in the sidebar; phone auxiliary pages expose them in its menu.
+export async function changeLanguage(page: Page, language: "en" | "fa") {
+  if ((await page.locator("html").getAttribute("lang")) === language) return;
+  const name = language === "fa" ? "فارسی" : "English";
+  const target = page.getByRole("button", { name, exact: true });
+  if (await target.isVisible()) {
+    await target.click();
+    return;
+  }
+  await page
+    .getByRole("button", { name: /^(Open menu|باز کردن منو)$/ })
+    .click();
+  await page
+    .locator(".workspace-menu")
+    .getByRole("button", { name, exact: true })
+    .click();
+  await page.keyboard.press("Escape");
+}
+
 // Firefox loads private CA roots from an NSS profile. Each test context gets a separate
 // temporary profile containing only the independently prepared TEST root trust database.
 export const test = base.extend({

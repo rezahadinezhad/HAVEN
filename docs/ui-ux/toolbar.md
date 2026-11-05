@@ -1,4 +1,6 @@
-# Application toolbar
+# Application toolbar — release10 snapshot
+
+This historical design was superseded by [the unified sidebar](sidebar.md). The authenticated application no longer has a global toolbar.
 
 The header uses one inset rounded surface. Navigation and HAVEN’s identity form
 its leading group; connection status and appearance/language controls form its
