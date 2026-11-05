@@ -465,7 +465,10 @@ test("public presentation: current encrypted conversation, desktop, dark and mob
       path: "../../.github/assets/conversation-desktop.png",
       fullPage: true,
     });
-    await a.getByRole("button", { name: "Switch to dark mode" }).click();
+    await a
+      .locator(".workspace-sidebar")
+      .getByRole("button", { name: "Dark mode", exact: true })
+      .click();
     await expect(a.locator("html")).toHaveAttribute("data-theme", "dark");
     await a.evaluate(async () => {
       await document.fonts.ready;

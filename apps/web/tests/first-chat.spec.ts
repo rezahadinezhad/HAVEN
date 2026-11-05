@@ -1,4 +1,10 @@
-import { test, expect, loginBootstrap, navigate } from "./fixtures";
+import {
+  test,
+  expect,
+  loginBootstrap,
+  navigate,
+  changeLanguage,
+} from "./fixtures";
 import fs from "node:fs";
 import path from "node:path";
 import nodeCrypto from "node:crypto";
@@ -396,7 +402,7 @@ test("friend links reject foreign origins, mismatched fingerprints, changed pins
         ),
       ).toBe(true);
     }
-    await page.getByRole("button", { name: "فارسی", exact: true }).click();
+    await changeLanguage(page, "fa");
     await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
     expect(
       await page.evaluate(
@@ -407,7 +413,7 @@ test("friend links reject foreign origins, mismatched fingerprints, changed pins
       path: "../../docs/evidence/first-chat-mobile-rtl.png",
       fullPage: true,
     });
-    await page.getByRole("button", { name: "English", exact: true }).click();
+    await changeLanguage(page, "en");
     await page.setViewportSize({ width: 1280, height: 960 });
     // A previously verified different key for the same device must block this
     // guide, even when the new link correctly matches the current server key.

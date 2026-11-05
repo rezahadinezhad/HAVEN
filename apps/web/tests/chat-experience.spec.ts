@@ -771,11 +771,17 @@ test("conversation UX: encrypted messages, keyboard/IME, drafts, replies, scroll
     await a.screenshot({ path: evidence("tablet"), fullPage: true });
     await a.setViewportSize({ width: 1280, height: 820 });
     await a
-      .getByRole("button", { name: "Switch to dark mode", exact: true })
+      .locator(".workspace-sidebar")
+      .getByRole("button", { name: "Dark mode", exact: true })
       .click();
-    await a.screenshot({ path: evidence("dark"), fullPage: true });
+    await expect(a.locator("html")).toHaveAttribute("data-theme", "dark");
+    await a.screenshot({
+      path: evidence("dark"),
+      fullPage: true,
+      animations: "disabled",
+    });
     await a.setViewportSize({ width: 390, height: 844 });
-    await expect(a.locator(".sidebar")).toBeHidden();
+    await expect(a.locator(".workspace-sidebar")).toBeHidden();
     await expect(input).toBeVisible();
     await a.screenshot({ path: evidence("mobile"), fullPage: true });
     for (const size of [

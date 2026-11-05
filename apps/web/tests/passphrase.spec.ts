@@ -1,4 +1,10 @@
-import { test, expect, loginBootstrap, navigate } from "./fixtures";
+import {
+  test,
+  expect,
+  loginBootstrap,
+  navigate,
+  changeLanguage,
+} from "./fixtures";
 import fs from "node:fs";
 import path from "node:path";
 const credentials = JSON.parse(
@@ -352,7 +358,7 @@ test("new vault: generate, reveal/copy, regenerate/manual reset, save confirmati
   }
 });
 
-test("generator failure and clipboard denial remain usable; cancellation discards unsaved state; RTL and source gate", async ({
+test("generator failure and clipboard denial remain usable; cancellation discards unsaved state; RTL and unavailable-service gate", async ({
   browser,
 }) => {
   test.setTimeout(150000);
@@ -422,7 +428,7 @@ test("generator failure and clipboard denial remain usable; cancellation discard
       page.getByRole("button", { name: "Set up and continue", exact: true }),
     ).toBeDisabled();
     await page.setViewportSize({ width: 390, height: 844 });
-    await page.getByRole("button", { name: "فارسی", exact: true }).click();
+    await changeLanguage(page, "fa");
     await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
     expect(
       await page.evaluate(
@@ -435,7 +441,7 @@ test("generator failure and clipboard denial remain usable; cancellation discard
       maskColor: "#dfe6ef",
       fullPage: true,
     });
-    await page.getByRole("button", { name: "English", exact: true }).click();
+    await changeLanguage(page, "en");
     await page.setViewportSize({ width: 1440, height: 960 });
     await navigate(page, "Messages");
     await navigate(page, "Start a chat");
@@ -454,7 +460,18 @@ test("generator failure and clipboard denial remain usable; cancellation discard
         async () => (await (await fetch("/api/v1/devices")).json()).length,
       ),
     ).toBe(0);
-    await page.goto("https://127.0.0.1:8443/");
+    // Production source installs are operational. Exercise the UI gate using an
+    // explicit unavailable-service response instead of assuming a port is gated.
+    const health = await page.evaluate(async () =>
+      (await fetch("/api/v1/health")).json(),
+    );
+    await page.route("**/api/v1/health", (route) =>
+      route.fulfill({
+        status: 200,
+        json: { ...health, crypto_ready: false },
+      }),
+    );
+    await page.reload();
     await navigate(page, "Start a chat");
     await expect(
       page.getByRole("button", {

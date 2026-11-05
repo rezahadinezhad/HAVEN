@@ -59,6 +59,21 @@ test("redesigned real account: responsive navigation, setup, themes, RTL, reduce
       page.getByRole("heading", { name: "Conversations", exact: true }),
     ).toBeVisible();
     await expect(page.locator(".gate")).toHaveCount(0);
+    await expect(page.locator(".topbar")).toHaveCount(0);
+    const sidebar = page.locator(".workspace-sidebar");
+    await expect(
+      sidebar.getByRole("link", { name: "HAVEN", exact: true }),
+    ).toBeVisible();
+    await sidebar
+      .getByRole("button", { name: "Dark mode", exact: true })
+      .click();
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+    await expect(
+      sidebar.getByRole("button", { name: "Dark mode", exact: true }),
+    ).toHaveAttribute("aria-pressed", "true");
+    await sidebar
+      .getByRole("button", { name: "Light mode", exact: true })
+      .click();
     await expect(
       page
         .locator(".welcome")
@@ -84,6 +99,10 @@ test("redesigned real account: responsive navigation, setup, themes, RTL, reduce
       page.getByLabel("Unlock passphrase", { exact: true }),
     ).toBeVisible();
     await navigate(page, "Settings");
+    await expect(page.locator(".conversation-panel")).toHaveCount(0);
+    await expect(
+      sidebar.getByRole("button", { name: "Settings", exact: true }),
+    ).toHaveAttribute("aria-current", "page");
     await expect(
       page.getByRole("heading", { name: "What stays on the server" }),
     ).toBeVisible();
@@ -147,6 +166,11 @@ test("redesigned real account: responsive navigation, setup, themes, RTL, reduce
     });
     await page.getByRole("button", { name: "Open menu", exact: true }).click();
     await expect(page.locator(".workspace-menu")).toBeVisible();
+    await expect(
+      page
+        .locator(".workspace-menu")
+        .getByRole("button", { name: "فارسی", exact: true }),
+    ).toBeVisible();
     await navigate(page, "Recovery kit");
     await expect(
       page.getByRole("heading", {

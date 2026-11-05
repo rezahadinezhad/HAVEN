@@ -1,5 +1,10 @@
 export type Language = "en" | "fa";
 const fa: Record<string, string> = {
+  "Appearance and language": "ظاهر و زبان",
+  Appearance: "ظاهر",
+  "Light mode": "حالت روشن",
+  "Dark mode": "حالت تیره",
+  "Change language": "تغییر زبان",
   "Open menu": "باز کردن منو",
   "Close menu": "بستن منو",
   "Navigation menu": "منوی ناوبری",
