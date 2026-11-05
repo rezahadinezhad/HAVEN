@@ -31,14 +31,18 @@ html[data-theme="dark"] .app-frame[data-authenticated="true"] {
   z-index: 1;
 }
 .app-frame[data-authenticated="true"] > .topbar {
-  padding: 10px 18px;
-  min-height: 72px;
+  margin: 12px 16px;
+  padding: 8px 12px;
+  min-height: 64px;
+  flex-shrink: 0;
   border: 0;
-  gap: 8px;
-  background: transparent;
+  border-radius: var(--surface-radius);
+  gap: 12px;
+  background: var(--panel);
+  box-shadow: var(--surface-shadow);
 }
 .app-frame[data-authenticated="true"] .workspace-menu-trigger {
-  background: var(--panel);
+  background: transparent;
   width: 44px;
   height: 44px;
   min-height: 44px;
@@ -46,22 +50,122 @@ html[data-theme="dark"] .app-frame[data-authenticated="true"] {
 }
 .app-frame[data-authenticated="true"] .brand {
   margin-inline-end: auto;
-  padding: 5px 14px 5px 5px;
-  border-radius: 24px;
-  background: var(--panel);
+  min-width: 0;
+  gap: 12px;
+  padding: 0;
+  border-radius: 12px;
+  background: transparent;
+}
+.app-frame[data-authenticated="true"] .brand-copy {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.app-frame[data-authenticated="true"] .brand-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 18px;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
 }
 .app-frame[data-authenticated="true"] .brand-sub {
+  display: block;
   border: 0;
-  padding-inline-start: 4px;
+  margin: 0;
+  padding: 0;
+  font-size: 11px;
+  line-height: 1.4;
 }
 .app-frame[data-authenticated="true"] .brand-mark {
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
   box-shadow: none;
+  transition: transform 200ms var(--control-ease);
+}
+.app-frame[data-authenticated="true"]
+  .brand:is(:hover, :focus-visible)
+  .brand-mark {
+  transform: rotate(-6deg);
 }
 .app-frame[data-authenticated="true"] .top-actions {
-  border-radius: 28px;
-  background: var(--panel);
-  padding: 4px 7px;
+  flex-shrink: 0;
+  gap: 4px;
+  background: transparent;
+  padding: 0;
+}
+.app-frame[data-authenticated="true"] .top-actions > button {
+  min-height: 44px;
+  border-radius: 14px;
+  background: transparent;
+}
+.app-frame[data-authenticated="true"] .top-actions > .icon-button {
+  width: 44px;
+  height: 44px;
+}
+.app-frame[data-authenticated="true"]
+  .top-actions
+  > button:is(:hover, :focus-visible),
+.app-frame[data-authenticated="true"]
+  .workspace-menu-trigger:is(:hover, :focus-visible) {
+  background: var(--raised);
+  color: var(--text);
+}
+.app-frame[data-authenticated="true"] .connection {
+  position: relative;
+  gap: 8px;
+  margin-inline-end: 8px;
+  padding-inline-end: 20px;
+  white-space: nowrap;
+}
+.app-frame[data-authenticated="true"] .connection::after {
+  content: "";
+  position: absolute;
+  inset-inline-end: 0;
+  height: 20px;
+  width: 1px;
+  background: var(--line);
+}
+.app-frame[data-authenticated="true"] .connection i {
+  position: relative;
+  flex-shrink: 0;
+  width: 7px;
+  height: 7px;
+}
+.app-frame[data-authenticated="true"] .connection:not(.disconnected) i::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border: 1px solid var(--signal);
+  border-radius: 50%;
+  opacity: 0;
+  animation: connection-confirm 800ms var(--control-ease);
+}
+.app-frame[data-authenticated="true"] .theme-glyph {
+  display: grid;
+  animation: theme-settle 240ms var(--control-ease);
+}
+@keyframes connection-confirm {
+  from {
+    transform: scale(0.5);
+    opacity: 0.7;
+  }
+  to {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+@keyframes theme-settle {
+  from {
+    transform: rotate(-65deg) scale(0.7);
+    opacity: 0.2;
+  }
+  to {
+    transform: rotate(0) scale(1);
+    opacity: 1;
+  }
 }
 .app-frame[data-authenticated="true"] > footer {
   display: none;
@@ -168,7 +272,7 @@ html[data-theme="dark"] .section-glyph[data-tone="teal"] {
 }
 .workspace-menu {
   position: fixed;
-  inset-block-start: 66px;
+  inset-block-start: 80px;
   inset-block-end: auto;
   inset-inline-start: 16px;
   inset-inline-end: auto;
@@ -661,9 +765,11 @@ html[dir="rtl"] .section-navigation .icon {
     padding: 0;
   }
   .app-frame[data-authenticated="true"] > .topbar {
-    padding: max(8px, env(safe-area-inset-top)) 10px 8px;
-    min-height: 64px;
-    gap: 8px;
+    margin: max(8px, env(safe-area-inset-top)) 8px 10px;
+    padding: 6px;
+    min-height: 60px;
+    gap: 6px;
+    border-radius: 22px;
   }
   .app-frame[data-authenticated="true"] .brand-sub {
     display: none;
@@ -684,10 +790,29 @@ html[dir="rtl"] .section-navigation .icon {
     gap: 0;
   }
   .app-frame[data-authenticated="true"] .brand {
-    padding-inline-end: 10px;
+    gap: 8px;
+  }
+  .app-frame[data-authenticated="true"] .brand-mark {
+    width: 36px;
+    height: 36px;
+  }
+  .app-frame[data-authenticated="true"] .brand-name {
+    font-size: 16px;
   }
   .app-frame[data-authenticated="true"] .top-actions {
-    padding: 3px;
+    gap: 0;
+  }
+  .app-frame[data-authenticated="true"] .connection {
+    margin-inline-end: 4px;
+    padding-inline-end: 10px;
+    gap: 0;
+  }
+  .app-frame[data-authenticated="true"] .connection > span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
   }
   .section-navigation {
     margin-inline: 4px;
@@ -700,6 +825,7 @@ html[dir="rtl"] .section-navigation .icon {
     padding: 20px;
   }
   .workspace-menu {
+    inset-block-start: calc(max(8px, env(safe-area-inset-top)) + 66px);
     inset-inline-start: 8px;
     width: min(312px, calc(100vw - 16px));
     max-height: calc(100dvh - 80px);
@@ -784,6 +910,14 @@ html[dir="rtl"] .send-button > .icon {
   transform: scale(0.94);
 }
 @media (prefers-reduced-motion: reduce) {
+  .app-frame[data-authenticated="true"] .theme-glyph,
+  .app-frame[data-authenticated="true"] .connection i::after {
+    animation: none;
+  }
+  .app-frame[data-authenticated="true"] .brand-mark {
+    transition: none;
+    transform: none !important;
+  }
   .workspace-menu,
   .content > .page-content,
   .aurora-field,

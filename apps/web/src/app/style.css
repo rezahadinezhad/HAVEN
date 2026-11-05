@@ -274,6 +274,9 @@ audio {
   font-weight: 450;
   letter-spacing: 0;
 }
+.brand-copy {
+  display: contents;
+}
 .top-actions {
   display: flex;
   align-items: center;
