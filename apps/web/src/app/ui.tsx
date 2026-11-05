@@ -1352,13 +1352,19 @@ export default function Haven({
           <span className="brand-mark">
             <Icon name="messages" size={25} filled />
           </span>
-          {appName}
-          <span className="brand-sub">{t("Private community")}</span>
+          <span className="brand-copy">
+            <span className="brand-name">{appName}</span>
+            <span className="brand-sub">{t("Private community")}</span>
+          </span>
         </a>
         <div className="top-actions">
-          <span className={online ? "connection" : "connection disconnected"}>
-            <i />
-            {status}
+          <span
+            className={online ? "connection" : "connection disconnected"}
+            role="status"
+            title={status}
+          >
+            <i aria-hidden="true" />
+            <span>{status}</span>
           </span>
           <button
             className="quiet icon-button theme-switch"
@@ -1369,10 +1375,13 @@ export default function Haven({
             )}
             onClick={() => setTheme(theme === "light" ? "dark" : "light")}
           >
-            <Icon name={theme === "light" ? "moon" : "sun"} />
+            <span className="theme-glyph" key={theme} aria-hidden="true">
+              <Icon name={theme === "light" ? "moon" : "sun"} />
+            </span>
           </button>
           <button
             className="quiet language-switch"
+            lang={language === "en" ? "fa" : "en"}
             onClick={() => setLanguage(language === "en" ? "fa" : "en")}
           >
             {language === "en" ? "فارسی" : "English"}
